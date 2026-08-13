@@ -233,6 +233,46 @@
   .dialog-head h2{margin:0;font-size:17px}.dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
   .dialog-danger{color:#fff;border-color:rgba(255,155,179,.8);background:rgba(255,120,150,.16)}
 
+  /* internal debug launcher */
+  .debug-launcher{
+    position:fixed;left:max(16px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom));
+    z-index:40;display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  }
+  .debug-trigger{
+    min-height:36px;padding:8px 13px;border-radius:999px;
+    background:rgba(38,28,62,.82);border:1px solid rgba(255,255,255,.72);
+    box-shadow:0 8px 24px rgba(34,20,58,.3);backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);font-size:10px;font-weight:700;letter-spacing:1.5px;
+  }
+  .debug-trigger svg{width:15px;height:15px}
+  .debug-trigger[aria-expanded="true"]{background:rgba(255,255,255,.26);box-shadow:var(--ring),0 8px 24px rgba(34,20,58,.3)}
+  .debug-panel{
+    width:min(260px,calc(100vw - 28px));padding:8px;border:1px solid rgba(255,255,255,.76);
+    border-radius:17px;background:rgba(46,34,77,.94);box-shadow:0 18px 48px rgba(30,17,52,.42);
+    backdrop-filter:blur(22px) saturate(1.15);-webkit-backdrop-filter:blur(22px) saturate(1.15);
+    transform-origin:bottom left;animation:debugIn .18s cubic-bezier(.2,0,0,1);
+  }
+  .debug-panel[hidden]{display:none}
+  .debug-panel-head{display:flex;align-items:center;justify-content:space-between;padding:4px 5px 7px 10px}
+  .debug-panel-head span{font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--faint);text-transform:uppercase}
+  .debug-close{min-height:28px;width:28px;padding:0;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:18px}
+  .debug-close:hover{background:rgba(255,255,255,.12);color:#fff}
+  .debug-link{
+    display:grid;grid-template-columns:34px minmax(0,1fr) 14px;gap:10px;align-items:center;
+    min-height:52px;padding:7px 9px;border-radius:12px;color:#fff;text-decoration:none;
+    transition:background var(--t),transform var(--t);
+  }
+  .debug-link:hover{background:rgba(255,255,255,.13);transform:translateX(2px)}
+  .debug-link:focus-visible{box-shadow:var(--ring);outline:none}
+  .debug-link-icon{width:34px;height:34px;border:1px solid var(--line-soft);border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.08)}
+  .debug-link-icon svg{width:17px;height:17px}
+  .debug-link-copy{min-width:0}
+  .debug-link-copy strong,.debug-link-copy small{display:block}
+  .debug-link-copy strong{font-size:12.5px;font-weight:600;letter-spacing:.2px}
+  .debug-link-copy small{margin-top:1px;color:var(--muted);font-size:10.5px}
+  .debug-external{width:13px;height:13px;color:var(--faint)}
+  @keyframes debugIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+
   /* tab bar */
   nav{position:fixed;left:0;right:0;bottom:0;z-index:20;
     background:rgba(72,42,107,.62);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
@@ -275,6 +315,7 @@
     .kpi .b .v{font-size:clamp(19px,6.2vw,25px);overflow-wrap:anywhere}
     .field-head{align-items:flex-start;flex-wrap:wrap}
     .alert{overflow-wrap:anywhere}
+    .debug-launcher{left:max(12px,env(safe-area-inset-left));bottom:calc(68px + env(safe-area-inset-bottom))}
   }
   @media (max-width:380px){
     .grid2{grid-template-columns:1fr}
@@ -440,6 +481,34 @@
   </div>
 </dialog>
 
+<div class="debug-launcher" id="debugLauncher">
+  <aside class="debug-panel" id="debugPanel" aria-label="內部 Debug 工具" hidden>
+    <div class="debug-panel-head">
+      <span>Internal tools</span>
+      <button class="debug-close" id="debugClose" type="button" aria-label="關閉 Debug 工具">×</button>
+    </div>
+    <a class="debug-link" href="roadmap.html" target="_blank" rel="noopener">
+      <span class="debug-link-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></span>
+      <span class="debug-link-copy"><strong>Features Roadmap</strong><small>優先級與執行清單</small></span>
+      <svg class="debug-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+    </a>
+    <a class="debug-link" href="urls.html" target="_blank" rel="noopener">
+      <span class="debug-link-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span>
+      <span class="debug-link-copy"><strong>URL Index</strong><small>全站連結與健康檢查</small></span>
+      <svg class="debug-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+    </a>
+    <a class="debug-link" href="changelog.html" target="_blank" rel="noopener">
+      <span class="debug-link-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>
+      <span class="debug-link-copy"><strong>Changelog</strong><small>版本更新與交接紀錄</small></span>
+      <svg class="debug-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+    </a>
+  </aside>
+  <button class="debug-trigger" id="debugTrigger" type="button" aria-expanded="false" aria-controls="debugPanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 9-3 3 3 3M16 9l3 3-3 3M13.5 6l-3 12"/></svg>
+    DEBUG
+  </button>
+</div>
+
 <nav>
   <button data-tab="budget" aria-label="錢包" onclick="showTab('budget',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M16 14h2"/></svg>錢包</button>
@@ -486,6 +555,22 @@ function showTab(t,btn){
   btn.classList.add('active');
   window.scrollTo({top:0});
 }
+
+/* ---------- internal debug shortcuts ---------- */
+const debugLauncher=document.getElementById('debugLauncher');
+const debugPanel=document.getElementById('debugPanel');
+const debugTrigger=document.getElementById('debugTrigger');
+const debugClose=document.getElementById('debugClose');
+function setDebugMenu(open,restoreFocus=false){
+  debugPanel.hidden=!open;
+  debugTrigger.setAttribute('aria-expanded',String(open));
+  if(restoreFocus)debugTrigger.focus();
+}
+debugTrigger.addEventListener('click',()=>setDebugMenu(debugPanel.hidden));
+debugClose.addEventListener('click',()=>setDebugMenu(false,true));
+debugPanel.addEventListener('click',event=>{if(event.target.closest('.debug-link'))setDebugMenu(false);});
+document.addEventListener('click',event=>{if(!debugLauncher.contains(event.target))setDebugMenu(false);});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!debugPanel.hidden)setDebugMenu(false,true);});
 
 /* ================= BUDGET (player-editable) ================= */
 const legacyBudget=DB.get('budget',{amount:0,threshold:80});

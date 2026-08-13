@@ -64,7 +64,7 @@
       <div class="page-bar">
         <div class="page-title">
           <h1>Changelog</h1>
-          <p>Project release history · latest v0.2.0</p>
+          <p>Project release history · latest v0.2.1</p>
         </div>
         <div class="page-actions">
           <button class="button" id="copyTemplate" type="button">
@@ -84,7 +84,7 @@
           </div>
           <div class="hero-callout">
             <b>Current release</b>
-            <span>v0.2.0 · Internal product operations</span>
+            <span>v0.2.1 · Debug quick access</span>
           </div>
         </section>
 
@@ -121,7 +121,7 @@
               <h2 id="release-list-title">Release log</h2>
               <p>預設依新到舊排列；分類採 Added、Changed、Fixed／Known，方便 GitHub release 與交接直接沿用。</p>
             </div>
-            <span class="chip blue" id="releaseCount" aria-live="polite">2 releases</span>
+            <span class="chip blue" id="releaseCount" aria-live="polite">3 releases</span>
           </div>
           <div class="toolbar" aria-label="Changelog 篩選">
             <label class="search-field">
@@ -145,6 +145,41 @@
               </div>
               <span class="chip amber">Major gate not met</span>
             </div>
+
+            <details class="release" id="v0-2-1" data-release-type="patch">
+              <summary>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <span class="version">v0.2.1</span>
+                <span class="release-title"><strong>Debug quick access</strong><span>從正式產品直接開啟三個內部工具</span></span>
+                <span class="release-date"><time datetime="2026-08-13">2026-08-13</time></span>
+                <span class="release-counts"><span class="chip blue">1 Added</span><span class="chip green">3 Verified</span></span>
+              </summary>
+              <div class="release-body">
+                <section class="change-group">
+                  <h3><span class="change-dot"></span>Added</h3>
+                  <ul>
+                    <li>正式產品左下角新增 compact Debug 按鈕，可快速開啟 Features Roadmap、URL Index 與 Changelog。</li>
+                  </ul>
+                </section>
+                <section class="change-group">
+                  <h3><span class="change-dot changed"></span>Changed</h3>
+                  <ul>
+                    <li>三個工具皆以新分頁開啟，保留玩家目前的 Tab、月份與輸入內容。</li>
+                    <li>手機版 Debug 按鈕會避開底部 Tab bar，選單可點擊外部或按 Esc 收合。</li>
+                  </ul>
+                </section>
+                <section class="change-group">
+                  <h3><span class="change-dot known"></span>Verified</h3>
+                  <ul>
+                    <li>完成 desktop、mobile、鍵盤操作與三個目標 URL 的連線檢查。</li>
+                  </ul>
+                  <div class="release-anchor">
+                    <button class="button small" type="button" data-copy-release="v0-2-1">複製版本連結</button>
+                    <code>#v0-2-1</code>
+                  </div>
+                </section>
+              </div>
+            </details>
 
             <details class="release" id="v0-2-0" data-release-type="minor">
               <summary>
