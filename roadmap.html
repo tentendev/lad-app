@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f8fc">
+  <title>Features Roadmap｜深空省省</title>
+  <meta name="description" content="深空省省內部 Features Roadmap：產品進度、功能優先級、驗收條件與 Agent 執行清單。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="internal.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+  <div class="app-shell">
+    <aside class="side-rail" aria-label="內部工具導覽">
+      <a class="internal-brand" href="roadmap.html">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 4.2L12 11 9.6 7.2zM6.5 9.5 9 14l-3 4.5L3.5 14zM17.5 9.5 20.5 14 18 18.5 15 14z"/><path d="M6 18.5h12"/></svg>
+        </span>
+        <span class="brand-copy"><strong>深空省省</strong><span>Product Ops</span></span>
+      </a>
+      <nav class="rail-nav">
+        <a href="roadmap.html" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+          Roadmap
+        </a>
+        <a href="urls.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+          URL Index
+        </a>
+        <a href="changelog.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+          Changelog
+        </a>
+      </nav>
+      <div class="rail-note">
+        Internal planning surface<br>
+        Baseline · 2026-08-13
+        <a href="index.html">開啟正式產品 ↗</a>
+      </div>
+    </aside>
+
+    <main class="main-area" id="main-content">
+      <div class="page-bar">
+        <div class="page-title">
+          <h1>Features Roadmap</h1>
+          <p>Evidence-based review · commit 3a20552 · 2026-08-13</p>
+        </div>
+        <div class="page-actions">
+          <a class="button" href="ux-research.html">UX Research</a>
+          <button class="button primary" id="copyPlan" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            複製目前執行清單
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <section class="hero-band" aria-labelledby="direction-title">
+          <div>
+            <div class="eyebrow">Product direction</div>
+            <h2 id="direction-title">先把一條旅程接好，再擴張工具數量。</h2>
+            <p>目前四個核心能力已經可用，但仍像四個相鄰工具。下一階段的最高槓桿，是讓一個卡池事件一路帶著玩家的角色、目標、資源、方案與結果前進，形成可回訪、可累積、值得信任的個人規劃體驗。</p>
+          </div>
+          <div class="hero-callout">
+            <b>Recommended next bet</b>
+            <span>資料可信度中心 ＋ 排期一鍵建立抽卡計畫</span>
+          </div>
+        </section>
+
+        <section class="metric-grid" aria-label="目前進度摘要">
+          <article class="metric-card">
+            <div class="label">產品階段</div>
+            <div class="value">Functional alpha</div>
+            <div class="caption">核心計算可用，尚未完成研究與營運閉環</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">核心旅程介面</div>
+            <div class="value">4 / 4</div>
+            <div class="caption">排期、換算、禮包、錢包皆已實作</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">跨步驟延續</div>
+            <div class="value">Partial</div>
+            <div class="caption">禮包可帶入記帳，其餘上下文仍會中斷</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">研究驗證</div>
+            <div class="value">Pending</div>
+            <div class="caption">已有 5–7 人研究計畫，尚無結果紀錄</div>
+          </article>
+        </section>
+
+        <div class="two-col">
+          <section class="panel" aria-labelledby="snapshot-title">
+            <div class="panel-head">
+              <div>
+                <h2 id="snapshot-title">專案進度盤點</h2>
+                <p>依目前 repository 的 HTML、JavaScript 與資料檔直接判讀；「可用」不等於已經使用者驗證。</p>
+              </div>
+              <span class="chip blue">Repository evidence</span>
+            </div>
+            <div class="panel-body status-list">
+              <div class="status-line">
+                <strong>排期與情報</strong>
+                <span>月曆、跨日活動條、官方／預測提示、月份切換與日期明細已完成。</span>
+                <span class="chip green">可用</span>
+              </div>
+              <div class="status-line">
+                <strong>抽卡資源換算</strong>
+                <span>鑽石、金券、官方返券、目標抽數與預留單位可即時計算。</span>
+                <span class="chip green">可用</span>
+              </div>
+              <div class="status-line">
+                <strong>禮包決策</strong>
+                <span>可依缺口推薦累計禮包與總金額，並帶入錢包記帳。</span>
+                <span class="chip green">可用</span>
+              </div>
+              <div class="status-line">
+                <strong>預算與記帳</strong>
+                <span>每月預算、提醒門檻、花費新增／編輯／刪除與月份紀錄已完成。</span>
+                <span class="chip green">可用</span>
+              </div>
+              <div class="status-line">
+                <strong>資料營運</strong>
+                <span>排期與禮包由 JavaScript 人工維護，缺少逐筆來源、到期狀態與 schema 驗證。</span>
+                <span class="chip amber">人工</span>
+              </div>
+              <div class="status-line">
+                <strong>資料持久化</strong>
+                <span>使用 localStorage；目前沒有登入、備份、匯出、跨裝置或復原機制。</span>
+                <span class="chip amber">單機</span>
+              </div>
+              <div class="status-line">
+                <strong>產品品質基礎</strong>
+                <span>Repository 未見自動化測試、分析事件、錯誤監控、manifest 或 service worker。</span>
+                <span class="chip red">待建</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="decision-title">
+            <div class="panel-head">
+              <div>
+                <h2 id="decision-title">產品判斷框架</h2>
+                <p>把已知事實與下一步決策分開，避免用想像代替使用者證據。</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="detail-block">
+                <span class="detail-label">Primary user</span>
+                <p>會為喜歡角色提前存鑽、需要在有限預算中做選擇的《戀與深空》玩家；執行這份文件的人是內部同事與 Agent。</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">Job to be done</span>
+                <p>快速知道想抽的卡池是否負擔得起、差多少、如何補足，並且不犧牲下一個角色目標。</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">Success signal</span>
+                <p>測試者能在 60 秒內完成「選卡池 → 看缺口 → 得到方案」，並能正確說明資料可信度與推薦原因。</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">Non-goals for this cycle</span>
+                <p>不先做大型社群 feed、即時聊天、角色百科或複雜遊戲化；它們不直接修補目前的核心決策斷點。</p>
+              </div>
+              <div class="note-box" style="margin-top:18px">
+                Roadmap 勾選狀態只保存在目前瀏覽器，不會更新 GitHub、正式產品或其他同事的資料。
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel" aria-labelledby="flow-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="flow-title">建議的核心物件模型</h2>
+              <p>未來每個工具都讀寫同一份「抽卡計畫」，而不是要求玩家在不同 Tab 重複輸入。</p>
+            </div>
+            <span class="chip violet">North-star journey</span>
+          </div>
+          <div class="panel-body flow-map">
+            <div class="flow-step"><span class="step-index">01 · INFORM</span><b>排期事件</b><span>角色、池別、日期、可信度與來源</span></div>
+            <div class="flow-step"><span class="step-index">02 · PLAN</span><b>抽卡目標</b><span>目標抽數、預留資源與優先順序</span></div>
+            <div class="flow-step"><span class="step-index">03 · DECIDE</span><b>資源方案</b><span>缺口、達標日、無課與禮包替代方案</span></div>
+            <div class="flow-step"><span class="step-index">04 · ACT</span><b>花費與結果</b><span>購買、實際抽數、出金與剩餘資源</span></div>
+            <div class="flow-step"><span class="step-index">05 · LEARN</span><b>個人回顧</b><span>跨卡池趨勢、預算影響與下一個計畫</span></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="backlog-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="backlog-title">Prioritized feature backlog</h2>
+              <p>預設依 IRCE 分數自動由高到低排序。Impact 佔 45%，避免低成本但低價值的功能擠到前面。</p>
+            </div>
+            <div class="toolbar-actions">
+              <span class="chip blue" id="visibleCount" aria-live="polite">0 項</span>
+            </div>
+          </div>
+          <div class="toolbar" aria-label="Roadmap 篩選與排序">
+            <label class="search-field">
+              <span class="visually-hidden">搜尋功能</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <input id="featureSearch" type="search" placeholder="搜尋功能、問題或依賴…">
+            </label>
+            <label>
+              <span class="visually-hidden">開發階段</span>
+              <select class="select-field" id="phaseFilter">
+                <option value="all">所有階段</option>
+                <option value="now">Now · 先做</option>
+                <option value="next">Next · 接著</option>
+                <option value="later">Later · 後續</option>
+              </select>
+            </label>
+            <label>
+              <span class="visually-hidden">功能類別</span>
+              <select class="select-field" id="categoryFilter">
+                <option value="all">所有類別</option>
+              </select>
+            </label>
+            <label>
+              <span class="visually-hidden">排序方式</span>
+              <select class="select-field" id="sortBy">
+                <option value="score">建議順序</option>
+                <option value="impact">影響力最高</option>
+                <option value="effort">工時最低</option>
+                <option value="confidence">信心最高</option>
+              </select>
+            </label>
+            <label class="switch">
+              <input id="highImpactOnly" type="checkbox">
+              <span class="switch-track" aria-hidden="true"></span>
+              只看高影響
+            </label>
+          </div>
+          <div class="table-wrap" id="featureTableWrap">
+            <table class="data-table">
+              <caption class="visually-hidden">依優先級排序的功能 Roadmap</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">功能與使用者問題</th>
+                  <th scope="col">狀態</th>
+                  <th scope="col">Impact</th>
+                  <th scope="col">Confidence</th>
+                  <th scope="col">Effort</th>
+                  <th scope="col">Score</th>
+                  <th scope="col">Phase</th>
+                </tr>
+              </thead>
+              <tbody id="featureRows"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="featureEmpty" hidden>
+            <div>
+              <strong>沒有符合條件的功能</strong>
+              <p>清除搜尋或篩選後，再查看完整 Roadmap。</p>
+              <button class="button small" id="clearFilters" type="button">清除 Roadmap 篩選</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="method-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="method-title">排序方法與 UX contract</h2>
+              <p>這是決策工具，不是假裝精準的預測。每次研究或產品數據更新後，應同步修正 Impact、Reach 與 Confidence。</p>
+            </div>
+          </div>
+          <div class="panel-body two-col">
+            <div>
+              <span class="detail-label">IRCE score</span>
+              <p><strong>Score = Impact 45% + Reach 20% + Confidence 20% + Ease 15%</strong>。Now ≥ 85、Next 70–84、Later &lt; 70。依賴與風險仍需在 Sprint planning 時人工覆核。</p>
+              <div class="note-box" style="margin-top:14px">
+                High impact 的定義是 Impact ≥ 4/5；不是「看起來很酷」，而是能直接降低不確定、避免錯誤決策，或保護玩家已累積的資料。
+              </div>
+            </div>
+            <div>
+              <span class="detail-label">Interaction rules applied</span>
+              <div class="rule-list">
+                <code>rule/smallest-intervention</code>
+                <code>rule/inline-before-modal</code>
+                <code>rule/navigation-vs-action</code>
+                <code>rule/cover-reachable-states</code>
+                <code>rule/keyboard-complete-flow</code>
+                <code>rule/name-object-scope-consequence</code>
+              </div>
+              <p style="margin:14px 0 0;color:var(--muted);font-size:12px">細節使用 inline disclosure；搜尋為零時提供清除動作；連結與按鈕維持正確語意；可用鍵盤完成篩選、展開與勾選。</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    var features = [
+      {
+        id: "trust-center",
+        title: "資料可信度與更新中心",
+        category: "信任與資料",
+        summary: "玩家目前只能從整頁註記判斷官方或預測，無法逐筆追溯來源。",
+        impact: 5, reach: 5, confidence: 0.95, effort: 2, status: "ready",
+        why: "排期是整條旅程的入口。若日期與池別不可信，後續換算再精準也無法建立決策信心。",
+        goal: "每一筆活動都有來源、可信度、最後驗證時間與過期狀態，玩家不必自行猜測。",
+        nonGoal: "本輪不建立全自動爬蟲，也不承諾預測內容一定正確。",
+        acceptance: [
+          "每筆事件顯示「官方／預測／待驗證」其中一種明確狀態",
+          "事件可查看來源連結、最後驗證時間與維護者註記",
+          "超過更新門檻的資料顯示 stale 狀態與重新確認動作",
+          "schedule.js 具備可驗證的欄位 schema，缺漏資料不讓頁面崩潰"
+        ],
+        metric: "90% 任務測試者能正確區分官方與預測事件，並找到來源。",
+        dependency: "先定義 schedule schema 與資料更新責任人。",
+        risk: "來源失效或玩家投稿誤植；需要清楚的過期與撤回流程。"
+      },
+      {
+        id: "event-to-plan",
+        title: "從排期一鍵建立抽卡計畫",
+        category: "核心旅程",
+        summary: "排期與換算目前是相鄰 Tab，角色、池別與日期不會跟著玩家移動。",
+        impact: 5, reach: 5, confidence: 0.95, effort: 3, status: "ready",
+        why: "這是現有核心旅程最大的斷點，也是最小但最能讓四個工具變成產品的連接。",
+        goal: "玩家從活動詳情選擇「規劃這個卡池」後，換算頁已帶入池別、日期與可編輯目標。",
+        nonGoal: "本輪只支援單一主要計畫，不先做多卡池資源最佳化。",
+        acceptance: [
+          "活動詳情提供語意清楚的「規劃這個卡池」動作",
+          "卡池類型、角色／活動名稱與結束日期自動帶入計畫",
+          "玩家輸入的目標、鑽石與金券在頁面切換後仍保留",
+          "返回排期時保留原月份與選取事件，不重設上下文"
+        ],
+        metric: "從找到活動到說出資源缺口的中位完成時間低於 60 秒。",
+        dependency: "建立共用 Plan 資料模型，取代各 Tab 各自保存的零散值。",
+        risk: "預測活動的池別可能變動；計畫必須保留來源版本並提示更新。"
+      },
+      {
+        id: "recommendation-explainer",
+        title: "禮包推薦解釋與替代方案",
+        category: "核心旅程",
+        summary: "已有推薦結果，但玩家難以快速驗證為什麼是這一檔、是否有更保守方案。",
+        impact: 5, reach: 4, confidence: 0.9, effort: 2, status: "ready",
+        why: "花錢是高後果決策。只標示「推薦」不足以建立信任，也無法支援不同付費偏好。",
+        goal: "同時呈現最低現金、最少禮包、先存再買三種可比較方案與完整假設。",
+        nonGoal: "不替玩家做購買決定，也不使用促購倒數或壓力式文案。",
+        acceptance: [
+          "推薦摘要顯示總金額、總抽數、超額抽數與使用的免費券",
+          "至少提供一個較低花費的替代方案與其代價",
+          "公式、禮包資料版本與未計入項目可在原位展開查看",
+          "資料不足時不產生假推薦，改顯示缺少內容與修復方式"
+        ],
+        metric: "80% 測試者能用自己的話說明推薦原因與替代方案差異。",
+        dependency: "禮包資料需要版本與有效期間欄位。",
+        risk: "價格或規則變更會直接影響金錢決策，必須連動 stale 狀態。"
+      },
+      {
+        id: "local-backup",
+        title: "資料匯出、備份與安全刪除",
+        category: "信任與資料",
+        summary: "預算、花費與換算全部只存在 localStorage，清除瀏覽資料後不可復原。",
+        impact: 4, reach: 5, confidence: 0.95, effort: 2, status: "ready",
+        why: "玩家開始累積紀錄後，資料遺失的傷害會快速放大；這是登入同步前最小的保護措施。",
+        goal: "玩家可匯出／匯入完整資料，刪除花費後有短暫 Undo，失敗不清空現有輸入。",
+        nonGoal: "本輪不建立帳號與雲端資料庫。",
+        acceptance: [
+          "可匯出具版本號的 JSON 備份與易讀 CSV 花費紀錄",
+          "匯入前預覽物件數量、日期範圍與覆蓋後果",
+          "匯入失敗保留原資料並說明可採取的修復動作",
+          "刪除一筆花費後提供 Undo，而不是只有不可逆 confirm"
+        ],
+        metric: "備份還原任務成功率 95%，且測試中不發生既有資料遺失。",
+        dependency: "先定義 local data schema version 與 migration 規則。",
+        risk: "匯入舊版本或損壞檔案；需驗證資料並採原子式寫入。"
+      },
+      {
+        id: "research-instrumentation",
+        title: "隱私友善量測與研究回饋",
+        category: "研究與品質",
+        summary: "已有 UX Research 計畫，但 repository 沒有事件量測或訪談結果的回填位置。",
+        impact: 4, reach: 5, confidence: 0.9, effort: 2, status: "ready",
+        why: "沒有行為與訪談證據，就無法知道哪個工具真的被使用，也無法可靠更新 Roadmap 分數。",
+        goal: "用最少且匿名的事件回答核心漏斗、決策時間、錯誤與回訪問題。",
+        nonGoal: "不收集角色偏好、花費明細或可識別個人的原始輸入。",
+        acceptance: [
+          "定義 calendar_view、plan_started、plan_completed、expense_recorded 等核心事件",
+          "每個事件只包含完成任務所需的匿名欄位並記錄資料保留政策",
+          "提供關閉分析的選項，且不影響核心功能",
+          "研究文件可紀錄 5–7 位測試者的發現、證據與 Roadmap 變更"
+        ],
+        metric: "能每週回答核心漏斗完成率與三個最高流失點，且不傳送金額原值。",
+        dependency: "先確認隱私政策、分析供應商或採自管方案。",
+        risk: "過度蒐集會破壞社群信任；事件 schema 必須先審查。"
+      },
+      {
+        id: "resilient-forms",
+        title: "表單錯誤、安全動作與無障礙韌性",
+        category: "研究與品質",
+        summary: "部分輸入仍使用 alert／confirm，錯誤缺少原位恢復提示，背景對比也需實機驗證。",
+        impact: 4, reach: 5, confidence: 0.9, effort: 3, status: "ready",
+        why: "所有玩家都會碰到輸入與編輯；錯誤恢復、鍵盤和對比是完成任務的基礎，不是裝飾。",
+        goal: "核心流程在手機、鍵盤、放大文字與錯誤狀態下都能完成，且不遺失輸入。",
+        nonGoal: "不在此項目中重新設計整套品牌視覺。",
+        acceptance: [
+          "金額與日期錯誤在欄位旁顯示原因與修正方式",
+          "所有 icon-only 控制有可理解名稱與可見 focus",
+          "200% 字體與 320px 寬度不遮住主要操作",
+          "低速、資料缺漏與 localStorage 失敗都有可恢復狀態"
+        ],
+        metric: "主要任務可全程鍵盤完成，且自動化 a11y 檢查無 critical issue。",
+        dependency: "建立最小 UI state pattern：inline error、toast、undo、empty。",
+        risk: "只修 CSS 而未補狀態邏輯會產生假通過。"
+      },
+      {
+        id: "multi-pool-plan",
+        title: "多卡池資源路線圖",
+        category: "長期規劃",
+        summary: "玩家真正擔心的是這池抽完後，下一個喜歡的角色是否還安全。",
+        impact: 5, reach: 4, confidence: 0.8, effort: 5, status: "shape",
+        why: "這是產品從一次性計算器變成長期陪伴工具的核心，但應在單卡池 Plan 穩定後再做。",
+        goal: "玩家可排序多個目標，預覽每一池的資源餘額、達標日與衝突。",
+        nonGoal: "不預測未公告角色，也不聲稱能算出唯一最佳抽法。",
+        acceptance: [
+          "可新增、排序、封存多個卡池目標",
+          "每個目標顯示進場資源、預計使用與離場餘額",
+          "資源不足時指出最先發生衝突的目標與可調整項",
+          "預測日期改變後保留玩家決策並提供重新計算"
+        ],
+        metric: "70% 長期規劃者表示能判斷兩個以上卡池的取捨。",
+        dependency: "依賴 event-to-plan、共用 Plan schema 與可信日期。",
+        risk: "規則與收入假設過多會造成偽精準；必須公開假設。"
+      },
+      {
+        id: "event-reminders",
+        title: "卡池提醒、行事曆訂閱與 PWA",
+        category: "提醒與回訪",
+        summary: "目前有日期但沒有可帶走的提醒，也沒有完整 manifest／離線體驗。",
+        impact: 4, reach: 4, confidence: 0.8, effort: 3, status: "shape",
+        why: "提醒能把排期價值帶出頁面，建立自然回訪；先用行事曆訂閱，再評估推播。",
+        goal: "玩家可把已選計畫加入系統行事曆，並在理解價值後選擇提醒。",
+        nonGoal: "不在首次開啟時要求通知權限，不發送促購訊息。",
+        acceptance: [
+          "單一活動與全部已選計畫皆可匯出標準 ICS",
+          "提醒預設關閉，首次使用功能時才解釋利益並詢問",
+          "日期更新時提示既有提醒可能過期",
+          "PWA 具 manifest、離線說明與可恢復的更新狀態"
+        ],
+        metric: "啟用提醒者的計畫回訪率提升，且通知權限拒絕率不高於基準。",
+        dependency: "可信日期、事件 ID 與更新機制。",
+        risk: "錯誤提醒會傷害信任；通知必須可精細關閉。"
+      },
+      {
+        id: "pull-history",
+        title: "抽卡結果與保底追蹤",
+        category: "記錄與回顧",
+        summary: "目前只記金額，無法回看實際抽數、金券／鑽石組成與出金結果。",
+        impact: 4, reach: 4, confidence: 0.7, effort: 4, status: "research",
+        why: "可能帶來長期回訪與更真實的成本回顧，但手動輸入負擔尚未驗證。",
+        goal: "以極少輸入記錄抽數與結果，並讓資料回饋下一個資源計畫。",
+        nonGoal: "不做歐非競賽排行榜，也不鼓勵無限追抽。",
+        acceptance: [
+          "可從現有 Plan 直接新增一筆結果，不重填卡池資訊",
+          "記錄抽數、使用資源、結果與是否達成目標",
+          "保底狀態的規則與適用池別清楚可查",
+          "可刪除／匯出結果，且不公開個人紀錄"
+        ],
+        metric: "一筆結果的中位記錄時間低於 20 秒，四週留存優於只有記帳者。",
+        dependency: "需先以 5–7 人研究驗證記錄動機與最少欄位。",
+        risk: "輸入過重會失敗；保底規則變動需要版本化。"
+      },
+      {
+        id: "share-plan",
+        title: "可分享的抽卡計畫卡",
+        category: "社群成長",
+        summary: "玩家常在社群討論存鑽與目標，但目前沒有安全、可讀的分享格式。",
+        impact: 3, reach: 4, confidence: 0.8, effort: 2, status: "shape",
+        why: "分享能回饋社群並帶來自然發現，但應建立在完整 Plan 上，而不是另做一次輸入。",
+        goal: "一鍵產生不含敏感花費資料的角色計畫卡與可回到產品的連結。",
+        nonGoal: "不預設公開金額、抽卡結果或玩家身份。",
+        acceptance: [
+          "分享前可預覽會公開的欄位與隱藏敏感值",
+          "卡片在常見社群尺寸與深色模式保持可讀",
+          "分享連結在資料缺失或版本過期時提供恢復路徑",
+          "接受者可複製成自己的 Plan，不修改原作者資料"
+        ],
+        metric: "分享連結帶來的訪客中，完成建立 Plan 的比例高於 20%。",
+        dependency: "共用 Plan schema 與可序列化的安全公開欄位。",
+        risk: "圖片與角色素材可能涉及權利；先使用自有視覺與文字。"
+      },
+      {
+        id: "cloud-sync",
+        title: "登入與跨裝置同步",
+        category: "信任與資料",
+        summary: "localStorage 無法跨裝置，也無法在手機重裝或清除資料後復原。",
+        impact: 4, reach: 4, confidence: 0.75, effort: 5, status: "research",
+        why: "長期規劃需要可靠持久化，但在使用習慣未驗證前建立完整帳號系統成本過高。",
+        goal: "玩家先取得價值，再選擇用低摩擦登入備份與同步自己的資料。",
+        nonGoal: "不把登入放在首次使用前，也不強迫社群公開個人資料。",
+        acceptance: [
+          "未登入可完整使用核心功能並匯出備份",
+          "首次需要同步時才說明利益與要求登入",
+          "同一資料在兩裝置衝突時可看懂差異並選擇",
+          "帳號刪除明確說明範圍，並可先匯出資料"
+        ],
+        metric: "有三次以上回訪的玩家中，同步啟用率與跨裝置成功率達到目標基準。",
+        dependency: "local schema version、匯出入與隱私政策先完成。",
+        risk: "登入過早會阻擋 aha moment；同步衝突可能覆蓋資料。"
+      },
+      {
+        id: "community-voting",
+        title: "功能許願與社群投票",
+        category: "社群成長",
+        summary: "產品想回饋社群，但缺少低成本收集問題與排序需求的入口。",
+        impact: 3, reach: 4, confidence: 0.75, effort: 2, status: "research",
+        why: "讓社群參與方向有價值，但票數只能作為證據之一，不能取代問題研究。",
+        goal: "玩家可提出問題、附上情境並支持既有提案；團隊回覆狀態與決策理由。",
+        nonGoal: "不承諾最高票一定開發，也不開放無限制匿名灌票。",
+        acceptance: [
+          "提案要求描述情境、目前替代方式與期待結果",
+          "相似提案會先顯示以降低重複",
+          "狀態包含 reviewing、planned、shipped、not now 並附理由",
+          "投票結果可匯入 Roadmap 作為 Reach／Confidence 輸入"
+        ],
+        metric: "每月得到至少 5 個可行動問題敘述，而不只是功能名稱。",
+        dependency: "先建立 moderation 與身份／速率限制策略。",
+        risk: "票數偏向最活躍群體；仍需搭配訪談與行為數據。"
+      },
+      {
+        id: "community-intel",
+        title: "社群情報投稿與驗證機制",
+        category: "社群成長",
+        summary: "目前排期由單一維護者人工更新，規模擴大後容易延遲或失去來源。",
+        impact: 4, reach: 3, confidence: 0.65, effort: 5, status: "research",
+        why: "這能讓社群共同維護資訊，但錯誤資料會直接傷害抽卡與課金決策，治理必須先於投稿量。",
+        goal: "可信貢獻者可提交來源，其他人覆核後才影響正式排期。",
+        nonGoal: "不讓未驗證投稿直接顯示為官方資料，不建立聊天 feed。",
+        acceptance: [
+          "投稿必須包含來源 URL、截圖或官方公告識別",
+          "待驗證內容與正式資料在視覺與資料層完全分離",
+          "審核、駁回、撤回與修訂都保留可追溯紀錄",
+          "高影響變更需要第二位維護者覆核"
+        ],
+        metric: "官方公告後的資料更新時間下降，且重大誤植率維持在可接受門檻內。",
+        dependency: "帳號、角色權限、資料 schema、審核隊列與治理規則。",
+        risk: "惡意投稿、粉圈衝突與來源版權；需要清楚規範與最低權限。"
+      },
+      {
+        id: "character-themes",
+        title: "角色主題與桌面小工具",
+        category: "情感與個人化",
+        summary: "社群對角色有強烈認同，但目前品牌體驗尚未把情感連結轉成可選的日常陪伴。",
+        impact: 3, reach: 3, confidence: 0.8, effort: 3, status: "research",
+        why: "它能加深喜愛與分享動機，但必須在核心決策可信且穩定後再投入。",
+        goal: "玩家可選擇低干擾的角色色彩、目標捷徑與桌面摘要，不影響資訊可讀性。",
+        nonGoal: "不直接使用未授權角色圖片、語音或官方商標素材。",
+        acceptance: [
+          "主題只改變允許的 design tokens，不降低文字對比",
+          "預設主題保持中性，角色偏好完全可選且可重設",
+          "桌面小工具只顯示玩家選擇公開的下一個目標摘要",
+          "reduced motion、深色與高對比模式皆有完整狀態"
+        ],
+        metric: "主題使用者的回訪或分享提升，且可用性指標不下降。",
+        dependency: "品牌與素材授權邊界、穩定的 Plan 摘要 API。",
+        risk: "視覺先行可能掩蓋核心問題；素材權利與對比需審核。"
+      }
+    ];
+
+    var viewState = { query: "", phase: "all", category: "all", sort: "score", highOnly: false };
+    var expanded = {};
+    var checks = {};
+
+    try {
+      checks = JSON.parse(localStorage.getItem("lad_roadmap_checks") || "{}");
+    } catch (error) {
+      checks = {};
+    }
+
+    function scoreFeature(feature) {
+      return Math.round((
+        (feature.impact / 5) * 0.45 +
+        (feature.reach / 5) * 0.20 +
+        feature.confidence * 0.20 +
+        ((6 - feature.effort) / 5) * 0.15
+      ) * 100);
+    }
+
+    function phaseFor(score) {
+      if (score >= 85) return "now";
+      if (score >= 70) return "next";
+      return "later";
+    }
+
+    function phaseLabel(phase) {
+      return phase === "now" ? "Now" : phase === "next" ? "Next" : "Later";
+    }
+
+    function phaseChip(phase) {
+      return phase === "now" ? "blue" : phase === "next" ? "violet" : "";
+    }
+
+    function statusLabel(status) {
+      return status === "ready" ? "Ready" : status === "shape" ? "Shaping" : "Research";
+    }
+
+    function statusChip(status) {
+      return status === "ready" ? "green" : status === "shape" ? "violet" : "amber";
+    }
+
+    function effortLabel(effort) {
+      return ["", "XS", "S", "M", "L", "XL"][effort];
+    }
+
+    function esc(value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"}[char];
+      });
+    }
+
+    function checkedCount(feature) {
+      var state = checks[feature.id] || {};
+      return feature.acceptance.filter(function (_, index) { return Boolean(state[index]); }).length;
+    }
+
+    function visibleFeatures() {
+      var query = viewState.query.trim().toLowerCase();
+      var result = features.filter(function (feature) {
+        var score = scoreFeature(feature);
+        var phase = phaseFor(score);
+        var haystack = [
+          feature.title, feature.category, feature.summary, feature.why,
+          feature.goal, feature.dependency, feature.risk
+        ].join(" ").toLowerCase();
+        return (!query || haystack.indexOf(query) !== -1) &&
+          (viewState.phase === "all" || phase === viewState.phase) &&
+          (viewState.category === "all" || feature.category === viewState.category) &&
+          (!viewState.highOnly || feature.impact >= 4);
+      });
+
+      result.sort(function (a, b) {
+        if (viewState.sort === "impact") return b.impact - a.impact || scoreFeature(b) - scoreFeature(a);
+        if (viewState.sort === "effort") return a.effort - b.effort || scoreFeature(b) - scoreFeature(a);
+        if (viewState.sort === "confidence") return b.confidence - a.confidence || scoreFeature(b) - scoreFeature(a);
+        return scoreFeature(b) - scoreFeature(a);
+      });
+      return result;
+    }
+
+    function renderFeatures() {
+      var rows = document.getElementById("featureRows");
+      var visible = visibleFeatures();
+      var html = "";
+
+      visible.forEach(function (feature, index) {
+        var score = scoreFeature(feature);
+        var phase = phaseFor(score);
+        var isOpen = Boolean(expanded[feature.id]);
+        var completed = checkedCount(feature);
+        var criteria = feature.acceptance.map(function (item, itemIndex) {
+          var isChecked = Boolean((checks[feature.id] || {})[itemIndex]);
+          return '<label class="check-item"><input type="checkbox" data-check-feature="' + esc(feature.id) + '" data-check-index="' + itemIndex + '"' + (isChecked ? " checked" : "") + '><span>' + esc(item) + '</span></label>';
+        }).join("");
+
+        html += '<tr data-row="' + esc(feature.id) + '">' +
+          '<td class="rank">' + (index + 1) + '</td>' +
+          '<td><button class="row-toggle" type="button" data-toggle="' + esc(feature.id) + '" aria-expanded="' + isOpen + '" aria-controls="detail-' + esc(feature.id) + '">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>' +
+            '<span><strong>' + esc(feature.title) + '</strong><small>' + esc(feature.summary) + ' · ' + completed + '/' + feature.acceptance.length + ' checks</small></span>' +
+          '</button></td>' +
+          '<td><span class="chip ' + statusChip(feature.status) + '">' + statusLabel(feature.status) + '</span></td>' +
+          '<td><strong>' + feature.impact + '/5</strong></td>' +
+          '<td>' + Math.round(feature.confidence * 100) + '%</td>' +
+          '<td>' + effortLabel(feature.effort) + '</td>' +
+          '<td><span class="score">' + score + '</span></td>' +
+          '<td><span class="chip ' + phaseChip(phase) + '">' + phaseLabel(phase) + '</span></td>' +
+        '</tr>' +
+        '<tr class="detail-row" id="detail-' + esc(feature.id) + '"' + (isOpen ? "" : " hidden") + '><td colspan="8">' +
+          '<div class="feature-detail">' +
+            '<div>' +
+              '<div class="detail-block"><span class="detail-label">Why now</span><p>' + esc(feature.why) + '</p></div>' +
+              '<div class="detail-block"><span class="detail-label">Desired outcome</span><p>' + esc(feature.goal) + '</p></div>' +
+              '<div class="detail-block"><span class="detail-label">Non-goal</span><p>' + esc(feature.nonGoal) + '</p></div>' +
+              '<div class="detail-block"><span class="detail-label">Acceptance checklist</span><div class="checklist">' + criteria + '</div></div>' +
+            '</div>' +
+            '<div class="detail-meta">' +
+              '<div class="meta-tile"><b>IRCE inputs</b><span>Impact ' + feature.impact + '/5 · Reach ' + feature.reach + '/5 · Confidence ' + Math.round(feature.confidence * 100) + '% · Effort ' + effortLabel(feature.effort) + '</span></div>' +
+              '<div class="meta-tile"><b>Success metric</b><span>' + esc(feature.metric) + '</span></div>' +
+              '<div class="meta-tile"><b>Dependency</b><span>' + esc(feature.dependency) + '</span></div>' +
+              '<div class="meta-tile"><b>Risk</b><span>' + esc(feature.risk) + '</span></div>' +
+              '<button class="button small" type="button" data-copy-feature="' + esc(feature.id) + '">複製這項 Agent brief</button>' +
+            '</div>' +
+          '</div>' +
+        '</td></tr>';
+      });
+
+      rows.innerHTML = html;
+      document.getElementById("visibleCount").textContent = visible.length + " / " + features.length + " 項";
+      document.getElementById("featureTableWrap").hidden = visible.length === 0;
+      document.getElementById("featureEmpty").hidden = visible.length !== 0;
+    }
+
+    function featureBrief(feature) {
+      var score = scoreFeature(feature);
+      var phase = phaseFor(score);
+      var state = checks[feature.id] || {};
+      var lines = [
+        "## " + feature.title,
+        "",
+        "- Priority: " + phaseLabel(phase) + " · IRCE " + score + "/100",
+        "- Category: " + feature.category,
+        "- Problem: " + feature.summary,
+        "- Desired outcome: " + feature.goal,
+        "- Non-goal: " + feature.nonGoal,
+        "- Success metric: " + feature.metric,
+        "- Dependency: " + feature.dependency,
+        "- Risk: " + feature.risk,
+        "",
+        "### Acceptance checklist"
+      ];
+      feature.acceptance.forEach(function (item, index) {
+        lines.push("- [" + (state[index] ? "x" : " ") + "] " + item);
+      });
+      return lines.join("\n");
+    }
+
+    function allBriefs() {
+      var visible = visibleFeatures();
+      var lines = [
+        "# 深空省省 · Feature Roadmap",
+        "",
+        "Generated: 2026-08-13",
+        "Method: IRCE, sorted by " + viewState.sort,
+        "Visible initiatives: " + visible.length,
+        ""
+      ];
+      visible.forEach(function (feature, index) {
+        lines.push((index + 1) + ". " + featureBrief(feature), "");
+      });
+      return lines.join("\n");
+    }
+
+    function copyText(text, message) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { showToast(message); }, function () { fallbackCopy(text, message); });
+      } else {
+        fallbackCopy(text, message);
+      }
+    }
+
+    function fallbackCopy(text, message) {
+      var field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+      showToast(message);
+    }
+
+    var toastTimer;
+    function showToast(message) {
+      var toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+    }
+
+    function saveChecks() {
+      localStorage.setItem("lad_roadmap_checks", JSON.stringify(checks));
+    }
+
+    document.getElementById("featureRows").addEventListener("click", function (event) {
+      var toggle = event.target.closest("[data-toggle]");
+      var copyButton = event.target.closest("[data-copy-feature]");
+      if (toggle) {
+        var id = toggle.getAttribute("data-toggle");
+        expanded[id] = !expanded[id];
+        renderFeatures();
+      }
+      if (copyButton) {
+        var feature = features.find(function (item) { return item.id === copyButton.getAttribute("data-copy-feature"); });
+        if (feature) copyText(featureBrief(feature), "Agent brief 已複製");
+      }
+    });
+
+    document.getElementById("featureRows").addEventListener("change", function (event) {
+      var box = event.target.closest("[data-check-feature]");
+      if (!box) return;
+      var id = box.getAttribute("data-check-feature");
+      var index = box.getAttribute("data-check-index");
+      checks[id] = checks[id] || {};
+      checks[id][index] = box.checked;
+      saveChecks();
+      renderFeatures();
+    });
+
+    document.getElementById("featureSearch").addEventListener("input", function (event) {
+      viewState.query = event.target.value;
+      renderFeatures();
+    });
+    document.getElementById("phaseFilter").addEventListener("change", function (event) {
+      viewState.phase = event.target.value;
+      renderFeatures();
+    });
+    document.getElementById("categoryFilter").addEventListener("change", function (event) {
+      viewState.category = event.target.value;
+      renderFeatures();
+    });
+    document.getElementById("sortBy").addEventListener("change", function (event) {
+      viewState.sort = event.target.value;
+      renderFeatures();
+    });
+    document.getElementById("highImpactOnly").addEventListener("change", function (event) {
+      viewState.highOnly = event.target.checked;
+      renderFeatures();
+    });
+    document.getElementById("copyPlan").addEventListener("click", function () {
+      copyText(allBriefs(), "目前執行清單已複製");
+    });
+    document.getElementById("clearFilters").addEventListener("click", function () {
+      viewState = { query: "", phase: "all", category: "all", sort: "score", highOnly: false };
+      document.getElementById("featureSearch").value = "";
+      document.getElementById("phaseFilter").value = "all";
+      document.getElementById("categoryFilter").value = "all";
+      document.getElementById("sortBy").value = "score";
+      document.getElementById("highImpactOnly").checked = false;
+      renderFeatures();
+      document.getElementById("featureSearch").focus();
+    });
+
+    var categorySelect = document.getElementById("categoryFilter");
+    Array.from(new Set(features.map(function (feature) { return feature.category; }))).sort().forEach(function (category) {
+      var option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      categorySelect.appendChild(option);
+    });
+
+    renderFeatures();
+  </script>
+</body>
+</html>

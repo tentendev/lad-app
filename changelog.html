@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f8fc">
+  <title>Changelog｜深空省省</title>
+  <meta name="description" content="深空省省 Project Changelog：使用 Semantic Versioning 記錄新增功能、產品調整與已知限制。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="internal.css">
+  <style>
+    .content { width: min(1180px, 100%); }
+    .changelog-hero { grid-template-columns: minmax(0, 1.35fr) minmax(240px, .65fr); }
+    .release-anchor { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
+    .release-anchor code { color: var(--primary); font: 700 11px/1.4 "Manrope", monospace; }
+    .template-code {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: 12px;
+      background: #202124;
+      color: #e8eaed;
+      font: 12px/1.75 "Manrope", monospace;
+      padding: 16px 18px;
+      white-space: pre-wrap;
+    }
+    .release[hidden] { display: none; }
+    @media (max-width: 780px) {
+      .changelog-hero { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+  <div class="app-shell">
+    <aside class="side-rail" aria-label="內部工具導覽">
+      <a class="internal-brand" href="roadmap.html">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 4.2L12 11 9.6 7.2zM6.5 9.5 9 14l-3 4.5L3.5 14zM17.5 9.5 20.5 14 18 18.5 15 14z"/><path d="M6 18.5h12"/></svg>
+        </span>
+        <span class="brand-copy"><strong>深空省省</strong><span>Product Ops</span></span>
+      </a>
+      <nav class="rail-nav">
+        <a href="roadmap.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+          Roadmap
+        </a>
+        <a href="urls.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+          URL Index
+        </a>
+        <a href="changelog.html" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+          Changelog
+        </a>
+      </nav>
+      <div class="rail-note">
+        Public project history<br>
+        SemVer · Keep a Changelog
+        <a href="index.html">開啟正式產品 ↗</a>
+      </div>
+    </aside>
+
+    <main class="main-area" id="main-content">
+      <div class="page-bar">
+        <div class="page-title">
+          <h1>Changelog</h1>
+          <p>Project release history · latest v0.2.0</p>
+        </div>
+        <div class="page-actions">
+          <button class="button" id="copyTemplate" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            複製 Release template
+          </button>
+          <button class="button primary" id="toggleAll" type="button">展開全部小版本</button>
+        </div>
+      </div>
+
+      <div class="content">
+        <section class="hero-band changelog-hero" aria-labelledby="changelog-title">
+          <div>
+            <div class="eyebrow">Release history</div>
+            <h2 id="changelog-title">每次交接，都知道改了什麼、為什麼改。</h2>
+            <p>採用 Semantic Versioning 與 GitHub release note 分類。小版本預設收合，讓同事先掃描版本、日期與變更數量，需要時再展開細節。</p>
+          </div>
+          <div class="hero-callout">
+            <b>Current release</b>
+            <span>v0.2.0 · Internal product operations</span>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="version-policy-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="version-policy-title">版本命名規則</h2>
+              <p>版本格式為 MAJOR.MINOR.PATCH；目前仍在 v0 Early Access，不輕易升大版本。</p>
+            </div>
+            <span class="chip blue">SemVer</span>
+          </div>
+          <div class="panel-body version-policy">
+            <div class="policy-item">
+              <code>v1.0.0</code>
+              <b>MAJOR · 重大發布</b>
+              <span>核心產品範圍、資料模型或使用方式有重大改變。原則上至少累積 30+ merged PR，並通過 release review，才考慮升版。</span>
+            </div>
+            <div class="policy-item">
+              <code>v0.3.0</code>
+              <b>MINOR · 新功能</b>
+              <span>向後相容的新能力或明顯體驗改進，收納在目前的大版本之下；每一筆小版本 Log 預設收合。</span>
+            </div>
+            <div class="policy-item">
+              <code>v0.2.1</code>
+              <b>PATCH · 修正</b>
+              <span>向後相容的 bug、資料或文字修正，不增加主要使用流程，也不藉此包裝重大變更。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="release-list-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="release-list-title">Release log</h2>
+              <p>預設依新到舊排列；分類採 Added、Changed、Fixed／Known，方便 GitHub release 與交接直接沿用。</p>
+            </div>
+            <span class="chip blue" id="releaseCount" aria-live="polite">2 releases</span>
+          </div>
+          <div class="toolbar" aria-label="Changelog 篩選">
+            <label class="search-field">
+              <span class="visually-hidden">搜尋 Changelog</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <input id="releaseSearch" type="search" placeholder="搜尋版本、功能或已知限制…">
+            </label>
+            <div class="segmented" aria-label="版本類型">
+              <button type="button" data-release-type="all" aria-pressed="true">全部</button>
+              <button type="button" data-release-type="minor" aria-pressed="false">Minor</button>
+              <button type="button" data-release-type="patch" aria-pressed="false">Patch</button>
+            </div>
+          </div>
+
+          <div class="release-major" id="major-v0">
+            <div class="major-head">
+              <div class="major-number">v0</div>
+              <div>
+                <h2>Early Access · 核心價值驗證期</h2>
+                <p>先證明玩家能更快、更安心地完成抽卡與課金規劃，再進入 v1 穩定發布。</p>
+              </div>
+              <span class="chip amber">Major gate not met</span>
+            </div>
+
+            <details class="release" id="v0-2-0" data-release-type="minor">
+              <summary>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <span class="version">v0.2.0</span>
+                <span class="release-title"><strong>Internal product operations</strong><span>Roadmap、URL Index 與版本交接基礎</span></span>
+                <span class="release-date"><time datetime="2026-08-13">2026-08-13</time></span>
+                <span class="release-counts"><span class="chip blue">3 Added</span><span class="chip violet">2 Changed</span></span>
+              </summary>
+              <div class="release-body">
+                <section class="change-group">
+                  <h3><span class="change-dot"></span>Added</h3>
+                  <ul>
+                    <li>新增 <a href="roadmap.html">Features Roadmap</a>：專案盤點、IRCE 自動排序、篩選與可保存的驗收清單。</li>
+                    <li>新增 <a href="urls.html">URL Index</a>：列出頁面與 runtime assets，支援同網域 health check、搜尋與複製。</li>
+                    <li>新增本 Changelog 頁與可複製的 GitHub release template。</li>
+                  </ul>
+                </section>
+                <section class="change-group">
+                  <h3><span class="change-dot changed"></span>Changed</h3>
+                  <ul>
+                    <li>建立 Roadmap → URL Index → Changelog 的輕量內部資訊架構，不套用正式站 header／footer。</li>
+                    <li>建立共用 <code>internal.css</code>，統一 compact table、filter、status、focus 與 responsive 行為。</li>
+                  </ul>
+                </section>
+                <section class="change-group">
+                  <h3><span class="change-dot known"></span>Known</h3>
+                  <ul>
+                    <li>Roadmap 勾選狀態只儲存在目前瀏覽器，不會同步 GitHub 或其他裝置。</li>
+                    <li>URL inventory 仍需在新增或刪除檔案時由同一個 PR 手動更新。</li>
+                  </ul>
+                  <div class="release-anchor">
+                    <button class="button small" type="button" data-copy-release="v0-2-0">複製版本連結</button>
+                    <code>#v0-2-0</code>
+                  </div>
+                </section>
+              </div>
+            </details>
+
+            <details class="release" id="v0-1-0" data-release-type="minor">
+              <summary>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <span class="version">v0.1.0</span>
+                <span class="release-title"><strong>Repository baseline</strong><span>可操作的抽卡與課金規劃 MVP</span></span>
+                <span class="release-date"><time datetime="2026-08-13">2026-08-13</time></span>
+                <span class="release-counts"><span class="chip blue">7 Added</span><span class="chip amber">3 Known</span></span>
+              </summary>
+              <div class="release-body">
+                <section class="change-group">
+                  <h3><span class="change-dot"></span>Added</h3>
+                  <ul>
+                    <li>排期月曆、跨日活動顯示、官方／預測註記與日期明細。</li>
+                    <li>鑽石、金券、官方返券、目標抽數與預留資源即時換算。</li>
+                    <li>禮包階級比較、推薦方案、累計總額與帶入錢包記帳。</li>
+                    <li>每月預算、提醒門檻與花費新增／編輯／刪除。</li>
+                    <li>localStorage 儲存與舊分類資料 migration。</li>
+                    <li>產品定位、Journey、Persona、JTBD 與 UX Research 文件。</li>
+                    <li>保留 <code>0804.html</code> 作為舊版 regression snapshot。</li>
+                  </ul>
+                </section>
+                <section class="change-group">
+                  <h3><span class="change-dot changed"></span>Changed</h3>
+                  <ul>
+                    <li>從「深空帳本」收斂為「深空省省」，聚焦抽卡與課金決策，而非一般記帳。</li>
+                    <li>把禮包建議與錢包串接，減少完成購買後的重複輸入。</li>
+                  </ul>
+                </section>
+                <section class="change-group">
+                  <h3><span class="change-dot known"></span>Known</h3>
+                  <ul>
+                    <li>排期與禮包資料由 JavaScript 人工維護，尚無逐筆來源與自動過期。</li>
+                    <li>玩家資料只存在單一瀏覽器，清除 storage 後無法復原。</li>
+                    <li>尚未建立自動化測試、產品 analytics、登入同步與完整 PWA。</li>
+                  </ul>
+                  <div class="release-anchor">
+                    <button class="button small" type="button" data-copy-release="v0-1-0">複製版本連結</button>
+                    <code>#v0-1-0</code>
+                  </div>
+                </section>
+              </div>
+            </details>
+          </div>
+
+          <div class="empty-state" id="releaseEmpty" hidden>
+            <div>
+              <strong>沒有符合條件的版本</strong>
+              <p>目前尚未建立該類型，或搜尋文字沒有命中。</p>
+              <button class="button small" id="clearFilters" type="button">清除 Changelog 篩選</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="update-contract-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="update-contract-title">每次更新的最低交接內容</h2>
+              <p>同一個 PR 若改變使用者可見行為，必須新增一筆版本內容；不要只寫「UI update」或「bug fixes」。</p>
+            </div>
+            <button class="button small" id="copyTemplateInline" type="button">複製模板</button>
+          </div>
+          <div class="panel-body">
+            <pre class="template-code" id="releaseTemplate">## v0.x.y — Release title
+Date: YYYY-MM-DD
+PRs: #123, #124
+
+### Added
+- 新增了什麼，以及使用者現在能完成什麼。
+
+### Changed
+- 哪個既有行為改變，以及為什麼。
+
+### Fixed
+- 原本的問題、影響範圍與修正結果。
+
+### Known
+- 尚未解決的限制、風險與下一個動作。
+
+Verification
+- [ ] Mobile / desktop
+- [ ] Keyboard / focus
+- [ ] Empty / error / long-content states
+- [ ] URL Index updated</pre>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    var state = { query: "", type: "all" };
+
+    function applyFilters() {
+      var query = state.query.trim().toLowerCase();
+      var releases = Array.from(document.querySelectorAll(".release"));
+      var visible = 0;
+
+      releases.forEach(function (release) {
+        var matchesType = state.type === "all" || release.getAttribute("data-release-type") === state.type;
+        var matchesQuery = !query || release.textContent.toLowerCase().indexOf(query) !== -1;
+        var show = matchesType && matchesQuery;
+        release.hidden = !show;
+        if (show) {
+          visible += 1;
+          if (query) release.open = true;
+        }
+      });
+
+      document.getElementById("major-v0").hidden = visible === 0;
+      document.getElementById("releaseEmpty").hidden = visible !== 0;
+      document.getElementById("releaseCount").textContent = visible + (visible === 1 ? " release" : " releases");
+      syncToggleLabel();
+    }
+
+    function syncToggleLabel() {
+      var visible = Array.from(document.querySelectorAll(".release:not([hidden])"));
+      var allOpen = visible.length > 0 && visible.every(function (release) { return release.open; });
+      document.getElementById("toggleAll").textContent = allOpen ? "收合全部小版本" : "展開全部小版本";
+    }
+
+    function versionURL(id) {
+      var base = window.location.href.split("#")[0];
+      return base + "#" + id;
+    }
+
+    function copyText(text, message) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { showToast(message); }, function () { fallbackCopy(text, message); });
+      } else {
+        fallbackCopy(text, message);
+      }
+    }
+
+    function fallbackCopy(text, message) {
+      var field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+      showToast(message);
+    }
+
+    var toastTimer;
+    function showToast(message) {
+      var toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+    }
+
+    function copyReleaseTemplate() {
+      copyText(document.getElementById("releaseTemplate").textContent, "Release template 已複製");
+    }
+
+    document.getElementById("releaseSearch").addEventListener("input", function (event) {
+      state.query = event.target.value;
+      applyFilters();
+    });
+
+    document.querySelector(".segmented").addEventListener("click", function (event) {
+      var button = event.target.closest("[data-release-type]");
+      if (!button) return;
+      state.type = button.getAttribute("data-release-type");
+      document.querySelectorAll("[data-release-type]").forEach(function (item) {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      applyFilters();
+    });
+
+    document.getElementById("toggleAll").addEventListener("click", function () {
+      var visible = Array.from(document.querySelectorAll(".release:not([hidden])"));
+      var shouldOpen = visible.some(function (release) { return !release.open; });
+      visible.forEach(function (release) { release.open = shouldOpen; });
+      syncToggleLabel();
+    });
+
+    document.querySelectorAll(".release").forEach(function (release) {
+      release.addEventListener("toggle", syncToggleLabel);
+    });
+
+    document.addEventListener("click", function (event) {
+      var copyButton = event.target.closest("[data-copy-release]");
+      if (!copyButton) return;
+      var id = copyButton.getAttribute("data-copy-release");
+      copyText(versionURL(id), id.replace(/-/g, ".") + " 版本連結已複製");
+    });
+
+    document.getElementById("copyTemplate").addEventListener("click", copyReleaseTemplate);
+    document.getElementById("copyTemplateInline").addEventListener("click", copyReleaseTemplate);
+
+    document.getElementById("clearFilters").addEventListener("click", function () {
+      state = { query: "", type: "all" };
+      document.getElementById("releaseSearch").value = "";
+      document.querySelectorAll("[data-release-type]").forEach(function (button) {
+        button.setAttribute("aria-pressed", String(button.getAttribute("data-release-type") === "all"));
+      });
+      applyFilters();
+      document.getElementById("releaseSearch").focus();
+    });
+
+    function openHashRelease() {
+      var id = window.location.hash.slice(1);
+      var release = id ? document.getElementById(id) : null;
+      if (!release || !release.classList.contains("release")) return;
+      release.hidden = false;
+      release.open = true;
+      requestAnimationFrame(function () {
+        release.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+
+    window.addEventListener("hashchange", openHashRelease);
+    applyFilters();
+    openHashRelease();
+  </script>
+</body>
+</html>

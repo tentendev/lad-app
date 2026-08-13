@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f8fc">
+  <title>URL Index｜深空省省</title>
+  <meta name="description" content="深空省省內部 URL 與部署資源索引，用於 debug、比對與交接。">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="internal.css">
+  <style>
+    .content { padding-top: 18px; }
+    .metric-grid { margin-bottom: 14px; }
+    .metric-card { min-height: 88px; padding: 14px 16px; }
+    .metric-card .value { margin-top: 7px; font-size: 23px; }
+    .panel { margin-top: 14px; }
+    .panel-head { padding-top: 16px; padding-bottom: 13px; }
+    .route-purpose { min-width: 220px; max-width: 380px; }
+    .source-name { font-family: "Manrope", monospace; font-size: 11px; white-space: nowrap; }
+    .row-actions { display: flex; gap: 2px; }
+    .scope-note { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; }
+    @media (max-width: 560px) {
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .metric-card { min-height: 78px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+  <div class="app-shell">
+    <aside class="side-rail" aria-label="內部工具導覽">
+      <a class="internal-brand" href="roadmap.html">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 4.2L12 11 9.6 7.2zM6.5 9.5 9 14l-3 4.5L3.5 14zM17.5 9.5 20.5 14 18 18.5 15 14z"/><path d="M6 18.5h12"/></svg>
+        </span>
+        <span class="brand-copy"><strong>深空省省</strong><span>Product Ops</span></span>
+      </a>
+      <nav class="rail-nav">
+        <a href="roadmap.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+          Roadmap
+        </a>
+        <a href="urls.html" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+          URL Index
+        </a>
+        <a href="changelog.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>
+          Changelog
+        </a>
+      </nav>
+      <div class="rail-note">
+        Internal route inventory<br>
+        Same-origin checks only
+        <a href="index.html">開啟正式產品 ↗</a>
+      </div>
+    </aside>
+
+    <main class="main-area" id="main-content">
+      <div class="page-bar">
+        <div class="page-title">
+          <h1>URL Index</h1>
+          <p id="originLabel">正在辨識目前站點…</p>
+        </div>
+        <div class="page-actions">
+          <button class="button" id="checkAgain" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+            重新檢查
+          </button>
+          <button class="button primary" id="copyPages" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            複製全部頁面 URL
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <section class="metric-grid" aria-label="URL 摘要">
+          <article class="metric-card">
+            <div class="label">Page routes</div>
+            <div class="value" id="pageCount">—</div>
+            <div class="caption">含 canonical 與 alias</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">Runtime assets</div>
+            <div class="value" id="assetCount">—</div>
+            <div class="caption">JS、CSS、圖像與圖示</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">Reachable now</div>
+            <div class="value" id="okCount">—</div>
+            <div class="caption">本次 same-origin health check</div>
+          </article>
+          <article class="metric-card">
+            <div class="label">Needs attention</div>
+            <div class="value" id="errorCount">—</div>
+            <div class="caption">錯誤或僅限本機部署</div>
+          </article>
+        </section>
+
+        <section class="panel" aria-labelledby="route-list-title">
+          <div class="panel-head">
+            <div>
+              <h2 id="route-list-title">Route inventory</h2>
+              <p>列出 repository 目前可成為 URL 的頁面與資源。健康檢查使用目前 domain，不會呼叫外部服務。</p>
+            </div>
+            <div class="scope-note"><span class="health ok">2xx / 3xx</span><span class="health error">4xx / 5xx</span></div>
+          </div>
+          <div class="toolbar" aria-label="URL 清單篩選">
+            <label class="search-field">
+              <span class="visually-hidden">搜尋 URL</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <input id="routeSearch" type="search" placeholder="搜尋 route、檔名或用途…">
+            </label>
+            <div class="segmented" aria-label="URL 類型">
+              <button type="button" data-kind="all" aria-pressed="true">全部</button>
+              <button type="button" data-kind="page" aria-pressed="false">Pages</button>
+              <button type="button" data-kind="asset" aria-pressed="false">Assets</button>
+            </div>
+            <label>
+              <span class="visually-hidden">使用範圍</span>
+              <select class="select-field" id="audienceFilter">
+                <option value="all">所有範圍</option>
+                <option value="product">正式產品</option>
+                <option value="internal">內部工具</option>
+                <option value="research">研究文件</option>
+                <option value="legacy">舊版／參考</option>
+                <option value="runtime">執行資源</option>
+              </select>
+            </label>
+            <label class="switch">
+              <input id="errorsOnly" type="checkbox">
+              <span class="switch-track" aria-hidden="true"></span>
+              只看異常
+            </label>
+            <span class="chip blue" id="visibleCount" aria-live="polite">0 項</span>
+          </div>
+
+          <div class="table-wrap" id="routeTableWrap">
+            <table class="data-table">
+              <caption class="visually-hidden">站點所有頁面與公開資源 URL</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Type</th>
+                  <th scope="col">Route</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">Scope</th>
+                  <th scope="col">Purpose / debug note</th>
+                  <th scope="col">Deploy</th>
+                  <th scope="col">Health</th>
+                  <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="routeRows"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="routeEmpty" hidden>
+            <div>
+              <strong>沒有符合條件的 URL</strong>
+              <p>清除搜尋與篩選後，再查看完整清單。</p>
+              <button class="button small" id="clearFilters" type="button">清除 URL 篩選</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="note-box" style="margin-top:14px">
+          <strong>維護規則：</strong>新增、改名或下架任何 HTML 頁面時，同一個 PR 必須同步更新這份 inventory 與 <a href="changelog.html">Changelog</a>。<code>0804排期預測.jpg</code> 已被 <code>.vercelignore</code> 排除，因此只在本機 static server 可用。
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    var routes = [
+      { path: "/", file: "index.html", kind: "page", audience: "product", purpose: "正式產品 canonical route；錢包、排期、換算與禮包推薦。", deploy: "public" },
+      { path: "/index.html", file: "index.html", kind: "page", audience: "product", purpose: "正式產品檔名 alias；內容應與 / 完全相同。", deploy: "public" },
+      { path: "/0804.html", file: "0804.html", kind: "page", audience: "legacy", purpose: "2026-08-04 舊版產品快照，用於視覺與功能 regression 比對。", deploy: "public" },
+      { path: "/ux-research.html", file: "ux-research.html", kind: "page", audience: "research", purpose: "產品定位、Journey、Proto-persona、JTBD 與研究計畫。", deploy: "public" },
+      { path: "/roadmap.html", file: "roadmap.html", kind: "page", audience: "internal", purpose: "功能優先級、目前進度與 Agent 驗收清單。", deploy: "public" },
+      { path: "/urls.html", file: "urls.html", kind: "page", audience: "internal", purpose: "本頁；全站 URL、資源與部署健康索引。", deploy: "public" },
+      { path: "/changelog.html", file: "changelog.html", kind: "page", audience: "product", purpose: "可分享的 Project Changelog 與版本命名規則。", deploy: "public" },
+      { path: "/internal.css", file: "internal.css", kind: "asset", audience: "runtime", purpose: "Roadmap、URL Index 與 Changelog 共用 UI tokens／components。", deploy: "public" },
+      { path: "/schedule.js", file: "schedule.js", kind: "asset", audience: "runtime", purpose: "排期事件與資料更新時間；由 index.html 載入。", deploy: "public" },
+      { path: "/packs.js", file: "packs.js", kind: "asset", audience: "runtime", purpose: "官方返券、卡池禮包與單抽成本資料。", deploy: "public" },
+      { path: "/favicon.svg", file: "favicon.svg", kind: "asset", audience: "runtime", purpose: "站點 favicon 與品牌幾何標誌。", deploy: "public" },
+      { path: "/LAD bg.png", file: "LAD bg.png", kind: "asset", audience: "runtime", purpose: "正式產品 desktop 背景圖。", deploy: "public" },
+      { path: "/mobile-bg.png", file: "mobile-bg.png", kind: "asset", audience: "runtime", purpose: "正式產品 mobile 背景圖。", deploy: "public" },
+      { path: "/排期第二版.jpg", file: "排期第二版.jpg", kind: "asset", audience: "legacy", purpose: "已追蹤但目前未被頁面引用的排期參考圖；可評估移出公開部署。", deploy: "public" },
+      { path: "/0804排期預測.jpg", file: "0804排期預測.jpg", kind: "asset", audience: "legacy", purpose: "排期原始參考圖；已由 .vercelignore 排除，不會出現在 production。", deploy: "local" }
+    ];
+
+    var health = {};
+    var state = { query: "", kind: "all", audience: "all", errorsOnly: false };
+
+    function esc(value) {
+      return String(value).replace(/[&<>"']/g, function (char) {
+        return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"}[char];
+      });
+    }
+
+    function resolvedURL(route) {
+      if (window.location.protocol === "file:") {
+        var relative = route.path === "/" ? "index.html" : route.path.replace(/^\//, "");
+        return new URL(relative, window.location.href).href;
+      }
+      return new URL(route.path, window.location.origin).href;
+    }
+
+    function audienceLabel(value) {
+      return {
+        product: "正式產品",
+        internal: "內部工具",
+        research: "研究文件",
+        legacy: "舊版／參考",
+        runtime: "執行資源"
+      }[value];
+    }
+
+    function audienceChip(value) {
+      return value === "product" ? "blue" :
+        value === "internal" ? "violet" :
+        value === "research" ? "green" :
+        value === "legacy" ? "amber" : "";
+    }
+
+    function routeHealth(route) {
+      if (window.location.protocol === "file:") return { label: "FILE", css: "local" };
+      var item = health[route.path];
+      if (!item) return { label: "Checking", css: "" };
+      if (item.ok) return { label: String(item.status), css: "ok" };
+      return { label: item.status ? String(item.status) : "Error", css: "error" };
+    }
+
+    function visibleRoutes() {
+      var query = state.query.trim().toLowerCase();
+      return routes.filter(function (route) {
+        var status = routeHealth(route);
+        var haystack = [route.path, route.file, route.purpose, audienceLabel(route.audience)].join(" ").toLowerCase();
+        return (!query || haystack.indexOf(query) !== -1) &&
+          (state.kind === "all" || route.kind === state.kind) &&
+          (state.audience === "all" || route.audience === state.audience) &&
+          (!state.errorsOnly || status.css === "error" || route.deploy === "local");
+      });
+    }
+
+    function render() {
+      var visible = visibleRoutes();
+      var html = visible.map(function (route) {
+        var status = routeHealth(route);
+        var url = resolvedURL(route);
+        return '<tr data-route="' + esc(route.path) + '">' +
+          '<td><span class="chip ' + (route.kind === "page" ? "blue" : "") + '">' + (route.kind === "page" ? "PAGE" : "ASSET") + '</span></td>' +
+          '<td><a class="route-link" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(route.path) + '</a></td>' +
+          '<td><span class="source-name">' + esc(route.file) + '</span></td>' +
+          '<td><span class="chip ' + audienceChip(route.audience) + '">' + audienceLabel(route.audience) + '</span></td>' +
+          '<td class="route-purpose">' + esc(route.purpose) + '</td>' +
+          '<td><span class="chip ' + (route.deploy === "local" ? "amber" : "green") + '">' + (route.deploy === "local" ? "LOCAL ONLY" : "PUBLIC") + '</span></td>' +
+          '<td><span class="health ' + status.css + '">' + esc(status.label) + '</span></td>' +
+          '<td><div class="row-actions">' +
+            '<button class="icon-button" type="button" data-copy-route="' + esc(route.path) + '" aria-label="複製 ' + esc(route.path) + ' URL">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>' +
+            '</button>' +
+            '<a class="icon-button" href="' + esc(url) + '" target="_blank" rel="noopener" aria-label="另開 ' + esc(route.path) + '">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>' +
+            '</a>' +
+          '</div></td>' +
+        '</tr>';
+      }).join("");
+
+      document.getElementById("routeRows").innerHTML = html;
+      document.getElementById("visibleCount").textContent = visible.length + " / " + routes.length + " 項";
+      document.getElementById("routeTableWrap").hidden = visible.length === 0;
+      document.getElementById("routeEmpty").hidden = visible.length !== 0;
+      updateMetrics();
+    }
+
+    function updateMetrics() {
+      var pageTotal = routes.filter(function (route) { return route.kind === "page"; }).length;
+      var assetTotal = routes.filter(function (route) { return route.kind === "asset"; }).length;
+      var statuses = routes.map(routeHealth);
+      var okTotal = statuses.filter(function (item) { return item.css === "ok"; }).length;
+      var errorTotal = statuses.filter(function (item, index) {
+        return item.css === "error" || routes[index].deploy === "local";
+      }).length;
+
+      document.getElementById("pageCount").textContent = pageTotal;
+      document.getElementById("assetCount").textContent = assetTotal;
+      document.getElementById("okCount").textContent = window.location.protocol === "file:" ? "FILE" : okTotal;
+      document.getElementById("errorCount").textContent = errorTotal;
+    }
+
+    async function checkRoute(route) {
+      if (window.location.protocol === "file:") return;
+      var url = resolvedURL(route);
+      try {
+        var response = await fetch(url, { method: "HEAD", cache: "no-store" });
+        if (response.status === 405) response = await fetch(url, { method: "GET", cache: "no-store" });
+        health[route.path] = { ok: response.ok || (response.status >= 300 && response.status < 400), status: response.status };
+      } catch (error) {
+        health[route.path] = { ok: false, status: 0 };
+      }
+      render();
+    }
+
+    async function checkAll() {
+      health = {};
+      render();
+      await Promise.all(routes.map(checkRoute));
+      showToast("URL 健康檢查已完成");
+    }
+
+    function copyText(text, message) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { showToast(message); }, function () { fallbackCopy(text, message); });
+      } else {
+        fallbackCopy(text, message);
+      }
+    }
+
+    function fallbackCopy(text, message) {
+      var field = document.createElement("textarea");
+      field.value = text;
+      field.setAttribute("readonly", "");
+      field.style.position = "fixed";
+      field.style.opacity = "0";
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand("copy");
+      field.remove();
+      showToast(message);
+    }
+
+    var toastTimer;
+    function showToast(message) {
+      var toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+    }
+
+    document.getElementById("originLabel").textContent =
+      window.location.protocol === "file:" ? "Direct file mode · health check disabled" : window.location.origin;
+
+    document.getElementById("routeSearch").addEventListener("input", function (event) {
+      state.query = event.target.value;
+      render();
+    });
+
+    document.querySelector(".segmented").addEventListener("click", function (event) {
+      var button = event.target.closest("[data-kind]");
+      if (!button) return;
+      state.kind = button.getAttribute("data-kind");
+      document.querySelectorAll("[data-kind]").forEach(function (item) {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      render();
+    });
+
+    document.getElementById("audienceFilter").addEventListener("change", function (event) {
+      state.audience = event.target.value;
+      render();
+    });
+
+    document.getElementById("errorsOnly").addEventListener("change", function (event) {
+      state.errorsOnly = event.target.checked;
+      render();
+    });
+
+    document.getElementById("routeRows").addEventListener("click", function (event) {
+      var button = event.target.closest("[data-copy-route]");
+      if (!button) return;
+      var path = button.getAttribute("data-copy-route");
+      var route = routes.find(function (item) { return item.path === path; });
+      if (route) copyText(resolvedURL(route), route.path + " 已複製");
+    });
+
+    document.getElementById("copyPages").addEventListener("click", function () {
+      var urls = routes.filter(function (route) { return route.kind === "page"; }).map(resolvedURL);
+      copyText(urls.join("\n"), urls.length + " 個頁面 URL 已複製");
+    });
+
+    document.getElementById("checkAgain").addEventListener("click", checkAll);
+
+    document.getElementById("clearFilters").addEventListener("click", function () {
+      state = { query: "", kind: "all", audience: "all", errorsOnly: false };
+      document.getElementById("routeSearch").value = "";
+      document.getElementById("audienceFilter").value = "all";
+      document.getElementById("errorsOnly").checked = false;
+      document.querySelectorAll("[data-kind]").forEach(function (button) {
+        button.setAttribute("aria-pressed", String(button.getAttribute("data-kind") === "all"));
+      });
+      render();
+      document.getElementById("routeSearch").focus();
+    });
+
+    render();
+    checkAll();
+  </script>
+</body>
+</html>
