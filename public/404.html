@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#7765a7" />
+    <meta name="robots" content="noindex" />
+    <title>頁面不存在｜深空省省</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { min-height: 100%; margin: 0; }
+      body {
+        display: grid;
+        min-height: 100vh;
+        padding: 24px 12px;
+        place-items: center;
+        color: #fff;
+        background:
+          linear-gradient(180deg, rgb(45 29 78 / 12%), rgb(44 28 72 / 34%)),
+          url("/mobile-bg.webp") center / cover fixed,
+          #7765a7;
+        font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+      }
+      main { width: min(100%, 496px); text-align: center; }
+      .mark { width: 48px; margin: 0 auto 12px; color: #fff; }
+      .brand { margin: 0 0 28px; font-family: "Songti TC", "PMingLiU", serif; font-size: 22px; letter-spacing: 7px; text-indent: 7px; }
+      .card {
+        padding: 28px 20px;
+        border: 1px solid rgb(255 255 255 / 70%);
+        border-radius: 20px;
+        background: rgb(50 37 87 / 52%);
+        box-shadow: 0 14px 36px -16px rgb(70 38 100 / 55%);
+        backdrop-filter: blur(16px);
+      }
+      .code { margin: 0; color: rgb(255 255 255 / 82%); font-size: 12px; letter-spacing: 2px; }
+      h1 { margin: 10px 0; font-family: "Songti TC", "PMingLiU", serif; font-size: 24px; font-weight: 500; }
+      p { margin: 0 0 20px; color: rgb(255 255 255 / 86%); font-size: 14px; }
+      a { display: inline-block; padding: 9px 15px; border: 1px solid #fff; border-radius: 13px; color: #fff; background: rgb(255 255 255 / 14%); text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <svg class="mark" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M24 6l4 7h-8zM16 13h16l8 11-16 17L8 24z" />
+        <path d="M8 24h32M16 13l8 28M32 13l-8 28M20 13l4 6 4-6" />
+      </svg>
+      <p class="brand">深空省省</p>
+      <section class="card">
+        <p class="code">404</p>
+        <h1>這裡沒有排期</h1>
+        <p>連結可能已經失效，或網址多了一個字。</p>
+        <a href="/schedule">返回排期</a>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+{
+  "product": "deep-space-ledger",
+  "version": 4,
+  "exportedAt": "2026-08-18T22:22:00.575Z",
+  "data": {
+    "budgets": {
+      "2026-08": {
+        "amount": 1000,
+        "threshold": 80
+      }
+    },
+    "expenses": [
+      {
+        "id": 101,
+        "amt": 800,
+        "cat": "抽卡禮包",
+        "note": "已花",
+        "date": "2026-08-10"
+      }
+    ],
+    "calculator": {
+      "pool": "復刻池",
+      "cur": 0,
+      "tickets": 0,
+      "pulls": 667,
+      "reserve": 0,
+      "reserveUnit": "pulls"
+    },
+    "planner": {
+      "monthlyIncome": 3000,
+      "goals": [
+        {
+          "id": 1,
+          "title": "九月日池",
+          "pool": "日卡池",
+          "targetPulls": 20,
+          "deadline": "2026-09-18",
+          "tentative": false,
+          "enabled": false,
+          "sourceEvent": null
+        },
+        {
+          "id": 2,
+          "title": "十月混池",
+          "pool": "混池",
+          "targetPulls": 50,
+          "deadline": "2026-10-18",
+          "tentative": true,
+          "enabled": true,
+          "sourceEvent": "qa"
+        }
+      ],
+      "checkIns": [
+        {
+          "id": 10,
+          "date": "2026-08-15",
+          "diamonds": 1000,
+          "tickets": 2,
+          "note": "起點"
+        },
+        {
+          "id": 11,
+          "date": "2026-08-19",
+          "diamonds": 1800,
+          "tickets": 4,
+          "note": "今日"
+        }
+      ]
+    },
+    "wishTracker": {
+      "currentPity": {
+        "限定新池": 10,
+        "復刻池": 0,
+        "常駐池": 0
+      },
+      "guaranteeOverrides": {
+        "限定新池": null,
+        "復刻池": null,
+        "常駐池": null
+      },
+      "records": [
+        {
+          "id": 1787085715061,
+          "track": "限定新池",
+          "pity": 1,
+          "date": "2026-08-19",
+          "memory": "Harness 保底校正測試",
+          "outcome": "當期UP"
+        }
+      ]
+    },
+    "schedulePreferences": {
+      "selectedLeads": [
+        "黎深",
+        "祁煜",
+        "秦徹",
+        "夏以晝"
+      ]
+    }
+  }
+}

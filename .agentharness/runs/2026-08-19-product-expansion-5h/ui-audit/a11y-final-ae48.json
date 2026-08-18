@@ -1,0 +1,45 @@
+{
+  "buildId": "ae48e6ce2e29",
+  "viewport": { "width": 320, "height": 740 },
+  "routes": ["/", "/calculator", "/schedule", "/tracker", "/wallet", "/account", "/about", "/privacy", "/support"],
+  "violationsPerRoute": 0,
+  "horizontalOverflowPerRoute": 0,
+  "debugLauncherRendered": false,
+  "offlineAuthentication": {
+    "accountReleaseEnforcedInAppShell": true,
+    "accountPrecachedBeforeFirstVisit": true,
+    "firstOfflineAccountNavigationSucceeded": true,
+    "firstOfflineAccountTitleCorrect": true,
+    "coldLoadingReplacedByOfflineCard": true,
+    "offlineCardAxeViolations": 0,
+    "offlineCardHorizontalOverflow": false,
+    "onlineRecoveryReturnedToLoginForm": true,
+    "loadedFormStayedMounted": true,
+    "loadedEmailAndPasswordDraftsPreserved": true,
+    "offlineSubmissionDisabled": true,
+    "reconnectedSubmissionEnabled": true
+  },
+  "offlineDataRecovery": {
+    "cacheId": "deep-space-ledger-ae48e6ce2e29",
+    "requiredShellEntries": 12,
+    "missingShellEntries": 0,
+    "uncachedProbe": "TypeError",
+    "corruptRawValue": "{broken-json",
+    "restoreCompleted": true,
+    "trackerStorageCount": 10,
+    "exportVersion": 4,
+    "exportBytes": 709
+  },
+  "motion": {
+    "immediateAxeViolations": 0,
+    "settledAxeViolations": 0,
+    "reducedMotionInlineAnimationStyles": 0
+  },
+  "keyboard": {
+    "route": "/schedule",
+    "focusablesTraversed": 58,
+    "contentTargetsObscuredByFixedNavigation": 0,
+    "allTargetsVisible": true,
+    "calendarRovingFocus": "deferred"
+  }
+}

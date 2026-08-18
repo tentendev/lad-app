@@ -1,0 +1,37 @@
+{
+  "product": "deep-space-ledger",
+  "version": 4,
+  "exportedAt": "2026-08-18T23:26:19.008Z",
+  "data": {
+    "budgets": {},
+    "expenses": [],
+    "calculator": null,
+    "planner": {
+      "monthlyIncome": 7060,
+      "goals": [],
+      "checkIns": []
+    },
+    "wishTracker": {
+      "currentPity": {
+        "限定新池": 10,
+        "復刻池": 0,
+        "常駐池": 0
+      },
+      "guaranteeOverrides": {
+        "限定新池": null,
+        "復刻池": null,
+        "常駐池": null
+      },
+      "records": []
+    },
+    "schedulePreferences": {
+      "selectedLeads": [
+        "沈星回",
+        "黎深",
+        "祁煜",
+        "秦徹",
+        "夏以晝"
+      ]
+    }
+  }
+}

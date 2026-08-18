@@ -1,0 +1,19 @@
+{
+  "buildId": "fc0985736a97",
+  "viewport": { "width": 320, "height": 900 },
+  "routes": ["wallet", "schedule", "calculator", "tracker", "account", "about", "privacy", "support"],
+  "violationsPerRoute": 0,
+  "horizontalOverflowPerRoute": 0,
+  "debugLauncherRendered": false,
+  "offline": {
+    "uncachedProbe": "TypeError",
+    "trackerStorageCount": 10,
+    "trackerVisibleCount": 10
+  },
+  "keyboard": {
+    "route": "schedule",
+    "focusablesTraversed": 58,
+    "contentTargetsObscuredByFixedNavigation": 0,
+    "allTargetsVisible": true
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "url": "http://127.0.0.1:8081/calculator",
+  "counts": {
+    "inapplicable": 40,
+    "incomplete": 1,
+    "passes": 20,
+    "violations": 1
+  },
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 28,
+      "nodes": [
+        {
+          "html": "<p class=\"brand-name\">深空省省</p>",
+          "target": [
+            ".brand-name"
+          ]
+        },
+        {
+          "html": "<p class=\"brand-tagline\">你的抽卡與課金規劃好幫手</p>",
+          "target": [
+            ".brand-tagline"
+          ]
+        },
+        {
+          "html": "<span class=\"event-badge\">每抽 150 鑽</span>",
+          "target": [
+            ".event-badge"
+          ]
+        },
+        {
+          "html": "<h2 class=\"section-title\">目標設定</h2>",
+          "target": [
+            ".card.card--default.product-card:nth-child(1) > .section-heading > h2"
+          ]
+        },
+        {
+          "html": "<span class=\"section-meta\">自動儲存在裝置</span>",
+          "target": [
+            ".card.card--default.product-card:nth-child(1) > .section-heading > .section-meta"
+          ]
+        },
+        {
+          "html": "<span class=\"field-label\">卡池類型</span>",
+          "target": [
+            ".full:nth-child(1) > .field-label"
+          ]
+        },
+        {
+          "html": "<span class=\"field-label\">目前持有（鑽）</span>",
+          "target": [
+            "label:nth-child(2) > .field-label"
+          ]
+        },
+        {
+          "html": "<input class=\"input input--primary\" data-slot=\"input\" aria-label=\"目前持有鑽石\" min=\"0\" placeholder=\"0\" data-rac=\"\" type=\"number\" value=\"\">",
+          "target": [
+            "input[aria-label=\"目前持有鑽石\"]"
+          ]
+        },
+        {
+          "html": "<span class=\"field-label\">目標抽數</span>",
+          "target": [
+            "label:nth-child(3) > .field-label"
+          ]
+        },
+        {
+          "html": "<input class=\"input input--primary\" data-slot=\"input\" aria-label=\"目標抽數\" min=\"0\" placeholder=\"70\" data-rac=\"\" type=\"number\" value=\"40\">",
+          "target": [
+            "input[aria-label=\"目標抽數\"]"
+          ]
+        }
+      ]
+    }
+  ],
+  "incomplete": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 1
+    }
+  ]
+}

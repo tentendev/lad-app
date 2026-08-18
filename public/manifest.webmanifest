@@ -1,0 +1,54 @@
+{
+  "name": "深空省省｜抽卡課金規劃工具",
+  "short_name": "深空省省",
+  "description": "抽卡課金規劃工具，支援《戀與深空》的排期、預算、資源換算與五星追蹤。",
+  "lang": "zh-Hant",
+  "id": "/",
+  "start_url": "/schedule",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["finance", "utilities"],
+  "background_color": "#7765a7",
+  "theme_color": "#7765a7",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "查看排期",
+      "short_name": "排期",
+      "url": "/schedule",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "記錄花費",
+      "short_name": "錢包",
+      "url": "/wallet",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "抽卡換算",
+      "short_name": "換算",
+      "url": "/calculator",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "五星追蹤",
+      "short_name": "追蹤",
+      "url": "/tracker",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

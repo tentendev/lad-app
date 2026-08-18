@@ -1,0 +1,348 @@
+{
+  "audit": {
+    "ranAt": "2026-08-18T20:32:49Z",
+    "skill": "ui-audit",
+    "scope": {
+      "mode": "explicit",
+      "files": [
+        "src/web.css",
+        "src/features/wallet/WalletScreen.web.tsx",
+        "src/features/wallet/WalletScreen.native.tsx",
+        "src/features/schedule/ScheduleScreen.web.tsx",
+        "src/features/schedule/ScheduleScreen.native.tsx",
+        "src/features/calculator/CalculatorScreen.web.tsx",
+        "src/features/calculator/CalculatorScreen.native.tsx",
+        "src/features/calculator/PlannerSection.web.tsx",
+        "src/features/calculator/PlannerSection.native.tsx",
+        "src/features/calculator/usePlannerModel.ts",
+        "src/features/wishTracker/WishTrackerScreen.web.tsx",
+        "src/features/wishTracker/WishTrackerScreen.native.tsx",
+        "src/ui/WebPage.web.tsx",
+        "src/ui/DeviceDataLoading.web.tsx",
+        "src/ui/RetryableError.web.tsx",
+        "src/app/(tabs)/_layout.web.tsx"
+      ],
+      "filesAudited": 16
+    },
+    "featuresDetected": [
+      "form",
+      "list",
+      "dashboard",
+      "toast",
+      "empty-state",
+      "loading-state",
+      "animation",
+      "primary-nav"
+    ],
+    "rulesPlanned": 24,
+    "rulesRun": 24,
+    "selfCheck": {
+      "passed": true,
+      "failures": []
+    }
+  },
+  "verdict": "READY",
+  "summary": {
+    "releaseBlockers": 0,
+    "fixThisSprint": 0,
+    "backlog": 0,
+    "unknown": 0,
+    "suppressed": 0
+  },
+  "postAuditChecks": [
+    {
+      "concern": "responsive layout",
+      "result": "pass",
+      "evidence": "dogfood/report.md",
+      "summary": "Wallet, Schedule, Calculator, and Tracker have zero horizontal overflow at 320, 390, 520, and 1024px; Account, About, Privacy, and Support have zero overflow at 320, 390, and 1024px."
+    },
+    {
+      "concern": "accessibility",
+      "result": "pass",
+      "evidence": "ui-audit/a11y-*-final.json",
+      "summary": "Eight stable production routes report zero WCAG A/AA axe violations. The four image-backed primary routes retain one automation-incomplete contrast group that was manually reviewed."
+    },
+    {
+      "concern": "touch targets",
+      "result": "pass",
+      "evidence": "dogfood/tracker-adjustment-320.png",
+      "summary": "Runtime inspection at 320px found no visible primary or secondary action below 44px after correcting footer, disclosure, pity, account-mode, password-recovery, policy, and back-navigation controls."
+    },
+    {
+      "concern": "performance",
+      "result": "measured",
+      "evidence": "dogfood/lighthouse-schedule-desktop-ae48.json and dogfood/lighthouse-schedule-mobile-ae48.json",
+      "summary": "Final artifact Lighthouse: desktop 0.99 performance/1.00 accessibility; simulated mobile 0.70 performance/1.00 accessibility, 1.05s FCP, 5.18s LCP, 452ms TBT, and 0.001 CLS. The remaining shared framework/auth JavaScript stays an explicit architecture follow-up."
+    }
+  ],
+  "deferredTo": [
+    {
+      "concern": "wcag",
+      "tool": "axe-core and manual contrast review",
+      "reason": "Axe found zero violations; image-backed contrast remains automation-incomplete and needs visual confirmation."
+    },
+    {
+      "concern": "native assistive technology",
+      "tool": "VoiceOver and TalkBack",
+      "reason": "Static semantics pass type-checking, but announcement order requires device screen-reader validation."
+    }
+  ],
+  "findings": [
+    {
+      "rule": "forms-lost-data-on-error",
+      "layer": "modern",
+      "category": "forms",
+      "feature": "form",
+      "surface": "WalletScreen",
+      "file": "src/features/wallet/WalletScreen.web.tsx",
+      "line": 306,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "forms-no-disable-while-submitting",
+      "layer": "modern",
+      "category": "forms",
+      "feature": "form",
+      "surface": "PlannerSection",
+      "file": "src/features/calculator/usePlannerModel.ts",
+      "line": 90,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "forms-no-normalize",
+      "layer": "modern",
+      "category": "forms",
+      "feature": "form",
+      "surface": "CalculatorScreen",
+      "file": "src/features/calculator/CalculatorScreen.web.tsx",
+      "line": 76,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "states-no-empty-state",
+      "layer": "modern",
+      "category": "states",
+      "feature": "empty-state",
+      "surface": "WishTrackerScreen",
+      "file": "src/features/wishTracker/WishTrackerScreen.web.tsx",
+      "line": 260,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "states-no-error-state",
+      "layer": "modern",
+      "category": "states",
+      "feature": "error-state",
+      "surface": "RetryableError",
+      "file": "src/ui/RetryableError.web.tsx",
+      "line": 4,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "states-no-skeleton",
+      "layer": "modern",
+      "category": "states",
+      "feature": "loading-state",
+      "surface": "DeviceDataLoading",
+      "file": "src/ui/DeviceDataLoading.web.tsx",
+      "line": 1,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "focus-on-dynamic-content",
+      "layer": "modern",
+      "category": "focus",
+      "feature": "navigation",
+      "surface": "WebPage",
+      "file": "src/ui/WebPage.web.tsx",
+      "line": 17,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "mobile-hover-only-affordance",
+      "layer": "modern",
+      "category": "mobile",
+      "feature": "primary-nav",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 89,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "mobile-viewport-scaling",
+      "layer": "modern",
+      "category": "mobile",
+      "feature": "layout",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 161,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "microcopy-vague-error",
+      "layer": "modern",
+      "category": "microcopy",
+      "feature": "form",
+      "surface": "WalletScreen",
+      "file": "src/features/wallet/WalletScreen.web.tsx",
+      "line": 72,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "forms-labels-and-autocomplete",
+      "layer": "surface",
+      "feature": "form",
+      "surface": "WalletScreen",
+      "file": "src/features/wallet/WalletScreen.web.tsx",
+      "line": 224,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "forms-error-association",
+      "layer": "surface",
+      "feature": "form",
+      "surface": "WishTrackerScreen",
+      "file": "src/features/wishTracker/WishTrackerScreen.web.tsx",
+      "line": 171,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "forms-mobile-input-font-size",
+      "layer": "surface",
+      "feature": "form",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 2713,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "a11y-semantic-html-first",
+      "layer": "surface",
+      "feature": "list",
+      "surface": "PlannerSection",
+      "file": "src/features/calculator/PlannerSection.web.tsx",
+      "line": 256,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "interaction-target-size",
+      "layer": "surface",
+      "feature": "form",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 2718,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "interaction-focus-visible",
+      "layer": "surface",
+      "feature": "navigation",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 135,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "layout-long-content-safety",
+      "layer": "surface",
+      "feature": "list",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 244,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "motion-respect-reduced-motion",
+      "layer": "surface",
+      "feature": "animation",
+      "surface": "WebApp",
+      "file": "src/web.css",
+      "line": 2850,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "copy-specific-action-labels",
+      "layer": "surface",
+      "feature": "form",
+      "surface": "PlannerSection",
+      "file": "src/features/calculator/PlannerSection.web.tsx",
+      "line": 215,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "nav-semantic-links",
+      "layer": "surface",
+      "feature": "primary-nav",
+      "surface": "TabsLayout",
+      "file": "src/app/(tabs)/_layout.web.tsx",
+      "line": 45,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "nav-live-region-feedback",
+      "layer": "surface",
+      "feature": "toast",
+      "surface": "PlannerSection",
+      "file": "src/features/calculator/PlannerSection.web.tsx",
+      "line": 280,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "cognitive-chunking",
+      "layer": "laws",
+      "prefix": "cognitive",
+      "kind": "programmatic",
+      "feature": "form",
+      "surface": "CalculatorScreen",
+      "file": "src/features/calculator/CalculatorScreen.web.tsx",
+      "line": 72,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "perception-proximity",
+      "layer": "laws",
+      "prefix": "perception",
+      "kind": "programmatic",
+      "feature": "dashboard",
+      "surface": "WalletScreen",
+      "file": "src/web.css",
+      "line": 244,
+      "result": "pass",
+      "suppressed": false
+    },
+    {
+      "rule": "perception-similarity",
+      "layer": "laws",
+      "prefix": "perception",
+      "kind": "programmatic",
+      "feature": "primary-nav",
+      "surface": "TabsLayout",
+      "file": "src/web.css",
+      "line": 2610,
+      "result": "pass",
+      "suppressed": false
+    }
+  ]
+}

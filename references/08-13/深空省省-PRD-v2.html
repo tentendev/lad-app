@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>深空省省 · 會員系統與跨平台重構 PRD</title>
+<meta name="description" content="深空省省從 PWA 工具升級為社群型跨平台 App 的產品文件：規劃物件、分享圖卡成長引擎、Supabase 資料模型、Expo 三平台策略與 IP 風險處理。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF7F2;
+  --paper-deep:#F2EDE4;
+  --paper-sink:#EAE3D7;
+  --ink:#1F1B16;
+  --ink-soft:#4A423A;
+  --ink-faint:#7B7062;
+  --rust:#A4502E;
+  --ochre:#C2882F;
+  --violet:#6E67A0;
+  --rule:#DCD3C6;
+  --rule-soft:#E7E0D4;
+  --green:#4F6B4A;
+
+  --display:"Fraunces","Noto Serif TC",Georgia,serif;
+  --body:"Hanken Grotesk","Noto Sans TC",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono","Noto Sans TC",ui-monospace,monospace;
+
+  --maxw:1180px;
+  --content:720px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16.5px;
+  line-height:1.75;
+  letter-spacing:.005em;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+}
+
+/* grain */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;z-index:9999;
+  opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+}
+
+/* ─── hero ─── */
+.hero{
+  border-bottom:1px solid var(--rule);
+  background:
+    radial-gradient(120% 90% at 88% 0%, rgba(110,103,160,.13) 0%, rgba(110,103,160,0) 62%),
+    linear-gradient(180deg, var(--paper-deep) 0%, var(--paper) 100%);
+}
+.hero-inner{
+  max-width:var(--maxw);margin:0 auto;
+  padding:76px 28px 60px;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--rust);font-weight:500;
+  display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+}
+.eyebrow .sep{width:26px;height:1px;background:var(--rule);display:inline-block}
+h1.title{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:clamp(38px,6.4vw,68px);
+  line-height:1.04;
+  letter-spacing:-.022em;
+  margin:22px 0 0;
+  max-width:15em;
+}
+h1.title em{
+  font-style:italic;
+  font-weight:400;
+  color:var(--rust);
+}
+.deck{
+  font-size:clamp(16.5px,1.6vw,19px);
+  color:var(--ink-soft);
+  max-width:44em;
+  margin:24px 0 0;
+}
+.meta-strip{
+  display:flex;flex-wrap:wrap;gap:0;
+  margin-top:44px;
+  border-top:1px solid var(--rule);
+}
+.meta-cell{
+  flex:1 1 172px;
+  padding:16px 20px 14px 0;
+  border-right:1px solid var(--rule-soft);
+}
+.meta-cell:last-child{border-right:none}
+.meta-cell dt{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-faint);margin:0 0 5px;
+}
+.meta-cell dd{
+  margin:0;font-weight:600;font-size:15px;color:var(--ink);
+}
+
+/* ─── layout ─── */
+.shell{
+  max-width:var(--maxw);margin:0 auto;
+  padding:0 28px 120px;
+  display:grid;
+  grid-template-columns:216px minmax(0,1fr);
+  gap:56px;
+  align-items:start;
+}
+nav.toc{
+  position:sticky;top:32px;
+  padding-top:52px;
+  font-size:13.5px;
+  max-height:calc(100vh - 64px);
+  overflow-y:auto;
+}
+nav.toc .toc-label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);
+  padding-bottom:10px;border-bottom:1px solid var(--rule);
+  margin-bottom:12px;
+}
+nav.toc a{
+  display:block;padding:5px 0 5px 12px;
+  color:var(--ink-soft);text-decoration:none;
+  border-left:2px solid transparent;
+  line-height:1.45;
+  transition:color .16s, border-color .16s;
+}
+nav.toc a:hover{color:var(--rust);border-left-color:var(--rule)}
+nav.toc a.on{color:var(--rust);border-left-color:var(--rust);font-weight:600}
+nav.toc a .n{
+  font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);
+  margin-right:7px;
+}
+main{padding-top:52px;max-width:var(--content)}
+
+section{margin-bottom:76px;scroll-margin-top:28px}
+h2{
+  font-family:var(--display);font-weight:600;
+  font-size:clamp(25px,3vw,33px);
+  line-height:1.18;letter-spacing:-.014em;
+  margin:0 0 6px;
+}
+h2 .num{
+  display:block;
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  letter-spacing:.15em;color:var(--rust);
+  margin-bottom:12px;
+}
+h3{
+  font-family:var(--display);font-weight:600;
+  font-size:20.5px;line-height:1.3;
+  margin:38px 0 10px;letter-spacing:-.008em;
+}
+h4{
+  font-family:var(--body);font-weight:700;
+  font-size:15px;letter-spacing:.005em;
+  margin:26px 0 8px;color:var(--ink);
+}
+p{margin:0 0 15px}
+a{color:var(--rust);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2.5px}
+strong{font-weight:700}
+em{font-style:italic}
+code{
+  font-family:var(--mono);font-size:.86em;
+  background:var(--paper-sink);
+  padding:1.5px 5px;border-radius:3px;
+  color:var(--ink);
+}
+ul,ol{margin:0 0 15px;padding-left:1.35em}
+li{margin-bottom:7px}
+li::marker{color:var(--ochre)}
+hr.rule{border:none;border-top:1px solid var(--rule);margin:40px 0}
+
+.lede{
+  font-size:18px;color:var(--ink-soft);
+  border-left:3px solid var(--ochre);
+  padding-left:20px;margin:0 0 28px;
+}
+
+/* callouts */
+.note{
+  border:1px solid var(--rule);
+  border-left:3px solid var(--violet);
+  background:rgba(110,103,160,.05);
+  padding:16px 20px;margin:24px 0;
+  font-size:15px;
+}
+.note.warn{border-left-color:var(--rust);background:rgba(164,80,46,.055)}
+.note.ok{border-left-color:var(--green);background:rgba(79,107,74,.055)}
+.note .k{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;
+  text-transform:uppercase;font-weight:500;
+  display:block;margin-bottom:6px;color:var(--violet);
+}
+.note.warn .k{color:var(--rust)}
+.note.ok .k{color:var(--green)}
+.note p:last-child{margin-bottom:0}
+
+/* tables */
+.tw{overflow-x:auto;margin:24px 0;border:1px solid var(--rule)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{
+  text-align:left;font-weight:700;
+  font-family:var(--body);font-size:12px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-faint);
+  background:var(--paper-deep);
+  padding:11px 14px;border-bottom:1px solid var(--rule);
+  white-space:nowrap;
+}
+td{padding:11px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top;line-height:1.6}
+tr:last-child td{border-bottom:none}
+td code{font-size:.82em}
+
+/* code blocks */
+.code{
+  position:relative;margin:22px 0;
+  border:1px solid var(--rule);
+  background:#231F1A;
+  border-radius:2px;
+}
+.code-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px 8px 14px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+.code-head .fn{
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  color:#B8AE9E;
+}
+.cp{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;
+  background:transparent;border:1px solid rgba(255,255,255,.18);
+  color:#C8BFAF;padding:4px 9px;border-radius:2px;cursor:pointer;
+  transition:background .16s,color .16s;
+}
+.cp:hover{background:rgba(255,255,255,.1);color:#fff}
+.cp.done{color:#9DC28F;border-color:rgba(157,194,143,.45)}
+.code pre{
+  margin:0;padding:16px 18px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.6px;line-height:1.72;
+  color:#E4DCCF;
+}
+
+/* pipeline signature */
+.pipe{
+  margin:30px 0;border:1px solid var(--rule);
+  background:var(--paper-deep);padding:26px 22px;
+}
+.pipe-row{display:flex;flex-wrap:wrap;align-items:stretch;gap:0}
+.pipe-step{
+  flex:1 1 130px;min-width:118px;
+  padding:0 16px 0 0;position:relative;
+}
+.pipe-step:not(:last-child)::after{
+  content:"→";
+  position:absolute;right:2px;top:2px;
+  color:var(--ochre);font-size:15px;
+}
+.pipe-step .t{
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;
+}
+.pipe-step .h{
+  font-family:var(--display);font-weight:600;font-size:16.5px;
+  margin-bottom:5px;line-height:1.25;
+}
+.pipe-step .d{font-size:13px;color:var(--ink-soft);line-height:1.55}
+.pipe-cap{
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:13.5px;color:var(--ink-soft);
+}
+
+/* decision list */
+.dec{border-top:1px solid var(--rule);margin:26px 0}
+.dec-row{
+  display:grid;grid-template-columns:132px 1fr;gap:20px;
+  padding:15px 0;border-bottom:1px solid var(--rule-soft);
+}
+.dec-row .lbl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint);padding-top:3px;
+}
+.dec-row .val{font-size:15px}
+.dec-row .val b{color:var(--ink)}
+.killed{color:var(--ink-faint)}
+.killed b{text-decoration:line-through;text-decoration-color:var(--rust);text-decoration-thickness:1.5px}
+
+.tag{
+  display:inline-block;font-family:var(--mono);
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:2.5px 7px;border-radius:2px;font-weight:500;
+  vertical-align:1.5px;
+}
+.tag.p0{background:rgba(79,107,74,.14);color:var(--green)}
+.tag.p1{background:rgba(194,136,47,.16);color:#8A5D14}
+.tag.p2{background:rgba(110,103,160,.15);color:var(--violet)}
+.tag.p3{background:rgba(164,80,46,.13);color:var(--rust)}
+.tag.later{background:var(--paper-sink);color:var(--ink-faint)}
+
+@media (max-width:940px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding-top:40px}
+  nav.toc a{display:inline-block;padding:5px 12px 5px 0;border-left:none;border-bottom:2px solid transparent}
+  nav.toc a:hover,nav.toc a.on{border-left:none;border-bottom-color:var(--rust)}
+  main{padding-top:36px}
+  .hero-inner{padding:52px 22px 44px}
+  .shell{padding:0 22px 80px}
+  .dec-row{grid-template-columns:1fr;gap:4px}
+}
+:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">
+      <span>Product Document</span><span class="sep"></span>
+      <span>深空省省 v2</span><span class="sep"></span>
+      <span>Tenten AI</span>
+    </div>
+    <h1 class="title">從計算器到<em>規劃社群</em>：深空省省的會員系統與跨平台重構</h1>
+    <p class="deck">現在的深空省省是一個把排期、換算、記帳焊在一起的 PWA 工具，做得比它看起來聰明。這份文件處理的是下一步：加上會員之後，它要成為什麼——以及有哪些看起來像功能、其實是陷阱的東西必須被明確放棄。</p>
+    <dl class="meta-strip">
+      <div class="meta-cell"><dt>文件狀態</dt><dd>可執行草案</dd></div>
+      <div class="meta-cell"><dt>版本</dt><dd>2.0</dd></div>
+      <div class="meta-cell"><dt>日期</dt><dd>2026-08-13</dd></div>
+      <div class="meta-cell"><dt>框架</dt><dd>Expo + Supabase</dd></div>
+      <div class="meta-cell"><dt>平台順序</dt><dd>Web → Android → iOS</dd></div>
+    </dl>
+  </div>
+</header>
+
+<div class="shell">
+
+<nav class="toc" aria-label="目錄">
+  <div class="toc-label">目錄</div>
+  <a href="#s1"><span class="n">01</span>現況拆解</a>
+  <a href="#s2"><span class="n">02</span>為什麼要會員</a>
+  <a href="#s3"><span class="n">03</span>決策與否決</a>
+  <a href="#s4"><span class="n">04</span>規劃物件</a>
+  <a href="#s5"><span class="n">05</span>使用者旅程</a>
+  <a href="#s6"><span class="n">06</span>資料模型</a>
+  <a href="#s7"><span class="n">07</span>分享圖卡架構</a>
+  <a href="#s8"><span class="n">08</span>認證與升級</a>
+  <a href="#s9"><span class="n">09</span>排期維運後台</a>
+  <a href="#s10"><span class="n">10</span>Phase 規格</a>
+  <a href="#s11"><span class="n">11</span>隱私設計</a>
+  <a href="#s12"><span class="n">12</span>IP 與上架風險</a>
+  <a href="#s13"><span class="n">13</span>成功指標</a>
+  <a href="#s14"><span class="n">14</span>明確不做</a>
+  <a href="#s15"><span class="n">15</span>開放問題</a>
+</nav>
+
+<main>
+
+<section id="s1">
+  <h2><span class="num">01 / 現況拆解</span>它其實是偽裝成遊戲工具的理財 App</h2>
+
+  <p class="lede">《戀與深空》玩家真正的痛點不是「不知道要抽什麼」，而是「不知道自己還能花多少、什麼時候該存」。現有的三個 tab 不是三個獨立功能，而是一條完整的翻譯鏈。</p>
+
+  <div class="pipe">
+    <div class="pipe-row">
+      <div class="pipe-step">
+        <div class="t">外部事件</div>
+        <div class="h">排期</div>
+        <div class="d">卡池什麼時候開、開什麼。玩家無法控制的時間軸。</div>
+      </div>
+      <div class="pipe-step">
+        <div class="t">目標翻譯</div>
+        <div class="h">換算</div>
+        <div class="d">「我想抽到」變成「還缺幾鑽」。</div>
+      </div>
+      <div class="pipe-step">
+        <div class="t">代價翻譯</div>
+        <div class="h">禮包試算</div>
+        <div class="d">資源缺口變成新台幣，並找出最省的階級。</div>
+      </div>
+      <div class="pipe-step">
+        <div class="t">行為校正</div>
+        <div class="h">錢包</div>
+        <div class="d">記錄真實花費，回頭修正下次的預算判斷。</div>
+      </div>
+    </div>
+    <div class="pipe-cap"><strong>「帶入錢包記帳」這顆按鈕是整個產品的接合處。</strong>同類工具通常把試算和記帳分開，所以玩家算完就關掉了。把兩者焊在一起，是這個產品最被低估的設計決策，也是留存的槓桿點。</div>
+  </div>
+
+  <h3>已經做對的三件事</h3>
+
+  <p><strong>「預留資源（抽）」這個欄位。</strong>它承認玩家的決策是跨卡池的，不是單次的。這一個欄位就把產品從計算器升級成規劃工具——它在問「這次抽完之後你還活得下去嗎」。</p>
+
+  <p><strong>「提醒門檻 %」是一個 commitment device。</strong>它把課金焦慮外化成一個可控的數字。這是產品的情緒價值，比計算精度更重要，而情緒價值才是玩家回來的理由。</p>
+
+  <p><strong>排期的免責聲明寫得很清楚</strong>——哪些是官方公告、哪些是預測，一句話交代完。在這個品類裡，誠實是可累積的信任資產。改版時絕對不能弄掉它，只能讓它更精確。</p>
+
+  <h3>一個結構性弱點</h3>
+
+  <p>排期資料目前是人工維護、寫死在前端的。這在單機工具階段完全沒問題，但一旦有了公開規劃頁，它會立刻變成整個系統的瓶頸。第 09 節專門處理這件事。</p>
+</section>
+
+<section id="s2">
+  <h2><span class="num">02 / 為什麼要會員</span>登入不是為了「能記錄」</h2>
+
+  <p>現在不用登入就已經能記錄了——<code>localStorage</code> 做得到。所以會員系統的價值不在儲存，而在下面四種動機之一，而它們指向完全不同的架構規模：</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>真實動機</th><th>最小實作</th><th>成本</th></tr></thead>
+    <tbody>
+      <tr><td>換手機、清快取不遺失資料</td><td>匿名帳號 + 雲端備份</td><td>低</td></tr>
+      <tr><td>跨裝置同步（手機算、電腦看）</td><td>正式 auth + 同步衝突處理</td><td>中</td></tr>
+      <tr><td>拿到留存與行為數據</td><td>auth + analytics + 資料治理</td><td>中</td></tr>
+      <tr><td>做社群、做付費</td><td>完整後端 + 內容維運</td><td>高</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>本文件採用的答案是：<strong>以「跨裝置同步 + 公開分享」為目的，但用匿名優先的方式實作</strong>。也就是說，帳號存在，但它不站在使用者和價值之間。</p>
+
+  <div class="note warn">
+    <span class="k">三個必須避開的陷阱</span>
+    <p><strong>一、登入牆放太前面會殺掉流量。</strong>這種工具必須在十秒內展示完價值。強制註冊會在漏斗最上層砍掉大半的人，而這些人正是分享圖卡帶進來的新流量。</p>
+    <p><strong>二、課金金額是這個品類最敏感的資料。</strong>玩家很在意「我一個月在乙女遊戲花八千」被看見。這會決定隱私預設值、分享圖卡的欄位、以及所有相關文案。</p>
+    <p><strong>三、開了登入就等於開了維運。</strong>會員系統會立刻讓排期資料的維護方式變得不可持續，然後你會被迫開一個沒排進計畫的第二專案。這份文件把它排進來了。</p>
+  </div>
+</section>
+
+<section id="s3">
+  <h2><span class="num">03 / 決策與否決</span>鎖定的九件事，與被砍掉的兩件事</h2>
+
+  <div class="dec">
+    <div class="dec-row"><div class="lbl">成功定義</div><div class="val"><b>三個月後有一群玩家每天在用。</b>社群型工具，營收不是這一輪的目標。</div></div>
+    <div class="dec-row"><div class="lbl">社群單位</div><div class="val"><b>結構化的「抽卡規劃」物件。</b>全網只有這個 App 能產生它，這是唯一有機會贏的分享單位。</div></div>
+    <div class="dec-row"><div class="lbl">社群架構</div><div class="val"><b>站外分享圖卡 + 站內公開規劃頁。</b>借用 Threads／小紅書／Discord 的既有網路效應做分發，自己保持在工具定位。</div></div>
+    <div class="dec-row"><div class="lbl">留存引擎</div><div class="val"><b>每日存鑽進度打卡。</b>分享負責獲取，打卡負責留存。不硬追整體日活，看的是卡池前三天的活躍尖峰。</div></div>
+    <div class="dec-row"><div class="lbl">排期資料</div><div class="val"><b>Supabase table + 極簡內部後台。</b>每個卡池有穩定 ID、狀態標記、來源連結。</div></div>
+    <div class="dec-row"><div class="lbl">認證</div><div class="val"><b>匿名優先。</b>開場就給匿名 session，只在要分享或要跨裝置同步時升級為正式帳號。</div></div>
+    <div class="dec-row"><div class="lbl">隱私</div><div class="val"><b>金額預設不公開。</b>分享卡顯示抽數、目標卡池、進度，不顯示新台幣。想公開的人自己開開關。</div></div>
+    <div class="dec-row"><div class="lbl">平台順序</div><div class="val"><b>Web → Android → iOS。</b>Web 是分享圖卡的落地頁，沒得選；iOS 延後到有用戶量再處理 IP 風險。</div></div>
+    <div class="dec-row"><div class="lbl">框架</div><div class="val"><b>Expo SDK + Expo Router</b>，單一 codebase，web 使用 <code>output: "static"</code>。</div></div>
+    <div class="dec-row killed"><div class="lbl">已否決</div><div class="val"><b>站內曬單牆</b> — 玩家已經在 Threads、小紅書、巴哈、Discord 曬抽卡結果，那些地方的觀眾多兩個數量級。做站內曬單等於拿自己的冷啟動去挑戰別人的既有網路效應。</div></div>
+    <div class="dec-row killed"><div class="lbl">已否決</div><div class="val"><b>站內 feed、追蹤、留言</b> — 空的 feed 比沒有 feed 更傷。而且使用者上傳遊戲截圖會把 IP 風險從「工具 App」升級成「UGC 平台」，讓 iOS 上架難度再上一階。留在 Phase 4 之後重新評估。</div></div>
+  </div>
+
+  <div class="note ok">
+    <span class="k">為什麼「規劃」贏得過「曬單」</span>
+    <p>「我有 12,400 鑽，目標 80 抽，預算 NT$3,000，鎖定 9/12 生日池，另外預留 30 抽給後面的混池」——這個物件在 Threads 上不存在，因為沒有人有工具產生它。它可被討論、可被抄、可被比較、可被反駁。這是內容，不是截圖。</p>
+  </div>
+</section>
+
+<section id="s4">
+  <h2><span class="num">04 / 規劃物件</span>可分享的最小單位長什麼樣</h2>
+
+  <p>整個 v2 的產品核心是把散在三個 tab 裡的計算狀態，收斂成一個有名字、有 URL、可以被別人看見的物件。它必須同時滿足三件事：對自己有用（追蹤進度）、對別人有用（可讀懂並抄走）、對系統有用（長期穩定）。</p>
+
+  <h3>欄位規格</h3>
+
+  <div class="tw"><table>
+    <thead><tr><th>欄位</th><th>說明</th><th>公開頁</th></tr></thead>
+    <tbody>
+      <tr><td>標題</td><td>玩家自訂，預設自動生成如「沈星回生日池 80 抽計畫」</td><td>顯示</td></tr>
+      <tr><td>目標卡池</td><td>指向 <code>banners.id</code>，帶卡池類型與日期</td><td>顯示</td></tr>
+      <tr><td>目標抽數</td><td>整數</td><td>顯示</td></tr>
+      <tr><td>起始持有鑽石</td><td>建立規劃時的快照，用來算進度百分比</td><td>顯示</td></tr>
+      <tr><td>目前持有鑽石</td><td>隨打卡更新</td><td>顯示</td></tr>
+      <tr><td>金券張數</td><td>原本剩餘金券 + 官方金券自動換算</td><td>顯示</td></tr>
+      <tr><td>預留抽數</td><td>為後續排期保留，不計入本次目標</td><td>顯示</td></tr>
+      <tr><td>預算上限（NT$）</td><td>這個規劃願意花的錢</td><td><strong>預設隱藏</strong></td></tr>
+      <tr><td>推薦禮包階級</td><td>依缺口自動算出的最省階級</td><td><strong>預設隱藏</strong></td></tr>
+      <tr><td>進度快照</td><td>缺口鑽數、需課金抽數、目標後剩餘鑽</td><td>顯示</td></tr>
+      <tr><td>公開設定</td><td><code>is_public</code>、<code>show_amount</code> 兩個獨立開關</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note">
+    <span class="k">關鍵設計約束</span>
+    <p>規劃物件必須<strong>三個月後還打得開</strong>。玩家把連結貼到 Threads，三週後有人點進來，看到的必須是一個完整、有意義的頁面——即使那個卡池已經結束。這意味著卡池不能只是前端陣列裡的一個物件，而必須是資料庫裡有穩定 ID 的一筆資料；也意味著規劃頁要處理「已結束卡池」的狀態呈現，而不是壞掉。</p>
+  </div>
+
+  <h3>分享圖卡的視覺規格</h3>
+
+  <p>圖卡是成長引擎的第一個接觸點，它在 Threads 或小紅書的資訊流裡必須一眼看懂、且不需要看文字說明就知道這是什麼。規格：</p>
+
+  <ul>
+    <li><strong>尺寸</strong>：1200 × 630（OG 標準），同時輸出 1080 × 1080 供 IG 使用</li>
+    <li><strong>主視覺</strong>：一條存鑽進度條，加上「距離目標還差 N 天」的推算——這是最有情緒張力的一個數字</li>
+    <li><strong>次要資訊</strong>：目標卡池名稱與日期、目標抽數、預留抽數</li>
+    <li><strong>不出現</strong>：新台幣金額、玩家 UID、遊戲角色立繪或任何遊戲美術資產</li>
+    <li><strong>品牌</strong>：右下角「深空省省 · 你的抽卡規劃」＋短網址，字級小但可讀</li>
+  </ul>
+
+  <p>不放遊戲美術是一條硬規則。它同時解決 IP 風險和圖卡辨識度兩個問題——一張純資訊設計的卡片在資訊流裡反而比又一張角色圖更醒目。</p>
+</section>
+
+<section id="s5">
+  <h2><span class="num">05 / 使用者旅程</span>三條必須跑得順的路</h2>
+
+  <h3>旅程 A · 從分享圖卡進來的陌生人</h3>
+
+  <p>這是成長迴圈的閉合處，也是最不能出錯的一條。</p>
+
+  <ol>
+    <li>在 Threads 看到一張規劃圖卡，覺得「這個人算得好清楚」，點進 <code>/p/xxxxx</code></li>
+    <li>看到完整的公開規劃頁：進度條、目標卡池、缺口、預留策略。<strong>沒有登入牆、沒有彈窗、沒有 App 下載提示。</strong></li>
+    <li>頁面底部一顆主要動作：<strong>「用這個規劃當範本」</strong>——不是「註冊」，也不是「下載 App」</li>
+    <li>點下去，系統靜默建立匿名 session，把這份規劃複製成他自己的草稿，直接進入換算畫面，欄位已預填</li>
+    <li>他改成自己的數字，得到自己的結果。<strong>到這一步為止，他完全沒有註冊過。</strong></li>
+    <li>他想存下來或分享，這時才出現升級提示（見第 08 節）</li>
+  </ol>
+
+  <div class="note warn">
+    <span class="k">這條路的失敗模式</span>
+    <p>如果第 2 步或第 4 步出現任何形式的註冊要求，整個成長引擎就死了。分享帶來的流量是最脆弱的流量——他們對這個產品的投入是零，任何摩擦都會讓他們直接關掉。</p>
+  </div>
+
+  <h3>旅程 B · 每日存鑽打卡</h3>
+
+  <p>留存引擎。它必須能在十秒內完成，而且每次完成都要有一個微小的進展感。</p>
+
+  <ol>
+    <li>App 開場落在「我的規劃」，最上面是進度條和一個大按鈕：<strong>「今天領了多少鑽」</strong></li>
+    <li>輸入數字（提供常見值快選：60、90、120、300）→ 送出</li>
+    <li>進度條前進，下方文案更新：「還差 3,200 鑽 · 照這個速度還要 18 天 · 卡池還有 22 天」</li>
+    <li>如果推算結果是「來不及」，這裡出現一行溫和的提示：「差 1,400 鑽，最省的補法是 NT$490 那階」——連到禮包試算，帶入現有數字</li>
+    <li>連續打卡的天數顯示在旁邊，但<strong>不做斷簽懲罰、不做連勝獎勵</strong>（見下方說明）</li>
+  </ol>
+
+  <div class="note">
+    <span class="k">為什麼不做連勝獎勵</span>
+    <p>這個 App 的存在目的是幫玩家<strong>控制</strong>課金，不是增加他的心理負擔。連勝機制會製造「不能斷」的壓力，而斷簽的挫敗感會直接把人推走。顯示天數是資訊，設計獎勵是操縱——後者跟產品的價值主張互相矛盾。</p>
+  </div>
+
+  <h3>旅程 C · 新卡池公告，重新規劃</h3>
+
+  <ol>
+    <li>官方公告新卡池 → 內部後台更新該筆 banner 的 <code>status</code> 從 <code>predicted</code> 變 <code>official</code>，補上日期與 <code>source_url</code></li>
+    <li>Android 收到推播（Web 用站內橫幅）：「9/12 沈星回生日池已官方公告，你的規劃需要調整」</li>
+    <li>玩家點進來，看到現有規劃旁邊出現一個對比：原本的預測日期 vs 官方日期，以及這個差異對他的存鑽節奏意味著什麼</li>
+    <li>一顆按鈕：「以官方日期重算」</li>
+  </ol>
+
+  <p>這條旅程是排期資料進資料庫之後才可能存在的功能，也是它最直接的投資回報。</p>
+</section>
+
+<section id="s6">
+  <h2><span class="num">06 / 資料模型</span>Supabase schema</h2>
+
+  <p>八張表。設計原則：所有使用者資料以 <code>owner_id</code> 為 RLS 的唯一依據；<code>banners</code> 是唯一的全域共享內容表；規劃的計算結果做快照存 <code>jsonb</code>，讓公開頁不必在讀取時重算。</p>
+
+  <div class="code">
+    <div class="code-head"><span class="fn">supabase/migrations/0001_init.sql</span><button class="cp">複製</button></div>
+    <pre><code>-- ─── enums ───────────────────────────────────────────
+create type banner_type as enum (
+  'daily_pool',      -- 日卡池
+  'monthly_pool',    -- 月卡池
+  'mixed_pool',      -- 混池
+  'birthday_pool',   -- 生日池
+  'rerun_pool',      -- 復刻池
+  'pact',            -- 密約
+  'merch'            -- 周邊
+);
+
+create type banner_status as enum (
+  'official',        -- 官方已公告
+  'predicted',       -- 依歷史排期推測
+  'rumored'          -- 爆料未證實
+);
+
+create type expense_category as enum (
+  'gacha_pack',      -- 抽卡禮包
+  'monthly_card',    -- 月卡 / 週卡
+  'pact',            -- 密約
+  'merch',           -- 周邊
+  'other'            -- 其他
+);
+
+-- ─── profiles ────────────────────────────────────────
+create table profiles (
+  id           uuid primary key references auth.users on delete cascade,
+  display_name text,
+  avatar_emoji text default '💎',
+  is_upgraded  boolean not null default false,
+  created_at   timestamptz not null default now()
+);
+
+-- ─── banners (全域共享內容) ──────────────────────────
+create table banners (
+  id           text primary key,          -- 穩定 slug: 2026-09-12-shen-xinghui-birthday
+  name         text not null,
+  pool_type    banner_type not null,
+  status       banner_status not null default 'predicted',
+  start_date   date,
+  end_date     date,
+  source_url   text,
+  featured     text[] default '{}',       -- 角色名，純文字，不存美術資產
+  notes        text,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now()
+);
+create index banners_dates_idx on banners (start_date, end_date);
+create index banners_status_idx on banners (status);
+
+-- ─── plans ───────────────────────────────────────────
+create table plans (
+  id                uuid primary key default gen_random_uuid(),
+  short_id          text unique not null,   -- 8 字元，公開 URL 用
+  owner_id          uuid not null references auth.users on delete cascade,
+  title             text not null,
+  banner_id         text references banners on delete set null,
+  start_diamonds    integer not null default 0,
+  current_diamonds  integer not null default 0,
+  target_pulls      integer not null,
+  gold_tickets      integer not null default 0,
+  reserved_pulls    integer not null default 0,
+  budget_twd        integer,
+  is_public         boolean not null default false,
+  show_amount       boolean not null default false,
+  computed          jsonb not null default '{}'::jsonb,
+  view_count        integer not null default 0,
+  created_at        timestamptz not null default now(),
+  updated_at        timestamptz not null default now()
+);
+create index plans_owner_idx  on plans (owner_id);
+create index plans_public_idx on plans (is_public, view_count desc)
+  where is_public = true;
+
+-- ─── checkins (每日存鑽) ─────────────────────────────
+create table checkins (
+  id               uuid primary key default gen_random_uuid(),
+  owner_id         uuid not null references auth.users on delete cascade,
+  plan_id          uuid references plans on delete cascade,
+  checkin_date     date not null,
+  diamonds_gained  integer not null,
+  created_at       timestamptz not null default now(),
+  unique (owner_id, checkin_date)
+);
+create index checkins_owner_date_idx on checkins (owner_id, checkin_date desc);
+
+-- ─── expenses (錢包) ─────────────────────────────────
+create table expenses (
+  id          uuid primary key default gen_random_uuid(),
+  owner_id    uuid not null references auth.users on delete cascade,
+  plan_id     uuid references plans on delete set null,
+  amount_twd  integer not null,
+  category    expense_category not null,
+  spent_on    date not null,
+  note        text,
+  created_at  timestamptz not null default now()
+);
+create index expenses_owner_date_idx on expenses (owner_id, spent_on desc);
+
+-- ─── budgets (月預算) ────────────────────────────────
+create table budgets (
+  id                  uuid primary key default gen_random_uuid(),
+  owner_id            uuid not null references auth.users on delete cascade,
+  month               date not null,      -- 該月 1 號
+  budget_twd          integer not null,
+  alert_threshold_pct smallint not null default 80,
+  unique (owner_id, month)
+);
+
+-- ─── packages (禮包階梯，全域) ───────────────────────
+create table packages (
+  id            uuid primary key default gen_random_uuid(),
+  tier_name     text not null,
+  price_twd     integer not null,
+  diamonds      integer not null,
+  is_cumulative boolean not null default true,
+  sort_order    smallint not null default 0,
+  is_active     boolean not null default true
+);
+
+-- ─── admin_users (內部後台白名單) ────────────────────
+create table admin_users (
+  user_id uuid primary key references auth.users on delete cascade
+);</code></pre>
+  </div>
+
+  <h3>RLS policies</h3>
+
+  <p>Supabase 的匿名 session 也是一個真實的 <code>auth.uid()</code>，所以 RLS 不需要為匿名使用者做特例。唯一的特例是公開規劃頁——它用 <code>anon</code> role 讀取，且只能讀到 <code>is_public = true</code> 的規劃。</p>
+
+  <div class="code">
+    <div class="code-head"><span class="fn">supabase/migrations/0002_rls.sql</span><button class="cp">複製</button></div>
+    <pre><code>alter table profiles  enable row level security;
+alter table plans     enable row level security;
+alter table checkins  enable row level security;
+alter table expenses  enable row level security;
+alter table budgets   enable row level security;
+alter table banners   enable row level security;
+alter table packages  enable row level security;
+
+-- 使用者只碰自己的資料
+create policy own_profile on profiles
+  for all using (id = auth.uid()) with check (id = auth.uid());
+
+create policy own_plans on plans
+  for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+
+create policy own_checkins on checkins
+  for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+
+create policy own_expenses on expenses
+  for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+
+create policy own_budgets on budgets
+  for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
+
+-- 公開規劃頁：任何人可讀，但只有公開的
+create policy public_plans_read on plans
+  for select to anon
+  using (is_public = true);
+
+-- 排期與禮包：所有人可讀，只有 admin 可寫
+create policy banners_read on banners
+  for select to anon, authenticated using (true);
+
+create policy banners_write on banners
+  for all to authenticated
+  using (exists (select 1 from admin_users where user_id = auth.uid()))
+  with check (exists (select 1 from admin_users where user_id = auth.uid()));
+
+create policy packages_read on packages
+  for select to anon, authenticated using (true);
+
+create policy packages_write on packages
+  for all to authenticated
+  using (exists (select 1 from admin_users where user_id = auth.uid()))
+  with check (exists (select 1 from admin_users where user_id = auth.uid()));</code></pre>
+  </div>
+
+  <div class="note warn">
+    <span class="k">公開規劃頁的資料洩漏風險</span>
+    <p><code>public_plans_read</code> 這條 policy 會讓 <code>anon</code> 讀到整列，<strong>包含 <code>budget_twd</code> 和 <code>owner_id</code></strong>。RLS 是列級的，不是欄級的。正確做法是建一個 view 只曝露安全欄位，公開頁只讀 view，不直接讀 <code>plans</code>：</p>
+  </div>
+
+  <div class="code">
+    <div class="code-head"><span class="fn">supabase/migrations/0003_public_view.sql</span><button class="cp">複製</button></div>
+    <pre><code>create view public_plans
+with (security_invoker = true) as
+select
+  p.short_id,
+  p.title,
+  p.banner_id,
+  p.start_diamonds,
+  p.current_diamonds,
+  p.target_pulls,
+  p.gold_tickets,
+  p.reserved_pulls,
+  p.computed,
+  p.view_count,
+  p.updated_at,
+  case when p.show_amount then p.budget_twd else null end as budget_twd,
+  pr.display_name,
+  pr.avatar_emoji
+from plans p
+left join profiles pr on pr.id = p.owner_id
+where p.is_public = true;
+
+grant select on public_plans to anon;</code></pre>
+  </div>
+</section>
+
+<section id="s7">
+  <h2><span class="num">07 / 分享圖卡架構</span>Expo 靜態輸出解不掉的那一題</h2>
+
+  <p>這是整個技術方案裡唯一真正棘手的地方，值得單獨一節。</p>
+
+  <div class="note warn">
+    <span class="k">問題</span>
+    <p>Expo Router 的 web 靜態輸出是在 <strong>build 時</strong>把每個路由渲染成 HTML。但公開規劃頁是使用者生成的——build 的時候那些規劃還不存在。這代表 <code>/p/[短碼]</code> 拿不到正確的 <code>og:image</code> 和 <code>og:title</code>，而整個成長引擎完全依賴這兩個 tag 在 Threads 和小紅書上正確展開。</p>
+  </div>
+
+  <h3>方案：Cloudflare Worker 前置攔截</h3>
+
+  <p>不為了這一條路徑多養一套 Next.js。用一個 Worker 攔 <code>/p/*</code>，依請求者身分分流：</p>
+
+  <div class="pipe">
+    <div class="pipe-row">
+      <div class="pipe-step">
+        <div class="t">Step 1</div>
+        <div class="h">Worker 攔截</div>
+        <div class="d"><code>/p/:shortId</code> 進入 Worker，不落到靜態資源。</div>
+      </div>
+      <div class="pipe-step">
+        <div class="t">Step 2</div>
+        <div class="h">讀 view</div>
+        <div class="d">用 <code>anon</code> key 查 <code>public_plans</code>，KV 快取 5 分鐘。</div>
+      </div>
+      <div class="pipe-step">
+        <div class="t">Step 3</div>
+        <div class="h">分流</div>
+        <div class="d">爬蟲 UA 拿純 meta HTML；真人拿含 meta 的 shell，再 hydrate 進 Expo web。</div>
+      </div>
+      <div class="pipe-step">
+        <div class="t">Step 4</div>
+        <div class="h">圖卡</div>
+        <div class="d">Satori + resvg 在 Worker 生成 PNG，寫入 R2，之後直接由 R2 供應。</div>
+      </div>
+    </div>
+    <div class="pipe-cap">圖卡的 cache key 用 <code>shortId + updated_at</code>，規劃一更新就自然失效重生，不需要手動清快取。R2 已經在 <code>s4.tenten.co</code> 上，不用開新服務。</div>
+  </div>
+
+  <div class="code">
+    <div class="code-head"><span class="fn">workers/share/src/index.ts — 骨架</span><button class="cp">複製</button></div>
+    <pre><code>const BOT_UA = /(facebookexternalhit|Twitterbot|threadsbot|Discordbot|
+Slackbot|WhatsApp|LinkedInBot|TelegramBot|bingbot|Googlebot|
+xiaohongshu|Line)/i;
+
+export default {
+  async fetch(req: Request, env: Env): Promise&lt;Response&gt; {
+    const url = new URL(req.url);
+
+    // 圖卡：/og/:shortId.png
+    const og = url.pathname.match(/^\/og\/([A-Za-z0-9_-]{6,12})\.png$/);
+    if (og) return renderCard(og[1], env);
+
+    // 公開規劃頁：/p/:shortId
+    const pg = url.pathname.match(/^\/p\/([A-Za-z0-9_-]{6,12})$/);
+    if (!pg) return env.ASSETS.fetch(req);
+
+    const plan = await getPlan(pg[1], env);       // KV 快取 300s
+    if (!plan) return notFound(env);
+
+    const meta = buildMetaTags(plan, url.origin); // og:title / og:image / description
+    const isBot = BOT_UA.test(req.headers.get('user-agent') ?? '');
+
+    if (isBot) return html(metaOnlyDocument(meta));
+
+    // 真人：注入 meta 到 Expo 靜態 shell，前端自行 fetch 完整資料
+    const shell = await env.ASSETS.fetch(new Request(url.origin + '/p/[shortId].html'));
+    return html((await shell.text()).replace('&lt;!--META--&gt;', meta));
+  }
+};</code></pre>
+  </div>
+
+  <div class="note ok">
+    <span class="k">為什麼不用 Expo 的 SSR</span>
+    <p>Expo Router 的 streaming SSR 在 SDK 55+ 還是 alpha 階段。<strong>成長引擎不應該建在 alpha 功能上。</strong>Worker 這個方案多寫大約 150 行程式，但它是完全可預測的，而且落在既有的 Cloudflare 基礎設施裡。等 SSR 穩定了再把 Worker 拆掉，成本很低。</p>
+  </div>
+</section>
+
+<section id="s8">
+  <h2><span class="num">08 / 認證與升級</span>帳號存在，但不站在使用者前面</h2>
+
+  <p>Supabase 的匿名登入會發一個真實的 <code>auth.users</code> 列和 JWT，之後可以用 <code>updateUser</code> 掛上 email 或 OAuth identity，<strong>而且 <code>user.id</code> 不會變</strong>。這代表所有既有資料自動延續，不需要搬移。這是整個匿名優先策略成立的技術基礎。</p>
+
+  <h3>時序</h3>
+
+  <div class="tw"><table>
+    <thead><tr><th>時機</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>App 首次啟動</td><td>靜默呼叫 <code>signInAnonymously()</code>，不顯示任何 UI。從此所有讀寫都走 RLS，跟正式帳號完全一樣的程式路徑。</td></tr>
+      <tr><td>使用者按「公開這份規劃」</td><td>第一次出現升級提示。理由文案：「公開規劃需要一個帳號，這樣別人看到的時候你才能改它。」</td></tr>
+      <tr><td>使用者按「在其他裝置繼續」</td><td>同上，但理由換成同步。</td></tr>
+      <tr><td>連續打卡達 7 天</td><td>出現一次性的溫和提示：「你的紀錄目前只存在這台裝置上」，附一顆「建立備份」。<strong>可關閉，且不再出現第二次。</strong></td></tr>
+      <tr><td>其他所有時候</td><td>不提。</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Provider 選擇</h3>
+
+  <ul>
+    <li><strong>Google</strong> — 三平台都可用，Android 上摩擦最低</li>
+    <li><strong>Apple</strong> — iOS 上架時是強制的（有第三方登入就必須提供 Sign in with Apple），先接好省得日後回頭改</li>
+    <li><strong>Email magic link</strong> — 保底選項，不需要記密碼，也照顧不想綁社群帳號的玩家</li>
+  </ul>
+
+  <div class="note">
+    <span class="k">LINE Login 的判斷</span>
+    <p>台灣受眾第一反應會想加 LINE Login。<strong>Phase 2 先不加。</strong>理由：它需要獨立的 provider 設定與審核、在 Expo 上需要額外的 native 設定、而 Google + Apple 已經覆蓋幾乎所有裝置。等 Android 上架後看實際轉換率數據，如果 email magic link 的使用率異常高，那才是加 LINE 的訊號。</p>
+  </div>
+
+  <div class="note warn">
+    <span class="k">必須處理的邊緣情況</span>
+    <p><strong>匿名 session 遺失。</strong>使用者清瀏覽器資料或重裝 App，匿名帳號就永久消失了，資料無法救回。這個事實必須在 UI 上誠實呈現（設定頁一行狀態文字：「未備份 · 資料只存在這台裝置」），而不是等出事才解釋。</p>
+    <p><strong>升級時撞到既有帳號。</strong>使用者的匿名帳號要掛上一個已經被別的帳號用過的 Google identity 時，Supabase 會回錯誤。這時要給明確選擇：登入既有帳號（放棄這台裝置上的匿名資料，但先顯示會失去什麼），或改用其他 provider。<strong>不要靜默合併資料</strong>——兩份規劃合併沒有正確答案。</p>
+  </div>
+</section>
+
+<section id="s9">
+  <h2><span class="num">09 / 排期維運後台</span>把最大的維運負擔壓到半天工</h2>
+
+  <p>這一節解決第 01 節提到的結構性弱點。目標不是做一個漂亮的 CMS，是把「更新一筆排期」從十五分鐘（改 code、commit、等 deploy）壓到三十秒（填表、送出）。</p>
+
+  <h3>範圍</h3>
+
+  <ul>
+    <li>單一路由 <code>/admin/banners</code>，用 <code>admin_users</code> 白名單控制，非白名單直接 404</li>
+    <li>一張表格，可新增、編輯、刪除 banner，欄位就是 <code>banners</code> 那幾個</li>
+    <li><code>status</code> 用三顆按鈕切換（官方 / 預測 / 爆料），改成 <code>official</code> 時強制要求填 <code>source_url</code></li>
+    <li>ID 由 <code>start_date + 角色 slug + pool_type</code> 自動生成，但可手動覆寫（因為它是永久 URL 的一部分）</li>
+    <li>存檔後自動 purge Cloudflare KV 中相關的規劃頁快取</li>
+  </ul>
+
+  <div class="note ok">
+    <span class="k">狀態轉換是一個產品事件，不只是資料更新</span>
+    <p><code>predicted</code> → <code>official</code> 這個轉換要觸發旅程 C 的推播。所以後台存檔時要判斷：如果日期有變動且該卡池已被 N 份規劃引用，就把這批規劃標記為「需重算」，並排入推播佇列。這個判斷寫在一個 Postgres trigger 或 Edge Function 裡，不要寫在後台前端。</p>
+  </div>
+
+  <h3>免責聲明的自動化</h3>
+
+  <p>現有的免責聲明是手寫的，會隨時間變成謊言。改成從資料生成：排期頁底部的說明文字依當月 banner 的 <code>status</code> 分布自動組出來，每一筆 <code>official</code> 的卡池在 UI 上帶一個可點的來源連結。這讓「誠實」變成系統性質，而不是靠記得更新。</p>
+</section>
+
+<section id="s10">
+  <h2><span class="num">10 / Phase 規格</span>從現況到 Android 上架</h2>
+
+  <p>時間估算以一人全職計。每個 Phase 的驗收條件都必須是可以被實際點擊驗證的，不是「完成開發」。</p>
+
+  <h3><span class="tag p0">Phase 0</span> Expo 骨架與功能對等 · 約 1 週</h3>
+
+  <p>唯一目標：現有 PWA 的所有功能在 Expo web 上跑起來，且行為完全一樣。這個階段<strong>不加任何新功能</strong>。</p>
+
+  <ul>
+    <li>Expo SDK 最新穩定版 + Expo Router，<code>web.output: "static"</code>、<code>web.bundler: "metro"</code></li>
+    <li>底部三個 tab（錢包 / 排期 / 換算）用 <code>app/(tabs)</code> 結構</li>
+    <li>Supabase client + 匿名登入，開場靜默建立 session</li>
+    <li>八張表的 migration 與 RLS 全部套上</li>
+    <li>把現有 <code>localStorage</code> 資料一次性遷移到 Supabase（偵測到舊資料就搬，搬完標記）</li>
+    <li>樣式用 <code>StyleSheet.create</code>，不引入 NativeWind——web bundle 更小，依賴面更窄</li>
+  </ul>
+
+  <p><strong>驗收</strong>：在 web 上完成「設預算 → 記一筆花費 → 換算一次目標 → 看禮包建議 → 帶入錢包」的完整流程，重新整理後資料仍在；清 localStorage 後從 Supabase 讀回同樣的資料。</p>
+
+  <h3><span class="tag p1">Phase 1</span> 排期上雲與打卡 · 約 2 週</h3>
+
+  <ul>
+    <li><code>banners</code> 資料從前端搬進 Supabase，含所有現有卡池，補齊 <code>status</code> 與 <code>source_url</code></li>
+    <li><code>/admin/banners</code> 後台（第 09 節範圍）</li>
+    <li>排期頁改讀 Supabase，免責聲明改為自動生成</li>
+    <li>每日打卡：<code>checkins</code> 表 + 旅程 B 的完整 UI</li>
+    <li>打卡後的推算邏輯：日均存鑽速度、預估達標日、與卡池日期的差距</li>
+  </ul>
+
+  <p><strong>驗收</strong>：在後台把一筆 banner 從 <code>predicted</code> 改成 <code>official</code> 並改日期，前端排期頁三十秒內反映變更且來源連結可點；連續三天打卡後，進度條與「預估還要 N 天」的數字正確。</p>
+
+  <h3><span class="tag p2">Phase 2</span> 規劃物件與分享引擎 · 約 2 週</h3>
+
+  <ul>
+    <li><code>plans</code> 表 + 規劃的建立、編輯、列表</li>
+    <li>換算畫面改成「儲存成規劃」而不只是即時計算</li>
+    <li><code>public_plans</code> view + 公開／金額兩個獨立開關</li>
+    <li>Cloudflare Worker：<code>/p/:shortId</code> 與 <code>/og/:shortId.png</code>（第 07 節）</li>
+    <li>公開規劃頁的完整 UI，含「用這個規劃當範本」與已結束卡池的狀態呈現</li>
+    <li>帳號升級流程（第 08 節），Google + Apple + magic link</li>
+    <li>熱門規劃牆：<code>/explore</code>，依 <code>view_count</code> 排序，僅公開規劃</li>
+  </ul>
+
+  <p><strong>驗收</strong>：把一份規劃的連結貼進 Threads 和 Discord，兩邊都正確展開圖卡與標題；用無痕視窗開該連結，不登入就能看完整頁面並按「用這個當範本」進入預填的換算畫面；把該規劃改一個數字，圖卡在下一次分享時是新的。</p>
+
+  <h3><span class="tag p3">Phase 3</span> Android 上架與推播 · 約 1 週</h3>
+
+  <ul>
+    <li>EAS Build 設定，Play Console 內部測試軌</li>
+    <li><code>expo-notifications</code> + 推播權限的情境式請求（不在啟動時問）</li>
+    <li>兩種推播：卡池開始前三天、追蹤中的 banner 從預測轉官方</li>
+    <li>推播頻率上限：每週最多兩則，設定頁可完全關閉</li>
+    <li>Play Store 商店頁：截圖不含遊戲美術資產，描述以「抽卡課金規劃工具」為主詞</li>
+  </ul>
+
+  <p><strong>驗收</strong>：內部測試軌安裝成功；在後台改一筆 banner 狀態，裝置在五分鐘內收到推播且點擊後正確深連結到該規劃。</p>
+
+  <h3><span class="tag later">Phase 4</span> iOS · 延後決定</h3>
+
+  <p>不排時程。進入條件：Android + Web 的月活達到一個值得承擔審核風險的規模，且第 12 節的定位調整已經完成。</p>
+</section>
+
+<section id="s11">
+  <h2><span class="num">11 / 隱私設計</span>金額是這個產品最敏感的資料</h2>
+
+  <p>一個乙女遊戲玩家的月課金金額，是他不會主動告訴朋友的數字。整個隱私設計圍繞這一點展開，而不是圍繞法規最低要求。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>決定</th><th>做法</th></tr></thead>
+    <tbody>
+      <tr><td>金額預設不公開</td><td><code>show_amount</code> 預設 <code>false</code>，且與 <code>is_public</code> 完全獨立。公開規劃 ≠ 公開金額。</td></tr>
+      <tr><td>公開頁走 view</td><td>永不讓 <code>anon</code> 直接 select <code>plans</code>。<code>public_plans</code> view 在 SQL 層就把 <code>budget_twd</code> 依開關遮掉，前端不參與這個判斷。</td></tr>
+      <tr><td>顯示名稱不強制</td><td>公開規劃可以完全匿名（顯示為「一位玩家」）。取名字是選項，不是條件。</td></tr>
+      <tr><td>金額遮蔽模式</td><td>錢包頁一個切換，把所有金額顯示成 <code>NT$•••</code>。給在通勤時開 App 的人用。</td></tr>
+      <tr><td>刪除是真刪除</td><td>設定頁提供「刪除所有資料」，走 <code>auth.users</code> 的 cascade delete。不做軟刪除。</td></tr>
+      <tr><td>不做 tracking</td><td>不接任何廣告 SDK、不做跨 App 追蹤。這讓 iOS 的 ATT 提示完全不需要出現，也讓隱私政策可以短到一頁。</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="s12">
+  <h2><span class="num">12 / IP 與上架風險</span>最大的單點風險不是技術</h2>
+
+  <p>非官方的第三方遊戲工具在應用商店是灰區。Apple 會用 4.1（Copycats）、5.2.1（Generally）、5.2.2（Third-Party Sites/Services）來處理這類 App，而且駁回時通常不會告訴你具體是哪一段有問題。</p>
+
+  <div class="note warn">
+    <span class="k">一個真實的參照案例</span>
+    <p>有開發者做過《魷魚遊戲》的伴看 App，刻意不使用任何 Netflix 或劇集 logo、App 描述裡完全不提節目名稱，仍然被以 Guideline 4.1 Copycats 駁回，理由是「metadata 似乎包含第三方內容」。這說明「不放 logo」是必要條件，但遠遠不是充分條件。</p>
+  </div>
+
+  <h3>現在就要做的四件事</h3>
+
+  <ol>
+    <li><strong>零遊戲美術資產。</strong>不放角色立繪、不放卡面、不放 UI 截圖，包含商店頁截圖。角色一律以純文字名稱出現。這條規則寫進 codebase 的 <code>CLAUDE.md</code>，避免日後有人「順手加個圖比較好看」。</li>
+    <li><strong>主詞是工具，遊戲是受詞。</strong>所有對外文案的句型是「抽卡課金規劃工具，支援《戀與深空》」，不是「《戀與深空》抽卡工具」。App 名稱「深空省省」本身已經規避了直接商標，保留它。</li>
+    <li><strong>免責聲明升級成常設頁面。</strong>不只在排期頁底部，另建一個 <code>/about</code>：本 App 為玩家自製工具、與遊戲營運商無隸屬關係、所有排期資料來自公開資訊或玩家推測、遊戲名稱與角色名稱之權利屬於各自所有者。這一頁在送審時是可以直接引用的材料。</li>
+    <li><strong>資料結構為多遊戲留伸縮。</strong><code>banners</code> 加一個 <code>game_id</code> 欄位（Phase 1 就加，值先全部填同一個）。這不是要現在做多遊戲，是讓「改定位」這條退路的成本從重構降級為填資料。</li>
+  </ol>
+
+  <div class="note">
+    <span class="k">iOS 的兩條路</span>
+    <p><strong>路線 A：等有量再送審。</strong>用戶數本身就是溝通材料，被駁回時的申訴也更有底氣。這是目前的預設。</p>
+    <p><strong>路線 B：以通用工具定位進場。</strong>如果 iOS 的重要性比預期高（台灣年輕女性 iPhone 占比確實高），正確解法不是搶著送審，而是先接上第二個遊戲，讓 App 在事實上就是一個多遊戲工具，ASO 主打通用能力。這條路把 IP 風險從「未授權的粉絲 App」降到「支援多款遊戲的第三方工具」，是完全不同的審核情境。</p>
+  </div>
+</section>
+
+<section id="s13">
+  <h2><span class="num">13 / 成功指標</span>三個月後要看什麼</h2>
+
+  <p>目標是「有一群玩家每天在用」，但「日活」本身是個容易自我欺騙的指標。以下是實際要追的東西，依重要性排序。</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>指標</th><th>定義</th><th>三個月目標</th></tr></thead>
+    <tbody>
+      <tr><td><strong>北極星</strong><br>每週新增公開規劃數</td><td>當週被設為公開的規劃數量。它同時代表產品被使用、被信任、且願意署名。</td><td>穩定爬升，不設絕對值</td></tr>
+      <tr><td>分享漏斗轉換率</td><td>公開頁瀏覽 → 按「用這個當範本」→ 完成一次自己的換算</td><td>&gt; 12% 走完全程</td></tr>
+      <tr><td>打卡 D7 留存</td><td>首次打卡後第七天仍有打卡的比例</td><td>&gt; 25%</td></tr>
+      <tr><td>卡池尖峰倍數</td><td>卡池開始前三天的 DAU ÷ 平常日 DAU</td><td>&gt; 2.5×</td></tr>
+      <tr><td>排期時效中位數</td><td>官方公告到後台更新完成的時間差。這是維運健康度，也是產品信任的真正來源。</td><td>&lt; 6 小時</td></tr>
+      <tr><td>帳號升級率</td><td>匿名 session 中最終升級為正式帳號的比例</td><td>&gt; 20%</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note">
+    <span class="k">刻意不追的指標</span>
+    <p><strong>總註冊數</strong>——匿名優先的策略下這個數字沒有意義。<strong>整體 DAU</strong>——抽卡規劃本質上是脈衝式的行為，用整體 DAU 評估這個產品會導向錯誤的功能決策（例如做連勝獎勵）。<strong>App 下載數</strong>——web 是主場，下載數只是其中一條路徑。</p>
+  </div>
+</section>
+
+<section id="s14">
+  <h2><span class="num">14 / 明確不做</span>寫下來，因為它們都很有說服力</h2>
+
+  <div class="dec">
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>站內 feed 與追蹤關係</b> · 冷啟動撞牆，且維運成本呈指數成長。Phase 4 之後重新評估。</div></div>
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>抽卡結果上傳與曬單</b> · 直接競爭 Threads 與小紅書，且使用者上傳遊戲截圖會把 IP 風險升級到 UGC 平台等級。</div></div>
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>留言與私訊</b> · 需要內容審核與檢舉機制，這是一個獨立的產品，不是一個功能。</div></div>
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>連勝獎勵與斷簽懲罰</b> · 與「幫玩家控制課金」的價值主張直接衝突。</div></div>
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>訂閱或付費功能</b> · 這一輪的目標是使用量。過早收費會壓掉分享意願，而分享是唯一的成長引擎。</div></div>
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>遊戲帳號綁定或資料自動讀取</b> · 需要非公開 API 或爬取，法律與技術風險都不成比例。所有數字由玩家手動輸入。</div></div>
+    <div class="dec-row"><div class="lbl">不做</div><div class="val"><b>第二個遊戲</b> · 除非為了 iOS 走路線 B。<code>game_id</code> 欄位先留，功能不做。</div></div>
+  </div>
+</section>
+
+<section id="s15">
+  <h2><span class="num">15 / 開放問題</span>需要在 Phase 2 之前有答案</h2>
+
+  <ol>
+    <li><strong>預測排期出錯的信任成本要怎麼吸收？</strong>目前的免責聲明處理的是「事前告知」，但沒處理「事後修正」。如果一份被公開分享的規劃因為預測錯誤而整體失效，那個頁面該長什麼樣？建議做法是在規劃頁上明確標示「本規劃基於預測排期，已於 X 日修正」，把修正歷程當成可信度的證明而不是瑕疵。</li>
+    <li><strong>推播的騷擾邊界在哪？</strong>「卡池前三天提醒」對認真規劃的玩家有用，但對已經決定不抽的人就是在推銷。是否需要一個「這個卡池我跳過」的動作來抑制推播？傾向要，但這會增加一個狀態。</li>
+    <li><strong>熱門規劃牆的排序會不會製造課金競賽？</strong>依 <code>view_count</code> 排序可能讓「目標抽數最高」的規劃自然浮上來，變成間接鼓吹重課。是否要在排序中降權高預算規劃，或改成隨機抽樣展示？這件事跟產品的道德立場直接相關，不只是演算法選擇。</li>
+    <li><strong>要不要做「規劃比較」？</strong>兩份規劃並排看是很自然的延伸，也很符合「規劃即內容」的方向。但它會把產品往社群推一步。建議先看熱門規劃牆的實際使用行為再決定。</li>
+  </ol>
+
+  <hr class="rule">
+
+  <p style="font-family:var(--display);font-size:19px;line-height:1.5;color:var(--ink-soft)">這份文件的核心判斷只有一句：<strong style="color:var(--ink)">深空省省的護城河是「規劃」這個結構化物件，不是社群、不是排期資料、也不是計算精度。</strong>所有功能決策都應該回頭問一次，它是不是讓那個物件更好用、更可信、更值得被貼出去。</p>
+</section>
+
+</main>
+</div>
+
+<footer style="border-top:1px solid var(--rule);background:var(--paper-deep)">
+  <div style="max-width:var(--maxw);margin:0 auto;padding:34px 28px;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:baseline">
+    <div style="font-family:var(--display);font-weight:600;font-size:17px">深空省省 · 產品文件 v2.0</div>
+    <div style="font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint)">Tenten AI · 2026-08-13</div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.cp').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var code = btn.closest('.code').querySelector('pre code').innerText;
+    navigator.clipboard.writeText(code).then(function(){
+      var old = btn.textContent;
+      btn.textContent = '已複製';
+      btn.classList.add('done');
+      setTimeout(function(){ btn.textContent = old; btn.classList.remove('done'); }, 1600);
+    });
+  });
+});
+
+var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+var secs  = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    var i = secs.indexOf(e.target);
+    if(i < 0) return;
+    links.forEach(function(a){ a.classList.remove('on'); });
+    links[i].classList.add('on');
+  });
+}, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+secs.forEach(function(s){ if(s) obs.observe(s); });
+</script>
+</body>
+</html>

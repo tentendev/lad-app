@@ -1,0 +1,6 @@
+dc4127bee9a611b962d0e9d0b331246f1f8be20a73d16df6ebbd5ca65ef78790  dist/precache-manifest.json
+4cb0c328b6ff5553164253052ab625c4dfc11e58ca82b8f7982f35509a2ca25c  .agentharness/runs/2026-08-19-product-expansion-5h/dogfood/lighthouse-schedule-desktop-ae48.json
+301b6a5f8e43b4c648b3934d328595fd14ba581c4791d5fbca16fb21ff095872  .agentharness/runs/2026-08-19-product-expansion-5h/dogfood/lighthouse-schedule-mobile-ae48.json
+cb2614c3db6c54f8e3b21d0464117e7fa826b24295694331f03b3f5f8bf40cc9  .agentharness/runs/2026-08-19-product-expansion-5h/dogfood/final-browser-backup-v4-ae48.json
+38eb33c40d8aaade0af17ed7344dcea905f30e31c960acc388f37f7f6b9eebb7  .agentharness/runs/2026-08-19-product-expansion-5h/ui-audit/a11y-final-ae48.json
+2e7591207f27ac6d06ccfa150b4372ef510cd5d53d89cd185e179ead521d117c  .agentharness/runs/2026-08-19-product-expansion-5h/ui-audit/screenshots/account-offline-320-final.png

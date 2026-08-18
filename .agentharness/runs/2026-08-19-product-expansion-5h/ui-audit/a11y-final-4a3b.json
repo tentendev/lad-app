@@ -1,0 +1,18 @@
+{
+  "buildId": "4a3b06802e91",
+  "viewport": { "width": 320, "height": 900 },
+  "routes": ["wallet", "schedule", "calculator", "tracker", "account", "about", "privacy", "support"],
+  "violationsPerRoute": 0,
+  "horizontalOverflowPerRoute": 0,
+  "debugLauncherRendered": false,
+  "scheduleAnimation": {
+    "immediateViolations": 0,
+    "settledViolations": 0,
+    "strategy": "transform-only activity/data motion; static LCP heading",
+    "reducedMotion": {
+      "animatedInlineStyles": 0,
+      "eventOpacity": 1,
+      "violations": 0
+    }
+  }
+}

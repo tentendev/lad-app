@@ -1,0 +1,13 @@
+{
+  "axeVersion": "4.12.1",
+  "url": "http://127.0.0.1:57272/about",
+  "tags": ["wcag2a", "wcag2aa"],
+  "counts": {
+    "inapplicable": 37,
+    "incomplete": 0,
+    "passes": 23,
+    "violations": 0
+  },
+  "buildId": "904d0feed540",
+  "scope": "Post-v4 backup disclosure and file-input integration"
+}

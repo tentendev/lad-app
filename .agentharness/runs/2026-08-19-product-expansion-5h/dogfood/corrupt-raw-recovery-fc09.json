@@ -1,0 +1,16 @@
+{
+  "product": "deep-space-ledger-recovery",
+  "exportedAt": "2026-08-18T22:52:05.002Z",
+  "raw": {
+    "budget": null,
+    "budgets": "{}",
+    "expenses": "[]",
+    "calc": null,
+    "planner": "{\"monthlyIncome\":7060,\"goals\":[],\"checkIns\":[]}",
+    "wish_tracker": "{broken-json",
+    "schedule_preferences": "{\"selectedLeads\":[\"沈星回\",\"黎深\",\"祁煜\",\"秦徹\",\"夏以晝\"]}",
+    "pending_expense": null,
+    "pending_pull_goal": null,
+    "pending_calculator_target": null
+  }
+}

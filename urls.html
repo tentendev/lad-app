@@ -165,7 +165,7 @@
         </section>
 
         <div class="note-box" style="margin-top:14px">
-          <strong>維護規則：</strong>新增、改名或下架任何 HTML 頁面時，同一個 PR 必須同步更新這份 inventory 與 <a href="changelog.html">Changelog</a>。<code>0804排期預測.jpg</code> 已被 <code>.vercelignore</code> 排除，因此只在本機 static server 可用。
+          <strong>維護規則：</strong>新增、改名或下架任何 Expo Router 頁面或內部工具時，同一個 PR 必須同步更新這份 inventory 與 <a href="changelog.html">Changelog</a>。
         </div>
       </div>
     </main>
@@ -175,21 +175,23 @@
 
   <script>
     var routes = [
-      { path: "/", file: "index.html", kind: "page", audience: "product", purpose: "正式產品 canonical route；錢包、排期、換算、禮包推薦與 Debug 快捷入口。", deploy: "public" },
-      { path: "/index.html", file: "index.html", kind: "page", audience: "product", purpose: "正式產品檔名 alias；內容應與 / 完全相同。", deploy: "public" },
-      { path: "/0804.html", file: "0804.html", kind: "page", audience: "legacy", purpose: "2026-08-04 舊版產品快照，用於視覺與功能 regression 比對。", deploy: "public" },
+      { path: "/", file: "index.html", kind: "page", audience: "product", purpose: "正式入口；目前暫時重新導向 Expo Router 的 /schedule。", deploy: "public" },
+      { path: "/schedule", file: "src/app/(tabs)/schedule.web.tsx", kind: "page", audience: "product", purpose: "排期月曆、男主篩選、規劃帶入與行事曆匯出。", deploy: "public" },
+      { path: "/wallet", file: "src/app/(tabs)/wallet.web.tsx", kind: "page", audience: "product", purpose: "每月預算、支出洞察、消費紀錄與 CSV 匯出。", deploy: "public" },
+      { path: "/calculator", file: "src/app/(tabs)/calculator.web.tsx", kind: "page", audience: "product", purpose: "資源換算、禮包建議、多活動規劃與進度校正。", deploy: "public" },
+      { path: "/tracker", file: "src/app/(tabs)/tracker.web.tsx", kind: "page", audience: "product", purpose: "五星計數、保證狀態、歷史統計與 CSV 匯出。", deploy: "public" },
+      { path: "/about", file: "src/app/about.web.tsx", kind: "page", audience: "product", purpose: "服務定位、裝置端資料保存與隱私說明。", deploy: "public" },
       { path: "/ux-research.html", file: "ux-research.html", kind: "page", audience: "research", purpose: "產品定位、Journey、Proto-persona、JTBD 與研究計畫。", deploy: "public" },
       { path: "/roadmap.html", file: "roadmap.html", kind: "page", audience: "internal", purpose: "功能優先級、目前進度與 Agent 驗收清單。", deploy: "public" },
       { path: "/urls.html", file: "urls.html", kind: "page", audience: "internal", purpose: "本頁；全站 URL、資源與部署健康索引。", deploy: "public" },
       { path: "/changelog.html", file: "changelog.html", kind: "page", audience: "product", purpose: "可分享的 Project Changelog 與版本命名規則。", deploy: "public" },
       { path: "/internal.css", file: "internal.css", kind: "asset", audience: "runtime", purpose: "Roadmap、URL Index 與 Changelog 共用 UI tokens／components。", deploy: "public" },
-      { path: "/schedule.js", file: "schedule.js", kind: "asset", audience: "runtime", purpose: "排期事件與資料更新時間；由 index.html 載入。", deploy: "public" },
-      { path: "/packs.js", file: "packs.js", kind: "asset", audience: "runtime", purpose: "官方返券、卡池禮包與單抽成本資料。", deploy: "public" },
       { path: "/favicon.svg", file: "favicon.svg", kind: "asset", audience: "runtime", purpose: "站點 favicon 與品牌幾何標誌。", deploy: "public" },
-      { path: "/LAD bg.png", file: "LAD bg.png", kind: "asset", audience: "runtime", purpose: "正式產品 desktop 背景圖。", deploy: "public" },
-      { path: "/mobile-bg.png", file: "mobile-bg.png", kind: "asset", audience: "runtime", purpose: "正式產品 mobile 背景圖。", deploy: "public" },
-      { path: "/排期第二版.jpg", file: "排期第二版.jpg", kind: "asset", audience: "legacy", purpose: "已追蹤但目前未被頁面引用的排期參考圖；可評估移出公開部署。", deploy: "public" },
-      { path: "/0804排期預測.jpg", file: "0804排期預測.jpg", kind: "asset", audience: "legacy", purpose: "排期原始參考圖；已由 .vercelignore 排除，不會出現在 production。", deploy: "local" }
+      { path: "/lad-bg.webp", file: "public/lad-bg.webp", kind: "asset", audience: "runtime", purpose: "正式產品桌面背景圖。", deploy: "public" },
+      { path: "/mobile-bg.webp", file: "public/mobile-bg.webp", kind: "asset", audience: "runtime", purpose: "正式產品行動版背景圖。", deploy: "public" },
+      { path: "/manifest.webmanifest", file: "public/manifest.webmanifest", kind: "asset", audience: "runtime", purpose: "PWA 身分、啟動路由與安裝圖示。", deploy: "public" },
+      { path: "/sw.js", file: "public/sw.js", kind: "asset", audience: "runtime", purpose: "離線啟動與靜態 bundle 快取。", deploy: "public" },
+      { path: "/precache-manifest.json", file: "generated", kind: "asset", audience: "runtime", purpose: "每次 Expo export 產生的 hashed asset 清單。", deploy: "public" }
     ];
 
     var health = {};
@@ -242,7 +244,7 @@
         return (!query || haystack.indexOf(query) !== -1) &&
           (state.kind === "all" || route.kind === state.kind) &&
           (state.audience === "all" || route.audience === state.audience) &&
-          (!state.errorsOnly || status.css === "error" || route.deploy === "local");
+          (!state.errorsOnly || status.css === "error");
       });
     }
 
@@ -257,7 +259,7 @@
           '<td><span class="source-name">' + esc(route.file) + '</span></td>' +
           '<td><span class="chip ' + audienceChip(route.audience) + '">' + audienceLabel(route.audience) + '</span></td>' +
           '<td class="route-purpose">' + esc(route.purpose) + '</td>' +
-          '<td><span class="chip ' + (route.deploy === "local" ? "amber" : "green") + '">' + (route.deploy === "local" ? "LOCAL ONLY" : "PUBLIC") + '</span></td>' +
+          '<td><span class="chip green">PUBLIC</span></td>' +
           '<td><span class="health ' + status.css + '">' + esc(status.label) + '</span></td>' +
           '<td><div class="row-actions">' +
             '<button class="icon-button" type="button" data-copy-route="' + esc(route.path) + '" aria-label="複製 ' + esc(route.path) + ' URL">' +
@@ -282,9 +284,7 @@
       var assetTotal = routes.filter(function (route) { return route.kind === "asset"; }).length;
       var statuses = routes.map(routeHealth);
       var okTotal = statuses.filter(function (item) { return item.css === "ok"; }).length;
-      var errorTotal = statuses.filter(function (item, index) {
-        return item.css === "error" || routes[index].deploy === "local";
-      }).length;
+      var errorTotal = statuses.filter(function (item) { return item.css === "error"; }).length;
 
       document.getElementById("pageCount").textContent = pageTotal;
       document.getElementById("assetCount").textContent = assetTotal;

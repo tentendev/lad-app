@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>深空省省 Expo × HeroUI 跨平台架構決策</title>
+  <meta name="description" content="深空省省 Expo × HeroUI 跨平台重構的最終架構決策與開發基準。">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f5f1;
+      --panel: #ffffff;
+      --text: #24211f;
+      --muted: #69635e;
+      --line: #d8d2cb;
+      --accent: #7b4b60;
+      --accent-soft: #f0e4e9;
+      --good: #27624d;
+      --good-soft: #e1eee8;
+      --warn: #845916;
+      --warn-soft: #f5ecd7;
+      --danger: #873b36;
+      --danger-soft: #f4e3e1;
+      --code: #242220;
+      --code-text: #f5f1eb;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+    a { color: var(--accent); }
+    code, pre { font-family: "SFMono-Regular", Consolas, monospace; }
+    code {
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--text) 8%, transparent);
+      font-size: 0.88em;
+    }
+    pre {
+      margin: 1rem 0 1.5rem;
+      padding: 1rem;
+      overflow: auto;
+      border-radius: 8px;
+      color: var(--code-text);
+      background: var(--code);
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    pre code { padding: 0; background: transparent; }
+    h1, h2, h3 { line-height: 1.35; }
+    h1 { margin: 0 0 1rem; font-size: clamp(2rem, 4.5vw, 3rem); }
+    h2 {
+      margin: 3.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.7rem;
+    }
+    h3 { margin: 2rem 0 0.75rem; font-size: 1.15rem; }
+    p { margin: 0 0 1rem; }
+    li { margin-bottom: 0.4rem; }
+
+    header {
+      padding: 4rem 1.25rem 3rem;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+    header > div, main, footer > div { width: min(100%, 960px); margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 0.75rem;
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .lead { max-width: 760px; color: var(--muted); font-size: 1.1rem; }
+    .meta {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .status {
+      padding: 0.15rem 0.55rem;
+      border: 1px solid var(--good);
+      color: var(--good);
+      background: var(--good-soft);
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    main { padding: 2rem 1.25rem 5rem; }
+    nav {
+      margin-bottom: 3rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    nav strong { display: block; margin-bottom: 0.5rem; }
+    nav ol {
+      margin: 0;
+      padding-left: 1.25rem;
+      columns: 2;
+    }
+
+    .decision {
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      border-left: 5px solid var(--accent);
+      background: var(--accent-soft);
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .note {
+      margin: 1.25rem 0;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .note.warn { border-color: var(--warn); background: var(--warn-soft); }
+    .note.danger { border-color: var(--danger); background: var(--danger-soft); }
+
+    .table-wrap {
+      margin: 1rem 0 1.75rem;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    table { width: 100%; min-width: 640px; border-collapse: collapse; }
+    th, td {
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: color-mix(in srgb, var(--text) 6%, var(--panel)); font-size: 0.82rem; }
+    tr:last-child td { border-bottom: 0; }
+
+    .phase {
+      margin: 1rem 0;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .phase h3 { margin-top: 0; }
+    .phase ul { margin-bottom: 0; }
+
+    footer {
+      padding: 1.5rem 1.25rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      background: var(--panel);
+      font-size: 0.85rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #191817;
+        --panel: #22211f;
+        --text: #f1ece5;
+        --muted: #beb7ae;
+        --line: #4c4741;
+        --accent: #dda8bc;
+        --accent-soft: #3b2931;
+        --good: #93d6b9;
+        --good-soft: #22372f;
+        --warn: #e4bd70;
+        --warn-soft: #3b3121;
+        --danger: #e5a09a;
+        --danger-soft: #402826;
+      }
+    }
+    @media (max-width: 640px) {
+      header { padding-top: 2.5rem; }
+      nav ol { columns: 1; }
+    }
+    @media print {
+      :root { --bg: white; --panel: white; --text: black; --muted: #444; --line: #bbb; }
+      body { font-size: 11pt; }
+      header { padding-top: 1rem; }
+      nav { display: none; }
+      h2 { break-after: avoid; }
+      .table-wrap, .phase, .note { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">Architecture Decision Record 001</p>
+      <h1>深空省省 Expo × HeroUI 跨平台架構決策</h1>
+      <p class="lead">從目前的單檔靜態 Web App 遷移到 Web、iOS 與 Android 的最終技術決策。本文是後續產品開發的架構基準。</p>
+      <div class="meta">
+        <span class="status">ACCEPTED</span>
+        <span>決策日期：2026-08-13</span>
+        <span>版本：1.0</span>
+        <span>平台：Web / iOS / Android</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav aria-label="文件目錄">
+      <strong>目錄</strong>
+      <ol>
+        <li><a href="#decision">最終結論</a></li>
+        <li><a href="#current">現有 App</a></li>
+        <li><a href="#references">參考文件判讀</a></li>
+        <li><a href="#architecture">目標架構</a></li>
+        <li><a href="#mapping">HeroUI 元件對映</a></li>
+        <li><a href="#migration">遷移順序</a></li>
+        <li><a href="#risks">主要風險</a></li>
+        <li><a href="#baseline">開發基準</a></li>
+      </ol>
+    </nav>
+
+    <section id="decision">
+      <h2>最終結論</h2>
+      <div class="decision">直接建立一個 Expo Router repository。Web 使用 <code>@heroui/react</code>；iOS 與 Android 使用 <code>heroui-native</code> + Uniwind。共用 domain、types、feature state、repository interfaces、routes 與 semantic design tokens，UI renderer 允許分平台實作。</div>
+
+      <p>Expo 是正確方向，但這不是把現有 HTML 包成 App，而是保留產品邏輯與資料後，以 React Native／Expo 重建 presentation layer。</p>
+
+      <p>原本規劃的順序：</p>
+      <pre><code>現有 HTML → HeroUI Web 重構 → Expo</code></pre>
+
+      <p>應改成：</p>
+      <pre><code>保護現況與計算規則
+→ 建立 Expo Router
+→ 同時驗證 HeroUI Web / Native
+→ 搬移既有功能
+→ 最後加入 Supabase、會員與社群</code></pre>
+
+      <p>原因是 <a href="https://github.com/heroui-inc/heroui">heroui-inc/heroui</a> 是 React DOM Web library；行動端是另一個 <a href="https://github.com/heroui-inc/heroui-native">HeroUI Native</a> repository。HeroUI Native 官方目前也不建議用於 Web。</p>
+
+      <div class="note danger"><strong>不採用：</strong>先重構現有靜態網站成 HeroUI Web，再搬到 Expo。這會產生兩次 UI 重寫。</div>
+    </section>
+
+    <section id="current">
+      <h2>現有 App 盤點</h2>
+      <p>真正的產品程式位於 repository 根目錄；<code>references/08-13</code> 是 PRD、研究報告與 build prompt。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>面向</th><th>現況</th><th>遷移影響</th></tr></thead>
+          <tbody>
+            <tr><td>UI</td><td><code>index.html</code> 約 942 行，CSS、HTML、JavaScript 在同一檔案</td><td>需要重建 presentation layer</td></tr>
+            <tr><td>互動</td><td>Inline <code>onclick</code>、DOM query、<code>innerHTML</code></td><td>改為 React state 與 event handlers</td></tr>
+            <tr><td>儲存</td><td><code>localStorage</code> + <code>lad_</code> prefix</td><td>需要 Web／Native storage adapter</td></tr>
+            <tr><td>排期</td><td><code>window.SCHEDULE</code>、<code>window.SCHEDULE_META</code></td><td>轉成 typed seed／repository</td></tr>
+            <tr><td>禮包</td><td><code>window.PACK_DATA</code>、<code>window.OFFICIAL_TICKET_RULES</code></td><td>與 UI 完全分離</td></tr>
+            <tr><td>工程</td><td>沒有 package.json、TypeScript、自動化測試或 CI</td><td>建立新的 build/test pipeline</td></tr>
+            <tr><td>PWA</td><td>有 mobile meta，但沒有 manifest 或 service worker</td><td>目前不是完整 PWA</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>現有核心功能</h3>
+      <ul>
+        <li>錢包：月預算、提醒門檻、花費新增／編輯／刪除。</li>
+        <li>排期：月份日曆、活動日期、官方／預測狀態。</li>
+        <li>換算：鑽石、金券、預留資源、禮包階梯與帶入錢包。</li>
+      </ul>
+
+      <h3>必須保留</h3>
+      <ul>
+        <li>每抽 150 鑽、官方金券、預留資源與缺口公式。</li>
+        <li>禮包階梯、累計購買與推薦結果。</li>
+        <li>預算、花費、月份統計和提醒門檻。</li>
+        <li>排期資料和「排期 → 換算 → 禮包 → 錢包」流程。</li>
+        <li>繁體中文文案、產品語氣與非遊戲原畫的品牌識別。</li>
+      </ul>
+
+      <h3>舊資料 keys</h3>
+      <pre><code>lad_budget
+lad_budgets
+lad_expenses
+lad_calc</code></pre>
+    </section>
+
+    <section id="references">
+      <h2><code>references/08-13</code> 文件判讀</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>文件</th><th>處理方式</th></tr></thead>
+          <tbody>
+            <tr><td><a href="references/08-13/Expo-HeroUI-跨平台架構分析_2026-08-13.html">Expo-HeroUI 跨平台架構分析</a></td><td>作為本決策的主要前置分析；採用單 repo + 雙 renderer。</td></tr>
+            <tr><td><a href="references/08-13/深空省省-PRD-v2.html">PRD v2</a></td><td>保留產品策略、資料模型、隱私與分享需求；重切 Phase 0。</td></tr>
+            <tr><td><a href="references/08-13/claude-code-one-shot-shenkong.md">One-Shot Prompt</a></td><td>不得直接執行；必須先依本文件重寫。</td></tr>
+            <tr><td><a href="references/08-13/Expo%20UI%20Kit%20選型報告_claude.md">Expo UI Kit 選型報告</a></td><td>保留 HeroUI Native、Uniwind 與動效研究。</td></tr>
+            <tr><td>ChatGPT 選型文件</td><td>可作備案研究，但 React Native Reusables 的推薦不覆蓋已確定的 HeroUI 選擇。</td></tr>
+            <tr><td>Agent Skills 報告</td><td>不影響 runtime architecture，暫不納入遷移範圍。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>必須修正的文件衝突</h3>
+      <ol>
+        <li>One-Shot 固定使用 <code>StyleSheet.create</code>，但 HeroUI Native 正式使用 Uniwind。</li>
+        <li>Phase 0 宣稱只做功能對等，卻同時加入 Supabase、Auth 和資料庫 migrations。</li>
+        <li>One-Shot 把 tabs 改成「規劃／排期／錢包」，現有功能其實是「錢包／排期／換算」。</li>
+        <li><code>月卡/週卡</code> 等既有字串不能在 migration 中任意改名。</li>
+        <li>匿名 Supabase session 清除後不可恢復，不能用清空整個 localStorage 測試跨裝置恢復。</li>
+      </ol>
+    </section>
+
+    <section id="architecture">
+      <h2>目標架構</h2>
+      <pre><code>src/
+├── app/                         # Expo Router routes
+│   ├── _layout.tsx
+│   └── (tabs)/
+│       ├── _layout.tsx
+│       ├── wallet.tsx
+│       ├── schedule.tsx
+│       └── calculator.tsx
+│
+├── domain/                      # 純 TypeScript，零 UI 依賴
+│   ├── budget/
+│   ├── calculator/
+│   ├── packages/
+│   └── schedule/
+│
+├── features/
+│   ├── wallet/
+│   │   ├── screen.web.tsx
+│   │   ├── screen.native.tsx
+│   │   └── use-wallet.ts
+│   ├── schedule/
+│   └── calculator/
+│
+├── data/
+│   ├── repositories/
+│   ├── local/
+│   │   ├── storage.web.ts
+│   │   └── storage.native.ts
+│   └── supabase/                # 後續 Phase
+│
+└── ui/
+    ├── tokens/
+    └── shared/</code></pre>
+
+      <h3>依賴原則</h3>
+      <ul>
+        <li>Route 只負責導航與 deep link。</li>
+        <li>Domain 不得依賴 React、DOM、React Native 或 Supabase。</li>
+        <li>Feature hooks 組合 domain、validation 與 repositories。</li>
+        <li>Web 與 Native renderer 可直接使用各自 HeroUI 套件。</li>
+        <li>只包裝穩定的品牌元件，不為每個 Button 建立多餘 abstraction。</li>
+        <li>共用 semantic tokens，例如 <code>accent</code>、<code>surface</code>、<code>danger</code>、<code>spacing.md</code>。</li>
+      </ul>
+    </section>
+
+    <section id="mapping">
+      <h2>HeroUI 元件對映</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>功能</th><th>共用核心</th><th>Web</th><th>iOS／Android</th></tr></thead>
+          <tbody>
+            <tr><td>底部導航</td><td>Routes、deep links</td><td>Expo Router Web layout</td><td>Expo Router native tabs</td></tr>
+            <tr><td>預算與記帳</td><td>Budget model、validation、totals</td><td>HeroUI Card、NumberField、DatePicker、Modal、Progress</td><td>HeroUI Native Surface、Input、Select、Dialog／BottomSheet</td></tr>
+            <tr><td>排期日曆</td><td>Date range、events by day</td><td>自建 DOM grid</td><td>自建 React Native grid／virtualized list</td></tr>
+            <tr><td>換算器</td><td>公式、schema、result model</td><td>NumberField、Select、Card、Alert</td><td>Input、Select、Surface、Alert</td></tr>
+            <tr><td>禮包建議</td><td>Optimizer、tier result</td><td>Table／Card</td><td>Surface + virtualized list</td></tr>
+            <tr><td>Debug 文件</td><td>URL registry、changelog</td><td>Web-only static routes</td><td>不放入一般 navigation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn"><strong>排期日曆是自有產品元件。</strong>HeroUI Native 目前沒有完整 Calendar、DatePicker、Table 或 Progress 對應，不能期待 UI Kit 自動解決多活動排期。</div>
+    </section>
+
+    <section id="migration">
+      <h2>建議遷移順序</h2>
+
+      <article class="phase">
+        <h3>Gate 0：保護現況</h3>
+        <ul>
+          <li>保留現有 production 與 Git history，不原地覆蓋。</li>
+          <li>抽出 calculator、official tickets、package optimizer、budget totals。</li>
+          <li>建立 golden tests，鎖定現有輸入輸出。</li>
+          <li>將 <code>schedule.js</code> 和 <code>packs.js</code> 轉成 typed seed data。</li>
+        </ul>
+      </article>
+
+      <article class="phase">
+        <h3>Gate 1：HeroUI 技術 Spike</h3>
+        <ul>
+          <li>Web：Expo Router Web + <code>@heroui/react</code> + static export。</li>
+          <li>Native：Expo Router + <code>heroui-native</code> + Uniwind。</li>
+          <li>驗證 Input、Select、Card、Modal／BottomSheet、Toast 與 navigation。</li>
+          <li>檢查中文字型、keyboard、safe area、dynamic type、dark mode。</li>
+          <li><code>npx expo export --platform web</code> 必須成功。</li>
+        </ul>
+      </article>
+
+      <article class="phase">
+        <h3>Gate 2：功能對等</h3>
+        <ol>
+          <li>換算與官方金券。</li>
+          <li>禮包 optimizer。</li>
+          <li>帶入錢包。</li>
+          <li>預算與花費 CRUD。</li>
+          <li>排期日曆。</li>
+          <li>Storage 與 <code>lad_*</code> migration。</li>
+          <li>Web-only debug 頁面。</li>
+        </ol>
+      </article>
+
+      <article class="phase">
+        <h3>Gate 3：Web cutover</h3>
+        <ul>
+          <li>設定 <code>web.output: "static"</code>。</li>
+          <li>確認 SEO metadata、fonts、assets 和 hydration。</li>
+          <li>原網域執行一次性舊資料 migration。</li>
+          <li>保留舊 deployment 作 rollback。</li>
+        </ul>
+      </article>
+
+      <article class="phase">
+        <h3>Gate 4：Cloud 與社群</h3>
+        <ul>
+          <li>Supabase repositories、RLS、匿名帳號與帳號升級。</li>
+          <li>規劃物件、公開規劃頁與分享圖卡。</li>
+          <li>Cloudflare Worker、排期後台、打卡與推播。</li>
+        </ul>
+      </article>
+
+      <h3>建立專案</h3>
+      <pre><code>npx create-expo-app@latest --template default@sdk-57</code></pre>
+    </section>
+
+    <section id="risks">
+      <h2>主要風險</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>風險</th><th>影響</th><th>處理方式</th></tr></thead>
+          <tbody>
+            <tr><td>HeroUI React + Expo Web 未實測</td><td>Build、Tailwind 或 hydration 可能阻塞</td><td>先做最小 Spike，通過才搬全站</td></tr>
+            <tr><td>HeroUI Native 仍是 1.0.x</td><td>Expo／Reanimated 升級可能破壞相容性</td><td>鎖定通過測試的版本並追蹤 changelog</td></tr>
+            <tr><td>雙 renderer</td><td>部分 UI 需要兩份實作</td><td>共用 domain、hooks、schema、view models 與 tokens</td></tr>
+            <tr><td>排期日曆高度客製</td><td>效能、overflow、accessibility 容易退化</td><td>視為核心元件並獨立測試</td></tr>
+            <tr><td>舊資料遺失</td><td>使用者失去預算和消費紀錄</td><td>Schema validation、idempotent marker、保留舊 keys、rollback test</td></tr>
+            <tr><td>匿名帳號不可恢復</td><td>清除資料或重裝後失去內容</td><td>明示未備份；跨裝置只驗收正式帳號</td></tr>
+            <tr><td>Static OG</td><td>新規劃無法在 build 時產生動態 metadata</td><td>後續使用 Cloudflare Worker</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>必須鎖定的隱性規則</h3>
+      <ul>
+        <li>官方金券 milestone 使用 <code>&lt; target</code>，達成目標當下拿到的券不能倒扣同一目標。</li>
+        <li>預留資源不觸發官方返券。</li>
+        <li>密約在日曆只佔開始日。</li>
+        <li>現有日曆只有三條活動 lanes；新 UI 應顯示 <code>+N</code> overflow，不得靜默隱藏。</li>
+        <li>「帶入錢包記帳」是核心互動，不得移除。</li>
+      </ul>
+    </section>
+
+    <section id="baseline">
+      <h2>最終開發基準</h2>
+      <pre><code>Framework: Expo SDK 57 + Expo Router
+Web UI: @heroui/react v3 + Tailwind CSS v4
+Native UI: heroui-native 1.0.x + Uniwind
+Shared: TypeScript domain + feature state + repositories + semantic tokens</code></pre>
+
+      <p>第一個實作工作不是改寫現有 HTML，而是：</p>
+      <ol>
+        <li>建立 migration branch。</li>
+        <li>抽出並測試 domain logic。</li>
+        <li>建立可拋棄的 Expo × HeroUI 三平台 Spike。</li>
+        <li>Spike 通過後才開始正式 UI 重構。</li>
+      </ol>
+
+      <div class="decision">後續架構、實作 prompt 與 Phase 規劃如與本文衝突，以本文為準。若要改變本決策，必須新增 ADR 並記錄實測證據、遷移成本與 rollback plan。</div>
+    </section>
+  </main>
+
+  <footer>
+    <div>深空省省 · ADR-001 · Accepted 2026-08-13 · Version 1.0</div>
+  </footer>
+</body>
+</html>

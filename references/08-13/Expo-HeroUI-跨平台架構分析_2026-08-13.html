@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="深空省省從靜態 Web App 遷移到 Expo Web、iOS 與 Android，並採用 HeroUI React 與 HeroUI Native 的跨平台架構分析。">
+  <title>Expo × HeroUI 跨平台架構分析｜2026-08-13</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-muted: #f1f3f6;
+      --text: #202124;
+      --muted: #5f6368;
+      --line: #dfe3e8;
+      --line-strong: #c5cad1;
+      --blue: #1a73e8;
+      --blue-soft: #e8f0fe;
+      --green: #137333;
+      --green-soft: #e6f4ea;
+      --amber: #8a4b00;
+      --amber-soft: #fef7e0;
+      --red: #b3261e;
+      --red-soft: #fce8e6;
+      --purple: #6f42c1;
+      --purple-soft: #f1eafa;
+      --radius: 14px;
+      --shadow: 0 1px 2px rgb(32 33 36 / 8%);
+      --content: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 28px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.72;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: #185abc;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+    }
+
+    a:hover { color: #0b57d0; }
+
+    :focus-visible {
+      outline: 3px solid rgb(26 115 232 / 35%);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 12px;
+      left: 12px;
+      padding: 8px 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: var(--surface);
+      transform: translateY(-160%);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .page {
+      width: min(calc(100% - 32px), var(--content));
+      margin: 0 auto;
+      padding: 44px 0 72px;
+    }
+
+    .masthead {
+      padding: 36px 40px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 840px;
+      margin: 0;
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.15;
+      letter-spacing: -.035em;
+    }
+
+    .dek {
+      max-width: 800px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 28px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--line);
+    }
+
+    .meta-item {
+      min-width: 0;
+      padding: 13px 15px;
+      background: var(--surface-muted);
+    }
+
+    .meta-item dt {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+
+    .meta-item dd {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 28px;
+      margin-top: 28px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+
+    .search {
+      width: 100%;
+      min-height: 38px;
+      margin-bottom: 12px;
+      padding: 8px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .search::placeholder { color: #80868b; }
+
+    .toc {
+      display: grid;
+      gap: 2px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc a {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 7px;
+      color: #3c4043;
+      font-size: 13px;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .toc a:hover { background: var(--surface-muted); }
+
+    .content { min-width: 0; }
+
+    .report-section {
+      margin-bottom: 24px;
+      padding: 32px 36px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .report-section[hidden] { display: none; }
+
+    .section-kicker {
+      margin: 0 0 4px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(24px, 3vw, 32px);
+      line-height: 1.25;
+      letter-spacing: -.025em;
+    }
+
+    h3 {
+      margin: 28px 0 10px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    h4 {
+      margin: 22px 0 8px;
+      font-size: 16px;
+    }
+
+    p { margin: 10px 0; }
+
+    ul, ol { padding-left: 1.35rem; }
+
+    li + li { margin-top: 6px; }
+
+    code {
+      padding: .1em .35em;
+      border-radius: 5px;
+      background: #eef1f4;
+      color: #3c4043;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9em;
+      overflow-wrap: anywhere;
+    }
+
+    pre {
+      margin: 18px 0;
+      padding: 18px;
+      overflow-x: auto;
+      border: 1px solid #30343a;
+      border-radius: 10px;
+      background: #202124;
+      color: #f1f3f4;
+      font: 13px/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    pre code {
+      padding: 0;
+      background: transparent;
+      color: inherit;
+    }
+
+    .summary {
+      padding: 20px 22px;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      background: var(--blue-soft);
+      font-size: 17px;
+    }
+
+    .summary strong { color: #174ea6; }
+
+    .callout {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface-muted);
+    }
+
+    .callout.warning {
+      border-color: #efd28a;
+      background: var(--amber-soft);
+    }
+
+    .callout.danger {
+      border-color: #f1b8b4;
+      background: var(--red-soft);
+    }
+
+    .callout.success {
+      border-color: #a8d5b5;
+      background: var(--green-soft);
+    }
+
+    .callout-title {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 750;
+    }
+
+    .evidence-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge.confirmed { background: var(--green-soft); color: var(--green); }
+    .badge.official { background: var(--blue-soft); color: #174ea6; }
+    .badge.inference { background: var(--amber-soft); color: var(--amber); }
+    .badge.proposal { background: var(--purple-soft); color: var(--purple); }
+
+    .table-wrap {
+      width: 100%;
+      margin: 18px 0;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-muted);
+      color: #3c4043;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .03em;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .decision {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .decision-card {
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+    }
+
+    .decision-card.recommended { border: 2px solid var(--blue); }
+
+    .decision-card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .decision-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .decision-label {
+      display: inline-block;
+      margin-bottom: 9px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+      counter-reset: phase;
+    }
+
+    .flow-step {
+      position: relative;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface-muted);
+      counter-increment: phase;
+    }
+
+    .flow-step::before {
+      content: counter(phase, decimal-leading-zero);
+      display: block;
+      margin-bottom: 8px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .flow-step strong { display: block; }
+
+    .flow-step span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .checklist {
+      margin: 12px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      color: var(--blue);
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 10px;
+      padding-left: 1.15rem;
+    }
+
+    .source-list small {
+      display: block;
+      color: var(--muted);
+    }
+
+    .empty-search {
+      display: none;
+      padding: 26px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty-search.visible { display: block; }
+
+    .footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workspace { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; }
+      .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .decision { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .page { width: min(calc(100% - 20px), var(--content)); padding-top: 10px; }
+      .masthead { padding: 26px 22px; border-radius: 14px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .report-section { padding: 25px 20px; }
+      .toc { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      th, td { padding: 10px 11px; }
+    }
+
+    @media print {
+      :root { --bg: #fff; }
+      body { font-size: 11pt; }
+      .page { width: 100%; padding: 0; }
+      .masthead, .report-section { border-color: #bbb; box-shadow: none; break-inside: avoid; }
+      .workspace { display: block; }
+      .sidebar, .skip-link, .footer { display: none !important; }
+      .report-section { margin: 0 0 14px; padding: 18px 20px; }
+      a { color: inherit; text-decoration: none; }
+      a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; overflow-wrap: anywhere; }
+      pre, .table-wrap { break-inside: avoid; }
+      h2, h3 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+
+  <div class="page">
+    <header class="masthead">
+      <p class="eyebrow">Architecture Decision Report</p>
+      <h1>Expo × HeroUI 跨平台架構分析</h1>
+      <p class="dek">「深空省省」從單檔靜態 Web App 遷移為 Expo Web、iOS 與 Android 產品的技術判斷、HeroUI 限制、目標架構與可驗收的遷移順序。</p>
+
+      <div class="meta-grid">
+        <dl class="meta-item"><dt>報告日期</dt><dd>2026-08-13</dd></dl>
+        <dl class="meta-item"><dt>專案</dt><dd>lad-app／深空省省</dd></dl>
+        <dl class="meta-item"><dt>文件狀態</dt><dd>架構建議，待 Spike 驗證</dd></dl>
+        <dl class="meta-item"><dt>範圍</dt><dd>Web／iOS／Android／UI Kit</dd></dl>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar" aria-label="報告目錄與搜尋">
+        <p class="sidebar-title">文件導覽</p>
+        <label for="report-search" class="sidebar-title">篩選章節</label>
+        <input id="report-search" class="search" type="search" placeholder="例如：HeroUI、Supabase" autocomplete="off">
+        <nav aria-label="報告目錄">
+          <ol class="toc">
+            <li><a href="#executive-summary">01 執行摘要</a></li>
+            <li><a href="#proof-boundary">02 證據邊界</a></li>
+            <li><a href="#current-state">03 現況盤點</a></li>
+            <li><a href="#heroui">04 HeroUI 限制</a></li>
+            <li><a href="#reference-review">05 文件衝突</a></li>
+            <li><a href="#decision">06 架構決策</a></li>
+            <li><a href="#target-architecture">07 目標架構</a></li>
+            <li><a href="#migration">08 遷移路線</a></li>
+            <li><a href="#storage-auth">09 儲存與帳號</a></li>
+            <li><a href="#risks">10 風險與待決</a></li>
+            <li><a href="#next-actions">11 下一步</a></li>
+            <li><a href="#agent-checklist">12 Agent 檢查表</a></li>
+            <li><a href="#sources">13 來源</a></li>
+            <li><a href="#revision-log">14 修訂紀錄</a></li>
+          </ol>
+        </nav>
+      </aside>
+
+      <main id="main-content" class="content">
+        <div id="empty-search" class="empty-search" role="status">找不到包含這個關鍵字的章節。</div>
+
+        <section id="executive-summary" class="report-section" data-search-section>
+          <p class="section-kicker">01 · Executive Summary</p>
+          <h2>執行摘要</h2>
+          <div class="summary">
+            <strong>Expo 是正確方向，但不應先把現在的靜態網站重構為獨立的 HeroUI Web App，之後才搬到 Expo。</strong>
+            這條路線會先把 DOM UI 改寫成 React DOM，再為 iOS／Android 重寫成 React Native，形成兩次 presentation layer 遷移。
+          </div>
+
+          <p>建議直接建立 Expo Router 骨架，先把換算、禮包、預算與排期邏輯抽成純 TypeScript，再使用平台別的 UI adapter：</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>平台</th><th>UI 實作</th><th>共用部分</th></tr></thead>
+              <tbody>
+                <tr><td>Web</td><td>Expo Router Web + <code>@heroui/react</code></td><td rowspan="2">Domain logic、types、repositories interface、routes、feature state、semantic design tokens</td></tr>
+                <tr><td>iOS／Android</td><td>Expo Router + <code>heroui-native</code> + Uniwind</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout success">
+            <span class="callout-title">推薦決策</span>
+            一個 Expo Router repository，共用產品核心與路由；Web 使用 HeroUI React，iOS／Android 使用 HeroUI Native，以 <code>.web.tsx</code> 與 <code>.native.tsx</code> 隔離 presentation layer。
+          </div>
+        </section>
+
+        <section id="proof-boundary" class="report-section" data-search-section>
+          <p class="section-kicker">02 · Evidence</p>
+          <h2>證據邊界</h2>
+          <p>本報告將不同信心層級明確分開，避免把架構建議誤當成已驗證的 runtime 事實。</p>
+          <div class="evidence-row" aria-label="證據層級">
+            <span class="badge confirmed">本機確認</span>
+            <span class="badge official">官方文件</span>
+            <span class="badge inference">分析推論</span>
+            <span class="badge proposal">建議方案</span>
+          </div>
+          <ul>
+            <li><strong>本機確認：</strong>現有檔案結構、DOM API、<code>localStorage</code> keys、global variables 與參考文件內容。</li>
+            <li><strong>官方文件：</strong>HeroUI React／Native 定位、HeroUI Native Web 限制、Expo platform-specific modules、Expo static rendering、Supabase 匿名帳號行為。</li>
+            <li><strong>分析推論：</strong>先做 HeroUI Web 會增加重寫成本；UI 雙 adapter 比強迫共用 JSX 穩定。</li>
+            <li><strong>建議方案：</strong>目標目錄、Phase Gates、storage adapter 邊界與 UI 分層。這些必須經過 Spike 才能成為最終決策。</li>
+          </ul>
+        </section>
+
+        <section id="current-state" class="report-section" data-search-section>
+          <p class="section-kicker">03 · Current State</p>
+          <h2>現有 App 架構盤點</h2>
+          <p>目前專案不是 React 專案，也沒有可直接搬到 React Native 的 component tree。它是一個以單一 HTML 為主體的靜態 App。</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>面向</th><th>現況</th><th>遷移影響</th></tr></thead>
+              <tbody>
+                <tr><td>UI</td><td><code>index.html</code> 內嵌 CSS、HTML 與 JavaScript，約 942 行</td><td>需重建 presentation layer</td></tr>
+                <tr><td>事件</td><td>大量 inline <code>onclick</code>、<code>getElementById</code>、<code>innerHTML</code></td><td>需改為 React state 與 event handlers</td></tr>
+                <tr><td>儲存</td><td><code>localStorage</code> + <code>lad_</code> prefix</td><td>需抽象化 Web／Native storage</td></tr>
+                <tr><td>排期</td><td><code>window.SCHEDULE</code> 與 <code>window.SCHEDULE_META</code></td><td>應轉成 typed seed／repository</td></tr>
+                <tr><td>禮包規則</td><td><code>window.PACK_DATA</code>、<code>window.OFFICIAL_TICKET_RULES</code></td><td>應與 UI 完全分離</td></tr>
+                <tr><td>工程基礎</td><td>無 package.json、TypeScript、React 與自動測試</td><td>需建立全新 build／test pipeline</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>可保留的核心</h3>
+          <ul>
+            <li>抽數與鑽石換算規則。</li>
+            <li>官方贈券規則與禮包最佳化計算。</li>
+            <li>預算、花費、排期的 domain model。</li>
+            <li>「排期 → 換算 → 禮包建議 → 帶入錢包」的產品流程。</li>
+            <li>現有文案、產品語言與非遊戲美術的視覺識別。</li>
+          </ul>
+
+          <div class="callout warning">
+            <span class="callout-title">實作判斷</span>
+            這次工作不是單純「換 UI Kit」，而是保留產品邏輯與資料、重建整個 presentation layer。
+          </div>
+        </section>
+
+        <section id="heroui" class="report-section" data-search-section>
+          <p class="section-kicker">04 · UI Library Boundary</p>
+          <h2>HeroUI 的關鍵限制</h2>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th></th><th>HeroUI React</th><th>HeroUI Native</th></tr></thead>
+              <tbody>
+                <tr><td>官方 repository</td><td><a href="https://github.com/heroui-inc/heroui">heroui-inc/heroui</a></td><td><a href="https://github.com/heroui-inc/heroui-native">heroui-inc/heroui-native</a></td></tr>
+                <tr><td>產品定位</td><td>React Web UI library</td><td>React Native UI library</td></tr>
+                <tr><td>主套件</td><td><code>@heroui/react</code></td><td><code>heroui-native</code></td></tr>
+                <tr><td>底層</td><td>React DOM、React Aria、Tailwind CSS v4</td><td>React Native、Uniwind、Reanimated、Gesture Handler</td></tr>
+                <tr><td>官方建議平台</td><td>Web</td><td>iOS／Android</td></tr>
+                <tr><td>Expo Web</td><td>可作為 web-only renderer 進行 Spike</td><td>官方目前明確表示不建議</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>HeroUI Native 官方 Quick Start 寫明：目前專注 iOS 與 Android，不建議用於 Expo Web；Web 開發應使用 HeroUI React。因此，「一套 HeroUI component tree 三端共用」現在不是可依賴的官方路徑。</p>
+
+          <div class="callout danger">
+            <span class="callout-title">不建議的順序</span>
+            靜態 HTML → HeroUI React Web → HeroUI Native／Expo。第一次重寫得到 React DOM UI，第二次仍要重寫 React Native UI。
+          </div>
+        </section>
+
+        <section id="reference-review" class="report-section" data-search-section>
+          <p class="section-kicker">05 · Reference Review</p>
+          <h2><code>references/08-13</code> 文件檢視</h2>
+
+          <h3>一致且值得保留的方向</h3>
+          <ul>
+            <li>從單一計算工具發展成「規劃物件」與社群分享。</li>
+            <li>匿名優先，但在跨裝置同步或公開分享時提供帳號升級。</li>
+            <li>Supabase + RLS 作為資料邊界。</li>
+            <li>Cloudflare Worker 處理使用者產生內容的動態 Open Graph metadata。</li>
+            <li>Expo Router 統一路由、deep link 與 Web static export。</li>
+            <li>不放入遊戲原畫，降低 IP 風險。</li>
+          </ul>
+
+          <h3>需要修正的四個衝突</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>衝突</th><th>目前文件</th><th>建議修正</th></tr></thead>
+              <tbody>
+                <tr><td>Styling</td><td>One-Shot 將 styling 固定為 <code>StyleSheet.create</code>；UI Kit 報告選 HeroUI Native + Uniwind</td><td>改為 platform renderer 方案，並明確 Native 接受 Uniwind</td></tr>
+                <tr><td>單一 codebase</td><td>PRD 暗示三端共用一套 UI</td><td>重新定義為共用 domain、route、state 與 tokens；UI 允許分平台</td></tr>
+                <tr><td>Phase 0</td><td>同時進行 Expo、UI、Supabase、Auth、migration</td><td>分成 baseline／Spike／parity／cloud 四個 gate</td></tr>
+                <tr><td>匿名驗收</td><td>清除全部 <code>localStorage</code> 後要從 Supabase 取回資料</td><td>只刪 <code>lad_*</code> keys，或先升級為可恢復帳號</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout warning">
+            <span class="callout-title">One-Shot 執行狀態</span>
+            現在不應原樣執行 <code>claude-code-one-shot-shenkong.md</code>。它的產品約束仍有價值，但技術表、Phase 0 與 Gate 1 需先更新。
+          </div>
+        </section>
+
+        <section id="decision" class="report-section" data-search-section>
+          <p class="section-kicker">06 · Decision</p>
+          <h2>架構方案比較</h2>
+
+          <div class="decision">
+            <article class="decision-card recommended">
+              <span class="decision-label">推薦</span>
+              <h3>Expo 單 repo + 雙 UI adapter</h3>
+              <p>Web 用 HeroUI React，Native 用 HeroUI Native。共用 domain、routes 與 feature state，允許 UI 層使用平台副檔名。</p>
+            </article>
+            <article class="decision-card">
+              <span class="decision-label">可選</span>
+              <h3>一套 universal UI</h3>
+              <p>如果最高優先是 JSX 共用率，就不應將 HeroUI 視為強制條件，而要重新評估 universal library 或 React Native primitives。</p>
+            </article>
+            <article class="decision-card">
+              <span class="decision-label">不推薦</span>
+              <h3>先做 HeroUI Web</h3>
+              <p>可當作可拋棄的 Web 視覺原型，但不應被視為 Expo／Native 遷移基礎。</p>
+            </article>
+          </div>
+
+          <h3>決策原則</h3>
+          <ul>
+            <li>以共用「產品知識」為目標，不以共用「每一行 JSX」為目標。</li>
+            <li>路由、資料模型、計算規則、validation 與 repositories interface 必須共用。</li>
+            <li>交互介面服從 Web 與 Native 的使用慣例，透過統一 semantic tokens 維持品牌一致性。</li>
+            <li>在大規模改寫前，先用最小 Spike 驗證 HeroUI React 在 Expo Web static export 中的實際整合成本。</li>
+          </ul>
+        </section>
+
+        <section id="target-architecture" class="report-section" data-search-section>
+          <p class="section-kicker">07 · Target Architecture</p>
+          <h2>目標架構</h2>
+          <pre aria-label="建議目錄結構"><code>src/
+├── app/                         # Expo Router routes
+│   ├── _layout.tsx
+│   ├── (tabs)/
+│   │   ├── wallet.tsx
+│   │   ├── schedule.tsx
+│   │   └── calculator.tsx
+│   └── plans/
+│
+├── domain/                      # 純 TypeScript，不得依賴 UI
+│   ├── budget/
+│   ├── calculator/
+│   ├── packages/
+│   ├── schedule/
+│   └── plans/
+│
+├── data/
+│   ├── repositories/               # interfaces
+│   ├── local/                      # web/native adapters
+│   └── supabase/
+│
+├── features/
+│   ├── wallet/
+│   ├── schedule/
+│   └── calculator/
+│
+└── ui/
+    ├── tokens/                       # semantic design tokens
+    ├── button.web.tsx               # @heroui/react
+    ├── button.native.tsx            # heroui-native
+    ├── dialog.web.tsx
+    └── dialog.native.tsx</code></pre>
+
+          <h3>元件遷移對映</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>現有功能</th><th>共用核心</th><th>Web renderer</th><th>Native renderer</th></tr></thead>
+              <tbody>
+                <tr><td>底部分頁</td><td>Route names、badge state</td><td>HeroUI／headless Web tabs</td><td>Expo Router native tabs</td></tr>
+                <tr><td>預算與記帳</td><td>Budget model、validation、totals</td><td>HeroUI Card／Input／Dialog</td><td>HeroUI Native Surface／Input／Bottom Sheet</td></tr>
+                <tr><td>排期日曆</td><td>Date range、events by day</td><td>DOM grid，必要時自建</td><td>React Native grid／virtualized list</td></tr>
+                <tr><td>換算器</td><td>全部公式、input schema、result model</td><td>HeroUI form controls</td><td>HeroUI Native form controls</td></tr>
+                <tr><td>禮包建議</td><td>Optimizer、tier result、currency formatting</td><td>Table／Card</td><td>List／Surface</td></tr>
+                <tr><td>Debug 頁面</td><td>URL registry 與 changelog data</td><td>Web-only routes 或 static public files</td><td>不放入一般 Native navigation</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Design token 原則</h3>
+          <p>不要在共用邏輯中存放 <code>--pink</code>、<code>--purple</code> 這類實際色名，應改為 <code>accent</code>、<code>surface</code>、<code>danger</code>、<code>onSurface</code>、<code>spacing.md</code> 等語意 token，然後分別輸出給 HeroUI React 的 CSS variables 與 HeroUI Native／Uniwind 主題。</p>
+        </section>
+
+        <section id="migration" class="report-section" data-search-section>
+          <p class="section-kicker">08 · Migration Plan</p>
+          <h2>建議遷移路線</h2>
+
+          <div class="flow" aria-label="遷移階段">
+            <div class="flow-step"><strong>Baseline</strong><span>保存現況、抽 domain、建立 golden tests。</span></div>
+            <div class="flow-step"><strong>HeroUI Spike</strong><span>在 Web／iOS／Android 驗證最小互動集。</span></div>
+            <div class="flow-step"><strong>Feature Parity</strong><span>依換算、錢包、排期順序搬移。</span></div>
+            <div class="flow-step"><strong>Cloud &amp; Community</strong><span>功能對等後再上 Supabase、Auth 與分享。</span></div>
+          </div>
+
+          <h3>Phase 0A：保護現有功能</h3>
+          <ul>
+            <li>保留現在正式站與 Git history 當 baseline，不原地覆蓋。</li>
+            <li>將鑽石換算、贈券、禮包 optimizer、預算統計改成純 TypeScript functions。</li>
+            <li>用現在的實際輸入與輸出建立 golden tests，防止 UI 遷移時改變計算結果。</li>
+            <li>將 <code>schedule.js</code> 與 <code>packs.js</code> 改成 typed seed data。</li>
+          </ul>
+
+          <h3>Phase 0B：HeroUI 技術 Spike</h3>
+          <p>在開始重寫整個 App 前，只做一組小型但有代表性的畫面：</p>
+          <ul>
+            <li>Web：HeroUI React + Expo Router Web + static export。</li>
+            <li>Native：HeroUI Native + Uniwind + Expo Router。</li>
+            <li>元件：Tabs、Input、Select、Dialog／Bottom Sheet、Card／Surface、Toast。</li>
+            <li>裝置條件：中文字型、動態字體、鍵盤、safe area、dark mode。</li>
+          </ul>
+          <div class="callout">
+            <span class="callout-title">Spike Gate</span>
+            <code>expo export --platform web</code> 必須成功；iOS 與 Android development build 必須可開啟並完成表單、彈窗與分頁流程。若 HeroUI React 與 Expo Web 整合成本過高，在這個 Gate 就切換方案，不要等全站重寫後才發現。
+          </div>
+
+          <h3>Phase 0C：功能對等</h3>
+          <ol>
+            <li>換算器與禮包建議。</li>
+            <li>帶入錢包、預算與記帳。</li>
+            <li>排期日曆。</li>
+            <li>儲存與 reload 行為。</li>
+            <li>內部 debug 入口與三個 Web-only 頁面。</li>
+          </ol>
+
+          <h3>Phase 1：Storage 與 Supabase</h3>
+          <p>功能對等後，再改用 repository pattern，將本地儲存、雲端同步與匿名帳號加入。</p>
+
+          <h3>Phase 2：社群與成長功能</h3>
+          <p>建立 planning object、公開規劃頁、分享圖卡、每日 check-in 與 Cloudflare Worker 動態 OG。</p>
+        </section>
+
+        <section id="storage-auth" class="report-section" data-search-section>
+          <p class="section-kicker">09 · Storage &amp; Identity</p>
+          <h2>儲存與帳號遷移</h2>
+
+          <h3>Storage adapter</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>邊界</th><th>Web</th><th>Native</th><th>雲端</th></tr></thead>
+              <tbody>
+                <tr><td>使用者偏好／草稿</td><td>localStorage 或 IndexedDB adapter</td><td>SQLite／AsyncStorage adapter</td><td>視需求同步</td></tr>
+                <tr><td>預算／花費</td><td colspan="2">Repository interface 不讓 feature 知道底層儲存方式</td><td>Supabase + RLS</td></tr>
+                <tr><td>排期</td><td colspan="2">本地 cache + remote refresh</td><td>Supabase banners</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3><code>lad_*</code> 一次性遷移</h3>
+          <ol>
+            <li>在原 Web domain 上偵測舊 keys。</li>
+            <li>先 parse 與 validate，不直接信任 JSON shape。</li>
+            <li>寫入本地新 schema，必要時再同步 Supabase。</li>
+            <li>寫入可重複執行的 migration marker。</li>
+            <li>保留舊 keys 一個過渡期，驗證後才提供清理。</li>
+          </ol>
+
+          <h3>匿名帳號的正確驗收</h3>
+          <p>Supabase 官方說明，匿名使用者如果登出、清除瀏覽資料或改用另一裝置，就無法再存取原帳號。因此 Gate 不能以「清空全部 localStorage」測試匿名帳號恢復。</p>
+          <ul>
+            <li><strong>本地 migration test：</strong>只刪除 <code>lad_*</code> keys，保留 auth session。</li>
+            <li><strong>完整清除 test：</strong>先把匿名帳號升級為 Google、Apple 或 Email 帳號。</li>
+            <li><strong>跨裝置 test：</strong>只對可恢復帳號進行。</li>
+            <li><strong>UI 提示：</strong>匿名狀態要顯示「未備份，重裝可能遺失」。</li>
+          </ul>
+        </section>
+
+        <section id="risks" class="report-section" data-search-section>
+          <p class="section-kicker">10 · Risks</p>
+          <h2>主要風險、假設與待決項</h2>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>項目</th><th>狀態</th><th>影響</th><th>處理方式</th></tr></thead>
+              <tbody>
+                <tr><td>HeroUI React + Expo Web</td><td>待驗證</td><td>官方 HeroUI Web 文件主要覆蓋 Next.js／Vite，不是 Expo Web 專用整合</td><td>最小 Spike + static export gate</td></tr>
+                <tr><td>HeroUI Native 成熟度</td><td>持續更新，但仍是 1.0.x</td><td>升級 Expo／Reanimated 時可能有相容變動</td><td>鎖定已驗證版本，跟隨 changelog</td></tr>
+                <tr><td>雙 UI adapter</td><td>已知成本</td><td>部分畫面會有 Web／Native 兩份實作</td><td>共用 feature controller／form schema／tokens，不重複 domain logic</td></tr>
+                <tr><td>日曆元件</td><td>高度客製</td><td>HeroUI 不會自動解決多卡池排期呈現</td><td>視為產品核心 component，單獨設計與效能測試</td></tr>
+                <tr><td>Static OG</td><td>已知限制</td><td>Build 時不存在的公開規劃無法產生每頁 metadata</td><td>Cloudflare Worker 或成熟 server rendering</td></tr>
+                <tr><td>匿名資料</td><td>不可恢復</td><td>清瀏覽資料或重裝 App 可失去資料</td><td>設定頁狀態文案 + 帳號升級</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>本報告使用的假設</h3>
+          <ul>
+            <li>HeroUI 仍是 UI 層的明確產品選擇，但不要求 Web 與 Native 使用同一套套件。</li>
+            <li>Web 仍是 SEO、零安裝試用與社群分享入口，不是可以凍結的次要平台。</li>
+            <li>iOS 與 Android 需要真正的 Native 互動體驗，不以 WebView wrapper 作為最終交付。</li>
+            <li>本階段優先順序是功能對等與架構穩定，不同時加入大量新社群功能。</li>
+          </ul>
+
+          <h3>尚未決定</h3>
+          <ul>
+            <li>HeroUI React 在 Expo Web build pipeline 中的實際整合與 bundle 成本。</li>
+            <li>Native 本地資料是使用 SQLite、AsyncStorage，還是以 Supabase cache 為主。</li>
+            <li>Web 與 Native 是否保持同步上線，或 Web-first 後用 feature flags 開放 Native。</li>
+            <li>原正式站如何在 Expo cutover 期間保留與 rollback。</li>
+          </ul>
+        </section>
+
+        <section id="next-actions" class="report-section" data-search-section>
+          <p class="section-kicker">11 · Actions</p>
+          <h2>建議下一步</h2>
+          <ol>
+            <li><strong>先修正架構文件：</strong>更新 One-Shot 技術表、Phase 0 與 Gate 1，不再將 <code>StyleSheet.create</code> 視為唯一 styling 方案。</li>
+            <li><strong>建立獨立 migration branch：</strong>保留現在正式站與可 rollback 的 baseline。</li>
+            <li><strong>先抽 domain tests：</strong>不先改畫面，先保證計算結果不會在遷移中漂移。</li>
+            <li><strong>建立 HeroUI Spike：</strong>用一個表單、一個彈窗、一個分頁和一張結果卡驗證三平台。</li>
+            <li><strong>Gate 通過後才開始 feature parity：</strong>換算 → 錢包 → 排期 → storage。</li>
+            <li><strong>將 Supabase 與社群功能留到架構對等後：</strong>避免一次調試五種變動。</li>
+          </ol>
+        </section>
+
+        <section id="agent-checklist" class="report-section" data-search-section>
+          <p class="section-kicker">12 · Handoff</p>
+          <h2>給下一位 Agent 的驗證清單</h2>
+          <ul class="checklist">
+            <li>確認專案根目錄與作業 branch，不覆蓋現在正式站。</li>
+            <li>確認 HeroUI 實際指的是 Web <code>@heroui/react</code>、Native <code>heroui-native</code> 雙 renderer。</li>
+            <li>使用實際安裝版本的官方文件，不盲目複製舊版本 setup。</li>
+            <li>確認 Expo Web static export 能包含 HeroUI React styles，且 hydration 無錯。</li>
+            <li>確認 HeroUI Native 在 iOS／Android development build 的 Input、Select、Dialog、Bottom Sheet 行為。</li>
+            <li>確認所有計算規則都在 <code>domain/</code> 且不依賴 React、DOM 或 React Native。</li>
+            <li>用現有 App 的輸入與結果建立 regression tests。</li>
+            <li>確認 <code>lad_*</code> migration 是 idempotent，且不會刪除 Supabase auth session。</li>
+            <li>確認 Web-only debug 頁面不會意外出現在 Native 一般導覽。</li>
+            <li>在加入 Supabase／Auth 前，先完成「設預算 → 記帳 → 換算 → 禮包建議 → 帶入錢包」三端驗收。</li>
+          </ul>
+        </section>
+
+        <section id="sources" class="report-section" data-search-section>
+          <p class="section-kicker">13 · Sources</p>
+          <h2>來源與本地參考</h2>
+
+          <h3>官方來源（查核日：2026-08-13）</h3>
+          <ol class="source-list">
+            <li><a href="https://github.com/heroui-inc/heroui">HeroUI React GitHub repository</a><small>Web 版 HeroUI 的定位與套件。</small></li>
+            <li><a href="https://heroui.com/en/docs/react/getting-started/quick-start">HeroUI React Quick Start</a><small>React 19+、Tailwind CSS v4 與 <code>@heroui/react</code> 要求。</small></li>
+            <li><a href="https://github.com/heroui-inc/heroui-native">HeroUI Native GitHub repository</a><small>React Native 版獨立 repository。</small></li>
+            <li><a href="https://heroui.com/en/docs/native/getting-started/quick-start">HeroUI Native Quick Start</a><small>Uniwind、peer dependencies，以及目前不建議 Web 使用的官方說明。</small></li>
+            <li><a href="https://github.com/heroui-inc/heroui-native/blob/main/CHANGELOG.md">HeroUI Native Changelog</a><small>1.0.x 更新與 Expo 57 相容記錄。</small></li>
+            <li><a href="https://docs.expo.dev/router/introduction/">Expo Router Introduction</a><small>Web、iOS、Android 的 universal routing 定位。</small></li>
+            <li><a href="https://docs.expo.dev/router/advanced/platform-specific-modules/">Expo platform-specific modules</a><small><code>.web.tsx</code>、<code>.native.tsx</code> 與 route-level platform split。</small></li>
+            <li><a href="https://docs.expo.dev/router/web/static-rendering/">Expo Router static rendering</a><small>Web <code>output: "static"</code> 與 export 方式。</small></li>
+            <li><a href="https://supabase.com/docs/guides/auth/auth-anonymous">Supabase Anonymous Sign-Ins</a><small>匿名帳號在登出、清除瀏覽資料與跨裝置時的限制。</small></li>
+          </ol>
+
+          <h3>本地程式與文件</h3>
+          <ol class="source-list">
+            <li><a href="../../index.html">index.html</a><small>現有 UI、DOM 互動、<code>localStorage</code> 封裝與主要產品流程。</small></li>
+            <li><a href="../../schedule.js">schedule.js</a><small>排期 global data。</small></li>
+            <li><a href="../../packs.js">packs.js</a><small>禮包、贈券與抽數規則 global data。</small></li>
+            <li><a href="claude-code-one-shot-shenkong.md">claude-code-one-shot-shenkong.md</a><small>Expo + Supabase + Cloudflare Worker 實作指令與 Phase Gates。</small></li>
+            <li><a href="Expo%20UI%20Kit%20%E9%81%B8%E5%9E%8B%E5%A0%B1%E5%91%8A_claude.md">Expo UI Kit 選型報告_claude.md</a><small>HeroUI Native、Uniwind、動效與 Web／Native 分支選型。</small></li>
+            <li><a href="%E6%B7%B1%E7%A9%BA%E7%9C%81%E7%9C%81-PRD-v2.html">深空省省-PRD-v2.html</a><small>產品方向、Supabase schema、分享架構與階段計畫。</small></li>
+            <li><a href="%23%202026%20GitHub%20Agent%20Skills%20%E6%B7%B1%E5%BA%A6%E7%AF%A9%E9%81%B8%EF%BC%9AWeb%20App%20%E2%86%92%20%E7%A4%BE%E7%BE%A4%20%E2%86%92%20iOS.md">2026 GitHub Agent Skills 深度篩選</a><small>Domain 與 DOM 解耦、Expo、Supabase 與工程 skill 建議。</small></li>
+          </ol>
+        </section>
+
+        <section id="revision-log" class="report-section" data-search-section>
+          <p class="section-kicker">14 · Revision</p>
+          <h2>修訂紀錄</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>版本</th><th>日期</th><th>狀態</th><th>內容</th></tr></thead>
+              <tbody>
+                <tr><td>v1.0</td><td>2026-08-13</td><td>初始報告</td><td>盤點現有 App 與 <code>references/08-13</code>，確認 HeroUI Web／Native 邊界，提出 Expo 單 repo + 雙 UI adapter 的遷移建議。</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>文件狀態：</strong>本報告是架構決策建議，尚未代表專案已開始遷移，也不會自動取代 PRD 或 One-Shot Prompt。必須在 HeroUI Spike 通過後才升級為最終 ADR。</p>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">
+      此檔案為離線、無外部 runtime dependency 的靜態 HTML 架構報告。
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const input = document.getElementById('report-search');
+      const sections = [...document.querySelectorAll('[data-search-section]')];
+      const empty = document.getElementById('empty-search');
+
+      input.addEventListener('input', () => {
+        const query = input.value.trim().toLocaleLowerCase('zh-Hant');
+        let visible = 0;
+
+        sections.forEach((section) => {
+          const match = !query || section.textContent.toLocaleLowerCase('zh-Hant').includes(query);
+          section.hidden = !match;
+          if (match) visible += 1;
+        });
+
+        empty.classList.toggle('visible', visible === 0);
+      });
+    })();
+  </script>
+</body>
+</html>

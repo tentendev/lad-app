@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "uniwind";
+
+@import "heroui-native/styles";
+
+@source "../node_modules/heroui-native/lib";
+
+@theme {
+  --color-cosmic: #66528f;
+  --color-orbit: #a78bfa;
+  --color-starlight: #fbf9ff;
+  --color-glass: #493b70;
+  --color-glass-soft: #766ba5;
+  --color-line: #c9c4e0;
+}

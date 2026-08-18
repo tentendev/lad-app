@@ -1,0 +1,499 @@
+# Expo UI Kit 評估：針對 LAD App
+
+我檢查了目前的 [LAD App](https://lad-app.vercel.app/)；現有 UI 主要包含預算 Dashboard、表單、花費紀錄、月份排期/Calendar、抽卡換算、課金計算、Modal，以及底部 Navigation。這是一個典型的「資料工具型 App」，未來若加入帳號、社群、玩家 Profile、Feed 等功能，會逐漸變成完整 consumer app。([Lad App][1])
+
+以 **2026 年 8 月**的 Expo / React Native 生態來看，我會這樣排名。
+
+| 排名 | UI Kit                                                                           | GitHub Stars | Expo Web | iOS / Android | Agent 開發友善 | LAD 適合度    |
+| -- | -------------------------------------------------------------------------------- | -----------: | -------- | ------------- | ---------- | ---------- |
+| 1  | [React Native Reusables](https://github.com/founded-labs/react-native-reusables) |         8.6k | 很強       | 很強            | 極高         | **9.5/10** |
+| 2  | [gluestack-ui](https://github.com/gluestack/gluestack-ui)                        |         5.2k | 很強       | 很強            | **極高**     | **9.4/10** |
+| 3  | [Tamagui](https://github.com/tamagui/tamagui)                                    |        14.1k | **極強**   | 極強            | 高          | **9.0/10** |
+| 4  | [React Native Paper](https://github.com/callstack/react-native-paper)            |        14.4k | 支援       | 很強            | 高          | 7.5/10     |
+| 5  | [HeroUI Native](https://github.com/heroui-inc/heroui-native)                     |         3.6k | 不建議      | 很強            | 很高         | 7.0/10     |
+| 6  | [Expo UI](https://docs.expo.dev/versions/latest/sdk/ui/)                         |      Expo 官方 | 不適合作主 UI | **原生最佳**      | 高          | 6.5/10     |
+| —  | [UI Kitten](https://github.com/akveo/react-native-ui-kitten)                     |        10.7k | 弱        | 支援            | 中          | **不建議新專案** |
+| —  | [React Native UI Lib](https://github.com/wix/react-native-ui-lib)                |         7.2k | 弱        | 支援            | 中          | **不建議新專案** |
+
+GitHub Stars 為目前頁面顯示值。React Native Reusables 8.6k、Tamagui 14.1k、gluestack-ui 5.2k、React Native Paper 14.4k、HeroUI Native 3.6k。([GitHub][2])
+
+---
+
+## 1. React Native Reusables：我最推薦 LAD 使用
+
+**核心概念：shadcn/ui for React Native。**
+
+官方自己就是這樣定位：把 shadcn/ui 的模式帶到 React Native，使用 NativeWind / Uniwind，並明確包含 Expo、React Native Web。([GitHub][2])
+
+它最大的優勢不是「元件很多」，而是：
+
+**元件程式碼直接屬於你的 Project。**
+
+不是：
+
+```tsx
+import { Button } from "some-ui-library"
+```
+
+然後所有 UI 被 library API 綁死。
+
+而更接近 shadcn：
+
+```text
+components/
+├── ui/
+│   ├── button.tsx
+│   ├── card.tsx
+│   ├── dialog.tsx
+│   ├── input.tsx
+│   ├── select.tsx
+│   ├── tabs.tsx
+│   └── progress.tsx
+```
+
+Agent 可以直接讀、改、重構這些 component。
+
+這對 Full-Agentic Coding 特別重要。
+
+### LAD 現在的元件幾乎可以直接 mapping
+
+| LAD UI           | React Native Reusables  |
+| ---------------- | ----------------------- |
+| 本月預算             | Card + Progress         |
+| 每月預算設定           | Input                   |
+| 提醒門檻             | Input / Slider          |
+| 記一筆花費            | Input + Select + Button |
+| 類別               | Select                  |
+| 編輯花費             | Dialog / Bottom Sheet   |
+| 排期               | 自訂 Calendar             |
+| 抽卡類型             | Select / Tabs           |
+| 抽數 / 鑽石          | Toggle / Tabs           |
+| 計算明細             | Collapsible             |
+| 底部「錢包 / 排期 / 換算」 | Expo Router Tabs        |
+
+GitHub Repo 本身也標記 Expo、React Native Web、Radix UI、shadcn 等相關技術。([GitHub][2])
+
+### 最大優勢
+
+**你現在 LAD 的視覺可以保留。**
+
+不需要把 LAD 改成 Material Design，也不需要變成某一個 UI Kit 的既定風格。
+
+這點對你的 App 很重要。
+
+---
+
+# 2. gluestack-ui v5：Agentic Coding 最值得關注
+
+如果純粹從 **2026 年新專案 + Expo + AI Agent** 的角度，我認為 gluestack-ui v5 已經非常接近 React Native Reusables。
+
+目前 v5 已經改成：
+
+> copy-paste components + Tailwind CSS / NativeWind
+
+而不是以前 NativeBase 那種傳統 component dependency 模式。官方目前明確標示支援 NativeWind v5 / Tailwind v4、Expo Router First、CLI 加 component、theming 與 accessibility。([GitHub][3])
+
+例如：
+
+```bash
+npx gluestack-ui init
+```
+
+再由 CLI 加：
+
+```text
+Button
+Input
+Card
+Modal
+BottomSheet
+Select
+Tabs
+Accordion
+Avatar
+Badge
+Progress
+Toast
+Menu
+Popover
+```
+
+官方目前已有 30+ responsive components，而且還包含 Bottom Sheet、Image Viewer 等比較 App-oriented 的 component。([gluestack][4])
+
+更值得注意的是它目前的 Repo 本身甚至已經有：
+
+```text
+.agents/skills/
+CLAUDE.md
+ONBOARDING.md
+```
+
+而且官方 repo 已經超過 16,000 commits。([GitHub][3])
+
+這代表它目前明顯正在往 AI/Agent-assisted development 的 workflow 靠。
+
+### 對 LAD 的優點
+
+如果之後要增加：
+
+```text
+Community
+Profile
+Comments
+Notifications
+Settings
+Feed
+User-generated content
+Avatar
+Bottom Sheet
+Toast
+Image Viewer
+Action Sheet
+```
+
+gluestack 已經有很多現成 Pattern。
+
+因此：
+
+**現在是工具 App，但很確定未來要做 Community：gluestack 很有吸引力。**
+
+---
+
+# 3. Tamagui：技術架構最完整
+
+Tamagui 是這批裡面最成熟的 Universal Design System 之一，目前約 **14.1k stars**。([GitHub][5])
+
+它真正強的不是 component，而是：
+
+```text
+React
+        ↓
+Tamagui
+        ↓
+Web ─ React Native
+        ↓
+iOS / Android
+```
+
+官方目標就是 Web / React Native 共用同一套 UI，並透過 compiler 對 Web 產生 CSS、對 Native 產生 optimized View/style。([GitHub][5])
+
+所以如果目標是：
+
+```text
+lad-app.com
+     +
+iOS App
+     +
+Android App
+```
+
+而且希望 UI code sharing 最大化，Tamagui 非常強。
+
+### 但我沒有把它排第一
+
+因為它有自己的：
+
+```text
+tokens
+themes
+styled()
+variants
+compiler
+configuration
+```
+
+例如 Agent 必須理解：
+
+```tsx
+<Button
+  size="$4"
+  theme="active"
+  backgroundColor="$purple10"
+/>
+```
+
+而不是單純：
+
+```tsx
+<View className="rounded-xl bg-purple-500 p-4">
+```
+
+對人類工程師是很漂亮的 abstraction。
+
+對大量 Agent 修改 UI 時，反而增加了一層 mental model。
+
+所以：
+
+**大型 design system：Tamagui 更強。**
+
+**Agent 大量寫 UI：React Native Reusables / gluestack 更直接。**
+
+---
+
+# 4. React Native Paper
+
+React Native Paper 其實是這些方案中最成熟的之一，目前約 **14.4k stars**，而且仍持續開發 Material Design 元件。([GitHub][6])
+
+問題不是技術。
+
+問題是：
+
+**Material Design 太強勢。**
+
+LAD 現在比較像：
+
+```text
+Gaming
+Cute
+Lifestyle
+Finance utility
+Custom brand
+```
+
+而不是：
+
+```text
+Google
+Enterprise
+Material App
+```
+
+Paper 可以 theme，但最後常常還是有 Material 味道。
+
+因此不是我對 LAD 的首選。
+
+---
+
+# 5. HeroUI Native
+
+HeroUI Native 是目前視覺上非常漂亮的新選擇。
+
+目前：
+
+* 約 3.6k stars
+* 已有正式 iOS Preview App
+* 基於 Uniwind
+* Expo-first
+* 設計品質高
+* component API 很乾淨。([GitHub][7])
+
+但有一個直接淘汰它作為 LAD 主 UI Kit 的原因：
+
+**官方目前不建議 HeroUI Native 用於 Web。**
+
+官方討論明確指出目前主要 focus iOS / Android，Web 建議使用 HeroUI React。([GitHub][8])
+
+你要的是：
+
+```text
+Expo Web
+iOS
+Android
+```
+
+所以目前不應把它作為共用 design system。
+
+---
+
+# 6. Expo UI：不要拿來當主要 UI Kit
+
+Expo 現在有自己的：
+
+**`@expo/ui`**
+
+它直接把：
+
+```text
+SwiftUI
+Jetpack Compose
+```
+
+暴露給 React Native。([Expo Documentation][9])
+
+這是一個非常重要的發展。
+
+例如未來可以在 iOS 做：
+
+```text
+SwiftUI native controls
+Liquid Glass
+Native picker
+Native context menu
+```
+
+Android：
+
+```text
+Jetpack Compose
+Material native controls
+```
+
+但目前它的主體定位仍以 Android / iOS native UI 為主，而不是 Web/iOS/Android 同一套 universal component system。([Expo Documentation][9])
+
+所以正確方式是：
+
+```text
+React Native Reusables / gluestack
+                +
+             Expo UI
+        native-only enhancement
+```
+
+而不是：
+
+```text
+整個 LAD = Expo UI
+```
+
+---
+
+# 有兩個高 Star 專案，我反而會排除
+
+### UI Kitten
+
+雖然還有 **10.7k stars**，但 GitHub Issues 顯示其主要活動與問題大量停留在較舊 React Native 世代。([GitHub][10])
+
+不應因為 Star 高就選。
+
+### Wix React Native UI Lib
+
+也有 **7.2k stars**，但官方 README 目前甚至仍寫著正在升級 New Architecture，現有支援基準為 React Native 0.73、計畫往 0.77。([GitHub][11])
+
+這對 2026 新 Expo App 是重大問題。
+
+React Native 官方生態現在已全面進入 New Architecture；從 React Native 0.82 開始甚至不能關閉 New Architecture。([Expo Documentation][12])
+
+所以不應用「歷史 Star 數」判斷 UI framework。
+
+---
+
+# LAD 最適合的架構
+
+我會直接定成：
+
+```text
+Expo
+│
+├── Expo Router
+│
+├── React Native Reusables
+│   └── NativeWind / Uniwind
+│
+├── React Native Reanimated
+│
+├── React Hook Form
+│   └── Zod
+│
+├── Zustand
+│
+├── TanStack Query
+│
+├── Expo SQLite / Neon API
+│
+└── EAS
+    ├── iOS
+    └── Android
+```
+
+UI：
+
+```text
+React Native Reusables
+        │
+        ├── Button
+        ├── Input
+        ├── Select
+        ├── Card
+        ├── Dialog
+        ├── Tabs
+        ├── Progress
+        └── Sheet
+             │
+             ▼
+        LAD Design System
+```
+
+然後自己建立：
+
+```text
+components/
+├── ui/
+│
+├── lad/
+│   ├── BudgetCard.tsx
+│   ├── SpendingForm.tsx
+│   ├── SpendingItem.tsx
+│   ├── ScheduleCalendar.tsx
+│   ├── BannerCard.tsx
+│   ├── PullCalculator.tsx
+│   ├── PackageCalculator.tsx
+│   └── CurrencyDisplay.tsx
+```
+
+這樣 UI Kit 不會侵入 Business Logic。
+
+---
+
+# 最後排名
+
+### 對 LAD App
+
+**第一名：React Native Reusables**
+
+```text
+React Native Reusables
++
+NativeWind / Uniwind
++
+Expo Router
+```
+
+原因：
+
+**最容易把現在 LAD 的 UI 原樣搬過去，而且 Web / iOS / Android 共用程度高、shadcn 思維、Agent 最容易直接修改。** ([GitHub][2])
+
+### 第二名：gluestack-ui v5
+
+如果更重視：
+
+```text
+未來 Community
+大量現成 Components
+Patterns
+Bottom Sheet
+Action Sheet
+AI Agent workflow
+```
+
+它甚至可能比 React Native Reusables 更合適。v5 已經是 Expo Router First + NativeWind v5 + copy-paste 架構。([GitHub][3])
+
+### 第三名：Tamagui
+
+如果 LAD 未來變成很大的產品，需要真正完整的：
+
+```text
+Design System
+Web
+Native
+Responsive
+Tokens
+Themes
+Performance optimization
+```
+
+Tamagui 是三者中架構最完整的。([GitHub][5])
+
+**以你現在這個 LAD，我會選 `Expo + React Native Reusables + NativeWind/Uniwind + Expo Router`，而不是 Tamagui、Paper 或純 Expo UI。**
+
+[1]: https://lad-app.vercel.app/ "深空省省｜你的抽卡與課金規劃好幫手"
+[2]: https://github.com/founded-labs/react-native-reusables "GitHub - founded-labs/react-native-reusables: Bringing shadcn/ui to React Native. Beautifully crafted components with Nativewind/Uniwind, open source, and almost as easy to use. · GitHub"
+[3]: https://github.com/gluestack/gluestack-ui "GitHub - gluestack/gluestack-ui: React & React Native Components & Patterns (copy-paste components & patterns crafted with Tailwind CSS (NativeWind)) · GitHub"
+[4]: https://gluestack.io/ui/docs/components/all-components?utm_source=chatgpt.com "All Components | gluestack-ui | React Native ..."
+[5]: https://github.com/tamagui/tamagui "GitHub - tamagui/tamagui: Style React fast with 100% parity on React Native, an optional UI kit, and optimizing compiler. · GitHub"
+[6]: https://github.com/callstack/react-native-paper "GitHub - callstack/react-native-paper: Material Design for React Native (Android & iOS) · GitHub"
+[7]: https://github.com/heroui-inc/heroui-native "GitHub - heroui-inc/heroui-native: 📱Beautiful, fast and modern React Native UI library · GitHub"
+[8]: https://github.com/heroui-inc/heroui-native/discussions/241?utm_source=chatgpt.com "HeroUI Native on the web #241"
+[9]: https://docs.expo.dev/versions/latest/sdk/ui/?utm_source=chatgpt.com "Expo UI"
+[10]: https://github.com/akveo/react-native-ui-kitten?utm_source=chatgpt.com "akveo/react-native-ui-kitten"
+[11]: https://github.com/wix/react-native-ui-lib?utm_source=chatgpt.com "wix/react-native-ui-lib: UI Components Library for ..."
+[12]: https://docs.expo.dev/guides/new-architecture/?utm_source=chatgpt.com "React Native's New Architecture"

@@ -1,0 +1,22 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0.0",
+    "categories": ["UTILITIES", "FINANCE"],
+    "info": {
+      "zh-Hant": {
+        "title": "深空省省",
+        "subtitle": "抽卡排期與預算規劃",
+        "promotionalText": "排期、預算、花費與抽卡資源集中管理；主要功能免登入，私人雲端備份由你決定。",
+        "description": "把抽卡排期、每月預算、實際花費與資源換算放在同一個 App 裡管理。\n\n你可以用月曆查看活動時間，替每個月份設定預算，記錄實際花費，並把鑽石、票券、返券與預留資源換算成可執行的抽卡規劃。主要功能不需要登入；建立會員後，可自行決定是否把私人備份上傳到雲端。\n\n深空省省是玩家自製的規劃工具，沒有廣告，也不做跨 App 追蹤。本 App 與任何遊戲開發商、發行商或營運商沒有隸屬、授權或合作關係。",
+        "keywords": ["抽卡", "預算", "排期", "記帳", "課金", "資源換算"],
+        "supportUrl": "https://lad-pocket.vercel.app/support",
+        "privacyPolicyUrl": "https://lad-pocket.vercel.app/privacy",
+        "privacyChoicesUrl": "https://lad-pocket.vercel.app/account"
+      }
+    },
+    "release": {
+      "automaticRelease": false
+    }
+  }
+}
