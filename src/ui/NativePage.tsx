@@ -1,7 +1,7 @@
 import { Typography } from "heroui-native";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
-import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AccountEntry } from "@/ui/AccountEntry";
@@ -15,6 +15,7 @@ type Props = PropsWithChildren<{
 }>;
 
 export function NativePage({ eyebrow, title, description, showAccountEntry = true, showAboutLink = true, children }: Props) {
+  const { width } = useWindowDimensions();
   return (
     <ImageBackground
       accessibilityLabel={`${title}頁面星空背景`}
@@ -31,7 +32,7 @@ export function NativePage({ eyebrow, title, description, showAccountEntry = tru
         >
           <View className="w-full self-center" style={{ maxWidth: 520, gap: 16 }}>
             <View className="flex-row flex-wrap items-center justify-between gap-3">
-              <View className="flex-row items-center gap-3"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 44, height: 44, borderRadius: 12 }} accessible={false} /><View><Typography className="text-xl font-bold text-white">深空省省</Typography><Typography className="text-xs text-white/65">排期・換算・記帳的小宇宙</Typography></View></View>
+              <View className="flex-row items-center gap-3"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 44, height: 44, borderRadius: 12 }} accessible={false} /><View><Typography className="text-xl font-bold text-white">深空省省</Typography>{width >= 400 ? <Typography className="text-xs text-white/65">排期・換算・記帳的小宇宙</Typography> : null}</View></View>
               {showAccountEntry ? <AccountEntry /> : null}
             </View>
             <Typography accessibilityRole="header" className="text-2xl font-semibold text-white">{title}</Typography>

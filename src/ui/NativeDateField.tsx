@@ -23,9 +23,9 @@ export function NativeDateField({ label, value, onChange, disabled = false }: {
     {open && Platform.OS === "android" ? <DateTimePicker value={pending} mode="date" onChange={(event, next) => { setOpen(false); if (event.type === "set" && next) onChange(toDateKey(next)); }} /> : null}
     {Platform.OS !== "android" ? <Modal visible={open} transparent animationType="slide" onRequestClose={() => setOpen(false)}>
       <View className="flex-1 justify-end bg-black/50">
-        <View accessibilityViewIsModal className="gap-3 rounded-t-3xl bg-[#34294e] px-5 pb-10 pt-5">
+        <View accessibilityViewIsModal style={{ width: "100%", maxWidth: 520, alignSelf: "center" }} className="gap-3 rounded-t-3xl bg-[#34294e] px-5 pb-10 pt-5">
           <View className="flex-row items-center justify-between"><Button variant="ghost" onPress={() => setOpen(false)}>取消</Button><Typography accessibilityRole="header" className="font-semibold text-white">{label}</Typography><Button variant="secondary" onPress={() => { onChange(toDateKey(pending)); setOpen(false); }}>完成</Button></View>
-          <DateTimePicker value={pending} mode="date" display="spinner" locale="zh-TW" themeVariant="dark" onChange={(_, next) => { if (next) setPending(next); }} />
+          <DateTimePicker style={{ width: 320, alignSelf: "center" }} value={pending} mode="date" display="spinner" locale="zh-TW" themeVariant="dark" onChange={(_, next) => { if (next) setPending(next); }} />
         </View>
       </View>
     </Modal> : null}

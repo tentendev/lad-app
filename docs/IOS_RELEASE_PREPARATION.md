@@ -30,7 +30,7 @@ CocoaPods UUID 衝突曾令 `PBXProject` 被 `ClerkKitUI` 物件覆蓋。`plugin
 
 ## 尚需完成的正式條件
 
-已在 iPhone 17 Pro Max 驗證：首次使用、排期篩選、預算／花費加總、日期取消及確認、自訂期間錯誤提示／平均值／點月切換、手動禮包計算與再次帶入已開啟錢包、追蹤目標帶入、排期名稱／日期帶入已開啟規劃。iPad Pro 13 吋的介紹與首頁排版已查看。小螢幕與軟體鍵盤驗收仍進行中；尚未宣稱 production 登入或雲端驗收完成。
+已在 iPhone 17 Pro Max 驗證：首次使用、排期篩選、預算／花費加總、日期取消及確認、自訂期間錯誤提示／平均值／點月切換、手動禮包計算與再次帶入已開啟錢包、追蹤目標帶入、排期名稱／日期帶入已開啟規劃。iPad Pro 13 吋的介紹與首頁排版已查看。iPhone 17e 的介紹／單行頁首／軟體數字鍵盤與 iPad 置中日期面板也已查看並測試；尚未宣稱 production 登入或雲端驗收完成。
 
 1. 公開營運者／版權名稱、支援 Email、App Review 聯絡人的姓名／電話／Email，以及第三方遊戲內容的使用權依據。不能代填未確認的法律聲明。
 2. Clerk production instance、正式網域、Native application、Google OAuth、Apple connection／Hide My Email 與 deep link callback。現有 `.env.local` 是 development instance。
