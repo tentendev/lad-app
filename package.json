@@ -25,7 +25,7 @@
     "doctor": "npx expo-doctor",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "node --test scripts/sync-official-schedule.test.mjs && vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {

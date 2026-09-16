@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="schedule.js?v=20260811"></script>
+<script src="schedule.js?v=20260910"></script>
 <script src="packs.js"></script>
 <style>
   :root{
@@ -65,12 +65,12 @@
   }
   .clouds{display:none}
 
-  .wrap{max-width:520px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 0;position:relative;z-index:1}
+  .wrap{max-width:520px;margin:0 auto;padding:max(8px,env(safe-area-inset-top)) 16px 0;position:relative;z-index:1}
 
-  header{padding:8px 4px 16px;text-align:center}
-  header .logo{width:46px;height:46px;color:#fff;margin:0 auto 8px;display:block;opacity:.95}
+  header{padding:0 4px 12px;text-align:center}
+  header .logo{width:40px;height:40px;color:#fff;margin:0 auto 2px;display:block;opacity:.95}
   header h1{font-family:"Noto Serif TC",serif;font-size:21px;font-weight:600;margin:0;letter-spacing:8px;text-indent:8px}
-  header p{margin:7px 0 0;color:var(--muted);font-size:12px;letter-spacing:3px;text-transform:uppercase}
+  header p{margin:3px 0 0;color:var(--muted);font-size:12px;letter-spacing:3px;text-transform:uppercase}
 
   .card{
     background:var(--card);
@@ -95,7 +95,13 @@
     color:#fff;font-size:16px;font-family:inherit;outline:none;
     transition:border-color var(--t),box-shadow var(--t),background var(--t);
   }
-  input[type="date"]{min-width:0;max-width:100%}
+  /* iOS date controls miscalculate 100% width with padding (WebKit #301648).
+     Keep padding and the border on a separate container. */
+  .date-control{width:100%;min-width:0;min-height:46px;padding:0 13px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.14);transition:border-color var(--t),box-shadow var(--t),background var(--t)}
+  .date-control:focus-within{border-color:#fff;box-shadow:var(--ring);background:rgba(255,255,255,.2)}
+  .date-control input[type="date"]{display:block;appearance:none;-webkit-appearance:none;box-sizing:border-box;width:100%;min-width:0;max-width:100%;min-height:44px;height:44px;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;line-height:44px;text-align:left}
+  .date-control input[type="date"]::-webkit-date-and-time-value{min-height:44px;text-align:left}
+  .date-control input[type="date"]::-webkit-datetime-edit{padding:0}
   input::placeholder{color:rgba(255,255,255,.6)}
   select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:38px}
   input:focus,select:focus{border-color:#fff;box-shadow:var(--ring);background:rgba(255,255,255,.2)}
@@ -108,6 +114,7 @@
     transition:background var(--t),box-shadow var(--t),transform var(--t);
   }
   button:hover{background:rgba(255,255,255,.3)}
+  button:disabled{opacity:.45;cursor:default}
   button:active{transform:translateY(1px)}
   button:focus-visible{box-shadow:var(--ring)}
   button svg{width:18px;height:18px;stroke-width:1.6}
@@ -172,6 +179,15 @@
   .item.best .ico-chip{background:rgba(255,255,255,.24);border-color:#fff}
   .badge-best{font-size:10px;font-weight:700;color:#a35; background:#fff;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle;text-shadow:none}
   .hint{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.65;letter-spacing:.2px}
+  .field-help{display:inline-flex;align-items:center;gap:6px}
+  .grid2 > .field > label{min-height:25px;display:flex;align-items:center}
+  .help-toggle{width:25px;height:25px;min-height:0;padding:0;border-radius:50%;font-size:12px;font-weight:700;letter-spacing:0;color:var(--muted);background:rgba(255,255,255,.12);border:1px solid var(--line-soft)}
+  .help-toggle:hover,.help-toggle[aria-expanded="true"]{color:#fff;background:rgba(255,255,255,.26);border-color:var(--line)}
+  .goal-rules{display:none;margin:2px 0 13px;padding:11px 12px;border:1px solid var(--line-soft);border-radius:13px;background:rgba(255,255,255,.08);font-size:12px;color:var(--muted);line-height:1.65}
+  .goal-rules.show{display:block}
+  .goal-rules strong{display:block;margin-bottom:4px;color:#fff;font-weight:500}
+  .goal-rules ul{margin:0;padding-left:1.2em}
+  .goal-rules li+li{margin-top:4px}
   .field-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
   .field-head label{margin:0}
   .unit-toggle{display:inline-flex;padding:2px;border:1px solid var(--line-soft);border-radius:10px;background:rgba(255,255,255,.08)}
@@ -186,13 +202,90 @@
   .month-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
   .month-switch .month-title{font-family:"Noto Serif TC",serif;font-size:15px;letter-spacing:1px}
 
+  /* monthly spending dashboard */
+  .dashboard-card{padding:0;overflow:hidden}
+  .dashboard-card > summary{width:100%;min-height:62px;margin:0;padding:17px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .dashboard-card > summary::-webkit-details-marker{display:none}
+  .dashboard-summary{display:flex;align-items:center;gap:10px;min-width:0}
+  .dashboard-summary > svg{width:18px;height:18px;flex:0 0 auto;stroke-width:1.4}
+  .dashboard-card[open] .dashboard-summary > svg{transform:none}
+  .dashboard-summary-title{display:block;font-family:"Noto Serif TC",serif;font-size:15px;color:#fff;letter-spacing:1px}
+  .dashboard-summary-sub{display:block;margin-top:2px;font-size:11px;color:var(--muted);letter-spacing:.2px}
+  .dashboard-chevron{width:17px;height:17px;flex:0 0 auto;transition:transform var(--t)}
+  .dashboard-card[open] .dashboard-chevron{transform:rotate(180deg)}
+  .dashboard-content{padding:13px 14px 15px;border-top:1px solid var(--line-soft)}
+  .dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .dashboard-title{min-width:0}
+  .dashboard-caption{font-size:11px;color:var(--muted);letter-spacing:.3px}
+  .dashboard-toggle{display:inline-flex;flex:0 0 auto;padding:2px;border:1px solid var(--line-soft);border-radius:10px;background:rgba(255,255,255,.08)}
+  .dashboard-toggle button{min-height:30px;padding:5px 9px;border:0;border-radius:7px;background:transparent;font-size:11px;letter-spacing:.3px;color:var(--muted)}
+  .dashboard-toggle button.active{background:rgba(255,255,255,.27);color:#fff;box-shadow:0 1px 5px rgba(50,30,80,.2)}
+  .dashboard-range-options{flex-wrap:wrap;justify-content:flex-end}
+  .custom-range{margin-bottom:12px;padding:10px;border:1px solid var(--line-soft);border-radius:14px;background:rgba(255,255,255,.07);overflow:hidden}
+  .custom-range .grid2{margin-bottom:0;min-width:0;gap:8px}
+  .custom-range input[type="month"]{display:block;appearance:none;-webkit-appearance:none;box-sizing:border-box;min-width:0;max-width:100%;width:100%;overflow:hidden}
+  .custom-range .field{margin-bottom:10px}
+  .custom-range-error{min-height:18px;margin-top:7px;color:var(--bad)}
+  .dashboard-kpi{margin-bottom:10px}
+  .dashboard-kpi .b{padding:11px 5px}
+  .dashboard-kpi .b .v{font-size:clamp(16px,4.8vw,23px);white-space:nowrap}
+  .chart-shell{position:relative;min-height:234px;margin:3px -5px 0;padding:4px 0 0;border-radius:15px;background:rgba(255,255,255,.055);overflow-x:auto;overflow-y:hidden}
+  .expense-chart{display:block;width:100%;height:auto;min-height:230px;overflow:visible}
+  .chart-grid{stroke:rgba(255,255,255,.16);stroke-width:1;stroke-dasharray:3 5}
+  .chart-baseline{stroke:rgba(255,255,255,.38);stroke-width:1}
+  .chart-bar{fill:rgba(255,255,255,.58);transition:opacity var(--t)}
+  .chart-current .chart-bar{fill:url(#barGradient)}
+  .chart-value{fill:#fff;font-family:"Noto Sans TC",sans-serif;font-size:10px;text-anchor:middle;text-shadow:none}
+  .chart-month{fill:rgba(255,255,255,.72);font-family:"Noto Sans TC",sans-serif;font-size:10px;text-anchor:middle;text-shadow:none}
+  .chart-current .chart-month{fill:#fff;font-weight:700}
+  .chart-hit{fill:transparent;cursor:pointer}
+  .chart-datum:focus{outline:none}
+  .chart-datum:focus .chart-hit{stroke:#fff;stroke-width:1.5;stroke-dasharray:3 2}
+  .chart-datum:hover .chart-bar{opacity:.82}
+  .chart-empty{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;text-align:center;color:var(--muted);font-size:12px;pointer-events:none}
+
   /* ===== calendar ===== */
   .cal-meta{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:14px}
   .cal-meta svg{width:13px;height:13px;stroke-width:1.6}
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .cal-title{font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:600;letter-spacing:1px}
+  .cal-title{font-family:"Cormorant Garamond","Noto Serif TC",serif;font-size:24px;font-weight:600;letter-spacing:1px}
+  .cal-title .date-unit{font-family:"Noto Serif TC",serif;font-size:18px}
   .navbtn{width:40px;height:40px;min-height:0;padding:0;border-radius:11px;background:rgba(255,255,255,.12);border:1px solid var(--line)}
   .navbtn svg{width:18px;height:18px;stroke-width:1.8}
+  .lead-filter{margin:0 0 10px;padding:3px 9px;border:1px solid var(--line-soft);border-radius:11px;background:rgba(255,255,255,.07)}
+  .lead-filter-head{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12px;letter-spacing:.3px}
+  .lead-filter-toggle{flex:1;min-width:0;justify-content:flex-start;min-height:36px;padding:0;border:0;border-radius:6px;background:transparent;font-size:12px;letter-spacing:0;gap:5px}
+  .lead-filter-toggle > span:first-child{flex-shrink:0}
+  .lead-filter-toggle svg{width:13px;height:13px;flex-shrink:0;transition:transform var(--t)}
+  .lead-filter-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+  #leadFilterSummary{color:var(--muted);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lead-filter-head .text-action{flex-shrink:0;padding:4px;font-size:10px}
+  .text-action{min-height:36px;padding:5px 8px;border:0;background:transparent;font-size:11px;letter-spacing:.2px;text-decoration:underline;text-underline-offset:3px}
+  .pack-badges{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin:4px 0;font-size:11px;color:var(--muted)}
+  .pack-badges .badge-best{margin-left:0;white-space:nowrap}
+  .pack-cumulative span{white-space:nowrap}
+  .pack-quantity{display:flex;align-items:center;gap:7px;margin-top:6px}
+  .pack-quantity label{margin:0;white-space:nowrap;font-size:11px}
+  .pack-quantity select{width:82px;min-height:36px;height:36px;padding:3px 24px 3px 9px;border-radius:9px;background-size:15px;background-position:right 7px center;line-height:1.25}
+  .item.pack-item{display:block;padding:9px 0}
+  .item.pack-item.best{padding:9px 10px;margin:4px 0}
+  .pack-main{display:grid;grid-template-columns:minmax(0,1fr) 76px;align-items:center;gap:8px}
+  .pack-main .t{font-size:13px;line-height:1.5}
+  .pack-main .pack-badges{margin:3px 0 0;gap:4px}
+  .pack-main .badge-best{padding:1px 6px;font-size:9px}
+  .pack-main .pack-quantity{margin:0;display:flex;flex-direction:column;align-items:stretch;gap:2px}
+  .pack-main .pack-quantity label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .pack-main .pack-quantity select{width:76px}
+  .pack-details > summary{display:flex;min-height:28px;margin:2px 0 0;font-size:10px;color:var(--muted);letter-spacing:0}
+  .pack-details > summary::-webkit-details-marker{display:none}
+  .pack-details > summary svg{width:12px;height:12px}
+  .pack-details .s{font-size:11px;line-height:1.65;color:var(--muted)}
+  .pack-details[open]{padding-bottom:3px}
+  .lead-filter-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px 0 7px}
+  .lead-filter-actions[hidden]{display:none}
+  .lead-filter-btn{min-height:32px;padding:4px 7px;border-radius:8px;background:transparent;border:1px solid var(--line-soft);font-size:11px;letter-spacing:.2px;color:var(--muted)}
+  .lead-filter-btn:hover{background:rgba(255,255,255,.1)}
+  .lead-filter-btn.active{color:#fff;background:rgba(255,255,255,.17);border-color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
   .cal-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
   .cal-wk span{text-align:center;font-size:11px;color:var(--faint);letter-spacing:1px}
   .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;position:relative}
@@ -220,6 +313,8 @@
   .t-story{background:var(--c-story);color:var(--c-story)}
   .cal-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line-soft);font-size:11px;color:var(--muted)}
   .cal-legend span{display:inline-flex;align-items:center;gap:5px;letter-spacing:.3px}
+  .event-name{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+  .lead-tag{display:inline-flex;align-items:center;border:1px solid var(--line-soft);border-radius:99px;padding:1px 6px;background:rgba(255,255,255,.08);font-size:10px;font-weight:500;line-height:1.5;color:var(--muted);white-space:nowrap}
   .daytitle-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .linkbtn{background:none;border:none;color:#fff;font-size:12px;min-height:0;padding:6px 4px;letter-spacing:.5px;text-decoration:underline;text-underline-offset:3px}
   .lock{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--faint);border:1px solid var(--line-soft);padding:3px 8px;border-radius:99px;letter-spacing:.5px}
@@ -277,11 +372,18 @@
   nav{position:fixed;left:0;right:0;bottom:0;z-index:20;
     background:rgba(72,42,107,.62);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
     border-top:1px solid var(--line);display:flex;max-width:520px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
-  nav button{flex:1;background:none;border:none;border-radius:0;color:var(--faint);box-shadow:none;letter-spacing:1px;
+  nav button,nav .feedback-link{flex:1;background:none;border:none;border-radius:0;color:var(--faint);box-shadow:none;letter-spacing:1px;
     font-size:11px;min-height:56px;padding:9px 0 8px;flex-direction:column;gap:4px;transition:color var(--t)}
-  nav button svg{width:22px;height:22px;stroke-width:1.4;transition:transform var(--t)}
+  nav .feedback-link{display:flex;align-items:center;justify-content:center;text-decoration:none;font-family:inherit;font-weight:500;line-height:normal}
+  nav .feedback-link:hover{color:#fff;background:rgba(255,255,255,.1)}
+  nav .feedback-link:focus-visible{outline:2px solid #fff;outline-offset:-4px;border-radius:8px}
+  nav button svg,nav .feedback-link svg{width:22px;height:22px;stroke-width:1.4;transition:transform var(--t)}
   nav button.active{color:#fff}
   nav button.active svg{transform:translateY(-1px)}
+  .feedback-dialog{width:min(370px,calc(100% - 28px));padding:22px}
+  .feedback-dialog h2{margin:0;font-size:18px}
+  .feedback-dialog p{margin:10px 0 18px;color:var(--muted);font-size:13px;line-height:1.65}
+  .feedback-dialog .dialog-actions{margin-top:0}
 
   .tabview{display:none;animation:fade .35s var(--t)}
   .tabview.active{display:block}
@@ -305,6 +407,7 @@
     .card{background:rgba(50,37,87,.48)}
     .wrap{padding-left:12px;padding-right:12px}
     .card{padding:16px}
+    .custom-range .grid2{grid-template-columns:1fr}
     .item{align-items:flex-start;flex-wrap:wrap;gap:9px 10px}
     .item .grow{flex:1 1 calc(100% - 50px)}
     .item .amt{margin-left:48px;font-size:19px}
@@ -322,6 +425,13 @@
     .grid2 .field:last-child{margin-bottom:12px}
     .cal-event{padding-left:3px;padding-right:3px}
     .dialog-actions{grid-template-columns:1fr}
+    .dashboard-head{align-items:flex-start;flex-direction:column}
+    .dashboard-head .dashboard-toggle{align-self:stretch;justify-content:center}
+  }
+  @media (max-width:480px){
+    .dashboard-content{padding-left:10px;padding-right:10px}
+    .dashboard-head{gap:9px}
+    .custom-range .grid2{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -377,8 +487,8 @@
           </select>
         </div>
       </div>
-      <div class="field"><label for="expDate">消費日期</label><input type="date" id="expDate"></div>
-      <div class="field"><label for="expNote">備註（選填）</label><input type="text" id="expNote" placeholder="例如：沈星回限定卡池"></div>
+      <div class="field"><label for="expDate">消費日期</label><div class="date-control"><input type="date" id="expDate"></div></div>
+      <div class="field"><label for="expNote">備註（選填）</label><input type="text" id="expNote" placeholder="例如：沈星回生日卡池"></div>
       <button class="block" onclick="addExpense()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>新增花費</button>
     </div>
 
@@ -386,6 +496,47 @@
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>月份明細</h2>
       <div id="expList"></div>
     </div>
+
+    <details class="card dashboard-card" id="expenseDashboardDetails">
+      <summary>
+        <span class="dashboard-summary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>
+          <span><span class="dashboard-summary-title">每月花費統計</span><span class="dashboard-summary-sub">需要時再展開比較不同月份</span></span>
+        </span>
+        <svg class="dashboard-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="dashboard-content" aria-labelledby="expenseDashboardTitle">
+        <div class="dashboard-head">
+          <div class="dashboard-title">
+            <div class="dashboard-caption" id="expenseDashboardTitle">統計期間</div>
+            <div class="meta-line" id="chartRangeLabel"></div>
+          </div>
+          <div class="dashboard-toggle dashboard-range-options" role="group" aria-label="比較期間">
+            <button type="button" id="chart6Btn" onclick="setExpenseChartPreset(6)" aria-pressed="true">近 6 月</button>
+            <button type="button" id="chart12Btn" onclick="setExpenseChartPreset(12)" aria-pressed="false">近 12 月</button>
+            <button type="button" id="chartCustomBtn" onclick="showExpenseCustomRange()" aria-pressed="false">自訂</button>
+          </div>
+        </div>
+        <div class="custom-range" id="chartCustomRange" hidden>
+          <div class="grid2">
+            <div class="field"><label for="chartStartMonth">開始月份</label><input type="month" id="chartStartMonth"></div>
+            <div class="field"><label for="chartEndMonth">結束月份</label><input type="month" id="chartEndMonth"></div>
+          </div>
+          <button type="button" class="ghost block" onclick="applyExpenseCustomRange()">套用期間</button>
+          <div class="hint custom-range-error" id="chartRangeError" role="alert"></div>
+        </div>
+        <div class="kpi dashboard-kpi">
+          <div class="b"><div class="v" id="chartTotal">NT$0</div><div class="l">期間總花費</div></div>
+          <div class="b"><div class="v" id="chartAverage">NT$0</div><div class="l">每月平均</div></div>
+          <div class="b"><div class="v" id="chartHighest">NT$0</div><div class="l" id="chartHighestMonth">最高月份</div></div>
+        </div>
+        <div class="chart-shell">
+          <svg class="expense-chart" id="expenseChart" viewBox="0 0 480 240" role="img" aria-label="每月花費長條圖"></svg>
+          <div class="chart-empty" id="chartEmpty" hidden>這段期間還沒有花費紀錄</div>
+        </div>
+        <div class="hint">點一下月份，可查看該月明細</div>
+      </div>
+    </details>
   </section>
 
   <!-- ============ 排程（唯讀日曆） ============ -->
@@ -400,6 +551,17 @@
         <div class="cal-title" id="calTitle"></div>
         <button class="navbtn" aria-label="下個月" onclick="calMove(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
+      <div class="lead-filter" aria-label="男主篩選">
+        <div class="lead-filter-head"><button class="lead-filter-toggle" id="leadFilterToggle" type="button" aria-expanded="false" aria-controls="leadFilters" onclick="toggleLeadFilterPanel()"><span>男主篩選</span><span id="leadFilterSummary">全部</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><button class="text-action" type="button" onclick="clearLeadFilters()">清除全部</button></div>
+        <div class="lead-filter-actions" id="leadFilters" hidden>
+          <button class="lead-filter-btn all" type="button" data-lead="all" aria-pressed="true" onclick="selectAllLeads()">全部</button>
+          <button class="lead-filter-btn" type="button" data-lead="沈星回" aria-pressed="true" onclick="toggleLead('沈星回')">沈星回</button>
+          <button class="lead-filter-btn" type="button" data-lead="黎深" aria-pressed="true" onclick="toggleLead('黎深')">黎深</button>
+          <button class="lead-filter-btn" type="button" data-lead="祁煜" aria-pressed="true" onclick="toggleLead('祁煜')">祁煜</button>
+          <button class="lead-filter-btn" type="button" data-lead="秦徹" aria-pressed="true" onclick="toggleLead('秦徹')">秦徹</button>
+          <button class="lead-filter-btn" type="button" data-lead="夏以晝" aria-pressed="true" onclick="toggleLead('夏以晝')">夏以晝</button>
+        </div>
+      </div>
       <div class="cal-wk"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="cal-legend">
@@ -410,8 +572,9 @@
         <span><i class="dot t-birthday"></i>生日池</span>
         <span><i class="dot t-rerun"></i>復刻池</span>
         <span><i class="dot t-pass"></i>密約</span>
+        <span><i class="dot t-story"></i>主線分線</span>
       </div>
-      <div class="hint">※「哥月」與「花承春意、甜夢清歡周邊」已有官方公告；其餘內容為 0804 排期預測，非官方資訊，實際卡池與日期請以《戀與深空》官方公告為準。</div>
+      <div class="hint">※預測排期為非官方資訊，實際卡池與日期請以《戀與深空》官方公告為準。</div>
     </div>
 
     <div class="card">
@@ -433,7 +596,15 @@
       <div class="meta-line" style="margin:2px 0 10px">② 再輸入持有資源與抽卡目標</div>
       <div class="grid2">
         <div class="field"><label for="curDia">目前持有（鑽）</label><input type="number" id="curDia" inputmode="numeric" placeholder="0" oninput="calc()"></div>
-        <div class="field"><label for="targetPulls">目標抽數</label><input type="number" id="targetPulls" inputmode="numeric" placeholder="70" oninput="calc()"></div>
+        <div class="field"><label class="field-help" for="targetPulls">目標抽數 <button class="help-toggle" type="button" id="goalRulesToggle" aria-expanded="false" aria-controls="goalRules" onclick="toggleGoalRules()" title="查看保底與繼承規則">?</button></label><input type="number" id="targetPulls" inputmode="numeric" placeholder="70" oninput="calc()"></div>
+      </div>
+      <div class="goal-rules" id="goalRules" role="note" aria-label="抽卡保底與抽數繼承規則">
+        <strong>抽數規則</strong>
+        <ul>
+          <li>日卡池以外的活動池：140 抽內必得當期活動五星卡。</li>
+          <li>日卡池：140 抽可得活動五星卡；累計 150 抽會送自選盒，選一張當期日卡。</li>
+          <li>一般活動池之間會繼承抽數；復刻池只繼承同一復刻池的抽數。</li>
+        </ul>
       </div>
       <div class="grid2">
         <div class="field"><label for="curTickets">原本剩餘金券（張）</label><input type="number" id="curTickets" inputmode="numeric" placeholder="0" oninput="calc()"></div>
@@ -460,8 +631,8 @@
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>課金禮包試算 · <span id="packPoolLabel"></span></h2>
       <div class="alert good show" id="packMsg"></div>
       <div id="packTable" style="margin-top:4px"></div>
-      <div class="pack-total" id="packTotal"><div class="label">課到建議禮包</div><div class="value" id="packTotalValue">NT$0</div><div class="note" id="packTotalNote"></div><button class="record-btn" type="button" onclick="prefillRecommendedExpense()">帶入錢包記帳</button></div>
-      <div class="hint">資料由玩家依官方遊戲內容自行統整。各階為<b>累計購買</b>，平均單抽越低越划算；會依「抽卡目標換算」扣掉現有鑽石後，推薦最省的課金階級。</div>
+      <div class="pack-total" id="packTotal"><div class="field-head"><span class="label">已選購買禮包</span><button class="text-action" type="button" onclick="applyRecommendedPacks()">套用建議</button></div><div aria-live="polite"><div class="value" id="packTotalValue">NT$0</div><div class="note" id="packTotalNote"></div></div><button class="record-btn" id="recordPacks" type="button" onclick="prefillRecommendedExpense()">帶入錢包記帳</button></div>
+      <div class="hint">表內「累計」以第一階起依序買滿計算；實際選購合計顯示於上方。可依實際購買情況調整各階包數，記帳會帶入已選禮包的總金額。手動調整後會保留選擇，按「套用建議」可重新帶入。資料由玩家依官方遊戲內容自行統整。</div>
     </div>
   </section>
 </div>
@@ -474,7 +645,7 @@
       <div class="field"><label for="editExpAmt">金額（NT$）</label><input type="number" id="editExpAmt" inputmode="numeric"></div>
       <div class="field"><label for="editExpCat">類別</label><select id="editExpCat"><option value="抽卡禮包">抽卡禮包</option><option value="月卡/週卡">月卡 / 週卡</option><option value="密約">密約</option><option value="周邊">周邊</option><option value="其他">其他</option></select></div>
     </div>
-    <div class="field"><label for="editExpDate">消費日期</label><input type="date" id="editExpDate"></div>
+    <div class="field"><label for="editExpDate">消費日期</label><div class="date-control"><input type="date" id="editExpDate"></div></div>
     <div class="field"><label for="editExpNote">備註（選填）</label><input type="text" id="editExpNote"></div>
     <button class="block" type="button" onclick="saveExpenseEdit()">儲存修改</button>
     <div class="dialog-actions"><button class="ghost" type="button" onclick="closeExpenseEditor()">取消</button><button class="dialog-danger" type="button" onclick="deleteEditingExpense()">刪除這筆</button></div>
@@ -516,7 +687,16 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>排期</button>
   <button data-tab="calc" aria-label="換算" onclick="showTab('calc',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20"/></svg>換算</button>
+  <button class="feedback-link" type="button" onclick="openFeedbackPrompt()" aria-label="開啟使用回饋問卷確認視窗" title="約 3 分鐘，不需提供姓名或 Email">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5a8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M8 10h9M8 14h5"/></svg>回饋
+  </button>
 </nav>
+
+<dialog class="feedback-dialog" id="feedbackPrompt" aria-labelledby="feedbackPromptTitle">
+  <div class="dialog-head"><h2 id="feedbackPromptTitle">前往使用回饋問卷？</h2><button class="iconbtn" type="button" aria-label="關閉" onclick="closeFeedbackPrompt()">×</button></div>
+  <p>問卷約需 3 分鐘，不會收集姓名或 Email。你的回覆會幫助我們了解使用需求與卡住的地方，作為後續改善的參考。</p>
+  <div class="dialog-actions"><button class="ghost" type="button" onclick="closeFeedbackPrompt()">先不要</button><button type="button" onclick="goToFeedback()">前往問卷</button></div>
+</dialog>
 
 <script>
 /* ---------- icon set (thin white line SVG) ---------- */
@@ -555,6 +735,16 @@ function showTab(t,btn){
   btn.classList.add('active');
   window.scrollTo({top:0});
 }
+const FEEDBACK_URL='https://docs.google.com/forms/d/e/1FAIpQLSfyHTsrjN9MY36J2Fw8X3JaRB0ecuRKOuozsbm-BE9NdUAjfA/viewform?usp=header';
+function openFeedbackPrompt(){
+  const dialog=document.getElementById('feedbackPrompt');
+  if(dialog.showModal)dialog.showModal();else dialog.setAttribute('open','');
+}
+function closeFeedbackPrompt(){
+  const dialog=document.getElementById('feedbackPrompt');
+  if(dialog.open&&dialog.close)dialog.close();else dialog.removeAttribute('open');
+}
+function goToFeedback(){closeFeedbackPrompt();window.open(FEEDBACK_URL,'_blank','noopener,noreferrer');}
 
 /* ---------- internal debug shortcuts ---------- */
 const debugLauncher=document.getElementById('debugLauncher');
@@ -580,10 +770,104 @@ let budgetMonth=curMonth();
 const categoryMigration={'抽卡':'抽卡禮包','禮包':'抽卡禮包','月卡':'月卡/週卡'};
 let expenses=DB.get('expenses',[]).map(e=>({...e,cat:categoryMigration[e.cat]||e.cat}));
 DB.set('expenses',expenses);
+const savedChartRangeMode=String(DB.get('expenseChartRangeMode',DB.get('expenseChartMonths',6)));
+let expenseChartRangeMode=['6','12','custom'].includes(savedChartRangeMode)?savedChartRangeMode:'6';
+let expenseChartStart=DB.get('expenseChartStart',shiftMonth(curMonth(),-5));
+let expenseChartEnd=DB.get('expenseChartEnd',curMonth());
 function monthLabel(m){const [y,mo]=m.split('-');return `${y}年${Number(mo)}月`;}
+function shiftMonth(m,delta){
+  const [y,mo]=m.split('-').map(Number),d=new Date(y,mo-1+delta,1);
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+}
+function validMonth(m){return /^\d{4}-(0[1-9]|1[0-2])$/.test(String(m||''));}
+function monthsBetween(start,end){
+  const [sy,sm]=start.split('-').map(Number),[ey,em]=end.split('-').map(Number);
+  return (ey-sy)*12+em-sm+1;
+}
 function budgetMonthMove(delta){
-  const [y,m]=budgetMonth.split('-').map(Number),d=new Date(y,m-1+delta,1);
-  budgetMonth=`${d.getFullYear()}-${pad(d.getMonth()+1)}`;renderBudget();
+  budgetMonth=shiftMonth(budgetMonth,delta);renderBudget();
+}
+function selectBudgetMonth(month){budgetMonth=month;renderBudget();}
+function setExpenseChartPreset(months){
+  expenseChartRangeMode=Number(months)===12?'12':'6';DB.set('expenseChartRangeMode',expenseChartRangeMode);document.getElementById('chartRangeError').textContent='';renderExpenseDashboard();
+}
+function showExpenseCustomRange(){
+  if(!validMonth(expenseChartStart)||!validMonth(expenseChartEnd)){expenseChartStart=shiftMonth(budgetMonth,-5);expenseChartEnd=budgetMonth;}
+  expenseChartRangeMode='custom';DB.set('expenseChartRangeMode','custom');document.getElementById('chartRangeError').textContent='';renderExpenseDashboard();
+}
+function applyExpenseCustomRange(){
+  const start=document.getElementById('chartStartMonth').value,end=document.getElementById('chartEndMonth').value,error=document.getElementById('chartRangeError');
+  error.textContent='';
+  if(!validMonth(start)||!validMonth(end)){error.textContent='請選擇開始與結束月份。';return;}
+  const count=monthsBetween(start,end);
+  if(count<=0){error.textContent='結束月份不能早於開始月份。';return;}
+  if(count>60){error.textContent='一次最多比較 60 個月。';return;}
+  expenseChartStart=start;expenseChartEnd=end;expenseChartRangeMode='custom';
+  DB.set('expenseChartStart',start);DB.set('expenseChartEnd',end);DB.set('expenseChartRangeMode','custom');renderExpenseDashboard();
+}
+function shortMoney(value){
+  const n=Number(value)||0;
+  if(n>=10000){const v=(n/10000).toFixed(n>=100000?0:1).replace(/\.0$/,'');return `${v}萬`;}
+  if(n>=1000){const v=(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,'');return `${v}k`;}
+  return n.toLocaleString();
+}
+function dashboardMoney(value){
+  const n=Number(value)||0;
+  if(n>=10000){const v=(n/10000).toFixed(n>=1000000?0:1).replace(/\.0$/,'');return `NT$${v}萬`;}
+  return NT(n);
+}
+function expenseMonthsData(){
+  const customValid=validMonth(expenseChartStart)&&validMonth(expenseChartEnd)&&monthsBetween(expenseChartStart,expenseChartEnd)>0;
+  const end=expenseChartRangeMode==='custom'&&customValid?expenseChartEnd:budgetMonth;
+  const count=expenseChartRangeMode==='custom'&&customValid?Math.min(60,monthsBetween(expenseChartStart,expenseChartEnd)):Number(expenseChartRangeMode)===12?12:6;
+  const start=expenseChartRangeMode==='custom'&&customValid?expenseChartStart:shiftMonth(end,-count+1);
+  return Array.from({length:count},(_,i)=>{
+    const month=shiftMonth(start,i);
+    const amount=expenses.filter(e=>String(e.date||'').slice(0,7)===month).reduce((sum,e)=>sum+(Number(e.amt)||0),0);
+    return{month,amount};
+  });
+}
+function renderExpenseDashboard(){
+  const data=expenseMonthsData(),total=data.reduce((sum,item)=>sum+item.amount,0),average=Math.round(total/data.length);
+  const highest=data.reduce((best,item)=>item.amount>best.amount?item:best,data[0]);
+  const totalEl=document.getElementById('chartTotal'),averageEl=document.getElementById('chartAverage'),highestEl=document.getElementById('chartHighest');
+  totalEl.textContent=dashboardMoney(total);totalEl.title=NT(total);
+  averageEl.textContent=dashboardMoney(average);averageEl.title=NT(average);
+  highestEl.textContent=dashboardMoney(highest.amount);highestEl.title=NT(highest.amount);
+  document.getElementById('chartHighestMonth').textContent=`最高 · ${highest.month.replace('-', '/')}`;
+  document.getElementById('chartRangeLabel').textContent=`${data[0].month.replace('-', '/')} — ${data[data.length-1].month.replace('-', '/')}`;
+  [6,12].forEach(months=>{
+    const btn=document.getElementById(`chart${months}Btn`),active=expenseChartRangeMode===String(months);
+    btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
+  });
+  const customActive=expenseChartRangeMode==='custom',customBtn=document.getElementById('chartCustomBtn'),customRange=document.getElementById('chartCustomRange');
+  customBtn.classList.toggle('active',customActive);customBtn.setAttribute('aria-pressed',String(customActive));customRange.hidden=!customActive;
+  document.getElementById('chartStartMonth').value=expenseChartStart;
+  document.getElementById('chartEndMonth').value=expenseChartEnd;
+
+  const width=data.length>12?Math.max(480,data.length*48):480,plotLeft=12,plotRight=width-12,plotTop=34,plotBottom=190,plotHeight=plotBottom-plotTop;
+  const slot=(plotRight-plotLeft)/data.length,maxValue=Math.max(...data.map(item=>item.amount)),scaleMax=maxValue>0?maxValue*1.22:1;
+  const yFor=amount=>plotBottom-(amount/scaleMax)*plotHeight;
+  const pointFor=(item,index)=>({x:plotLeft+slot*(index+.5),y:yFor(item.amount)});
+  const defs=`<defs>
+    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3df"/><stop offset="1" stop-color="#b385e0"/></linearGradient>
+  </defs>`;
+  const grid=[0,.5,1].map(ratio=>`<line class="${ratio===0?'chart-baseline':'chart-grid'}" x1="${plotLeft}" y1="${plotBottom-ratio*plotHeight}" x2="${plotRight}" y2="${plotBottom-ratio*plotHeight}"/>`).join('');
+  const marks=data.map((item,index)=>{
+    const point=pointFor(item,index),barWidth=Math.min(36,slot*.58),barHeight=Math.max(item.amount>0?3:0,plotBottom-point.y),x=point.x-barWidth/2,y=plotBottom-barHeight;
+    const valueLabel=item.amount>0?shortMoney(item.amount):(data.length===6?'0':''),monthTick=data.length>12?item.month.slice(2).replace('-','/'):`${Number(item.month.slice(5))}月`;
+    return `<g class="chart-datum ${item.month===budgetMonth?'chart-current':''}" tabindex="0" role="button" aria-label="${monthLabel(item.month)}花費 ${NT(item.amount)}" onclick="selectBudgetMonth('${item.month}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectBudgetMonth('${item.month}')}">
+      <title>${monthLabel(item.month)} · ${NT(item.amount)}</title><rect class="chart-hit" x="${plotLeft+slot*index}" y="18" width="${slot}" height="214" rx="5"/>
+      <rect class="chart-bar" x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="${Math.min(8,barWidth/3)}"/>
+      ${valueLabel?`<text class="chart-value" x="${point.x}" y="${Math.max(18,y-7)}">${valueLabel}</text>`:''}
+      <text class="chart-month" x="${point.x}" y="215">${monthTick}</text>
+    </g>`;
+  }).join('');
+  const chart=document.getElementById('expenseChart');
+  chart.setAttribute('viewBox',`0 0 ${width} 240`);chart.style.width=data.length>12?`${width}px`:'100%';
+  chart.innerHTML=defs+grid+marks;
+  chart.setAttribute('aria-label',`${data[0].month} 到 ${data[data.length-1].month}的每月花費比較；總花費 ${NT(total)}，每月平均 ${NT(average)}`);
+  document.getElementById('chartEmpty').hidden=total>0;
 }
 function saveBudget(){
   budgets[budgetMonth]={amount:Number(document.getElementById('budgetInput').value)||0,threshold:Number(document.getElementById('thresholdInput').value)||80};
@@ -649,6 +933,7 @@ function renderBudget(){
   else if(pct>=100){al.classList.add('bad');al.innerHTML=svg(I.bad)+`已超支 ${NT(spent-b)}！本月花費 ${NT(spent)} 已超過預算。`;}
   else if(pct>=budget.threshold){al.classList.add('warn');al.innerHTML=svg(I.warn)+`快超支了！已用 ${pct}%，只剩 ${NT(remain)} 可花。`;}
   else{al.classList.add('good');al.innerHTML=svg(I.ok)+`控制得不錯，還有 ${NT(remain)}（${100-pct}%）額度。`;}
+  renderExpenseDashboard();
   const list=document.getElementById('expList');
   if(monthExp.length===0){list.innerHTML=`<div class="empty">${svg(I.inbox)}這個月還沒有花費紀錄</div>`;return;}
   list.innerHTML=monthExp.map(e=>`
@@ -667,7 +952,31 @@ function renderBudget(){
 const SCHED=(Array.isArray(window.SCHEDULE)?window.SCHEDULE:[]);
 const META=window.SCHEDULE_META||{};
 const evLabel={banner:'卡池',merch:'周邊',daily:'日卡池',monthly:'月卡池',mixed:'混池',birthday:'生日池',rerun:'復刻池',story:'主線分線',pass:'密約',event:'其他'};
+const leadNames=['沈星回','黎深','祁煜','秦徹','夏以晝'];
+const savedLeadFilter=DB.get('leadFilter',null);
+let selectedLeads=new Set(Array.isArray(savedLeadFilter)?savedLeadFilter.filter(name=>leadNames.includes(name)):leadNames);
 let calY,calM,calSel=null;
+function filteredSchedule(){return SCHED.filter(e=>!Array.isArray(e.leads)||e.leads.length===0||e.leads.some(name=>selectedLeads.has(name)));}
+function syncLeadFilters(){
+  document.querySelectorAll('#leadFilters [data-lead]').forEach(btn=>{
+    const name=btn.dataset.lead;
+    const active=name==='all'?selectedLeads.size===leadNames.length:selectedLeads.has(name);
+    btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
+  });
+  const summary=document.getElementById('leadFilterSummary');
+  if(summary)summary.textContent=selectedLeads.size===leadNames.length?'全部':selectedLeads.size===0?'尚未選擇':selectedLeads.size<=2?[...selectedLeads].join('、'):`已選 ${selectedLeads.size} 位`;
+}
+function toggleLeadFilterPanel(){
+  const panel=document.getElementById('leadFilters');
+  panel.hidden=!panel.hidden;
+  document.getElementById('leadFilterToggle').setAttribute('aria-expanded',String(!panel.hidden));
+}
+function toggleLead(name){
+  if(selectedLeads.has(name))selectedLeads.delete(name);else selectedLeads.add(name);
+  DB.set('leadFilter',[...selectedLeads]);calSel=null;renderCal();
+}
+function selectAllLeads(){selectedLeads=new Set(leadNames);DB.set('leadFilter',leadNames);calSel=null;renderCal();}
+function clearLeadFilters(){selectedLeads=new Set();DB.set('leadFilter',[]);calSel=null;renderCal();}
 function dayDiff(d){return Math.ceil((new Date(d+'T00:00:00')-new Date(todayStr()+'T00:00:00'))/86400000);}
 function evInfo(e){
   if(!e.start)return{pill:e.tentative?'情報':'日期待定',cls:'tbd'};
@@ -676,9 +985,9 @@ function evInfo(e){
   if(dS<=0)return{pill:`進行中 · 剩${dE}天`,cls:'live'};
   return{pill:`${dS}天後`,cls:'soon'};
 }
-function eventsByDay(){
+function eventsByDay(events){
   const map={};
-  SCHED.forEach(e=>{
+  events.forEach(e=>{
     if(!e.start)return;
     // 密約只掛在開始日，避免長期活動佔滿整個月曆。
     let d=new Date(e.start+'T00:00:00'),end=new Date((e.type==='pass'?e.start:(e.end||e.start))+'T00:00:00'),g=0;
@@ -692,17 +1001,24 @@ function evItemHTML(e){
   const info=evInfo(e);
   const range=e.start?(e.end&&e.end!==e.start?`${e.start} ~ ${e.end}`:e.start):'日期未定';
   const sub=[evLabel[e.type]||'活動',range];
+  if(e.tentative)sub.push('預測');
   if(e.cost)sub.push('預估 '+NT(e.cost));
+  const leads=Array.isArray(e.leads)?e.leads:[];
+  const leadTag=leads.length===1
+    ? `<span class="lead-tag">${esc(leads[0])}</span>`
+    : leads.length>1?`<span class="lead-tag">${leads.length===leadNames.length?'全員':'多人'}</span>`:'';
   return `<div class="item">
     <span class="ico-chip ${e.type}">${svg(evIcon[e.type]||I.spark)}</span>
-    <div class="grow"><div class="t">${esc(e.name)}</div><div class="s">${sub.join(' · ')}</div></div>
+    <div class="grow"><div class="t event-name"><span>${esc(e.name)}</span>${leadTag}</div><div class="s">${sub.join(' · ')}</div></div>
     <span class="pill ${info.cls}">${info.pill}</span></div>`;
 }
 function renderCal(){
+  syncLeadFilters();
   document.getElementById('scheduleLabel').textContent=META.label||'排期資料';
   document.getElementById('calUpdated').textContent=META.updated?('排期更新 '+META.updated):'';
-  document.getElementById('calTitle').textContent=`${calY}年 ${pad(calM+1)}月`;
-  const byDay=eventsByDay();
+  document.getElementById('calTitle').innerHTML=`${calY}<span class="date-unit">年</span> ${pad(calM+1)}<span class="date-unit">月</span>`;
+  const schedule=filteredSchedule();
+  const byDay=eventsByDay(schedule);
   const first=new Date(calY,calM,1).getDay();
   const days=new Date(calY,calM+1,0).getDate();
   const weeks=Math.ceil((first+days)/7);
@@ -716,7 +1032,7 @@ function renderCal(){
     cells+=`<button class="${cls}" style="grid-column:${col};grid-row:${row} / span 4" onclick="calSelect('${ds}')"><span class="d">${d}</span></button>`;
   }
   const monthKey=`${calY}-${pad(calM+1)}`,ms=`${monthKey}-01`,me=`${monthKey}-${pad(days)}`;
-  const visible=SCHED.filter(e=>e.start&&e.start<=me&&(e.type==='pass'?e.start:(e.end||e.start))>=ms)
+  const visible=schedule.filter(e=>e.start&&e.start<=me&&(e.type==='pass'?e.start:(e.end||e.start))>=ms)
     .map(e=>{
       const effectiveEnd=e.type==='pass'?e.start:(e.end||e.start);
       const startDay=e.start.startsWith(monthKey)?Number(e.start.slice(8,10)):1;
@@ -749,7 +1065,7 @@ function renderCal(){
     clearBtn.style.display='';
   }else{
     title=`${pad(calM+1)}月 排期`;
-    listEvs=SCHED.filter(e=>e.start&&e.start<=me&&(e.end||e.start)>=ms).sort((a,b)=>a.start.localeCompare(b.start));
+    listEvs=schedule.filter(e=>e.start&&e.start<=me&&(e.end||e.start)>=ms).sort((a,b)=>a.start.localeCompare(b.start));
     clearBtn.style.display='none';
   }
   document.getElementById('dayTitle').textContent=title;
@@ -758,7 +1074,7 @@ function renderCal(){
     : `<div class="empty">${svg(I.inbox)}${calSel?'這天沒有排期':'本月沒有已定日期的排期'}</div>`;
 
   // tbd / tentative-without-date
-  const tbd=SCHED.filter(e=>!e.start);
+  const tbd=schedule.filter(e=>!e.start);
   document.getElementById('tbdCard').style.display=tbd.length?'':'none';
   document.getElementById('tbdList').innerHTML=tbd.map(evItemHTML).join('');
 }
@@ -770,6 +1086,11 @@ let reserveUnit='pulls';
 function reserveValues(){
   const raw=Math.max(0,Number(document.getElementById('reservePulls').value)||0);
   return reserveUnit==='dia'?{raw,pulls:raw/DIA_PER_PULL,dia:raw}:{raw,pulls:raw,dia:raw*DIA_PER_PULL};
+}
+function toggleGoalRules(){
+  const panel=document.getElementById('goalRules'),button=document.getElementById('goalRulesToggle');
+  const open=!panel.classList.contains('show');
+  panel.classList.toggle('show',open);button.setAttribute('aria-expanded',String(open));
 }
 function setReserveUnit(unit,convert=true){
   if(unit===reserveUnit)return;
@@ -840,6 +1161,49 @@ function calc(){
   calcPacks();
 }
 let currentPackRecommendation=null;
+const savedPackQuantities=DB.get('packQuantities',{});
+const manualPackQuantities=savedPackQuantities&&typeof savedPackQuantities==='object'&&!Array.isArray(savedPackQuantities)?savedPackQuantities:{};
+let recommendedPackQuantities=[];
+let selectedPackQuantities=[];
+function setPackQuantity(index,value){
+  const pool=document.getElementById('poolSel').value;
+  const tiers=window.PACK_DATA[pool]||[];
+  if(!tiers[index])return;
+  selectedPackQuantities[index]=Math.min(tiers[index].qty||1,Math.max(0,Math.floor(Number(value)||0)));
+  manualPackQuantities[pool]=[...selectedPackQuantities];
+  DB.set('packQuantities',manualPackQuantities);
+  updatePackTotal();
+}
+function applyRecommendedPacks(){
+  delete manualPackQuantities[document.getElementById('poolSel').value];
+  DB.set('packQuantities',manualPackQuantities);
+  calcPacks();
+}
+function updatePackTotal(){
+  const pool=document.getElementById('poolSel').value;
+  const tiers=window.PACK_DATA[pool]||[];
+  let cost=0,pulls=0,count=0,unknown=false;
+  const items=[];
+  tiers.forEach((t,i)=>{
+    const qty=selectedPackQuantities[i]||0;
+    if(!qty)return;
+    cost+=qty*t.price;count+=qty;
+    if(t.packPulls==null)unknown=true;else pulls+=qty*t.packPulls;
+    items.push(`第${t.tier}階 ${qty}包`);
+  });
+  const planned=Math.max(0,Number(document.getElementById('targetPulls').value)||0);
+  const cur=Math.max(0,Number(document.getElementById('curDia').value)||0);
+  const tickets=Math.max(0,Number(document.getElementById('curTickets').value)||0);
+  const gifts=officialTicketCount(pool,planned);
+  const missing=Math.max(0,Math.ceil(planned+reserveValues().pulls-tickets-gifts-cur/DIA_PER_PULL-pulls));
+  currentPackRecommendation=count?{pool,cost,pulls,items}:null;
+  document.getElementById('packTotal').classList.add('show');
+  document.getElementById('packTotalValue').textContent=NT(cost);
+  document.getElementById('packTotalNote').textContent=`已選 ${count} 包 · ${unknown?'已知抽數':'共可獲得'} ${fmtPulls(pulls)} 抽${unknown?'（部分禮包抽數未固定）':''}${missing>0?` · 距目標尚差 ${missing} 抽`:''}`;
+  document.getElementById('recordPacks').disabled=count===0;
+  const goalDia=Math.max(0,planned-tickets-gifts-pulls)*DIA_PER_PULL;
+  document.getElementById('remainDia').textContent=Math.max(0,cur-goalDia).toLocaleString();
+}
 function calcPacks(){
   const pool=document.getElementById('poolSel').value;
   document.getElementById('packPoolLabel').textContent=pool;
@@ -865,7 +1229,7 @@ function calcPacks(){
     msg.className='alert good show';msg.innerHTML=svg(I.spark)+'「其他」為定期禮包，無累計抽數，下表為單抽 CP 值參考。';
     table.innerHTML=arr.map(p=>`<div class="item ${p.per===best?'best':''}">
       <span class="ico-chip txt"><b>${esc(p.name).slice(0,2)}</b></span>
-      <div class="grow"><div class="t">${esc(p.name)}${p.per===best?'<span class="badge-best">單抽最低</span>':''}</div>
+      <div class="grow"><div class="t">${esc(p.name)}${p.per===best?`<span class="badge-best">單抽最低 ${NT(p.per)}／抽</span>`:''}</div>
         <div class="s">${NT(p.price)} · 單抽 ${NT(p.per)}</div></div></div>`).join('');
     return;
   }
@@ -875,12 +1239,14 @@ function calcPacks(){
   const bestPer=valid.length?Math.min(...valid.map(t=>t.per)):null;
   // recommended tier: buy earlier tiers in order, but only the needed number of packs in the final tier
   let rec=null;
+  recommendedPackQuantities=tiers.map(()=>0);
   if(target>0){
     let planPulls=0,planCost=0;
     for(const t of tiers){
       if(t.packPulls==null||t.per==null)continue;
       const available=t.qty||1;
       const needed=Math.min(available,Math.ceil(Math.max(0,gapPulls-planPulls)/t.packPulls));
+      recommendedPackQuantities[tiers.indexOf(t)]=needed;
       if(needed>0){planPulls+=needed*t.packPulls;planCost+=needed*t.price;}
       if(planPulls>=gapPulls){rec={...t,packsAtTier:needed,planPulls,planCost};break;}
     }
@@ -894,33 +1260,34 @@ function calcPacks(){
       <div style="margin-top:4px">建議買到「${pool} · 第 ${rec.tier} 階」，此階買 <b>${rec.packsAtTier}</b> 包</div>
       <div style="margin-top:5px;font-size:12px;color:var(--muted)">共 ${rec.planPulls} 抽 · ${NT(rec.planCost)}（最後一階每包 ${NT(rec.price)}）</div>
     </div>`;
-    totalBox.classList.add('show');
-    currentPackRecommendation={pool,tier:rec.tier,cost:rec.planCost,pulls:rec.planPulls};
-    document.getElementById('packTotalValue').textContent=NT(rec.planCost);
-    document.getElementById('packTotalNote').textContent=`共可獲得 ${fmtPulls(rec.planPulls)} 抽`;
-    const goalDia=Math.max(0,plannedPulls-tickets-gifts-rec.planPulls)*per;
-    document.getElementById('remainDia').textContent=Math.max(0,cur-goalDia).toLocaleString();
   }
   else{msg.className='alert bad show';msg.innerHTML=svg(I.warn)+`<div>
       <div>還需課金 <b>${gapPulls}</b> 抽，超過此卡池單輪上限</div>
       <div style="margin-top:5px;font-size:12px;color:var(--muted)">上限 ${maxTier?maxTier.cumPulls:0} 抽 · ${maxTier?NT(maxTier.cumCost):'-'} ｜ 需重複購買或搭配存鑽</div>
     </div>`;}
 
-  table.innerHTML=tiers.map(t=>{
+  const manual=manualPackQuantities[pool];
+  selectedPackQuantities=tiers.map((t,i)=>Math.min(t.qty||1,Math.max(0,Math.floor(Number(Array.isArray(manual)?manual[i]:recommendedPackQuantities[i])||0))));
+  table.innerHTML=tiers.map((t,i)=>{
     const isRec=rec&&t.tier===rec.tier;
     const isBest=t.per!=null&&t.per===bestPer;
-    const badges=(isRec?'<span class="badge-best">推薦</span>':'')+(isBest?'<span class="badge-best" style="background:#ffe08a">單抽最低</span>':'');
-    return `<div class="item ${isRec?'best':''}">
-      <span class="ico-chip txt"><b>${esc(t.tier)}</b></span>
-      <div class="grow"><div class="t">第 ${esc(t.tier)} 階｜${NT(t.price!=null?t.price:t.cumCost)}／包${badges}</div>
-        <div class="s">${t.packPulls!=null?`${t.packPulls} 抽／包`:''}${t.qty?`・限購 ${t.qty} 包`:''}${t.packPulls!=null?`・買滿 ${t.cumPulls} 抽＝${NT(t.cumCost)}`:`・抽數未固定・買滿 ${NT(t.cumCost)}`}</div></div></div>`;
+    const badges=(isRec?'<span class="badge-best">推薦</span>':'')+(isBest?`<span class="badge-best" style="background:#ffe08a">單抽最低 ${NT(t.per)}／抽</span>`:t.per!=null?`<span>${NT(t.per)}／抽</span>`:'');
+    return `<div class="item pack-item ${isRec?'best':''}">
+      <div class="pack-main"><div><div class="t">第 ${esc(t.tier)} 階｜${NT(t.price!=null?t.price:t.cumCost)}／包</div>
+        ${badges?`<div class="pack-badges">${badges}</div>`:''}
+        </div><div class="pack-quantity"><label for="packQty${i}">購買包數</label><select id="packQty${i}" aria-label="第${esc(t.tier)}階購買包數" onchange="setPackQuantity(${i},this.value)">${Array.from({length:(t.qty||1)+1},(_,q)=>`<option value="${q}" ${q===selectedPackQuantities[i]?'selected':''}>${q} 包</option>`).join('')}</select></div></div>
+        <details class="pack-details"><summary aria-label="第${esc(t.tier)}階禮包明細"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>禮包明細</summary>
+        <div class="s">${t.packPulls!=null?`${t.packPulls} 抽／包`:'抽數未固定'}${t.qty?`・限購 ${t.qty} 包`:''}</div>
+        <div class="s pack-cumulative">買滿本階後，${t.packPulls!=null?`累計 ${t.cumPulls} 抽｜`:''}<span>共 ${NT(t.cumCost)}</span></div>
+        </details></div>`;
   }).join('');
+  updatePackTotal();
 }
 function prefillRecommendedExpense(){
   if(!currentPackRecommendation)return;
   document.getElementById('expAmt').value=currentPackRecommendation.cost;
   document.getElementById('expCat').value='抽卡禮包';
-  document.getElementById('expNote').value=`${currentPackRecommendation.pool} · 買到第 ${currentPackRecommendation.tier} 階`;
+  document.getElementById('expNote').value=`${currentPackRecommendation.pool} · ${currentPackRecommendation.items.join('、')}`;
   document.getElementById('expDate').value=todayStr();
   showTab('budget',document.querySelector('nav button[data-tab="budget"]'));
   document.getElementById('expAmt').focus();
