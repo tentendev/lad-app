@@ -276,7 +276,7 @@ export function WishTrackerScreenWeb() {
               </label>
               <label className="field-wrap">
                 <span className="field-label">日期</span>
-                <Input id="tracker-record-date" aria-label="五星紀錄日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "tracker-record-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} />
+                <span className="date-control"><Input id="tracker-record-date" aria-label="五星紀錄日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "tracker-record-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} /></span>
               </label>
               <label className="field-wrap">
                 <span className="field-label">結果</span>
@@ -348,7 +348,7 @@ export function WishTrackerScreenWeb() {
               <div className="form-grid">
                 <label className="field-wrap"><span className="field-label">計數線</span><select className="native-select" value={editing.track} onChange={(event) => { setEditError(null); setEditing({ ...editing, track: event.target.value as WishTrack }); }}>{WISH_TRACKS.map((track) => <option key={track}>{track}</option>)}</select></label>
                 <label className="field-wrap"><span className="field-label">五星出現抽數</span><Input id="tracker-edit-pity" aria-label="編輯五星出現抽數" aria-invalid={Boolean(editError)} aria-describedby={editError ? "tracker-edit-error" : undefined} type="number" value={String(editing.pity)} onChange={(event) => { setEditError(null); setEditing({ ...editing, pity: Number(event.target.value) }); }} /></label>
-                <label className="field-wrap"><span className="field-label">日期</span><Input id="tracker-edit-date" aria-label="編輯五星日期" aria-invalid={Boolean(editError)} aria-describedby={editError ? "tracker-edit-error" : undefined} type="date" value={editing.date} onChange={(event) => { setEditError(null); setEditing({ ...editing, date: event.target.value }); }} /></label>
+                <label className="field-wrap"><span className="field-label">日期</span><span className="date-control"><Input id="tracker-edit-date" aria-label="編輯五星日期" aria-invalid={Boolean(editError)} aria-describedby={editError ? "tracker-edit-error" : undefined} type="date" value={editing.date} onChange={(event) => { setEditError(null); setEditing({ ...editing, date: event.target.value }); }} /></span></label>
                 <label className="field-wrap"><span className="field-label">結果</span><select className="native-select" value={editing.outcome} onChange={(event) => { setEditError(null); setEditing({ ...editing, outcome: event.target.value as FiveStarOutcome }); }}>{FIVE_STAR_OUTCOMES.map((outcome) => <option key={outcome}>{outcome}</option>)}</select></label>
                 <label className="field-wrap full"><span className="field-label">思念名稱</span><Input id="tracker-edit-memory" aria-label="編輯思念名稱" aria-invalid={Boolean(editError)} aria-describedby={editError ? "tracker-edit-error" : undefined} maxLength={120} value={editing.memory} onChange={(event) => { setEditError(null); setEditing({ ...editing, memory: event.target.value }); }} /></label>
               </div>

@@ -27,6 +27,7 @@ export const POOLS = ["日卡池", "混池", "月卡池", "生日池", "復刻�
 export type Pool = (typeof POOLS)[number];
 
 export type ReserveUnit = "pulls" | "dia";
+export type PackQuantities = Partial<Record<Pool, number[]>>;
 
 export type CalculatorDraft = {
   pool: Pool;
@@ -35,6 +36,7 @@ export type CalculatorDraft = {
   pulls: number;
   reserve: number;
   reserveUnit: ReserveUnit;
+  packQuantities?: PackQuantities;
 };
 
 export type TicketMilestone = {
@@ -82,6 +84,7 @@ export type ScheduleEvent = {
   tentative: boolean;
   leads?: Lead[];
   cost?: number;
+  source?: string;
 };
 
 export type PendingExpense = {

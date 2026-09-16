@@ -10,6 +10,7 @@ import { DeviceDataLoading } from "@/ui/DeviceDataLoading.web";
 import { RetryableError } from "@/ui/RetryableError.web";
 import { WebPage } from "@/ui/WebPage.web";
 import { useWalletModel } from "./useWalletModel";
+import { SpendingDashboard } from "./SpendingDashboard.web";
 
 type ExpenseForm = {
   amt: string;
@@ -168,7 +169,6 @@ export function WalletScreenWeb() {
 
   const progress = Math.min(100, model.summary.percentage);
   const visibleExpenses = model.expenses.filter((expense) => expenseFilter === "全部" || expense.cat === expenseFilter);
-  const maxTrendAmount = Math.max(1, ...model.insights.months.map((item) => item.amount));
   const comparisonCopy = model.insights.previousSpent === 0
     ? model.summary.spent > 0 ? "上月沒有支出可比較" : "尚無支出變化"
     : `${model.insights.changeAmount >= 0 ? "比上月多" : "比上月少"} ${formatCurrency(Math.abs(model.insights.changeAmount))}（${Math.abs(model.insights.changePercentage ?? 0)}%）`;
@@ -296,11 +296,8 @@ export function WalletScreenWeb() {
             </details>
           </Card>
 
-          <Card className="product-card spending-insights-card">
-            <div className="section-heading">
-              <h2 className="section-title">支出洞察</h2>
-              <span className="section-meta">近 6 個月</span>
-            </div>
+          <details className="product-card card spending-insights-card">
+            <summary>當月支出洞察與預估</summary>
             <div className="insight-summary" role="group" aria-label="當月支出摘要">
               <div><span>與上月相比</span><strong>{comparisonCopy}</strong></div>
               <div><span>月底預估</span><strong>{model.insights.projectedMonthEnd === null ? "僅當月提供" : formatCurrency(model.insights.projectedMonthEnd)}</strong></div>
@@ -318,20 +315,7 @@ export function WalletScreenWeb() {
                 ))}
               </div>
             )}
-            <div
-              className="spending-trend"
-              role="img"
-              aria-label={`近六個月支出：${model.insights.months.map((item) => `${Number(item.month.slice(5))}月 ${formatCurrency(item.amount)}`).join("；")}`}
-            >
-              {model.insights.months.map((item) => (
-                <div className="trend-column" key={item.month}>
-                  <span className="trend-value">{item.amount ? formatCurrency(item.amount).replace("NT$", "") : "0"}</span>
-                  <div className="trend-rail"><i style={{ height: `${Math.max(item.amount ? 8 : 2, (item.amount / maxTrendAmount) * 100)}%` }} /></div>
-                  <span>{Number(item.month.slice(5))}月</span>
-                </div>
-              ))}
-            </div>
-          </Card>
+          </details>
 
         </div>
 
@@ -354,11 +338,11 @@ export function WalletScreenWeb() {
               </label>
               <label className="field-wrap">
                 <span className="field-label">消費日期</span>
-                <Input id="wallet-expense-date" aria-label="消費日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} />
+                <span className="date-control"><Input id="wallet-expense-date" aria-label="消費日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} /></span>
               </label>
               <label className="field-wrap">
                 <span className="field-label">備註（選填）</span>
-                <Input aria-label="花費備註" placeholder="例如：限定卡池" value={form.note} onChange={(event) => { setFormError(null); setForm({ ...form, note: event.target.value }); }} />
+                <Input aria-label="花費備註" placeholder="例如：沈星回生日卡池" value={form.note} onChange={(event) => { setFormError(null); setForm({ ...form, note: event.target.value }); }} />
               </label>
             </div>
             {formError ? <p className="field-error" id="wallet-expense-error" role="alert">{formError}</p> : null}
@@ -410,6 +394,8 @@ export function WalletScreenWeb() {
             </div>
           </Card>
 
+          <SpendingDashboard expenses={model.allExpenses} month={model.month} onSelectMonth={model.selectMonth} />
+
           {editing ? (
             <Card className="product-card">
               <div className="section-heading">
@@ -429,7 +415,7 @@ export function WalletScreenWeb() {
                 </label>
                 <label className="field-wrap">
                   <span className="field-label">消費日期</span>
-                  <Input id="wallet-edit-date" aria-label="編輯日期" aria-invalid={Boolean(editError)} aria-describedby={editError ? "wallet-edit-error" : undefined} type="date" value={editing.date} onChange={(event) => { setEditError(null); setEditing({ ...editing, date: event.target.value }); }} />
+                  <span className="date-control"><Input id="wallet-edit-date" aria-label="編輯日期" aria-invalid={Boolean(editError)} aria-describedby={editError ? "wallet-edit-error" : undefined} type="date" value={editing.date} onChange={(event) => { setEditError(null); setEditing({ ...editing, date: event.target.value }); }} /></span>
                 </label>
                 <label className="field-wrap">
                   <span className="field-label">備註</span>

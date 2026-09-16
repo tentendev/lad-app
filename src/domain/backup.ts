@@ -1,5 +1,6 @@
 import { isValidMonthKey } from "./format";
 import { normalizeStoredExpenses } from "./budget";
+import { normalizePackQuantities } from "./calculator";
 import { normalizePlannerState } from "./planner";
 import { normalizeSchedulePreferences } from "./schedule";
 import { normalizeWishTrackerState } from "./wishTracker";
@@ -76,6 +77,7 @@ function parseCalculator(value: unknown): CalculatorDraft | null {
     pulls: value.pulls as number,
     reserve: value.reserve as number,
     reserveUnit: value.reserveUnit,
+    ...(value.packQuantities === undefined ? {} : { packQuantities: normalizePackQuantities(value.packQuantities) }),
   };
 }
 

@@ -231,7 +231,7 @@ export function PlannerSectionWeb({
             </label>
             <label className="field-wrap">
               <span className="field-label">活動截止日</span>
-              <Input
+              <span className="date-control"><Input
                 aria-label="活動截止日"
                 aria-invalid={Boolean(model.formError)}
                 aria-describedby={model.formError ? "planner-form-error" : undefined}
@@ -239,7 +239,7 @@ export function PlannerSectionWeb({
                 disabled={model.writeProtected || model.busy}
                 value={model.goalDraft.deadline}
                 onChange={(event) => model.updateGoalDraft("deadline", event.target.value)}
-              />
+              /></span>
             </label>
             <label className="planner-check field-wrap">
               <span className="field-label">日期狀態</span>
@@ -280,7 +280,7 @@ export function PlannerSectionWeb({
           <div className="status-note undo-note" role="status"><span>已移除 {deletedCheckIn.date} 的進度。</span><button type="button" disabled={model.busy || model.writeProtected} onClick={() => void undoCheckInDelete()}>復原</button></div>
         ) : null}
         <div className="checkin-form" role="group" aria-label="記錄資源進度">
-          <label className="field-wrap"><span className="field-label">日期</span><Input id="planner-checkin-date" aria-label="資源進度日期" aria-invalid={Boolean(model.checkInError)} aria-describedby={model.checkInError ? "planner-checkin-error" : undefined} type="date" disabled={model.busy || model.writeProtected} value={checkInDate} onChange={(event) => { model.clearCheckInError(); setCheckInDate(event.target.value); }} /></label>
+          <label className="field-wrap"><span className="field-label">日期</span><span className="date-control"><Input id="planner-checkin-date" aria-label="資源進度日期" aria-invalid={Boolean(model.checkInError)} aria-describedby={model.checkInError ? "planner-checkin-error" : undefined} type="date" disabled={model.busy || model.writeProtected} value={checkInDate} onChange={(event) => { model.clearCheckInError(); setCheckInDate(event.target.value); }} /></span></label>
           <label className="field-wrap"><span className="field-label">目前鑽石</span><Input aria-label="資源進度鑽石" aria-invalid={Boolean(model.checkInError)} aria-describedby={model.checkInError ? "planner-checkin-error" : undefined} type="number" min="0" disabled={model.busy || model.writeProtected} value={checkInDiamonds} onChange={(event) => { model.clearCheckInError(); setCheckInDiamonds(event.target.value); }} /></label>
           <label className="field-wrap"><span className="field-label">目前金券</span><Input aria-label="資源進度金券" aria-invalid={Boolean(model.checkInError)} aria-describedby={model.checkInError ? "planner-checkin-error" : undefined} type="number" min="0" disabled={model.busy || model.writeProtected} value={checkInTickets} onChange={(event) => { model.clearCheckInError(); setCheckInTickets(event.target.value); }} /></label>
           <label className="field-wrap"><span className="field-label">備註（選填）</span><Input aria-label="資源進度備註" aria-invalid={Boolean(model.checkInError)} aria-describedby={model.checkInError ? "planner-checkin-error" : undefined} maxLength={120} disabled={model.busy || model.writeProtected} placeholder="例如：活動獎勵已領" value={checkInNote} onChange={(event) => { model.clearCheckInError(); setCheckInNote(event.target.value); }} /></label>

@@ -29,7 +29,7 @@ Web 沿用並遷移舊版 `lad_*` localStorage keys：
 - `lad_wish_tracker`
 - `lad_schedule_preferences`
 
-舊類別「抽卡」「禮包」「月卡」會在載入時轉成目前名稱。根目錄的舊版 `index.html`、`packs.js`、`schedule.js` 保留作為 legacy baseline。
+舊類別「抽卡」「禮包」「月卡」會在載入時轉成目前名稱。根目錄的 `index.html`、`packs.js` 保留作為原始版參考；`schedule.js` 是排期資料來源，`npm run export:web` 會自動產生 Expo 對應資料。2026-09-17 功能與設計同步詳見 `docs/HTML_EXPO_SYNC.md`。
 
 ## 開發與驗證
 

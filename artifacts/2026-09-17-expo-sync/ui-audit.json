@@ -1,0 +1,174 @@
+{
+  "audit": {
+    "ranAt": "2026-09-16T21:32:06.485830+00:00",
+    "skill": "ui-audit",
+    "scope": {
+      "mode": "diff",
+      "diffBase": "e13db5b",
+      "files": [
+        "src/features/calculator/useCalculatorModel.ts",
+        "src/features/schedule/ScheduleScreen.web.tsx",
+        "src/features/wallet/SpendingDashboard.web.tsx",
+        "src/ui/FeedbackEntry.web.tsx",
+        "src/web.css"
+      ],
+      "filesAudited": 5
+    },
+    "featuresDetected": [
+      "form",
+      "list",
+      "dashboard",
+      "modal"
+    ],
+    "rulesPlanned": 9,
+    "rulesRun": 9,
+    "selfCheck": {
+      "passed": true,
+      "failures": []
+    }
+  },
+  "verdict": "READY",
+  "summary": {
+    "releaseBlockers": 0,
+    "fixThisSprint": 0,
+    "backlog": 0,
+    "unknown": 0,
+    "suppressed": 0
+  },
+  "deferredTo": [
+    {
+      "concern": "native-iOS",
+      "tool": "iOS simulator/device",
+      "reason": "Separate queued iOS release task"
+    },
+    {
+      "concern": "Safari-specific rendering",
+      "tool": "Safari/iOS",
+      "reason": "Current browser verification used Ego Lite Chromium"
+    },
+    {
+      "concern": "full accessibility conformance",
+      "tool": "axe-core/manual assistive technology",
+      "reason": "This audit covers changed usage paths, not full WCAG certification"
+    }
+  ],
+  "findings": [
+    {
+      "rule": "forms-lost-data-on-error",
+      "layer": "modern",
+      "category": "forms",
+      "feature": "form",
+      "surface": "SpendingDashboard",
+      "file": "src/features/wallet/SpendingDashboard.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Invalid custom range preserves both date values and provides inline guidance."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "forms-no-autosave",
+      "layer": "modern",
+      "category": "forms",
+      "feature": "form",
+      "surface": "CalculatorScreen",
+      "file": "src/features/calculator/useCalculatorModel.ts",
+      "result": "pass",
+      "evidence": [
+        "Manual pack selection survives reload and is included in backup round-trip tests."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "states-no-empty-state",
+      "layer": "modern",
+      "category": "states",
+      "feature": "list",
+      "surface": "ScheduleScreen",
+      "file": "src/features/schedule/ScheduleScreen.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Empty lead-filter result offers a show-all action."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "focus-broken-focus-trap",
+      "layer": "modern",
+      "category": "focus",
+      "feature": "modal",
+      "surface": "FeedbackEntry",
+      "file": "src/ui/FeedbackEntry.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Seven consecutive Tab operations stayed in the open dialog."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "focus-not-restored",
+      "layer": "modern",
+      "category": "focus",
+      "feature": "modal",
+      "surface": "FeedbackEntry",
+      "file": "src/ui/FeedbackEntry.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Escape closes dialog and restores focus to trigger."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "forms-mobile-input-font-size",
+      "layer": "surface",
+      "category": "forms",
+      "feature": "form",
+      "surface": "WebPage",
+      "file": "src/web.css",
+      "result": "pass",
+      "evidence": [
+        "Date and month controls measured 16px at 320, 390, 520 and 1024 viewports."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "layout-long-content-safety",
+      "layer": "surface",
+      "category": "layout",
+      "feature": "dashboard",
+      "surface": "SpendingDashboard",
+      "file": "src/features/wallet/SpendingDashboard.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Twelve route/width combinations have no document overflow; date follow-up covers calculator/tracker at 320 and 390."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "interaction-keyboard-operable",
+      "layer": "surface",
+      "category": "interaction",
+      "feature": "dashboard",
+      "surface": "SpendingDashboard",
+      "file": "src/features/wallet/SpendingDashboard.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Monthly chart uses labeled buttons; activating a month changes wallet selection."
+      ],
+      "suppressed": false
+    },
+    {
+      "rule": "a11y-icon-controls-labeled",
+      "layer": "surface",
+      "category": "a11y",
+      "feature": "modal",
+      "surface": "FeedbackEntry",
+      "file": "src/ui/FeedbackEntry.web.tsx",
+      "result": "pass",
+      "evidence": [
+        "Feedback and close icon controls have accessible labels."
+      ],
+      "suppressed": false
+    }
+  ]
+}

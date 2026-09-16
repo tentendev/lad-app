@@ -1,5 +1,5 @@
 import { DIA_PER_PULL, MONTHLY_DIA, OFFICIAL_TICKET_RULES, PACK_DATA } from "@/data/packs";
-import { POOLS, type CalculatorDraft, type PackTier, type PendingCalculatorTarget, type Pool, type TicketRule } from "@/domain/types";
+import { POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type PendingCalculatorTarget, type Pool, type TicketRule } from "@/domain/types";
 
 export const DEFAULT_CALCULATOR_DRAFT: CalculatorDraft = {
   pool: "日卡池",
@@ -35,6 +35,7 @@ export function normalizeCalculatorDraft(value: unknown): CalculatorDraft {
     pulls: nonNegativeInteger(stored.pulls),
     reserve: nonNegativeNumber(stored.reserve),
     reserveUnit: stored.reserveUnit === "dia" ? "dia" : "pulls",
+    ...(stored.packQuantities === undefined ? {} : { packQuantities: normalizePackQuantities(stored.packQuantities) }),
   };
 }
 
@@ -244,4 +245,48 @@ export function recommendPacks(draft: CalculatorDraft): PackRecommendation {
 export function bestTierPrice(pool: Pool): number | null {
   const prices = PACK_DATA[pool].flatMap((tier) => (tier.per == null ? [] : [tier.per]));
   return prices.length ? Math.min(...prices) : null;
+}
+
+export function normalizePackQuantities(value: unknown): PackQuantities {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const entries = value as Record<string, unknown>;
+  return Object.fromEntries(POOLS.flatMap((pool) => {
+    const quantities = entries[pool];
+    if (!Array.isArray(quantities)) return [];
+    return [[pool, PACK_DATA[pool].map((tier, index) =>
+      Math.min(tier.qty ?? 1, nonNegativeInteger(Number(quantities[index]))))]];
+  }));
+}
+
+export function selectedPackQuantities(draft: CalculatorDraft): number[] {
+  const manual = normalizePackQuantities(draft.packQuantities)[draft.pool];
+  if (manual) return manual;
+  let remaining = calculateResources(draft).paidPulls;
+  return PACK_DATA[draft.pool].map((tier) => {
+    if (!tier.packPulls) return 0;
+    const quantity = Math.min(tier.qty ?? 1, Math.ceil(remaining / tier.packPulls));
+    remaining = Math.max(0, remaining - quantity * tier.packPulls);
+    return quantity;
+  });
+}
+
+export function summarizeSelectedPacks(draft: CalculatorDraft) {
+  const quantities = selectedPackQuantities(draft);
+  const resource = calculateResources(draft);
+  let cost = 0, pulls = 0, count = 0, unknownPulls = false;
+  const items: string[] = [];
+  PACK_DATA[draft.pool].forEach((tier, index) => {
+    const quantity = quantities[index];
+    if (!quantity) return;
+    cost += tier.price * quantity;
+    count += quantity;
+    pulls += (tier.packPulls ?? 0) * quantity;
+    unknownPulls ||= tier.packPulls === null;
+    items.push(`第${tier.tier}階 ${quantity}包`);
+  });
+  return {
+    quantities, cost, pulls, count, unknownPulls, items,
+    missingPulls: Math.max(0, resource.paidPulls - pulls),
+    remainingDiaAfterTarget: Math.max(0, draft.cur - Math.max(0, draft.pulls - resource.ownedTicketPulls - pulls) * DIA_PER_PULL),
+  };
 }

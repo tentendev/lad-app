@@ -1,0 +1,303 @@
+{
+  "results": [
+    {
+      "route": "schedule",
+      "width": 320,
+      "viewport": 320,
+      "documentWidth": 320,
+      "appWidth": 320,
+      "inputs": []
+    },
+    {
+      "route": "schedule",
+      "width": 390,
+      "viewport": 390,
+      "documentWidth": 390,
+      "appWidth": 390,
+      "inputs": []
+    },
+    {
+      "route": "schedule",
+      "width": 520,
+      "viewport": 520,
+      "documentWidth": 520,
+      "appWidth": 520,
+      "inputs": []
+    },
+    {
+      "route": "schedule",
+      "width": 1024,
+      "viewport": 1024,
+      "documentWidth": 1024,
+      "appWidth": 1009,
+      "inputs": []
+    },
+    {
+      "route": "calculator",
+      "width": 320,
+      "viewport": 320,
+      "documentWidth": 320,
+      "appWidth": 320,
+      "inputs": [
+        {
+          "label": "活動截止日",
+          "width": 262,
+          "parent": 262,
+          "font": "16px"
+        },
+        {
+          "label": "資源進度日期",
+          "width": 262,
+          "parent": 262,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "calculator",
+      "width": 390,
+      "viewport": 390,
+      "documentWidth": 390,
+      "appWidth": 390,
+      "inputs": [
+        {
+          "label": "活動截止日",
+          "width": 171,
+          "parent": 160.5,
+          "font": "16px"
+        },
+        {
+          "label": "資源進度日期",
+          "width": 171,
+          "parent": 161,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "calculator",
+      "width": 520,
+      "viewport": 520,
+      "documentWidth": 520,
+      "appWidth": 520,
+      "inputs": [
+        {
+          "label": "活動截止日",
+          "width": 225.5,
+          "parent": 225.5,
+          "font": "16px"
+        },
+        {
+          "label": "資源進度日期",
+          "width": 226,
+          "parent": 226,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "calculator",
+      "width": 1024,
+      "viewport": 1024,
+      "documentWidth": 1024,
+      "appWidth": 1009,
+      "inputs": [
+        {
+          "label": "活動截止日",
+          "width": 219.5,
+          "parent": 219.5,
+          "font": "16px"
+        },
+        {
+          "label": "資源進度日期",
+          "width": 220,
+          "parent": 220,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "wallet",
+      "width": 320,
+      "viewport": 320,
+      "documentWidth": 320,
+      "appWidth": 320,
+      "inputs": [
+        {
+          "label": "消費日期",
+          "width": 234,
+          "parent": 262,
+          "font": "16px"
+        },
+        {
+          "label": "chartStart",
+          "width": 216,
+          "parent": 244,
+          "font": "16px"
+        },
+        {
+          "label": "chartEnd",
+          "width": 216,
+          "parent": 244,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "wallet",
+      "width": 390,
+      "viewport": 390,
+      "documentWidth": 390,
+      "appWidth": 390,
+      "inputs": [
+        {
+          "label": "消費日期",
+          "width": 132.5,
+          "parent": 160.5,
+          "font": "16px"
+        },
+        {
+          "label": "chartStart",
+          "width": 286,
+          "parent": 314,
+          "font": "16px"
+        },
+        {
+          "label": "chartEnd",
+          "width": 286,
+          "parent": 314,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "wallet",
+      "width": 520,
+      "viewport": 520,
+      "documentWidth": 520,
+      "appWidth": 520,
+      "inputs": [
+        {
+          "label": "消費日期",
+          "width": 197.5,
+          "parent": 225.5,
+          "font": "16px"
+        },
+        {
+          "label": "chartStart",
+          "width": 188.5,
+          "parent": 216.5,
+          "font": "16px"
+        },
+        {
+          "label": "chartEnd",
+          "width": 188.5,
+          "parent": 216.5,
+          "font": "16px"
+        }
+      ]
+    },
+    {
+      "route": "wallet",
+      "width": 1024,
+      "viewport": 1024,
+      "documentWidth": 1024,
+      "appWidth": 1009,
+      "inputs": [
+        {
+          "label": "消費日期",
+          "width": 191.5,
+          "parent": 219.5,
+          "font": "16px"
+        },
+        {
+          "label": "chartStart",
+          "width": 184.5,
+          "parent": 212.5,
+          "font": "16px"
+        },
+        {
+          "label": "chartEnd",
+          "width": 184.5,
+          "parent": 212.5,
+          "font": "16px"
+        }
+      ]
+    }
+  ],
+  "focusTrap": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "dateFollowup": [
+    {
+      "route": "calculator",
+      "width": 320,
+      "viewport": 320,
+      "documentWidth": 320,
+      "inputs": [
+        {
+          "id": "",
+          "width": 234,
+          "parent": 262
+        },
+        {
+          "id": "planner-checkin-date",
+          "width": 234,
+          "parent": 262
+        }
+      ]
+    },
+    {
+      "route": "calculator",
+      "width": 390,
+      "viewport": 390,
+      "documentWidth": 390,
+      "inputs": [
+        {
+          "id": "",
+          "width": 132.5,
+          "parent": 160.5
+        },
+        {
+          "id": "planner-checkin-date",
+          "width": 133,
+          "parent": 161
+        }
+      ]
+    },
+    {
+      "route": "tracker",
+      "width": 320,
+      "viewport": 320,
+      "documentWidth": 320,
+      "inputs": [
+        {
+          "id": "tracker-record-date",
+          "width": 234,
+          "parent": 262
+        }
+      ]
+    },
+    {
+      "route": "tracker",
+      "width": 390,
+      "viewport": 390,
+      "documentWidth": 390,
+      "inputs": [
+        {
+          "id": "tracker-record-date",
+          "width": 132.5,
+          "parent": 160.5
+        }
+      ]
+    }
+  ]
+}

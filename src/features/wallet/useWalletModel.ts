@@ -202,6 +202,8 @@ export function useWalletModel() {
     insights,
     pace,
     expenses: monthExpenses,
+    allExpenses: expenses,
+    selectMonth: setMonth,
     pendingExpense,
     storageError,
     previousMonth: () => setMonth((value) => moveMonth(value, -1)),

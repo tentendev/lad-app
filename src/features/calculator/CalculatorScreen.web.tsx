@@ -2,6 +2,7 @@ import { Button } from "@heroui/react/button";
 import { Card } from "@heroui/react/card";
 import { Input } from "@heroui/react/input";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 
 import { DIA_PER_PULL, PACK_DATA } from "@/data/packs";
 import { bestTierPrice, type GapPackRecommendation } from "@/domain/calculator";
@@ -33,9 +34,10 @@ export function CalculatorScreenWeb() {
   const router = useRouter();
   const { draft, resource, recommendation } = model;
   const bestPer = bestTierPrice(draft.pool);
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   async function recordRecommendation() {
-    const saved = await model.saveRecommendationAsExpense();
+    const saved = await model.saveSelectedPacksAsExpense();
     if (saved) router.push("/wallet");
   }
 
@@ -90,19 +92,29 @@ export function CalculatorScreenWeb() {
             </div>
             <div className="form-grid" style={{ marginTop: 18 }}>
               <label className="field-wrap full">
-                <span className="field-label">卡池類型</span>
+                <span className="field-label">① 先選擇卡池類型</span>
                 <select className="native-select" value={draft.pool} onChange={(event) => model.setPool(event.target.value as Pool)}>
                   {POOLS.map((pool) => <option key={pool}>{pool}</option>)}
                 </select>
               </label>
+              <div className="section-meta full">② 再輸入持有資源與抽卡目標</div>
               <label className="field-wrap">
-                <span className="field-label">目前持有（鑽）</span>
+                <span className="field-label aligned-target-label">目前持有（鑽）</span>
                 <Input aria-label="目前持有鑽石" type="number" min="0" placeholder="0" value={draft.cur ? String(draft.cur) : ""} onChange={(event) => model.updateNumber("cur", Number(event.target.value))} />
               </label>
-              <label className="field-wrap">
-                <span className="field-label">目標抽數</span>
-                <Input aria-label="目標抽數" type="number" min="0" placeholder="70" value={draft.pulls ? String(draft.pulls) : ""} onChange={(event) => model.updateNumber("pulls", Number(event.target.value))} />
-              </label>
+              <div className="field-wrap">
+                <div className="field-label field-help"><label htmlFor="calculator-target">目標抽數</label><button type="button" className="goal-rules-toggle" aria-label="查看保底與繼承規則" aria-expanded={rulesOpen} aria-controls="calculator-goal-rules" onClick={() => setRulesOpen(!rulesOpen)}>?</button></div>
+                <Input id="calculator-target" aria-label="目標抽數" type="number" min="0" placeholder="70" value={draft.pulls ? String(draft.pulls) : ""} onChange={(event) => model.updateNumber("pulls", Number(event.target.value))} />
+              </div>
+              <div className="goal-rules full" id="calculator-goal-rules" hidden={!rulesOpen} role="note" aria-label="抽卡保底與抽數繼承規則">
+                <strong>抽數規則</strong>
+                <ul>
+                  <li>日卡池以外的活動池：140 抽內必得當期活動五星卡。</li>
+                  <li>日卡池：140 抽可得活動五星卡；累計 150 抽會送自選盒，選一張當期日卡。</li>
+                  <li>一般活動池之間會繼承抽數；復刻池只繼承同一復刻池的抽數。</li>
+                </ul>
+                <p className="section-meta">以上沿用原始版整理，實際規則請以當期遊戲內公告為準。</p>
+              </div>
               <label className="field-wrap">
                 <span className="field-label">原本剩餘金券（張）</span>
                 <Input aria-label="原有金券" type="number" min="0" placeholder="0" value={draft.tickets ? String(draft.tickets) : ""} onChange={(event) => model.updateNumber("tickets", Number(event.target.value))} />
@@ -139,7 +151,7 @@ export function CalculatorScreenWeb() {
             <div className="metric-grid">
               <div className="metric"><div className="metric-value">{formatNumber(resource.gapDia)}</div><div className="metric-label">還差幾鑽</div></div>
               <div className="metric"><div className="metric-value">{resource.paidPulls}</div><div className="metric-label">換算需課金幾抽</div></div>
-              <div className="metric"><div className="metric-value">{draft.pulls > 0 ? formatNumber(recommendation.remainingDiaAfterTarget ?? resource.remainingDiaAfterTarget) : "—"}</div><div className="metric-label">目標後剩餘鑽</div></div>
+              <div className="metric"><div className="metric-value">{draft.pulls > 0 ? formatNumber(model.selectedPacks.remainingDiaAfterTarget) : "—"}</div><div className="metric-label">目標後剩餘鑽</div></div>
             </div>
             <div className="calculation-detail" role="group" aria-label={`目標 ${formatNumber(resource.targetPulls)} 抽，扣除金券後需 ${formatNumber(resource.requiredDia)} 鑽`}>
               <span>目標 {formatNumber(resource.targetPulls)} 抽{resource.reservePulls > 0 ? `＋預留 ${formatNumber(resource.reservePulls)} 抽` : ""}</span>
@@ -166,7 +178,6 @@ export function CalculatorScreenWeb() {
                 <p className="page-description">
                   還需 {recommendation.gapPulls} 抽；最後一階買 {recommendation.packsAtTier} 包，共取得 {formatNumber(recommendation.planPulls ?? 0)} 抽。
                 </p>
-                <div className="form-actions"><Button fullWidth onPress={() => void recordRecommendation()}>帶入錢包記帳</Button></div>
               </>
             ) : (
               <p className="page-description">
@@ -178,26 +189,40 @@ export function CalculatorScreenWeb() {
           <Card className="product-card">
             <div className="section-heading">
               <h2 className="section-title heading-with-icon"><CalculatorGlyph type="steps" />階梯明細</h2>
-              <span className="section-meta">依序購買</span>
+              <button className="text-button" type="button" onClick={model.applyRecommendedPacks}>套用建議包數</button>
             </div>
             <div className="tier-list" role="list">
               {PACK_DATA[draft.pool].map((tier) => {
                 const isRecommended = recommendation.tier?.tier === tier.tier;
                 const isBest = tier.per != null && tier.per === bestPer;
                 return (
-                  <div className={`tier-row ${isRecommended ? "recommended" : ""}`} role="listitem" key={tier.tier}>
-                    <div className="tier-index">{tier.tier}</div>
-                    <div className="row-main">
-                      <div className="row-title">第 {tier.tier} 階 · {formatCurrency(tier.price)}／包</div>
-                      <div className="row-subtitle">
-                        {tier.packPulls != null ? `${tier.packPulls} 抽／包` : "抽數未固定"}{tier.qty ? ` · 限購 ${tier.qty} 包` : ""} · 買滿 {formatCurrency(tier.cumCost)}
+                  <div className={`tier-row pack-row ${isRecommended ? "recommended" : ""}`} role="listitem" key={tier.tier}>
+                    <div className="pack-row-main">
+                      <div className="row-main">
+                        <div className="row-title">第 {tier.tier} 階｜{formatCurrency(tier.price)}／包</div>
+                        <div className="pack-badges">
+                          {isRecommended ? <span className="tier-badge">推薦</span> : null}
+                          {isBest ? <span className="tier-badge best-price">單抽最低 {formatCurrency(tier.per ?? 0)}／抽</span> : tier.per != null ? <span>{formatCurrency(tier.per)}／抽</span> : null}
+                        </div>
                       </div>
+                      <label className="pack-quantity"><span>購買包數</span><select className="native-select" name={`pack-${tier.tier}`} aria-label={`第${tier.tier}階購買包數`} value={model.selectedPacks.quantities[PACK_DATA[draft.pool].indexOf(tier)]} onChange={(event) => model.setPackQuantity(PACK_DATA[draft.pool].indexOf(tier), Number(event.target.value))}>
+                        {Array.from({ length: (tier.qty ?? 1) + 1 }, (_, qty) => <option value={qty} key={qty}>{qty} 包</option>)}
+                      </select></label>
                     </div>
-                    {isRecommended || isBest ? <span className="tier-badge">{isRecommended ? "推薦" : "最低單抽"}</span> : null}
+                    <details className="pack-details"><summary aria-label={`第${tier.tier}階禮包明細`}>禮包明細</summary>
+                      <div className="row-subtitle">{tier.packPulls != null ? `${tier.packPulls} 抽／包` : "抽數未固定"} · 限購 {tier.qty ?? 1} 包</div>
+                      <div className="row-subtitle">買滿本階後，{tier.packPulls != null ? `累計 ${tier.cumPulls} 抽｜` : ""}共 {formatCurrency(tier.cumCost)}</div>
+                    </details>
                   </div>
                 );
               })}
             </div>
+            <div className="selected-pack-total" role="status" aria-live="polite">
+              <div className="card-kicker">已選禮包合計</div>
+              <div className="recommendation-value">{formatCurrency(model.selectedPacks.cost)}</div>
+              <p>已選 {model.selectedPacks.count} 包 · {model.selectedPacks.unknownPulls ? "已知抽數" : "共可獲得"} {formatNumber(model.selectedPacks.pulls)} 抽{model.selectedPacks.unknownPulls ? "（部分禮包抽數未固定）" : ""}{model.selectedPacks.missingPulls > 0 ? ` · 距目標尚差 ${formatNumber(model.selectedPacks.missingPulls)} 抽` : ""}</p>
+            </div>
+            <div className="form-actions"><Button fullWidth isDisabled={!model.selectedPacks.count} onPress={() => void recordRecommendation()}>帶入錢包記帳</Button></div>
           </Card>
         </div>
       </div>

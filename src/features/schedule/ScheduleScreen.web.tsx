@@ -1,7 +1,7 @@
 import { useGSAP } from "@gsap/react";
 import { Card } from "@heroui/react/card";
 import { gsap } from "gsap";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "expo-router";
 
 import { SCHEDULE_META } from "@/data/schedule";
@@ -75,7 +75,8 @@ function EventRow({ event, onPlan, onCalendar }: { event: ScheduleEvent; onPlan:
           {lead ? <span className={`lead-tag lead-${lead.className}`}>{lead.label}</span> : null}
         </div>
         <div className="row-subtitle">
-          {EVENT_LABELS[event.type]} · {event.start}{event.end !== event.start ? ` ~ ${event.end}` : ""}
+          {event.tentative ? "預測 · " : "已公告 · "}{EVENT_LABELS[event.type]} · {event.start}{event.end ? event.end !== event.start ? ` ~ ${event.end}` : "" : " · 結束日待確認"}
+          {event.source ? <a className="text-button" href={event.source} target="_blank" rel="noopener noreferrer">官方公告 ↗</a> : null}
         </div>
       </div>
       <div className="schedule-row-actions">
@@ -94,15 +95,13 @@ export function ScheduleScreenWeb() {
   const initialDataMotion = useRef(true);
   const model = useScheduleModel();
   const router = useRouter();
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const today = todayKey();
   const weeks = Math.ceil((model.calendar.leading + model.calendar.cells.length) / 7);
   const allLeadsSelected = model.selectedLeads.length === LEADS.length;
   const selectionTitle = model.selectedDate
     ? `${Number(model.selectedDate.slice(5, 7))}月${Number(model.selectedDate.slice(8, 10))}日 排期`
     : `${pad(model.monthIndex + 1)}月 排期`;
-  const officialCount = model.monthEvents.filter((event) => !event.tentative).length;
-  const predictedCount = model.monthEvents.length - officialCount;
-  const officialNames = model.monthEvents.filter((event) => !event.tentative).map((event) => event.name);
   const dataMotionKey = [
     model.year,
     model.monthIndex,
@@ -259,7 +258,7 @@ export function ScheduleScreenWeb() {
             <button className="nav-button" type="button" aria-label="上個月" onClick={model.previousMonth}>
               <Chevron direction="left" />
             </button>
-            <h2>{model.year}年 {pad(model.monthIndex + 1)}月</h2>
+            <h2>{model.year}<span className="date-unit">年</span> {pad(model.monthIndex + 1)}<span className="date-unit">月</span></h2>
             <button className="nav-button" type="button" aria-label="下個月" onClick={model.nextMonth}>
               <Chevron direction="right" />
             </button>
@@ -268,10 +267,10 @@ export function ScheduleScreenWeb() {
 
           <div className="lead-filter motion-detail" role="group" aria-label="男主篩選">
             <div className="lead-filter-head">
-              <strong>男主篩選</strong>
-              <span>{allLeadsSelected ? "已顯示全部" : `已選 ${model.selectedLeads.length} 位`}</span>
+              <button className="lead-filter-toggle" type="button" aria-expanded={filtersOpen} aria-controls="schedule-lead-filters" onClick={() => setFiltersOpen(!filtersOpen)}><strong>男主篩選</strong><span>{allLeadsSelected ? "全部" : model.selectedLeads.length === 0 ? "尚未選擇" : model.selectedLeads.length <= 2 ? model.selectedLeads.join("、") : `已選 ${model.selectedLeads.length} 位`}</span><span aria-hidden="true">⌄</span></button>
+              <button className="text-button" type="button" onClick={model.clearLeads}>清除全部</button>
             </div>
-            <div className="lead-filter-actions">
+            <div className="lead-filter-actions" id="schedule-lead-filters" hidden={!filtersOpen}>
               <button
                 type="button"
                 className={`lead-filter-button all ${allLeadsSelected ? "active" : ""}`}
@@ -286,11 +285,10 @@ export function ScheduleScreenWeb() {
                   <button
                     type="button"
                     key={lead}
-                    className={`lead-filter-button lead-${LEAD_CLASS[lead]} ${active ? "active" : ""}`}
+                    className={`lead-filter-button ${active ? "active" : ""}`}
                     aria-pressed={active}
                     onClick={() => model.toggleLead(lead)}
                   >
-                    <i className="lead-dot" aria-hidden="true" />
                     {lead}
                   </button>
                 );
@@ -347,8 +345,7 @@ export function ScheduleScreenWeb() {
             ))}
           </div>
           <p className="schedule-disclaimer motion-detail">
-            ※ {officialNames.length ? `「${officialNames.join("」與「")}」已有官方公告；` : "本月尚無已確認項目；"}
-            其餘 {predictedCount} 筆內容為排期預測，非官方資訊，實際卡池與日期請以《戀與深空》官方公告為準。
+            ※預測排期為非官方資訊，實際卡池與日期請以《戀與深空》官方公告為準。
           </p>
         </Card>
 
@@ -362,7 +359,7 @@ export function ScheduleScreenWeb() {
           </div>
           <div className="schedule-list motion-detail motion-data" role={model.selectedEvents.length ? "list" : undefined}>
             {model.selectedEvents.length === 0 ? (
-              <div className="empty-state">{model.selectedDate ? "這天沒有排期" : "目前篩選沒有排期"}</div>
+              <div className="empty-state">{model.selectedDate ? "這天沒有排期" : "目前篩選沒有排期"}{!allLeadsSelected ? <button className="text-button" type="button" onClick={model.showAllLeads}>顯示全部男主</button> : null}</div>
             ) : null}
             {model.selectedEvents.map((event, index) => (
               <EventRow

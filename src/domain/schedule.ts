@@ -91,7 +91,7 @@ function eventUid(event: ScheduleEvent): string {
 
 function scheduleEventLines(event: ScheduleEvent): string[] {
   const end = event.type === "pass" ? event.end || event.start : event.end || event.start;
-  const description = `${event.tentative ? "排期預測，請以官方公告為準" : "官方公告排期"} · ${EVENT_LABELS[event.type]}`;
+  const description = `${event.tentative ? "排期預測，請以官方公告為準" : "官方公告排期"} · ${EVENT_LABELS[event.type]}${event.end ? "" : " · 結束日待確認，此行事曆僅標記開啟日"}`;
   return [
     "BEGIN:VEVENT",
     `UID:${eventUid(event)}`,
@@ -99,6 +99,7 @@ function scheduleEventLines(event: ScheduleEvent): string[] {
     `DTEND;VALUE=DATE:${compactDate(nextDateKey(end))}`,
     `SUMMARY:${escapeIcsText(event.name)}`,
     `DESCRIPTION:${escapeIcsText(description)}`,
+    ...(event.source ? [`URL:${event.source}`] : []),
     "TRANSP:TRANSPARENT",
     "END:VEVENT",
   ];
@@ -135,6 +136,7 @@ export function daysBetween(dateKey: string, today: string): number {
 
 export function eventStatus(event: ScheduleEvent, today: string): { label: string; tone: string } {
   const startDiff = daysBetween(event.start, today);
+  if (!event.end && startDiff <= 0) return { label: "結束日待確認", tone: "tbd" };
   const endDiff = daysBetween(event.end || event.start, today);
   if (endDiff < 0) return { label: "已結束", tone: "past" };
   if (startDiff <= 0) return { label: endDiff === 0 ? "最後一天" : `進行中 · 剩${endDiff}天`, tone: "live" };

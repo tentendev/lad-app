@@ -110,8 +110,13 @@ describe("schedule visibility", () => {
     for (const event of SCHEDULE) {
       expect(event.name.trim().length, "排期名稱不可為空").toBeGreaterThan(0);
       expect(isValidDateKey(event.start), `${event.name} 開始日期`).toBe(true);
-      expect(isValidDateKey(event.end), `${event.name} 結束日期`).toBe(true);
-      expect(event.start <= event.end, `${event.name} 起訖順序`).toBe(true);
+      if (event.end === "") {
+        expect(event.type, "只有未確認的密約可缺少結束日").toBe("pass");
+        expect(event.tentative).toBe(true);
+      } else {
+        expect(isValidDateKey(event.end), `${event.name} 結束日期`).toBe(true);
+        expect(event.start <= event.end, `${event.name} 起訖順序`).toBe(true);
+      }
       expect(new Set(event.leads ?? []).size, `${event.name} 男主不可重複`).toBe(event.leads?.length ?? 0);
       for (const lead of event.leads ?? []) expect(LEADS).toContain(lead);
     }

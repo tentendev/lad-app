@@ -30,7 +30,8 @@ export function useScheduleModel(now = new Date()) {
 
   useEffect(() => {
     let active = true;
-    void storage.get<unknown>(STORAGE_KEYS.schedulePreferences, DEFAULT_SCHEDULE_PREFERENCES)
+    void storage.get<unknown>(STORAGE_KEYS.schedulePreferences, null)
+      .then(async (stored) => stored ?? { selectedLeads: await storage.get<unknown>("leadFilter", [...LEADS]) })
       .then((stored) => {
         if (!active) return;
         setSelectedLeads(normalizeSchedulePreferences(stored).selectedLeads);
@@ -145,6 +146,7 @@ export function useScheduleModel(now = new Date()) {
       setSelectedLeads([...LEADS]);
       setSelectedDate(null);
     },
+    clearLeads: () => { setSelectedLeads([]); setSelectedDate(null); },
     clearSelection: () => setSelectedDate(null),
     preparePullGoal,
   };

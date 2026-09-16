@@ -2,6 +2,7 @@ import { Link, Slot, usePathname } from "expo-router";
 import type { JSX } from "react";
 
 import { DebugLauncher } from "@/ui/DebugLauncher.web";
+import { FeedbackEntry } from "@/ui/FeedbackEntry.web";
 
 const ITEMS = [
   { href: "/wallet", label: "錢包", icon: "wallet" },
@@ -66,6 +67,7 @@ export default function WebTabsLayout(): JSX.Element {
             </Link>
           );
         })}
+        <FeedbackEntry />
       </nav>
     </div>
   );

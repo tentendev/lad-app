@@ -21,6 +21,7 @@ export function AccountEntry(): JSX.Element {
     <Link
       href="/account"
       className="account-entry"
+      aria-label={label}
     >
       <span className="account-entry-avatar" aria-hidden="true">
         {isSignedIn && user?.imageUrl ? <img src={user.imageUrl} alt="" /> : <MemberIcon />}

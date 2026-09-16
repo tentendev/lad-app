@@ -30,6 +30,26 @@ export type MonthlySpending = {
   amount: number;
 };
 
+export function spendingRangeError(start: string, end: string): string | null {
+  if (!isValidMonthKey(start) || !isValidMonthKey(end)) return "請選擇有效的開始與結束月份。";
+  const count = (Number(end.slice(0, 4)) - Number(start.slice(0, 4))) * 12 + Number(end.slice(5)) - Number(start.slice(5)) + 1;
+  if (count <= 0) return "結束月份不能早於開始月份。";
+  if (count > 60) return "一次最多比較 60 個月。";
+  return null;
+}
+
+export function summarizeSpendingRange(expenses: Expense[], start: string, end: string) {
+  const error = spendingRangeError(start, end);
+  if (error) throw new Error(error);
+  const months: MonthlySpending[] = [];
+  for (let month = start; month <= end; month = moveMonth(month, 1)) {
+    months.push({ month, amount: expensesForMonth(expenses, month).reduce((sum, item) => sum + item.amt, 0) });
+  }
+  const total = months.reduce((sum, item) => sum + item.amount, 0);
+  const highest = months.reduce((best, item) => item.amount > best.amount ? item : best, months[0]);
+  return { months, total, average: Math.round(total / months.length), highest };
+}
+
 export type SpendingInsights = {
   categories: CategorySpending[];
   months: MonthlySpending[];

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, normalizePendingCalculatorTarget, recommendPacks } from "@/domain/calculator";
+import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, normalizePackQuantities, normalizePendingCalculatorTarget, recommendPacks, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
 import { todayKey } from "@/domain/format";
 import type { CalculatorDraft, PendingExpense, Pool, ReserveUnit } from "@/domain/types";
 import { storage } from "@/data/repositories/storage";
@@ -21,10 +21,12 @@ export function useCalculatorModel() {
     void Promise.all([
       storage.get<unknown>(STORAGE_KEYS.calculator, DEFAULT_CALCULATOR_DRAFT),
       storage.get<unknown>(STORAGE_KEYS.pendingCalculatorTarget, null),
+      storage.get<unknown>("packQuantities", null),
     ])
-      .then(async ([stored, pendingValue]) => {
+      .then(async ([stored, pendingValue, legacyQuantities]) => {
         if (!active) return;
         const normalized = normalizeCalculatorDraft(stored);
+        if (normalized.packQuantities === undefined && legacyQuantities !== null) normalized.packQuantities = normalizePackQuantities(legacyQuantities);
         const pending = normalizePendingCalculatorTarget(pendingValue);
         setDraft(pending ? {
           ...normalized,
@@ -72,6 +74,39 @@ export function useCalculatorModel() {
 
   const resource = useMemo(() => calculateResources(draft), [draft]);
   const recommendation = useMemo(() => recommendPacks(draft), [draft]);
+  const selectedPacks = useMemo(() => summarizeSelectedPacks(draft), [draft]);
+
+  function setPackQuantity(index: number, value: number) {
+    setDraft((current) => {
+      const quantities = selectedPackQuantities(current);
+      if (index < 0 || index >= quantities.length) return current;
+      quantities[index] = value;
+      return { ...current, packQuantities: normalizePackQuantities({ ...current.packQuantities, [current.pool]: quantities }) };
+    });
+  }
+
+  function applyRecommendedPacks() {
+    setDraft((current) => {
+      const packQuantities = { ...current.packQuantities };
+      delete packQuantities[current.pool];
+      return { ...current, packQuantities };
+    });
+  }
+
+  async function saveSelectedPacksAsExpense(): Promise<boolean> {
+    if (!selectedPacks.count || !selectedPacks.cost) return false;
+    try {
+      await storage.set(STORAGE_KEYS.pendingExpense, {
+        amt: selectedPacks.cost, cat: "抽卡禮包", date: todayKey(),
+        note: `${draft.pool} · ${selectedPacks.items.join("、")}`,
+      } satisfies PendingExpense);
+      setStorageError(null);
+      return true;
+    } catch {
+      setStorageError("選取的禮包無法帶入錢包，請確認裝置儲存空間後再試一次。");
+      return false;
+    }
+  }
 
   const updateNumber = useCallback((key: "cur" | "tickets" | "pulls" | "reserve", value: number) => {
     const number = Number(value);
@@ -126,6 +161,10 @@ export function useCalculatorModel() {
     draft,
     resource,
     recommendation,
+    selectedPacks,
+    setPackQuantity,
+    applyRecommendedPacks,
+    saveSelectedPacksAsExpense,
     targetHandoff,
     storageError,
     updateNumber,
