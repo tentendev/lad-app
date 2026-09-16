@@ -26,7 +26,7 @@ Expo SDK 更新至 57.0.23、React Native 0.86.3 與相容套件版本。URI 解
 
 CocoaPods UUID 衝突曾令 `PBXProject` 被 `ClerkKitUI` 物件覆蓋。`plugins/withStablePodsProject.js` 在產生 Podfile 時加入避免重用既有 UUID 的修補；重新安裝 Pods 後已確認 root object 與 SPM dependency 分離、Xcode 可讀取 workspace。
 
-本機 Xcode build service 仍在 clang metadata probe 階段停住；抽樣顯示 clang 等待輸出 pipe，而相同命令獨立執行成功。已停止本次卡住的程序；改用 EAS Simulator build 進行後續安裝與驗收。首個 EAS Simulator build `8299a04f-d180-487f-a3f9-2007338f0140` 已完成並安裝。實際操作找到並修正安全區域高度導致首頁空白、月曆文字裁切、原生分頁保留時未重新載入帶入資料等問題；修正版已用相同 native binary 重新嵌入 Hermes bundle 做內部 QA，後續仍需由修正 commit 重建完整 EAS artifact。
+本機 Xcode build service 仍在 clang metadata probe 階段停住；抽樣顯示 clang 等待輸出 pipe，而相同命令獨立執行成功。已停止本次卡住的程序；改用 EAS Simulator build 進行後續安裝與驗收。首個 EAS Simulator build `8299a04f-d180-487f-a3f9-2007338f0140` 已完成並安裝。實際操作找到並修正安全區域高度導致首頁空白、月曆文字裁切、原生分頁保留時未重新載入帶入資料等問題；修正版已用相同 native binary 重新嵌入 Hermes bundle 做內部 QA，最終完整 EAS build `6cfea0da-e23d-4a40-9da9-a63cc44f5fcf`（來源 `2fafd2a`）也已成功，並直接安裝未修改產物到三款模擬器完成主流程 smoke check；來源、雜湊與 8 張實際畫面見 `artifacts/2026-09-17-ios/final-build/`。
 
 ## 尚需完成的正式條件
 
@@ -37,7 +37,7 @@ CocoaPods UUID 衝突曾令 `PBXProject` 被 `ClerkKitUI` 物件覆蓋。`plugin
 3. 輪替先前暴露的 Clerk／Neon credentials。私鑰與資料庫密碼僅存服務端，不能加入 Expo 公開環境或 Git。
 4. Vercel production environment 與公開部署。目前 `/privacy`、`/support`、`/account` 及 API 均為 404；production environment 尚未設定。
 5. Apple Services ID／Sign in with Apple key 與 server revoke 設定；EAS production 僅使用公開的 `pk_live_`、營運資訊、API origin 與功能旗標。
-6. iPhone 大小尺寸及 13 吋 iPad 的實際安裝、操作、離線啟動與截圖；登入／同步／衝突／刪除帳號需在 production 服務及實機或 TestFlight 驗證。
+6. 三款模擬器已安裝並完成上述操作／截圖；完整離線網路隔離、登入／同步／衝突／刪除帳號仍需在 production 服務及實機或 TestFlight 驗證。
 7. App Store metadata、年齡分級、Content Rights、App Privacy、DSA（如適用）、Free／territories、審核用 production demo 帳號及聯絡資料。
 8. 建立 production archive、上傳 TestFlight、驗收、選擇 build，最後送出 App Review。TestFlight 上傳不等於已送審。
 
@@ -51,3 +51,5 @@ CocoaPods UUID 衝突曾令 `PBXProject` 被 `ClerkKitUI` 物件覆蓋。`plugin
 - `eas submit --platform ios --profile production`：上傳完成後仍需在 App Store Connect 送審。
 
 相關資料：`PRODUCTION_ENVIRONMENT.md`、`PRIVACY_DATA_INVENTORY.md`、`APP_STORE_REVIEW_PACKAGE.md`、`OPERATIONS_RUNBOOK.md`。
+
+最新 submission preflight 仍有 21 項阻擋，原始結果見 `artifacts/2026-09-17-ios/submission-preflight.txt`。Ego Lite 工作區 28 仍交由使用者操作，需使用者確認可接回後，才繼續正式服務及 Apple 設定。

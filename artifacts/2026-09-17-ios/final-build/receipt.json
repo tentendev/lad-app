@@ -1,0 +1,51 @@
+{
+  "easBuildId": "6cfea0da-e23d-4a40-9da9-a63cc44f5fcf",
+  "sourceCommit": "2fafd2ad3bc4ef96e9c4d05c2e434454b4d6f8fc",
+  "profile": "ios-simulator",
+  "completedAt": "2026-09-16T22:53:48.151Z",
+  "bundleId": "com.tenten.deepspaceledger",
+  "version": "1.0.0",
+  "buildNumber": "1",
+  "supportedPlatforms": [
+    "iPhoneSimulator"
+  ],
+  "archiveSha256": "f4947a2637805e80468cbbc432911acdea883f03e78cbef3e5f39787432e1987",
+  "hermesSha256": "81635f93cee744468ceb2f096d65d9efcb9753416575548beedd6d48761823e6",
+  "hermesBytes": 8344624,
+  "appReviewSubmitted": false,
+  "testFlightUploaded": false,
+  "screenshots": {
+    "ipad-13-calculator.png": [
+      2064,
+      2752
+    ],
+    "ipad-13-date-picker.png": [
+      2064,
+      2752
+    ],
+    "ipad-13-schedule.png": [
+      2064,
+      2752
+    ],
+    "ipad-13-wallet.png": [
+      2064,
+      2752
+    ],
+    "iphone-6.9-calculator.png": [
+      1320,
+      2868
+    ],
+    "iphone-6.9-schedule.png": [
+      1320,
+      2868
+    ],
+    "iphone-6.9-wallet.png": [
+      1320,
+      2868
+    ],
+    "iphone-small-schedule.png": [
+      1170,
+      2532
+    ]
+  }
+}

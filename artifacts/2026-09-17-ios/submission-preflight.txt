@@ -1,0 +1,32 @@
+
+> deep-space-ledger@1.0.0 preflight:ios-submit
+> node --env-file-if-exists=.env.local scripts/preflight-ios-submit.mjs
+
+iOS submission readiness
+- iPad 支援目前開啟：送審前需要 13 吋 iPad 截圖與 iPad UI 驗收。
+- 目前 bundle identifier：com.tenten.deepspaceledger。請確認與已註冊的 Apple App ID 一致。
+
+尚有 21 項阻擋：
+- production build 必須使用 Clerk production publishable key（pk_live_），不可沿用 test instance。
+- 保留 Google 登入時，production 必須啟用 Apple 登入並完成 Clerk／Apple 設定。
+- 請設定公開的 EXPO_PUBLIC_LEGAL_ENTITY_NAME，供隱私政策標示營運者。
+- 請設定有效的公開 EXPO_PUBLIC_SUPPORT_EMAIL。
+- Vercel production 必須使用 Clerk production secret key（sk_live_）。
+- 先輪替曾暴露的 Clerk／Neon credentials，再設定 PRODUCTION_SECRETS_ROTATED=true。
+- 完成 Clerk production Native application（Team ID／Bundle ID／redirect allowlist）後再確認旗標。
+- 完成 Clerk production Google OAuth 與實機測試後再確認旗標。
+- 完成 Clerk production Sign in with Apple 與實機測試後再確認旗標。
+- Vercel production 缺少有效 APPLE_TEAM_ID。
+- Vercel production 缺少有效 APPLE_KEY_ID。
+- Vercel production 缺少 Sign in with Apple .p8 private key。
+- APPLE_NATIVE_CLIENT_ID 必須與 iOS bundle identifier 相同。
+- Web 同時提供 Apple 登入時，必須設定 APPLE_WEB_CLIENT_ID（Services ID）。
+- 第三方遊戲／角色／活動內容必須有上架授權（licensed）或自送審版移除（removed）。
+- 公開支援頁 https://lad-pocket.vercel.app/support 回傳 HTTP 404，預期 200。
+- 公開隱私政策 https://lad-pocket.vercel.app/privacy 回傳 HTTP 404，預期 200。
+- 公開資料控制頁 https://lad-pocket.vercel.app/account 回傳 HTTP 404，預期 200。
+- 雲端同步驗證邊界 https://lad-pocket.vercel.app/api/sync 回傳 HTTP 404，預期 401。
+- 帳號刪除 method 邊界 https://lad-pocket.vercel.app/api/account 回傳 HTTP 404，預期 405。
+- 帳號刪除驗證邊界 https://lad-pocket.vercel.app/api/account 回傳 HTTP 404，預期 401。
+
+沒有啟動 EAS build、TestFlight 上傳或 App Store 提交。

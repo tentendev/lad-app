@@ -1,6 +1,6 @@
 {
   "date": "2026-09-17",
-  "sourceCommit": "a396b8a5a42a24cd07c87a2c9d66e7933ad0ef27 (initial native binary; UI fixes embedded locally for QA)",
+  "sourceCommit": "2fafd2ad3bc4ef96e9c4d05c2e434454b4d6f8fc",
   "submissionStatus": "not_submitted",
   "apple": {
     "teamId": "RTK85AV2H2",
@@ -11,10 +11,13 @@
   "expo": {
     "projectId": "46cd6a19-3d6a-4b81-b08b-a531cb15664f",
     "owner": "tentenco",
-    "simulatorBuildId": "8299a04f-d180-487f-a3f9-2007338f0140",
+    "simulatorBuildId": "6cfea0da-e23d-4a40-9da9-a63cc44f5fcf",
     "simulatorBuildStatus": "finished",
     "environment": "preview",
-    "authenticationInstance": "development_for_internal_QA_only"
+    "authenticationInstance": "development_for_internal_QA_only",
+    "simulatorBuildUrl": "https://expo.dev/accounts/tentenco/projects/deep-space-ledger/builds/6cfea0da-e23d-4a40-9da9-a63cc44f5fcf",
+    "completedAt": "2026-09-16T22:53:48.151Z",
+    "installedArtifact": "unmodified full EAS simulator build"
   },
   "checks": {
     "vitest": "114 passed",
@@ -26,11 +29,13 @@
     "iosHermesExport": "8.5 MiB, passed 10 MiB budget",
     "iosBuildPreflight": "passed",
     "dependencyAudit": "0 critical; 0 unreviewed root advisories; 4 reviewed roots with documented exposure limits",
-    "nativeDeviceQA": "iPhone 17 Pro Max core paths passed on corrected Hermes bundle; iPad initial layout passed; smaller phone/keyboard checks in progress",
-    "productionAuthAndCloudQA": "pending production service configuration"
+    "nativeDeviceQA": "iPhone 17 Pro Max core paths, iPhone 17e compact header/software keyboard, and iPad 13 layout/date picker passed; final unmodified EAS artifact installed on all three and smoke-tested",
+    "productionAuthAndCloudQA": "pending production service configuration",
+    "submissionPreflight": "21 unresolved production/data/service blockers; see submission-preflight.txt",
+    "localBackup": "Version 4 JSON generated with six data sections; native share/document-picker open and cancel passed; save/restore round trip not completed"
   },
   "remaining": [
-    "Native installation, iPhone/iPad UI QA and actual screenshots",
+    "Production real-device/TestFlight QA, authentication/cloud/deletion, offline isolation, and final store metadata/screenshots review",
     "Clerk production instance, Google/Apple OAuth, Native application and callback setup",
     "Production secret rotation and Vercel public policy/support/account/API deployment",
     "Operator, copyright, support email and App Review contact data",
@@ -42,6 +47,11 @@
     "Calendar bar line height",
     "Bottom safe area and five-tab accessibility labels",
     "HeroUI brand colors and persistent wallet labels",
-    "Reload native screen data on focus to consume repeated handoffs"
-  ]
+    "Reload native screen data on focus to consume repeated handoffs",
+    "Compact single-row header below 400pt",
+    "Centered iPad date modal and fixed-width date wheels",
+    "Wallet handoff notice and input focus"
+  ],
+  "artifactSha256": "f4947a2637805e80468cbbc432911acdea883f03e78cbef3e5f39787432e1987",
+  "browser": "Ego Lite TaskSpace 28 handed to user; explicit confirmation to resume still pending"
 }
