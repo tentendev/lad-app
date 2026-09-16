@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { storage } from "@/data/repositories/storage";
 import { STORAGE_KEYS } from "@/data/repositories/storage.types";
@@ -45,7 +46,7 @@ export function usePlannerModel(resources: { currentDia: number; currentTickets:
   const lastCheckInId = useRef(0);
   const writeInFlight = useRef(false);
 
-  useEffect(() => {
+  useScreenLoadEffect(useCallback(() => {
     let active = true;
     void (async () => {
       try {
@@ -68,6 +69,8 @@ export function usePlannerModel(resources: { currentDia: number; currentTickets:
             setGoalDraft(draft);
             setHandoffNotice("這項排期已在規劃中，已開啟原目標供你確認或修改。");
           } else {
+            setEditingId(null);
+            setHandoffNotice(null);
             setGoalDraft(pending);
           }
         }
@@ -89,7 +92,7 @@ export function usePlannerModel(resources: { currentDia: number; currentTickets:
     return () => {
       active = false;
     };
-  }, []);
+  }, []));
 
   const forecast = useMemo(
     () => forecastPullPlan(planner, resources, todayKey()),

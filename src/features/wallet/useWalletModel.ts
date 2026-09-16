@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { expensesForMonth, nextExpenseId, normalizeBudgetConfig, normalizeBudgetMap, normalizeExpenseDraft, normalizePendingExpense, normalizeStoredExpenses, summarizeBudget, summarizeBudgetPace, summarizeSpendingInsights } from "@/domain/budget";
 import { currentMonthKey, moveMonth } from "@/domain/format";
@@ -19,7 +20,7 @@ export function useWalletModel() {
   const [writeProtected, setWriteProtected] = useState(false);
   const lastExpenseId = useRef(0);
 
-  useEffect(() => {
+  useScreenLoadEffect(useCallback(() => {
     let active = true;
     void (async () => {
       try {
@@ -63,7 +64,7 @@ export function useWalletModel() {
     return () => {
       active = false;
     };
-  }, []);
+  }, []));
 
   const monthExpenses = useMemo(() => expensesForMonth(expenses, month), [expenses, month]);
   const config = budgets[month] ?? DEFAULT_BUDGET;

@@ -1,14 +1,15 @@
 # Production Dependency Security Review
 
-Review date: 2026-08-19
+Review date: 2026-09-17
 
-`npm audit --omit=dev` currently expands three reviewed advisory URLs through the Expo／React Native／Clerk dependency graph and reports 40 affected dependency entries (18 moderate, 22 high, 0 critical). The count does not represent 40 independent exploitable flaws.
+`npm audit --omit=dev` currently expands four reviewed advisory URLs through the Expo／React Native／Clerk dependency graph and reports 30 affected dependency entries (0 critical). The count does not represent 30 independent exploitable flaws.
 
 ## Reviewed root advisories
 
 1. `GHSA-w3rx-r6r6-pgpr` — `image-size` ICNS parser infinite loop.
 2. `GHSA-5p2g-fcmc-qvqq` — `image-size` JXL／HEIF parser infinite loops.
 3. `GHSA-w5hq-g745-h8pq` — `uuid <11.1.1` caller-supplied buffer bounds issue in v3／v5／v6.
+4. `GHSA-528h-pc64-c93x` — unused stream-json path-filter APIs in Clerk’s optional wallet dependency; conditionally accepted as described below.
 
 ## Exposure and mitigation
 
@@ -20,7 +21,7 @@ Review date: 2026-08-19
 
 ## Automated gate
 
-`npm run security:audit` allows only the three reviewed advisory URLs above and fails on any new root advisory or critical finding. An allowlist is a review record, not a claim that the upstream issue is fixed.
+`npm run security:audit` allows only the reviewed advisory URLs above (with an import/exposure guard for stream-json) and fails on any new root advisory or critical finding. An allowlist is a review record, not a claim that the upstream issue is fixed.
 
 
 ## 2026-09-17 release review

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   eventBar: {
     position: "absolute",
-    height: 12,
+    height: 14,
     borderRadius: 4,
     paddingHorizontal: 4,
     justifyContent: "center",
@@ -142,7 +142,7 @@ export function ScheduleScreenNative() {
                   accessibilityState={{ selected: active }}
                   hitSlop={6}
                   onPress={() => model.toggleLead(lead)}
-                  className="flex-row items-center gap-1 min-h-11 items-center justify-center rounded-full border px-3 py-2"
+                  className="flex-row gap-1 min-h-11 items-center justify-center rounded-full border px-3 py-2"
                   style={{ borderColor: active ? "#fff" : "rgba(255,255,255,.35)", backgroundColor: active ? "rgba(255,255,255,.2)" : "transparent" }}
                 >
                   <Typography className="text-[10px] font-semibold text-white">{lead}</Typography>
@@ -193,7 +193,7 @@ export function ScheduleScreenNative() {
                   style={[
                     styles.eventBar,
                     {
-                      top: segment.week * CELL_HEIGHT + 34 + segment.lane * 14,
+                      top: segment.week * CELL_HEIGHT + 34 + segment.lane * 16,
                       left,
                       width,
                       backgroundColor: color,
@@ -203,7 +203,7 @@ export function ScheduleScreenNative() {
                     },
                   ]}
                 >
-                  <Typography numberOfLines={1} className="text-[8px] font-bold text-[#34294e]">{segment.event.name}</Typography>
+                  <Typography numberOfLines={1} className="text-[9px] leading-[12px] font-bold text-[#34294e]">{segment.event.name}</Typography>
                 </View>
               );
             })}

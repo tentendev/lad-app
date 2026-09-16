@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { SCHEDULE } from "@/data/schedule";
 import { storage } from "@/data/repositories/storage";
@@ -28,7 +29,7 @@ export function useScheduleModel(now = new Date()) {
   const preferenceSaveQueue = useRef<Promise<void>>(Promise.resolve());
   const preferenceRevision = useRef(0);
 
-  useEffect(() => {
+  useScreenLoadEffect(useCallback(() => {
     let active = true;
     void storage.get<unknown>(STORAGE_KEYS.schedulePreferences, null)
       .then(async (stored) => stored ?? { selectedLeads: await storage.get<unknown>("leadFilter", [...LEADS]) })
@@ -49,7 +50,7 @@ export function useScheduleModel(now = new Date()) {
     return () => {
       active = false;
     };
-  }, []);
+  }, []));
 
   useEffect(() => {
     if (!preferencesReady || !preferencePersistenceEnabled) return;

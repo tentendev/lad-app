@@ -1,3 +1,4 @@
+import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, normalizePackQuantities, normalizePendingCalculatorTarget, recommendPacks, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
@@ -16,7 +17,7 @@ export function useCalculatorModel() {
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const saveRevision = useRef(0);
 
-  useEffect(() => {
+  useScreenLoadEffect(useCallback(() => {
     let active = true;
     void Promise.all([
       storage.get<unknown>(STORAGE_KEYS.calculator, DEFAULT_CALCULATOR_DRAFT),
@@ -50,7 +51,7 @@ export function useCalculatorModel() {
     return () => {
       active = false;
     };
-  }, []);
+  }, []));
 
   useEffect(() => {
     if (!ready || !persistenceEnabled) return;

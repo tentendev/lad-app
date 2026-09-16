@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-17",
+  "sourceCommit": "a396b8a5a42a24cd07c87a2c9d66e7933ad0ef27 (initial native binary; UI fixes embedded locally for QA)",
+  "submissionStatus": "not_submitted",
+  "apple": {
+    "teamId": "RTK85AV2H2",
+    "bundleId": "com.tenten.deepspaceledger",
+    "appStoreId": "6812909987",
+    "appStoreStatus": "Prepare for Submission"
+  },
+  "expo": {
+    "projectId": "46cd6a19-3d6a-4b81-b08b-a531cb15664f",
+    "owner": "tentenco",
+    "simulatorBuildId": "8299a04f-d180-487f-a3f9-2007338f0140",
+    "simulatorBuildStatus": "finished",
+    "environment": "preview",
+    "authenticationInstance": "development_for_internal_QA_only"
+  },
+  "checks": {
+    "vitest": "114 passed",
+    "nodeTests": "6 passed",
+    "eslint": "passed",
+    "typescript": "passed",
+    "expoDoctor": "21/21 passed",
+    "webExportAndVerification": "passed",
+    "iosHermesExport": "8.5 MiB, passed 10 MiB budget",
+    "iosBuildPreflight": "passed",
+    "dependencyAudit": "0 critical; 0 unreviewed root advisories; 4 reviewed roots with documented exposure limits",
+    "nativeDeviceQA": "iPhone 17 Pro Max core paths passed on corrected Hermes bundle; iPad initial layout passed; smaller phone/keyboard checks in progress",
+    "productionAuthAndCloudQA": "pending production service configuration"
+  },
+  "remaining": [
+    "Native installation, iPhone/iPad UI QA and actual screenshots",
+    "Clerk production instance, Google/Apple OAuth, Native application and callback setup",
+    "Production secret rotation and Vercel public policy/support/account/API deployment",
+    "Operator, copyright, support email and App Review contact data",
+    "Content-rights declaration based on owner-provided facts",
+    "Production-signed archive, TestFlight acceptance and App Review submission"
+  ],
+  "nativeFixes": [
+    "SafeAreaView explicit flex height",
+    "Calendar bar line height",
+    "Bottom safe area and five-tab accessibility labels",
+    "HeroUI brand colors and persistent wallet labels",
+    "Reload native screen data on focus to consume repeated handoffs"
+  ]
+}

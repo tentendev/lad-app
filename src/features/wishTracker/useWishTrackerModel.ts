@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import { storage } from "@/data/repositories/storage";
 import { STORAGE_KEYS } from "@/data/repositories/storage.types";
@@ -22,7 +23,7 @@ export function useWishTrackerModel() {
   const [storageError, setStorageError] = useState<string | null>(null);
   const lastRecordId = useRef(0);
 
-  useEffect(() => {
+  useScreenLoadEffect(useCallback(() => {
     let active = true;
     void (async () => {
       try {
@@ -47,7 +48,7 @@ export function useWishTrackerModel() {
       }
     })();
     return () => { active = false; };
-  }, []);
+  }, []));
 
   const persist = useCallback(async (next: WishTrackerState, errorMessage: string): Promise<boolean> => {
     if (writeProtected) return false;

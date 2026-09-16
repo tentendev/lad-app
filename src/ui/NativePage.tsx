@@ -23,7 +23,7 @@ export function NativePage({ eyebrow, title, description, showAccountEntry = tru
       className="flex-1 bg-[#7765a7]"
     >
       <View className="absolute inset-0 bg-[#574978]/30" />
-      <SafeAreaView className="flex-1" edges={["top"]} accessibilityLabel={`${title}：${description}；${eyebrow}`}>
+      <SafeAreaView style={{ flex: 1 }} edges={["top"]} accessibilityLabel={`${title}：${description}；${eyebrow}`}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
           contentContainerClassName="px-4 pb-28 pt-4"
           keyboardShouldPersistTaps="handled"

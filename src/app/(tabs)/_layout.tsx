@@ -1,4 +1,5 @@
 import { Tabs } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { JSX } from "react";
 import type { ColorValue } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
@@ -41,6 +42,7 @@ function TabIcon({ name, color }: { name: IconName; color: ColorValue }): JSX.El
 }
 
 export default function NativeTabsLayout(): JSX.Element {
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       initialRouteName="schedule"
@@ -61,28 +63,28 @@ export default function NativeTabsLayout(): JSX.Element {
           borderLeftWidth: 1,
           borderRightColor: "rgba(255,255,255,0.2)",
           borderRightWidth: 1,
-          height: 70,
+          height: 56 + insets.bottom,
         },
       }}
     >
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
         name="wallet"
-        options={{ title: "錢包", tabBarIcon: ({ color }) => <TabIcon name="wallet" color={color} /> }}
+        options={{ title: "錢包", tabBarAccessibilityLabel: "錢包，第 1 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="wallet" color={color} /> }}
       />
       <Tabs.Screen
         name="schedule"
-        options={{ title: "排期", tabBarIcon: ({ color }) => <TabIcon name="calendar" color={color} /> }}
+        options={{ title: "排期", tabBarAccessibilityLabel: "排期，第 2 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="calendar" color={color} /> }}
       />
       <Tabs.Screen
         name="calculator"
-        options={{ title: "換算", tabBarIcon: ({ color }) => <TabIcon name="calculator" color={color} /> }}
+        options={{ title: "換算", tabBarAccessibilityLabel: "換算，第 3 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="calculator" color={color} /> }}
       />
       <Tabs.Screen
         name="tracker"
-        options={{ title: "追蹤", tabBarIcon: ({ color }) => <TabIcon name="star" color={color} /> }}
+        options={{ title: "追蹤", tabBarAccessibilityLabel: "追蹤，第 4 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="star" color={color} /> }}
       />
-      <Tabs.Screen name="feedback" options={{ title: "回饋", tabBarIcon: ({ color }) => <TabIcon name="feedback" color={color} /> }} />
+      <Tabs.Screen name="feedback" options={{ title: "回饋", tabBarAccessibilityLabel: "回饋，第 5 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="feedback" color={color} /> }} />
     </Tabs>
   );
 }

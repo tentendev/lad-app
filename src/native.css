@@ -13,3 +13,27 @@
   --color-glass-soft: #766ba5;
   --color-line: #c9c4e0;
 }
+
+/* Preserve the product palette for HeroUI controls in either system appearance. */
+@layer theme {
+  :root {
+    @variant light {
+      --accent: #cdbdff;
+      --accent-foreground: #2b1d4b;
+      --default: #645484;
+      --default-foreground: #ffffff;
+      --foreground: #ffffff;
+      --focus: #cdbdff;
+      --link: #e3d7ff;
+    }
+    @variant dark {
+      --accent: #cdbdff;
+      --accent-foreground: #2b1d4b;
+      --default: #645484;
+      --default-foreground: #ffffff;
+      --foreground: #ffffff;
+      --focus: #cdbdff;
+      --link: #e3d7ff;
+    }
+  }
+}

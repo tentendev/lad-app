@@ -14,6 +14,6 @@
 
 ## 本次驗證與限制
 
-120 個自動測試、lint、TypeScript、Doctor 21/21、Web export、Hermes 8.5 MiB 與 build preflight 通過。CocoaPods／Clerk SPM 的 UUID 衝突已修復並能解析 Xcode workspace。本機 clang probe 仍出現 build service pipe 等待，改走 EAS Simulator build；尚未完成原生安裝與 App Store 截圖，因此不能視為上架驗收通過。
+120 個自動測試、lint、TypeScript、Doctor 21/21、Web export、Hermes 8.5 MiB 與 build preflight 通過。CocoaPods／Clerk SPM 的 UUID 衝突已修復並能解析 Xcode workspace。本機 clang probe 仍出現 build service pipe 等待，改走 EAS Simulator build；首個 EAS Simulator build 已完成安裝，並在實際 QA 修正首頁高度、月曆文字及跨分頁帶入問題。操作證據與截圖位於 `artifacts/2026-09-17-ios/`；完整送審驗收仍待正式服務及重新建置的 artifact。
 
 正式服務尚缺 Clerk production、Apple OAuth server key、Vercel production env／公開端點、營運與審核聯絡資料、內容使用權確認。不得使用 development credentials 建立送審版，也不得把未完成事項的 preflight 旗標設為已完成。

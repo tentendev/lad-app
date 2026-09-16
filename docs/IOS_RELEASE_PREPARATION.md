@@ -26,9 +26,11 @@ Expo SDK 更新至 57.0.23、React Native 0.86.3 與相容套件版本。URI 解
 
 CocoaPods UUID 衝突曾令 `PBXProject` 被 `ClerkKitUI` 物件覆蓋。`plugins/withStablePodsProject.js` 在產生 Podfile 時加入避免重用既有 UUID 的修補；重新安裝 Pods 後已確認 root object 與 SPM dependency 分離、Xcode 可讀取 workspace。
 
-本機 Xcode build service 仍在 clang metadata probe 階段停住；抽樣顯示 clang 等待輸出 pipe，而相同命令獨立執行成功。已停止本次卡住的程序；改用 EAS Simulator build 進行後續安裝與驗收。尚未把 JavaScript bundle 驗證視為原生 UI 或簽名 archive 驗證。
+本機 Xcode build service 仍在 clang metadata probe 階段停住；抽樣顯示 clang 等待輸出 pipe，而相同命令獨立執行成功。已停止本次卡住的程序；改用 EAS Simulator build 進行後續安裝與驗收。首個 EAS Simulator build `8299a04f-d180-487f-a3f9-2007338f0140` 已完成並安裝。實際操作找到並修正安全區域高度導致首頁空白、月曆文字裁切、原生分頁保留時未重新載入帶入資料等問題；修正版已用相同 native binary 重新嵌入 Hermes bundle 做內部 QA，後續仍需由修正 commit 重建完整 EAS artifact。
 
 ## 尚需完成的正式條件
+
+已在 iPhone 17 Pro Max 驗證：首次使用、排期篩選、預算／花費加總、日期取消及確認、自訂期間錯誤提示／平均值／點月切換、手動禮包計算與再次帶入已開啟錢包、追蹤目標帶入、排期名稱／日期帶入已開啟規劃。iPad Pro 13 吋的介紹與首頁排版已查看。小螢幕與軟體鍵盤驗收仍進行中；尚未宣稱 production 登入或雲端驗收完成。
 
 1. 公開營運者／版權名稱、支援 Email、App Review 聯絡人的姓名／電話／Email，以及第三方遊戲內容的使用權依據。不能代填未確認的法律聲明。
 2. Clerk production instance、正式網域、Native application、Google OAuth、Apple connection／Hide My Email 與 deep link callback。現有 `.env.local` 是 development instance。
