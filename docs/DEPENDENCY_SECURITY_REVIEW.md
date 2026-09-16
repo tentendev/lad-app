@@ -21,3 +21,12 @@ Review date: 2026-08-19
 ## Automated gate
 
 `npm run security:audit` allows only the three reviewed advisory URLs above and fails on any new root advisory or critical finding. An allowlist is a review record, not a claim that the upstream issue is fixed.
+
+
+## 2026-09-17 release review
+
+- Updated to Expo 57.0.23 / React Native 0.86.3 and the SDK-matched patch versions; Expo Doctor passes 21/21 checks.
+- Updated `@xmldom/xmldom` (0.8.15 / 0.9.12) and `js-yaml` (4.3.2), removing the newly reported XML/YAML advisories.
+- Fixed [GHSA-vcc3-ghjq-m6fr](https://github.com/advisories/GHSA-vcc3-ghjq-m6fr) in the URL decoding path used by Expo Router. Upstream 0.5.0 is ESM-only while query-string 7 uses CommonJS. `vendor/decode-uri-component` contains the upstream 0.5.0 decoder with its MIT license, a CommonJS export, and retained 0.2.x plus-to-space semantics. A regression test exercises Unicode, callbacks, repeated parameters, and 150 KB of malformed percent encoding under a child-process timeout. Remove the compatibility package when Expo Router's query-string dependency adopts the fixed upstream decoder.
+- Reviewed [GHSA-528h-pc64-c93x](https://github.com/advisories/GHSA-528h-pc64-c93x): the affected APIs are stream-json path filters. The only dependency path is Clerk → optional Solana wallet → jayson. Its browser entry has no stream-json import; its Node helper only imports `StreamValues` and `Verifier`, not affected filters. The app does not offer Solana wallet features or import stream-json. The release audit now validates those specific imports and rejects the exception if app/API code starts importing stream-json. This is an exposure exception, not a claim that stream-json 1.9.1 is fixed. The fixed 3.5.0 has a different API/module layout and is not substituted into jayson's CommonJS 1.x integration.
+- The existing image-size and uuid build/unused-wallet exceptions remain; no critical or unreviewed root advisories are accepted.

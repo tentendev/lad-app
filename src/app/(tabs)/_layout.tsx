@@ -5,9 +5,10 @@ import Svg, { Path, Rect } from "react-native-svg";
 
 import { APP_COLORS } from "@/theme/tokens";
 
-type IconName = "wallet" | "calendar" | "calculator" | "star";
+type IconName = "wallet" | "calendar" | "calculator" | "star" | "feedback";
 
 function TabIcon({ name, color }: { name: IconName; color: ColorValue }): JSX.Element {
+  if (name === "feedback") return <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><Path d="M21 11a8 8 0 0 1-8 8H9l-6 3 2-6a8 8 0 1 1 16-5Z"/><Path d="M8 9h8M8 13h5"/></Svg>;
   if (name === "wallet") {
     return (
       <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
@@ -81,6 +82,7 @@ export default function NativeTabsLayout(): JSX.Element {
         name="tracker"
         options={{ title: "追蹤", tabBarIcon: ({ color }) => <TabIcon name="star" color={color} /> }}
       />
+      <Tabs.Screen name="feedback" options={{ title: "回饋", tabBarIcon: ({ color }) => <TabIcon name="feedback" color={color} /> }} />
     </Tabs>
   );
 }

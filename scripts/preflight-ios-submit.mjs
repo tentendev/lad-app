@@ -3,11 +3,10 @@ import { spawnSync } from "node:child_process";
 import { Buffer } from "node:buffer";
 
 const root = new URL("../", import.meta.url);
-const [app, eas, metadata, icon, packageJson, clerkProvider, nativeAccount, reviewPackage, privacyInventory] = await Promise.all([
+const [app, eas, metadata, packageJson, clerkProvider, nativeAccount, reviewPackage, privacyInventory] = await Promise.all([
   readFile(new URL("app.json", root), "utf8").then(JSON.parse),
   readFile(new URL("eas.json", root), "utf8").then(JSON.parse),
   readFile(new URL("store.config.json", root), "utf8").then(JSON.parse),
-  readFile(new URL("assets/icon.png", root)),
   readFile(new URL("package.json", root), "utf8").then(JSON.parse),
   readFile(new URL("src/auth/ClerkAppProvider.tsx", root), "utf8"),
   readFile(new URL("src/app/account.tsx", root), "utf8"),
@@ -15,6 +14,7 @@ const [app, eas, metadata, icon, packageJson, clerkProvider, nativeAccount, revi
   readFile(new URL("docs/PRIVACY_DATA_INVENTORY.md", root), "utf8"),
 ]);
 
+const icon = await readFile(new URL(app.expo.icon, root));
 const issues = [];
 const notes = [];
 
@@ -84,7 +84,7 @@ for (const [label, value] of [
 }
 
 const pngSignature = "89504e470d0a1a0a";
-requireCondition(icon.subarray(0, 8).toString("hex") === pngSignature, "assets/icon.png 不是有效 PNG。");
+requireCondition(icon.subarray(0, 8).toString("hex") === pngSignature, "app.json 指定的 App icon 不是有效 PNG。");
 if (icon.length >= 24) {
   requireCondition(icon.readUInt32BE(16) === 1024 && icon.readUInt32BE(20) === 1024, "App icon 必須是 1024 × 1024 PNG。");
 }
@@ -98,7 +98,7 @@ if (expo.ios?.supportsTablet) {
 } else {
   notes.push("iPad 支援目前關閉：只需完成 iPhone 商店素材與驗收。");
 }
-notes.push(`目前 bundle identifier：${bundleIdentifier || "未設定"}。第一次簽名 build 前必須由擁有者核准。`);
+notes.push(`目前 bundle identifier：${bundleIdentifier || "未設定"}。請確認與已註冊的 Apple App ID 一致。`);
 
 if (!process.argv.includes("--skip-network")) {
   const controller = new AbortController();

@@ -3,7 +3,7 @@
     "name": "深空省省",
     "slug": "deep-space-ledger",
     "version": "1.0.0",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/generated/ios-launch/icon-1024.png",
     "orientation": "portrait",
     "scheme": "deep-space-ledger",
     "userInterfaceStyle": "dark",
@@ -85,8 +85,10 @@
         "NSPrivacyTrackingDomains": []
       },
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleAllowMixedLocalizations": true
+      },
+      "appleTeamId": "RTK85AV2H2"
     },
     "android": {
       "package": "com.tenten.deepspaceledger",
@@ -111,8 +113,8 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#7765a7",
-          "image": "./assets/splash-mark.png",
-          "imageWidth": 132,
+          "image": "./assets/generated/ios-launch/icon-1024.png",
+          "imageWidth": 160,
           "resizeMode": "contain"
         }
       ],
@@ -120,10 +122,23 @@
       "expo-apple-authentication",
       "expo-secure-store",
       "expo-web-browser",
-      "expo-sharing"
+      "expo-sharing",
+      "@react-native-community/datetimepicker",
+      "./plugins/withStablePodsProject"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": "production"
+        }
+      },
+      "eas": {
+        "projectId": "46cd6a19-3d6a-4b81-b08b-a531cb15664f"
+      }
+    },
+    "owner": "tentenco"
   }
 }

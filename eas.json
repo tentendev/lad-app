@@ -29,6 +29,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6812909987",
+        "appleTeamId": "RTK85AV2H2",
+        "appleId": "dev@tenten.co"
+      }
+    }
   }
 }

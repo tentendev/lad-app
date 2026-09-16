@@ -1,0 +1,29 @@
+{
+  "created_at": "2026-09-16T21:35:59.527624Z",
+  "display_name": "GPT Image 2.5",
+  "id": "fe8df9d0-0f1a-4835-bdb1-af365d0056cb",
+  "job_type": "gpt_image_2_5",
+  "params": {
+    "aspect_ratio": "9:16",
+    "background": "opaque",
+    "height": 2688,
+    "medias": [
+      {
+        "data": {
+          "id": "b01565fe-066f-4651-ba59-d88fce410c78",
+          "type": "media_input",
+          "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_33OtA8hbfnVySvkX07G0IIOrgQz/b01565fe-066f-4651-ba59-d88fce410c78.png"
+        },
+        "role": "image"
+      }
+    ],
+    "model": "flare",
+    "prompt": "Create an original elegant portrait onboarding illustration for an iOS personal budget and calendar app. Use the attached original lavender pocket with ivory four-point diamond-star as the central brand object. Composition: the emblem floats in the upper middle, centered at x50 percent y32 percent, occupying about 35 percent of the image width. A few extremely subtle far-away stars and soft translucent orbital arcs suggest calm deep space. Lavender #7765A7 at top easing to very dark dusty purple #34294E at bottom. Bottom 45 percent is quiet near-solid dark violet negative space for separately rendered app text and buttons, no bright objects there. Premium matte 3D, soft pearl light, coherent with the reference icon, clean calm and welcoming. No letters, no text, no words, no UI controls, no game characters, no official logos, no watermark. Full bleed vertical 9:16 illustration.",
+    "quality": "medium",
+    "reference_elements": [],
+    "remove_bg": false,
+    "resolution": "2k",
+    "width": 1520
+  },
+  "status": "completed"
+}

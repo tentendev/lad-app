@@ -1,3 +1,5 @@
+import { SpendingDashboardNative } from "./SpendingDashboard.native";
+import { NativeDateField } from "@/ui/NativeDateField";
 import { Pressable, ScrollView, Share, TextInput, View } from "react-native";
 import { Button, Card, Typography } from "heroui-native";
 import { useEffect, useState } from "react";
@@ -131,7 +133,6 @@ export function WalletScreenNative() {
     if (restored) setDeletedExpense(null);
   }
 
-  const maxTrendAmount = Math.max(1, ...model.insights.months.map((item) => item.amount));
   const visibleExpenses = model.expenses.filter((expense) => expenseFilter === "全部" || expense.cat === expenseFilter);
   const comparisonCopy = model.insights.previousSpent === 0
     ? model.summary.spent > 0 ? "上月沒有支出可比較" : "尚無支出變化"
@@ -187,7 +188,7 @@ export function WalletScreenNative() {
       <Card className="gap-4 border border-white/50 bg-[#493b70]/70 p-4">
         <View className="flex-row items-center justify-between">
           <Typography.Heading className="text-xl text-white">支出洞察</Typography.Heading>
-          <Typography className="text-xs text-white/55">近 6 個月</Typography>
+
         </View>
         <View className="gap-1 rounded-xl border border-white/20 bg-white/10 p-3">
           <Typography className="text-xs text-white/55">與上月相比</Typography>
@@ -213,17 +214,7 @@ export function WalletScreenNative() {
             </View>
           </View>
         ))}
-        <View className="h-28 flex-row items-end gap-2" accessibilityLabel={`近六個月支出：${model.insights.months.map((item) => `${Number(item.month.slice(5))}月 ${formatCurrency(item.amount)}`).join("；")}`}>
-          {model.insights.months.map((item) => (
-            <View className="h-full flex-1 items-center justify-end gap-1" key={item.month}>
-              <Typography className="text-[10px] text-white/55">{item.amount ? item.amount.toLocaleString("zh-TW") : "0"}</Typography>
-              <View className="h-16 w-full justify-end overflow-hidden rounded-md bg-black/15">
-                <View className="w-full rounded-md bg-[#65d6c4]" style={{ height: `${Math.max(item.amount ? 8 : 2, (item.amount / maxTrendAmount) * 100)}%` }} />
-              </View>
-              <Typography className="text-[10px] text-white/55">{Number(item.month.slice(5))}月</Typography>
-            </View>
-          ))}
-        </View>
+
       </Card>
 
       <Card className="gap-4 border border-white/50 bg-[#493b70]/70 p-4">
@@ -243,7 +234,7 @@ export function WalletScreenNative() {
             <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === category }} className={`min-h-11 justify-center rounded-full border px-3 py-2 ${item === category ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => { setFormError(null); setCategory(item); }}><Typography className="text-xs font-semibold text-white">{item}</Typography></Pressable>
           ))}
         </ScrollView>
-        <TextInput accessibilityLabel="消費日期" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" placeholder="日期 YYYY-MM-DD" placeholderTextColor="rgba(255,255,255,.5)" value={date} onChangeText={(value) => { setFormError(null); setDate(value); }} />
+        <NativeDateField label="消費日期" value={date} onChange={(value) => { setFormError(null); setDate(value); }} />
         <TextInput accessibilityLabel="花費備註" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" placeholder="備註（選填）" placeholderTextColor="rgba(255,255,255,.5)" value={note} onChangeText={(value) => { setFormError(null); setNote(value); }} />
         {formError ? <Typography accessibilityRole="alert" className="text-sm text-[#ffc2cb]">{formError}</Typography> : null}
         <Button isDisabled={submitting || model.writeProtected} onPress={() => void submitExpense()}>加入花費</Button>
@@ -290,6 +281,8 @@ export function WalletScreenNative() {
         ))}
       </Card>
 
+      <SpendingDashboardNative expenses={model.allExpenses} month={model.month} onSelectMonth={model.selectMonth} />
+
       {editing ? (
         <Card className="gap-4 border border-white/50 bg-[#493b70]/85 p-4">
           <View className="flex-row items-center justify-between">
@@ -310,7 +303,7 @@ export function WalletScreenNative() {
               <Button key={item} size="sm" variant={item === editing.cat ? "primary" : "secondary"} onPress={() => { setEditError(null); setEditing({ ...editing, cat: item }); }}>{item}</Button>
             ))}
           </ScrollView>
-          <TextInput accessibilityLabel="編輯消費日期" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" value={editing.date} onChangeText={(value) => { setEditError(null); setEditing({ ...editing, date: value }); }} />
+          <NativeDateField label="編輯消費日期" value={editing.date} onChange={(value) => { setEditError(null); setEditing({ ...editing, date: value }); }} />
           <TextInput accessibilityLabel="編輯花費備註" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" value={editing.note} onChangeText={(value) => { setEditError(null); setEditing({ ...editing, note: value }); }} />
           {editError ? <Typography accessibilityRole="alert" className="text-sm text-[#ffc2cb]">{editError}</Typography> : null}
           <Button isDisabled={submitting || model.writeProtected} onPress={() => void saveEdit()}>儲存修改</Button>

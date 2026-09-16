@@ -1,6 +1,7 @@
+import { Typography } from "heroui-native";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
-import { ImageBackground, ScrollView, View } from "react-native";
+import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AccountEntry } from "@/ui/AccountEntry";
@@ -23,12 +24,17 @@ export function NativePage({ eyebrow, title, description, showAccountEntry = tru
     >
       <View className="absolute inset-0 bg-[#574978]/30" />
       <SafeAreaView className="flex-1" edges={["top"]} accessibilityLabel={`${title}：${description}；${eyebrow}`}>
-        <ScrollView
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
           contentContainerClassName="px-4 pb-28 pt-4"
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
         >
           <View className="w-full self-center" style={{ maxWidth: 520, gap: 16 }}>
-            {showAccountEntry ? <AccountEntry /> : null}
+            <View className="flex-row flex-wrap items-center justify-between gap-3">
+              <View className="flex-row items-center gap-3"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 44, height: 44, borderRadius: 12 }} accessible={false} /><View><Typography className="text-xl font-bold text-white">深空省省</Typography><Typography className="text-xs text-white/65">排期・換算・記帳的小宇宙</Typography></View></View>
+              {showAccountEntry ? <AccountEntry /> : null}
+            </View>
+            <Typography accessibilityRole="header" className="text-2xl font-semibold text-white">{title}</Typography>
             {children}
             {showAboutLink ? (
               <View className="flex-row flex-wrap items-center justify-center gap-3 py-3">
@@ -42,7 +48,7 @@ export function NativePage({ eyebrow, title, description, showAccountEntry = tru
               </View>
             ) : null}
           </View>
-        </ScrollView>
+        </ScrollView></KeyboardAvoidingView>
       </SafeAreaView>
     </ImageBackground>
   );

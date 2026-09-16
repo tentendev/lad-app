@@ -1,10 +1,29 @@
 import { spawnSync } from "node:child_process";
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
 
 const acceptedAdvisories = new Set([
   "https://github.com/advisories/GHSA-w3rx-r6r6-pgpr",
   "https://github.com/advisories/GHSA-5p2g-fcmc-qvqq",
   "https://github.com/advisories/GHSA-w5hq-g745-h8pq",
 ]);
+
+// This advisory affects path filters, which our only transitive consumer never
+// imports. Fail closed if that reviewed exposure changes (see security review).
+const streamAdvisory = "https://github.com/advisories/GHSA-528h-pc64-c93x";
+function sourceUsesStreamFilters(directory) {
+  return readdirSync(directory, { withFileTypes: true }).some(entry => {
+    const file = path.join(directory, entry.name);
+    if (entry.isDirectory()) return sourceUsesStreamFilters(file);
+    return /\.[cm]?[jt]sx?$/.test(file) && /stream-json/.test(readFileSync(file, "utf8"));
+  });
+}
+const jayson = readFileSync("node_modules/jayson/lib/utils.js", "utf8");
+const imports = [...jayson.matchAll(/require\(['"](stream-json[^'"]*)['"]\)/g)].map(match => match[1]);
+if (imports.length === 2 && imports.every(value => ["stream-json/streamers/StreamValues", "stream-json/utils/Verifier"].includes(value))
+    && !sourceUsesStreamFilters("src") && !sourceUsesStreamFilters("api")) {
+  acceptedAdvisories.add(streamAdvisory);
+}
 
 const audit = spawnSync("npm", ["audit", "--omit=dev", "--json"], {
   cwd: process.cwd(),

@@ -1,0 +1,20 @@
+{
+  "createdAt": "2026-09-16T21:56:12.029762+00:00",
+  "provider": "Higgsfield authenticated local CLI",
+  "model": "gpt_image_2_5",
+  "variant": "flare",
+  "quality": "medium",
+  "resolution": "2k",
+  "iconJob": "ce81b5fc-2715-4546-93cb-5116e076c1da",
+  "splashJob": "fe8df9d0-0f1a-4835-bdb1-af365d0056cb",
+  "originals": {
+    "icon": "2048x2048 RGB PNG",
+    "splash": "1520x2688 RGB PNG"
+  },
+  "derivatives": {
+    "icon-1024.png": "1024x1024 RGB PNG for iOS app icon",
+    "brand-mark.png": "128x128 RGB PNG for compact in-app header",
+    "onboarding.jpg": "1520x2688 RGB JPEG, quality 90, no generative alterations"
+  },
+  "inspection": "Both original images viewed; no unintended text, watermark, or recognizable third-party logo."
+}

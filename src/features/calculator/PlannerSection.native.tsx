@@ -1,3 +1,4 @@
+import { NativeDateField } from "@/ui/NativeDateField";
 import { useMemo, useState } from "react";
 import { ScrollView, Share, Switch, TextInput, View } from "react-native";
 import { Button, Card, Typography } from "heroui-native";
@@ -23,6 +24,7 @@ function PlannerField({
   placeholder?: string;
   disabled?: boolean;
 }) {
+  if (label.includes("日期") || label.includes("截止日")) return <NativeDateField label={label.replace("（YYYY-MM-DD）", "")} value={value} onChange={onChange} disabled={disabled} />;
   return (
     <View className="gap-1.5">
       <Typography className="text-xs text-white/65">{label}</Typography>

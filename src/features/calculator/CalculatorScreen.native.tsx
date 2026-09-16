@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ScrollView, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "heroui-native";
@@ -28,7 +29,7 @@ function CalculatorGlyph({ type }: { type: "diamond" | "gift" | "steps" }) {
 
 function NumberField({ placeholder, value, onChange }: { placeholder: string; value: number; onChange: (value: number) => void }) {
   return (
-    <TextInput
+    <View className="gap-2"><Typography className="text-sm text-white/75">{placeholder}</Typography><TextInput
       accessibilityLabel={placeholder}
       className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white"
       keyboardType="numeric"
@@ -36,17 +37,19 @@ function NumberField({ placeholder, value, onChange }: { placeholder: string; va
       placeholderTextColor="rgba(255,255,255,.5)"
       value={value ? String(value) : ""}
       onChangeText={(text) => onChange(Number(text))}
-    />
+    /></View>
   );
 }
 
 export function CalculatorScreenNative() {
   const model = useCalculatorModel();
   const router = useRouter();
-  const { draft, resource, recommendation } = model;
+  const { draft, resource, recommendation, selectedPacks } = model;
+  const [rulesOpen, setRulesOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   async function recordRecommendation() {
-    const saved = await model.saveRecommendationAsExpense();
+    const saved = await model.saveSelectedPacksAsExpense();
     if (saved) router.push("/wallet");
   }
 
@@ -88,6 +91,8 @@ export function CalculatorScreenNative() {
         </ScrollView>
         <NumberField placeholder="目前持有（鑽）" value={draft.cur} onChange={(value) => model.updateNumber("cur", value)} />
         <NumberField placeholder="目標抽數" value={draft.pulls} onChange={(value) => model.updateNumber("pulls", value)} />
+        <Button variant="ghost" accessibilityState={{ expanded: rulesOpen }} onPress={() => setRulesOpen(!rulesOpen)}>保底與繼承規則 {rulesOpen ? "⌃" : "⌄"}</Button>
+        {rulesOpen ? <View className="gap-2 rounded-xl bg-white/10 p-3"><Typography className="text-sm leading-6 text-white/80">日卡池以外的活動池：140 抽內必得當期活動五星卡。日卡池：140 抽可得活動五星卡；累計 150 抽會送自選盒。一般活動池之間會繼承抽數；復刻池只繼承同一復刻池的抽數。</Typography><Typography className="text-xs text-white/60">沿用原始版整理，實際規則以當期遊戲內公告為準。</Typography></View> : null}
         <NumberField placeholder="原本剩餘金券（張）" value={draft.tickets} onChange={(value) => model.updateNumber("tickets", value)} />
         <View className="rounded-xl border border-white/20 bg-white/10 p-3">
           <Typography className="text-white/60">官方金券（自動）</Typography>
@@ -105,7 +110,7 @@ export function CalculatorScreenNative() {
       <View className="flex-row gap-2">
         <Card className="flex-1 gap-1 border border-white/40 bg-[#493b70]/70 p-3"><Typography.Heading className="text-white">{formatNumber(resource.gapDia)}</Typography.Heading><Typography className="text-xs text-white/55">還差鑽石</Typography></Card>
         <Card className="flex-1 gap-1 border border-white/40 bg-[#493b70]/70 p-3"><Typography.Heading className="text-white">{resource.paidPulls}</Typography.Heading><Typography className="text-xs text-white/55">需課金抽</Typography></Card>
-        <Card className="flex-1 gap-1 border border-white/40 bg-[#493b70]/70 p-3"><Typography.Heading className="text-white">{draft.pulls ? formatNumber(recommendation.remainingDiaAfterTarget ?? resource.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="text-xs text-white/55">剩餘鑽</Typography></Card>
+        <Card className="flex-1 gap-1 border border-white/40 bg-[#493b70]/70 p-3"><Typography.Heading className="text-white">{draft.pulls ? formatNumber(selectedPacks.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="text-xs text-white/55">剩餘鑽</Typography></Card>
       </View>
 
       <Card className="gap-3 border border-white/55 bg-[#493b70]/85 p-5">
@@ -117,7 +122,7 @@ export function CalculatorScreenNative() {
           <>
             <Typography.Heading className="text-4xl text-white">{formatCurrency(recommendation.planCost ?? 0)}</Typography.Heading>
             <Typography.Paragraph className="text-white/70">最後一階買 {recommendation.packsAtTier} 包，共取得 {formatNumber(recommendation.planPulls ?? 0)} 抽。</Typography.Paragraph>
-            <Button variant="secondary" onPress={() => void recordRecommendation()}>帶入錢包記帳</Button>
+
           </>
         ) : (
           <Typography.Paragraph className="text-white/70">
@@ -128,15 +133,33 @@ export function CalculatorScreenNative() {
 
       <Card className="gap-3 border border-white/50 bg-[#493b70]/70 p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="steps" /><Typography.Heading className="text-xl text-white">階梯明細</Typography.Heading></View>
-        {PACK_DATA[draft.pool].map((tier) => (
+        <Button variant="secondary" onPress={model.applyRecommendedPacks}>套用建議包數</Button>
+        <Button variant="ghost" accessibilityState={{ expanded: detailsOpen }} onPress={() => setDetailsOpen(!detailsOpen)}>{detailsOpen ? "收起" : "展開"}禮包明細</Button>
+        {PACK_DATA[draft.pool].map((tier, index) => (
           <View key={tier.tier} className={`gap-1 rounded-xl border p-3 ${recommendation.tier?.tier === tier.tier ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/20 bg-white/10"}`}>
             <View className="flex-row items-center justify-between">
               <Typography.Paragraph className="font-semibold text-white">第 {tier.tier} 階 · {formatCurrency(tier.price)}／包</Typography.Paragraph>
               {recommendation.tier?.tier === tier.tier ? <Typography className="text-[#cdbdff]">推薦</Typography> : null}
             </View>
-            <Typography className="text-white/55">{tier.packPulls != null ? `${tier.packPulls} 抽／包` : "抽數未固定"}{tier.qty ? ` · 限購 ${tier.qty} 包` : ""} · 買滿 {formatCurrency(tier.cumCost)}</Typography>
+            {detailsOpen ? <Typography className="text-white/55">{tier.packPulls != null ? `${tier.packPulls} 抽／包` : "抽數未固定"}{tier.qty ? ` · 限購 ${tier.qty} 包` : ""} · 累計買滿至本階 {formatCurrency(tier.cumCost)}</Typography> : null}
+            <View className="flex-row items-center justify-between gap-2">
+              <Typography className="text-sm text-white/70">限購 {tier.qty} 包</Typography>
+              <View className="flex-row items-center gap-3">
+                <Button variant="secondary" size="sm" accessibilityLabel={`減少第 ${tier.tier} 階包數`} isDisabled={!selectedPacks.quantities[index]} onPress={() => model.setPackQuantity(index, (selectedPacks.quantities[index] ?? 0) - 1)}>−</Button>
+                <Typography accessibilityLiveRegion="polite" accessibilityLabel={`第 ${tier.tier} 階已選 ${selectedPacks.quantities[index] ?? 0} 包`} className="text-lg font-semibold text-white">{selectedPacks.quantities[index] ?? 0}</Typography>
+                <Button variant="secondary" size="sm" accessibilityLabel={`增加第 ${tier.tier} 階包數`} isDisabled={(selectedPacks.quantities[index] ?? 0) >= (tier.qty ?? 0)} onPress={() => model.setPackQuantity(index, (selectedPacks.quantities[index] ?? 0) + 1)}>＋</Button>
+              </View>
+            </View>
           </View>
         ))}
+      </Card>
+
+      <Card className="gap-3 border border-white/50 bg-[#493b70]/85 p-4">
+        <Typography className="text-white/70">實際選擇 · {selectedPacks.count} 包</Typography>
+        <Typography.Heading className="text-3xl text-white">{formatCurrency(selectedPacks.cost)}</Typography.Heading>
+        <Typography className="text-white/75">已知 {formatNumber(selectedPacks.pulls)} 抽 · 尚差 {formatNumber(selectedPacks.missingPulls)} 抽</Typography>
+        {selectedPacks.unknownPulls ? <Typography className="text-sm text-[#ffe0a3]">含抽數未固定的禮包，未計入抽數合計。</Typography> : null}
+        <Button isDisabled={!selectedPacks.count} onPress={() => void recordRecommendation()}>帶入錢包記帳</Button>
       </Card>
 
       <PlannerSectionNative

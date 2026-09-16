@@ -1,3 +1,4 @@
+import { WelcomeScreen } from "@/ui/WelcomeScreen";
 import type { JSX } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -18,6 +19,7 @@ export default function RootLayout(): JSX.Element {
             <Stack.Screen name="account" />
             <Stack.Screen name="sso-callback" />
           </Stack>
+          <WelcomeScreen />
           <StatusBar style="light" />
         </HeroUINativeProvider>
       </GestureHandlerRootView>

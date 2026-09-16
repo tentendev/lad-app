@@ -4,6 +4,6 @@ const expoConfig = require("eslint-config-expo/flat");
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ["dist/**", ".vercel/**", "references/**", "node_modules/**"],
+    ignores: ["dist/**", ".vercel/**", "references/**", "node_modules/**", "ios/**", "android/**"],
   },
 ]);

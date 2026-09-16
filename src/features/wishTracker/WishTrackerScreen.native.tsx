@@ -1,3 +1,4 @@
+import { NativeDateField } from "@/ui/NativeDateField";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Share, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
@@ -202,7 +203,7 @@ export function WishTrackerScreenNative() {
         <Typography.Heading className="text-xl text-white">新增五星紀錄</Typography.Heading>
         <ChoiceRow options={WISH_TRACKS} value={form.track} onChange={(track) => { setFormError(null); setForm({ ...form, track }); }} />
         <TextInput accessibilityLabel="五星出現抽數" className={INPUT_CLASS} keyboardType="number-pad" placeholder="五星出現抽數，例如 63" placeholderTextColor="rgba(255,255,255,.5)" value={form.pity} onChangeText={(pity) => { setFormError(null); setForm({ ...form, pity }); }} />
-        <TextInput accessibilityLabel="五星紀錄日期" className={INPUT_CLASS} placeholder="日期 YYYY-MM-DD" placeholderTextColor="rgba(255,255,255,.5)" value={form.date} onChangeText={(date) => { setFormError(null); setForm({ ...form, date }); }} />
+        <NativeDateField label="五星紀錄日期" value={form.date} onChange={(date) => { setFormError(null); setForm({ ...form, date }); }} />
         <ChoiceRow options={FIVE_STAR_OUTCOMES} value={form.outcome} onChange={(outcome) => { setFormError(null); setForm({ ...form, outcome }); }} />
         <TextInput accessibilityLabel="五星思念名稱" className={INPUT_CLASS} maxLength={120} placeholder="思念名稱（選填）" placeholderTextColor="rgba(255,255,255,.5)" value={form.memory} onChangeText={(memory) => { setFormError(null); setForm({ ...form, memory }); }} />
         <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: resetCounter }} className="flex-row items-center gap-3 rounded-xl border border-white/20 bg-white/5 p-3" onPress={() => setResetCounter((value) => !value)}><View className={`h-5 w-5 rounded border ${resetCounter ? "border-[#a78bfa] bg-[#a78bfa]" : "border-white/40"}`} /><Typography className="flex-1 text-sm text-white">新增後把這條目前累計重設為 0</Typography></Pressable>
@@ -239,7 +240,7 @@ export function WishTrackerScreenNative() {
           <View className="flex-row items-center justify-between"><Typography.Heading className="text-xl text-white">編輯五星紀錄</Typography.Heading><Button size="sm" variant="ghost" onPress={() => setEditing(null)}>取消</Button></View>
           <ChoiceRow options={WISH_TRACKS} value={editing.track} onChange={(track) => { setEditError(null); setEditing({ ...editing, track }); }} />
           <TextInput accessibilityLabel="編輯五星出現抽數" className={INPUT_CLASS} keyboardType="number-pad" value={String(editing.pity)} onChangeText={(value) => { setEditError(null); setEditing({ ...editing, pity: Number(value) }); }} />
-          <TextInput accessibilityLabel="編輯五星日期" className={INPUT_CLASS} value={editing.date} onChangeText={(date) => { setEditError(null); setEditing({ ...editing, date }); }} />
+          <NativeDateField label="編輯五星日期" value={editing.date} onChange={(date) => { setEditError(null); setEditing({ ...editing, date }); }} />
           <ChoiceRow options={FIVE_STAR_OUTCOMES} value={editing.outcome} onChange={(outcome) => { setEditError(null); setEditing({ ...editing, outcome }); }} />
           <TextInput accessibilityLabel="編輯思念名稱" className={INPUT_CLASS} maxLength={120} value={editing.memory} onChangeText={(memory) => { setEditError(null); setEditing({ ...editing, memory }); }} />
           {editError ? <Typography accessibilityRole="alert" className="text-sm text-[#ffc2cb]">{editError}</Typography> : null}
