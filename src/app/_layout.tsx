@@ -13,7 +13,7 @@ export default function RootLayout(): JSX.Element {
   return (
     <ClerkAppProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <HeroUINativeProvider>
+        <HeroUINativeProvider config={{ textProps: { allowFontScaling: true, maxFontSizeMultiplier: 0, adjustsFontSizeToFit: false } }}>
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: APP_COLORS.canvas } }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="account" />

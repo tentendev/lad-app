@@ -16,15 +16,15 @@ export function NativeDateField({ label, value, onChange, disabled = false }: {
     setOpen(true);
   }
   return <View className="gap-2">
-    <Typography className="text-sm text-white/75">{label}</Typography>
-    <Pressable accessibilityRole="button" accessibilityLabel={`${label}，${value || "選擇日期"}`} accessibilityState={{ disabled, expanded: open }} disabled={disabled} onPress={show} className="min-h-12 flex-row items-center justify-between rounded-xl border border-white/30 bg-white/10 px-4 py-3">
-      <Typography className="text-base text-white">{value || "選擇日期"}</Typography><Typography className="text-white/60">⌄</Typography>
+    <Typography className="type-body text-muted">{label}</Typography>
+    <Pressable accessibilityRole="button" accessibilityLabel={`${label}，${value || "選擇日期"}`} accessibilityState={{ disabled, expanded: open }} disabled={disabled} onPress={show} className="min-h-12 flex-row flex-wrap items-center justify-between gap-2 rounded-xl border border-white/30 bg-white/10 px-4 py-3">
+      <Typography className="type-body text-white">{value || "選擇日期"}</Typography><Typography className="text-muted">⌄</Typography>
     </Pressable>
     {open && Platform.OS === "android" ? <DateTimePicker value={pending} mode="date" onChange={(event, next) => { setOpen(false); if (event.type === "set" && next) onChange(toDateKey(next)); }} /> : null}
     {Platform.OS !== "android" ? <Modal visible={open} transparent animationType="slide" onRequestClose={() => setOpen(false)}>
       <View className="flex-1 justify-end bg-black/50">
         <View accessibilityViewIsModal style={{ width: "100%", maxWidth: 520, alignSelf: "center" }} className="gap-3 rounded-t-3xl bg-[#34294e] px-5 pb-10 pt-5">
-          <View className="flex-row items-center justify-between"><Button variant="ghost" onPress={() => setOpen(false)}>取消</Button><Typography accessibilityRole="header" className="font-semibold text-white">{label}</Typography><Button variant="secondary" onPress={() => { onChange(toDateKey(pending)); setOpen(false); }}>完成</Button></View>
+          <Typography accessibilityRole="header" className="type-title font-semibold text-white">{label}</Typography><View className="flex-row flex-wrap items-center justify-between gap-2"><Button variant="ghost" onPress={() => setOpen(false)}>取消</Button><Button variant="secondary" onPress={() => { onChange(toDateKey(pending)); setOpen(false); }}>完成</Button></View>
           <DateTimePicker style={{ width: 320, alignSelf: "center" }} value={pending} mode="date" display="spinner" locale="zh-TW" themeVariant="dark" onChange={(_, next) => { if (next) setPending(next); }} />
         </View>
       </View>

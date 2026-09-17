@@ -1,6 +1,8 @@
+import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
+import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { NativeDateField } from "@/ui/NativeDateField";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Share, TextInput, View } from "react-native";
+import { Pressable, ScrollView, Share, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "heroui-native";
 
@@ -27,8 +29,8 @@ function ChoiceRow<T extends string>({ options, value, onChange, disabled = fals
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
       {options.map((item) => (
-        <Pressable key={item} accessibilityRole="button" accessibilityState={{ disabled, selected: item === value }} className={`min-h-11 justify-center rounded-full border px-3 py-2 ${item === value ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"} ${disabled ? "opacity-45" : ""}`} disabled={disabled} onPress={() => onChange(item)}>
-          <Typography className="text-xs font-semibold text-white">{item}</Typography>
+        <Pressable key={item} accessibilityRole="button" accessibilityState={{ disabled, selected: item === value }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === value ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"} ${disabled ? "opacity-45" : ""}`} disabled={disabled} onPress={() => onChange(item)}>
+          <Typography className="type-label font-semibold text-white">{item}</Typography>
         </Pressable>
       ))}
     </ScrollView>
@@ -147,8 +149,8 @@ export function WishTrackerScreenNative() {
   if (!model.ready) {
     return (
       <NativePage eyebrow="Wish Tracker" title="追蹤" description="手動保存各計數線目前累計與五星紀錄，不需要遊戲帳號或授權 Token。">
-        <Card className="gap-4 border border-white/40 bg-[#493b70]/70 p-4" accessibilityRole="progressbar">
-          <Typography className="text-sm text-white/70">正在讀取抽卡計數與紀錄…</Typography>
+        <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
+          <Typography className="type-body text-muted">正在讀取抽卡計數與紀錄…</Typography>
           <View className="h-12 rounded-xl bg-white/10" />
           <View className="h-40 rounded-2xl bg-white/10" />
         </Card>
@@ -158,25 +160,25 @@ export function WishTrackerScreenNative() {
 
   return (
     <NativePage eyebrow="Wish Tracker" title="追蹤" description="手動保存各計數線目前累計與五星紀錄，不需要遊戲帳號或授權 Token。">
-      {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="text-sm text-white">{model.storageError}</Typography></View> : null}
-      {deletedRecord ? <View accessibilityRole="alert" className="flex-row items-center justify-between rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3"><Typography className="flex-1 text-sm text-white">已移除 {deletedRecord.date} 的五星紀錄。</Typography><Button size="sm" variant="ghost" onPress={() => void undoDelete()}>復原</Button></View> : null}
+      {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.storageError}</Typography></View> : null}
+      {deletedRecord ? <View accessibilityRole="alert" className="flex-row items-center justify-between rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3"><Typography className="flex-1 type-body text-white">已移除 {deletedRecord.date} 的五星紀錄。</Typography><Button size="sm" variant="ghost" onPress={() => void undoDelete()}>復原</Button></View> : null}
 
-      <Card className="gap-4 border border-white/50 bg-[#493b70]/70 p-4">
-        <View><Typography className="text-xs uppercase tracking-[2px] text-white/55">Pity Counter</Typography><Typography.Heading className="mt-1 text-xl text-white">目前累計</Typography.Heading></View>
-        <Typography.Paragraph className="text-sm leading-5 text-white/65">請照遊戲內顯示的計數線填寫；不同類型不會在本工具中互相合併。</Typography.Paragraph>
+      <Card className="gap-4 border border-white/50 bg-glass p-4">
+        <View><Typography className="type-label text-muted">Pity Counter</Typography><Typography.Heading type="h4" className="mt-1 type-title text-white">目前累計</Typography.Heading></View>
+        <Typography.Paragraph className="type-body text-muted">請照遊戲內顯示的計數線填寫；不同類型不會在本工具中互相合併。</Typography.Paragraph>
         {WISH_TRACKS.map((track) => (
           <View className="gap-2" key={track}>
-            <Typography className="text-sm text-white/75">{track} · 抽未出五星</Typography>
+            <Typography className="type-body text-muted">{track} · 抽未出五星</Typography>
             <TextInput accessibilityLabel={`${track}目前累計`} className={INPUT_CLASS} keyboardType="number-pad" value={pityDraft[track]} onChangeText={(value) => { setPityError(null); setPityDraft({ ...pityDraft, [track]: value }); }} />
-            <View className="flex-row gap-2">
+            <View className="flex-row flex-wrap gap-2">
               <Button size="sm" variant="secondary" isDisabled={submitting || model.writeProtected || model.tracker.currentPity[track] === 0} onPress={() => void stepPity(track, -1)}>−1 抽</Button>
               <Button size="sm" variant="secondary" isDisabled={submitting || model.writeProtected} onPress={() => void stepPity(track, 1)}>＋1 抽</Button>
               <Button size="sm" variant="secondary" isDisabled={submitting || model.writeProtected} onPress={() => void stepPity(track, 10)}>＋10 抽</Button>
             </View>
-            <Typography className="text-xs text-white/50">{track === "常駐池" ? "依遊戲常駐規則" : model.guarantees[track] === true ? "下張活動五星保證" : model.guarantees[track] === false ? "目前非保證" : "保證狀態未標記"}</Typography>
+            <Typography className="type-label text-muted">{track === "常駐池" ? "依遊戲常駐規則" : model.guarantees[track] === true ? "下張活動五星保證" : model.guarantees[track] === false ? "目前非保證" : "保證狀態未標記"}</Typography>
             {track !== "常駐池" ? (
               <View className="gap-1.5">
-                <Typography className="text-[10px] text-white/50">保證狀態校正</Typography>
+                <Typography className="type-label text-muted">保證狀態校正</Typography>
                 <ChoiceRow
                   options={GUARANTEE_CHOICES}
                   value={guaranteeChoice(model.tracker.guaranteeOverrides[track])}
@@ -184,8 +186,8 @@ export function WishTrackerScreenNative() {
                   onChange={(value) => void updateGuaranteeOverride(track, value)}
                 />
                 <View className="gap-1 rounded-xl border border-white/20 bg-white/5 p-3">
-                  <Typography className="text-[10px] text-white/50">下一張五星最晚 {model.targets[track].nextFiveStarPulls} 抽</Typography>
-                  <Typography className="text-xs font-semibold text-white">{model.targets[track].conservative ? "活動五星保守目標" : "已保證活動五星目標"} {model.targets[track].featuredPulls} 抽</Typography>
+                  <Typography className="type-label text-muted">下一張五星最晚 {model.targets[track].nextFiveStarPulls} 抽</Typography>
+                  <Typography className="type-label font-semibold text-white">{model.targets[track].conservative ? "活動五星保守目標" : "已保證活動五星目標"} {model.targets[track].featuredPulls} 抽</Typography>
                 </View>
                 <Button size="sm" variant="secondary" isDisabled={submitting || model.writeProtected || !model.targets[track].featuredPulls} onPress={() => void openCalculatorTarget(track)}>
                   用 {model.targets[track].featuredPulls} 抽帶入換算
@@ -194,56 +196,56 @@ export function WishTrackerScreenNative() {
             ) : null}
           </View>
         ))}
-        <Typography className="text-xs leading-5 text-white/55">保底目標以目前常見的 70 抽五星上限估算；未確認保證時採最壞兩輪。特殊池、精準許願與當期規則仍以遊戲公告為準。</Typography>
-        {pityError ? <Typography accessibilityRole="alert" className="text-sm text-[#ffc2cb]">{pityError}</Typography> : null}
+        <Typography className="type-label text-muted">保底目標以目前常見的 70 抽五星上限估算；未確認保證時採最壞兩輪。特殊池、精準許願與當期規則仍以遊戲公告為準。</Typography>
+        {pityError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{pityError}</Typography> : null}
         <Button isDisabled={submitting || model.writeProtected} onPress={() => void savePity()}>儲存目前計數</Button>
       </Card>
 
-      <Card className="gap-4 border border-white/50 bg-[#493b70]/70 p-4">
-        <Typography.Heading className="text-xl text-white">新增五星紀錄</Typography.Heading>
+      <Card className="gap-4 border border-white/50 bg-glass p-4">
+        <Typography.Heading type="h4" className="type-title text-white">新增五星紀錄</Typography.Heading>
         <ChoiceRow options={WISH_TRACKS} value={form.track} onChange={(track) => { setFormError(null); setForm({ ...form, track }); }} />
-        <TextInput accessibilityLabel="五星出現抽數" className={INPUT_CLASS} keyboardType="number-pad" placeholder="五星出現抽數，例如 63" placeholderTextColor="rgba(255,255,255,.5)" value={form.pity} onChangeText={(pity) => { setFormError(null); setForm({ ...form, pity }); }} />
+        <TextInput accessibilityLabel="五星出現抽數" className={INPUT_CLASS} keyboardType="number-pad" placeholder="五星出現抽數，例如 63" placeholderTextColor="#ded7ed" value={form.pity} onChangeText={(pity) => { setFormError(null); setForm({ ...form, pity }); }} />
         <NativeDateField label="五星紀錄日期" value={form.date} onChange={(date) => { setFormError(null); setForm({ ...form, date }); }} />
         <ChoiceRow options={FIVE_STAR_OUTCOMES} value={form.outcome} onChange={(outcome) => { setFormError(null); setForm({ ...form, outcome }); }} />
-        <TextInput accessibilityLabel="五星思念名稱" className={INPUT_CLASS} maxLength={120} placeholder="思念名稱（選填）" placeholderTextColor="rgba(255,255,255,.5)" value={form.memory} onChangeText={(memory) => { setFormError(null); setForm({ ...form, memory }); }} />
-        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: resetCounter }} className="flex-row items-center gap-3 rounded-xl border border-white/20 bg-white/5 p-3" onPress={() => setResetCounter((value) => !value)}><View className={`h-5 w-5 rounded border ${resetCounter ? "border-[#a78bfa] bg-[#a78bfa]" : "border-white/40"}`} /><Typography className="flex-1 text-sm text-white">新增後把這條目前累計重設為 0</Typography></Pressable>
-        {formError ? <Typography accessibilityRole="alert" className="text-sm text-[#ffc2cb]">{formError}</Typography> : null}
+        <TextInput accessibilityLabel="五星思念名稱" className={INPUT_CLASS} maxLength={120} placeholder="思念名稱（選填）" placeholderTextColor="#ded7ed" value={form.memory} onChangeText={(memory) => { setFormError(null); setForm({ ...form, memory }); }} />
+        <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: resetCounter }} className="flex-row items-center gap-3 rounded-xl border border-white/20 bg-white/5 p-3" onPress={() => setResetCounter((value) => !value)}><View className={`h-5 w-5 rounded border ${resetCounter ? "border-[#a78bfa] bg-[#a78bfa]" : "border-white/40"}`} /><Typography className="flex-1 type-body text-white">新增後把這條目前累計重設為 0</Typography></Pressable>
+        {formError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{formError}</Typography> : null}
         <Button isDisabled={submitting || model.writeProtected} onPress={() => void addRecord()}>儲存五星紀錄</Button>
       </Card>
 
-      <Card className="gap-4 border border-white/50 bg-[#493b70]/70 p-4">
-        <View className="flex-row items-center justify-between"><Typography.Heading className="text-xl text-white">五星統計</Typography.Heading><Button size="sm" variant="ghost" isDisabled={!records.length} onPress={() => void Share.share({ message: wishRecordsToCsv(records), title: "深空省省五星紀錄" })}>分享 CSV</Button></View>
+      <Card className="gap-4 border border-white/50 bg-glass p-4">
+        <View className="flex-row flex-wrap items-center justify-between gap-2"><Typography.Heading type="h4" className="type-title text-white">五星統計</Typography.Heading><Button size="sm" variant="ghost" isDisabled={!records.length} onPress={() => void Share.share({ message: wishRecordsToCsv(records), title: "深空省省五星紀錄" })}>分享 CSV</Button></View>
         <View className="gap-2">
-          <Typography className="text-xs text-white/55">統計與歷史範圍</Typography>
+          <Typography className="type-label text-muted">統計與歷史範圍</Typography>
           <ChoiceRow options={RECORD_FILTERS} value={model.recordFilter} onChange={model.setRecordFilter} />
         </View>
-        <View className="flex-row gap-2">
-          <View className="flex-1 items-center rounded-xl border border-white/20 bg-white/10 p-3"><Typography.Heading className="text-2xl text-white">{model.statistics.count}</Typography.Heading><Typography className="text-xs text-white/55">五星紀錄</Typography></View>
-          <View className="flex-1 items-center rounded-xl border border-white/20 bg-white/10 p-3"><Typography.Heading className="text-2xl text-white">{model.statistics.averagePity ?? "—"}</Typography.Heading><Typography className="text-xs text-white/55">平均抽數</Typography></View>
-          <View className="flex-1 items-center rounded-xl border border-white/20 bg-white/10 p-3"><Typography.Heading className="text-2xl text-white">{model.statistics.featuredRate === null ? "—" : `${model.statistics.featuredRate}%`}</Typography.Heading><Typography className="text-xs text-white/55">當期 UP 率</Typography></View>
-        </View>
-        <Typography className="text-xs leading-5 text-white/55">{model.statistics.count ? `出金區間：${model.statistics.earliestPity}–${model.statistics.latestPity} 抽 · 已標記結果 ${model.statistics.knownOutcomes}/${model.statistics.count} 筆。` : "目前範圍尚無可統計紀錄。"} UP 率只計算已標記結果的紀錄；所有統計都來自你手動輸入的資料。</Typography>
+        <NativeMetricGrid>
+          <View className="flex-1 items-center rounded-xl border border-white/20 bg-white/10 p-3"><Typography.Heading type="h4" className="type-headline text-white">{model.statistics.count}</Typography.Heading><Typography className="type-label text-muted">五星紀錄</Typography></View>
+          <View className="flex-1 items-center rounded-xl border border-white/20 bg-white/10 p-3"><Typography.Heading type="h4" className="type-headline text-white">{model.statistics.averagePity ?? "—"}</Typography.Heading><Typography className="type-label text-muted">平均抽數</Typography></View>
+          <View className="flex-1 items-center rounded-xl border border-white/20 bg-white/10 p-3"><Typography.Heading type="h4" className="type-headline text-white">{model.statistics.featuredRate === null ? "—" : `${model.statistics.featuredRate}%`}</Typography.Heading><Typography className="type-label text-muted">當期 UP 率</Typography></View>
+        </NativeMetricGrid>
+        <Typography className="type-label text-muted">{model.statistics.count ? `出金區間：${model.statistics.earliestPity}–${model.statistics.latestPity} 抽 · 已標記結果 ${model.statistics.knownOutcomes}/${model.statistics.count} 筆。` : "目前範圍尚無可統計紀錄。"} UP 率只計算已標記結果的紀錄；所有統計都來自你手動輸入的資料。</Typography>
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-[#493b70]/70 p-4">
-        <View className="flex-row justify-between"><Typography.Heading className="text-xl text-white">五星歷史</Typography.Heading><Typography className="text-white/55">{records.length} 筆</Typography></View>
-        {records.length === 0 ? <Typography.Paragraph className="py-8 text-center text-white/60">{model.recordFilter === "全部" ? "尚無五星紀錄" : "此計數線尚無五星紀錄"}</Typography.Paragraph> : records.map((record) => (
+      <Card className="gap-3 border border-white/50 bg-glass p-4">
+        <View className="flex-row flex-wrap justify-between gap-2"><Typography.Heading type="h4" className="type-title text-white">五星歷史</Typography.Heading><Typography className="text-muted">{records.length} 筆</Typography></View>
+        {records.length === 0 ? <Typography.Paragraph className="py-8 text-center text-muted">{model.recordFilter === "全部" ? "尚無五星紀錄" : "此計數線尚無五星紀錄"}</Typography.Paragraph> : records.map((record) => (
           <View className="gap-3 rounded-xl border border-white/20 bg-white/10 p-3" key={record.id}>
-            <View className="flex-row items-center gap-3"><View className="h-12 w-12 items-center justify-center rounded-xl border border-white/30 bg-white/10"><Typography.Heading className="text-xl text-white">{record.pity}</Typography.Heading><Typography className="text-[10px] text-white/55">抽</Typography></View><View className="flex-1"><Typography className="font-semibold text-white">{record.memory || "未填思念名稱"}</Typography><Typography className="text-xs text-white/55">{record.track} · {record.outcome} · {record.date}</Typography></View></View>
-            <View className="flex-row gap-2"><Button size="sm" variant="secondary" onPress={() => setEditing({ ...record })}>編輯</Button><Button size="sm" variant="danger-soft" isDisabled={submitting || model.writeProtected} onPress={() => void removeRecord(record)}>刪除</Button></View>
+            <View className="flex-row items-center gap-3"><View className="min-h-20 min-w-16 items-center justify-center rounded-xl border border-white/30 bg-white/10"><Typography.Heading type="h4" className="type-title text-white">{record.pity}</Typography.Heading><Typography className="type-label text-muted">抽</Typography></View><View className="flex-1"><Typography className="font-semibold text-white">{record.memory || "未填思念名稱"}</Typography><Typography className="type-label text-muted">{record.track} · {record.outcome} · {record.date}</Typography></View></View>
+            <View className="flex-row flex-wrap gap-2"><Button size="sm" variant="secondary" onPress={() => setEditing({ ...record })}>編輯</Button><Button size="sm" variant="danger-soft" isDisabled={submitting || model.writeProtected} onPress={() => void removeRecord(record)}>刪除</Button></View>
           </View>
         ))}
       </Card>
 
       {editing ? (
-        <Card className="gap-4 border border-white/50 bg-[#493b70]/85 p-4">
-          <View className="flex-row items-center justify-between"><Typography.Heading className="text-xl text-white">編輯五星紀錄</Typography.Heading><Button size="sm" variant="ghost" onPress={() => setEditing(null)}>取消</Button></View>
+        <Card className="gap-4 border border-white/50 bg-glass p-4">
+          <View className="flex-row flex-wrap items-center justify-between gap-2"><Typography.Heading type="h4" className="type-title text-white">編輯五星紀錄</Typography.Heading><Button size="sm" variant="ghost" onPress={() => setEditing(null)}>取消</Button></View>
           <ChoiceRow options={WISH_TRACKS} value={editing.track} onChange={(track) => { setEditError(null); setEditing({ ...editing, track }); }} />
           <TextInput accessibilityLabel="編輯五星出現抽數" className={INPUT_CLASS} keyboardType="number-pad" value={String(editing.pity)} onChangeText={(value) => { setEditError(null); setEditing({ ...editing, pity: Number(value) }); }} />
           <NativeDateField label="編輯五星日期" value={editing.date} onChange={(date) => { setEditError(null); setEditing({ ...editing, date }); }} />
           <ChoiceRow options={FIVE_STAR_OUTCOMES} value={editing.outcome} onChange={(outcome) => { setEditError(null); setEditing({ ...editing, outcome }); }} />
           <TextInput accessibilityLabel="編輯思念名稱" className={INPUT_CLASS} maxLength={120} value={editing.memory} onChangeText={(memory) => { setEditError(null); setEditing({ ...editing, memory }); }} />
-          {editError ? <Typography accessibilityRole="alert" className="text-sm text-[#ffc2cb]">{editError}</Typography> : null}
+          {editError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{editError}</Typography> : null}
           <Button isDisabled={submitting || model.writeProtected} onPress={() => void saveEdit()}>儲存修改</Button>
         </Card>
       ) : null}

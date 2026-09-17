@@ -32,8 +32,7 @@ export function AccountEntry(): JSX.Element {
             {isSignedIn && user?.imageUrl ? <Image source={{ uri: user.imageUrl }} className="size-full" accessibilityIgnoresInvertColors /> : <MemberIcon />}
           </View>
           <View className="min-w-0">
-            <Typography className="text-[10px] leading-3 text-white/60">{isSignedIn ? "已登入" : "會員"}</Typography>
-            <Typography className="max-w-28 text-sm leading-5 text-white" numberOfLines={1}>{label}</Typography>
+            <Typography className="max-w-36 type-label text-white" >{label}</Typography>
           </View>
           <Svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <Path d="m9 18 6-6-6-6" />

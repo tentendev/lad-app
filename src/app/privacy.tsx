@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { NativeLink as Link } from "@/ui/NativeLink";
 import type { JSX, ReactNode } from "react";
 import { Linking, View } from "react-native";
 import { Button, Card, Typography } from "heroui-native";
@@ -8,9 +8,9 @@ import { NativePage } from "@/ui/NativePage";
 
 function PolicyCard({ title, children }: { title: string; children: ReactNode }): JSX.Element {
   return (
-    <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-      <Typography.Heading className="text-xl text-white">{title}</Typography.Heading>
-      <Typography.Paragraph className="leading-6 text-white/80">{children}</Typography.Paragraph>
+    <Card className="gap-3 border border-white/50 bg-glass p-5">
+      <Typography.Heading type="h4" className="type-title text-white">{title}</Typography.Heading>
+      <Typography.Paragraph className=" text-muted">{children}</Typography.Paragraph>
     </Card>
   );
 }
@@ -19,13 +19,13 @@ export default function PrivacyScreen(): JSX.Element {
   return (
     <NativePage eyebrow="Privacy" title="隱私政策" description="深空省省如何保存、使用與刪除資料。" showAboutLink={false}>
       <View className="items-start">
-        <Link href="/about" className="rounded-xl border border-white/50 bg-white/10 px-3 py-2 text-sm text-white">← 返回關於</Link>
+        <Link href="/about" className="rounded-xl border border-white/50 bg-white/10 px-3 py-2 type-body text-white">← 返回關於</Link>
       </View>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography className="text-xs uppercase tracking-[2px] text-white/60">Privacy Policy</Typography>
-        <Typography.Heading className="text-2xl text-white">隱私政策</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography className="type-label text-muted">Privacy Policy</Typography>
+        <Typography.Heading type="h4" className="type-headline text-white">隱私政策</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           本政策說明 {PUBLIC_INFO.operatorName} 如何處理深空省省的資料。最後更新：{PUBLIC_INFO.privacyUpdatedAt}。
         </Typography.Paragraph>
       </Card>
@@ -36,9 +36,9 @@ export default function PrivacyScreen(): JSX.Element {
       <PolicyCard title="私人雲端備份">只有在你點選上傳時，預算、花費、抽卡資源、備註、換算設定、抽卡規劃與五星紀錄才會經 Vercel API 儲存到 Neon，並以 Clerk 使用者識別碼隔離。系統不會自動讀取其他 App、付款卡、銀行帳戶或遊戲帳號。</PolicyCard>
       <PolicyCard title="處理目的">資料只用於建立與保護會員、驗證登入、提供你主動選擇的私人備份／還原、處理版本衝突、回覆支援請求及履行適用的法律或安全義務。本 App 不含廣告 SDK、不出售個人資料，也不把資料用於跨 App 追蹤。</PolicyCard>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">服務供應商</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">資料可能由位於其他國家或地區的服務供應商處理，並受其安全措施與契約約束：</Typography.Paragraph>
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">服務供應商</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">資料可能由位於其他國家或地區的服務供應商處理，並受其安全措施與契約約束：</Typography.Paragraph>
         <Button variant="outline" onPress={() => void Linking.openURL("https://clerk.com/legal/privacy")}>Clerk 隱私政策</Button>
         <Button variant="outline" onPress={() => void Linking.openURL("https://vercel.com/legal/privacy-policy")}>Vercel 隱私政策</Button>
         <Button variant="outline" onPress={() => void Linking.openURL("https://neon.com/privacy-policy")}>Neon 隱私政策</Button>
@@ -50,15 +50,15 @@ export default function PrivacyScreen(): JSX.Element {
       <PolicyCard title="你的選擇與權利">你可以不登入並使用所有主要功能，也能在會員中心查閱與修改會員資料、上傳／下載或刪除雲端備份、登出及永久刪除帳號。你也可以依適用法律要求存取、更正、刪除或限制處理；如無法在 App 內完成，請聯絡我們。</PolicyCard>
       <PolicyCard title="兒少、變更與通知">本服務不是專為 13 歲以下兒童設計，也不會故意向其收集會員資料。如得知不符規定的兒少資料，我們會採取刪除措施。政策如有重大變更，會更新本頁日期，必要時在 App 內提供通知。</PolicyCard>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">聯絡我們</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">聯絡我們</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           {PUBLIC_INFO.supportEmail ? `隱私、資料權利或安全問題請寄到 ${PUBLIC_INFO.supportEmail}。` : "正式支援信箱會在 App Store 上架前公布；在填入前，production preflight 不會允許送審。"}
         </Typography.Paragraph>
         {PUBLIC_INFO.supportEmail ? (
           <Button variant="outline" onPress={() => void Linking.openURL(`mailto:${PUBLIC_INFO.supportEmail}`)}>寄送 Email</Button>
         ) : null}
-        <Link href="/account" className="text-sm text-white underline">前往會員中心與資料控制</Link>
+        <Link href="/account" className="type-body text-white underline">前往會員中心與資料控制</Link>
       </Card>
     </NativePage>
   );

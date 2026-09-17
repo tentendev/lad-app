@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { JSX } from "react";
 import type { ColorValue } from "react-native";
+import { Text, useWindowDimensions } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { APP_COLORS } from "@/theme/tokens";
@@ -43,14 +44,16 @@ function TabIcon({ name, color }: { name: IconName; color: ColorValue }): JSX.El
 
 export default function NativeTabsLayout(): JSX.Element {
   const insets = useSafeAreaInsets();
+  const { fontScale } = useWindowDimensions();
   return (
     <Tabs
       initialRouteName="schedule"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#ffffff",
-        tabBarInactiveTintColor: "rgba(255,255,255,0.58)",
-        tabBarLabelStyle: { fontSize: 12, fontWeight: "600", marginTop: 2 },
+        tabBarInactiveTintColor: "#e5dff0",
+        tabBarLabel: ({ children, color, focused }) => <Text allowFontScaling maxFontSizeMultiplier={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: focused ? "600" : "400", color, textAlign: "center" }}>{children}</Text>,
+        tabBarLabelPosition: "below-icon",
         tabBarItemStyle: { paddingTop: 5 },
         tabBarStyle: {
           width: "100%",
@@ -63,7 +66,7 @@ export default function NativeTabsLayout(): JSX.Element {
           borderLeftWidth: 1,
           borderRightColor: "rgba(255,255,255,0.2)",
           borderRightWidth: 1,
-          height: 56 + insets.bottom,
+          height: 44 + 20 * Math.min(fontScale, 2) + insets.bottom,
         },
       }}
     >

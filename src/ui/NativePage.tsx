@@ -1,7 +1,7 @@
 import { Typography } from "heroui-native";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
-import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, useWindowDimensions, View } from "react-native";
+import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AccountEntry } from "@/ui/AccountEntry";
@@ -14,38 +14,32 @@ type Props = PropsWithChildren<{
   showAboutLink?: boolean;
 }>;
 
-export function NativePage({ eyebrow, title, description, showAccountEntry = true, showAboutLink = true, children }: Props) {
-  const { width } = useWindowDimensions();
+export function NativePage({ title, showAccountEntry = true, showAboutLink = true, children }: Props) {
   return (
     <ImageBackground
-      accessibilityLabel={`${title}頁面星空背景`}
       source={require("../../public/mobile-bg.webp")}
       resizeMode="cover"
       className="flex-1 bg-[#7765a7]"
     >
-      <View className="absolute inset-0 bg-[#574978]/30" />
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]} accessibilityLabel={`${title}：${description}；${eyebrow}`}>
+      <View className="absolute inset-0 bg-[#241b42]/65" />
+      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
-          contentContainerClassName="px-4 pb-28 pt-4"
+          contentContainerClassName="px-4 pb-12 pt-4"
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
           <View className="w-full self-center" style={{ maxWidth: 520, gap: 16 }}>
             <View className="flex-row flex-wrap items-center justify-between gap-3">
-              <View className="flex-row items-center gap-3"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 44, height: 44, borderRadius: 12 }} accessible={false} /><View><Typography className="text-xl font-bold text-white">深空省省</Typography>{width >= 400 ? <Typography className="text-xs text-white/65">排期・換算・記帳的小宇宙</Typography> : null}</View></View>
+              <View className="flex-row items-center gap-2"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 36, height: 36, borderRadius: 10 }} accessible={false} /><Typography className="type-title-sm font-semibold text-white">深空省省</Typography></View>
               {showAccountEntry ? <AccountEntry /> : null}
             </View>
-            <Typography accessibilityRole="header" className="text-2xl font-semibold text-white">{title}</Typography>
+            <Typography accessibilityRole="header" className="type-headline font-semibold text-white">{title}</Typography>
             {children}
             {showAboutLink ? (
               <View className="flex-row flex-wrap items-center justify-center gap-3 py-3">
-                <Link href="/account" className="text-xs text-white/65 underline">會員中心</Link>
-                <View className="h-3 w-px bg-white/30" />
-                <Link href="/about" className="text-xs text-white/65 underline">關於</Link>
-                <View className="h-3 w-px bg-white/30" />
-                <Link href="/privacy" className="text-xs text-white/65 underline">隱私政策</Link>
-                <View className="h-3 w-px bg-white/30" />
-                <Link href="/support" className="text-xs text-white/65 underline">支援</Link>
+                {([
+                  ["/account", "會員中心"], ["/about", "關於"], ["/privacy", "隱私政策"], ["/support", "支援"],
+                ] as const).map(([href, label]) => <Link key={href} href={href} asChild><Pressable className="min-h-12 min-w-12 items-center justify-center px-2"><Typography className="type-label text-muted underline">{label}</Typography></Pressable></Link>)}
               </View>
             ) : null}
           </View>

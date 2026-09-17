@@ -24,14 +24,14 @@ export function WelcomeScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", padding: 24, paddingTop: 280 }}>
           <View style={{ maxWidth: 480, width: "100%", alignSelf: "center", gap: 20 }}>
-            <View className="gap-3"><Typography accessibilityRole="header" className="text-4xl font-bold text-white">深空省省</Typography><Typography className="text-xl leading-8 text-white/85">把喜歡留在計畫裡，{"\n"}也替生活留點餘裕。</Typography></View>
+            <View className="gap-3"><Typography accessibilityRole="header" className="type-display font-semibold text-white">深空省省</Typography><Typography className="type-title  text-muted">把喜歡留在計畫裡，{"\n"}也替生活留點餘裕。</Typography></View>
             <View className="gap-3 rounded-2xl border border-white/20 bg-[#241b42]/80 p-4">
-              <Typography className="text-base leading-6 text-white">01　看排期，提早準備資源</Typography>
-              <Typography className="text-base leading-6 text-white">02　訂預算，記下每一筆花費</Typography>
-              <Typography className="text-base leading-6 text-white">03　算禮包，追蹤自己的目標</Typography>
+              <Typography className="type-body text-white">01　看排期，提早準備資源</Typography>
+              <Typography className="type-body text-white">02　訂預算，記下每一筆花費</Typography>
+              <Typography className="type-body text-white">03　算禮包，追蹤自己的目標</Typography>
             </View>
-            <Typography className="text-sm leading-6 text-white/70">主要功能免登入。紀錄先保存在這台裝置，雲端備份由你主動選擇。這是玩家自製的非官方規劃工具。</Typography>
-            {error ? <Typography accessibilityRole="alert" className="text-sm text-[#ffd8df]">{error}</Typography> : null}
+            <Typography className="type-body text-muted">主要功能免登入。紀錄先保存在這台裝置，雲端備份由你主動選擇。這是玩家自製的非官方規劃工具。</Typography>
+            {error ? <Typography accessibilityRole="alert" className="type-body text-[#ffd8df]">{error}</Typography> : null}
             <Button isDisabled={busy} onPress={() => void start()}>開始規劃</Button>
             {error ? <Button variant="ghost" onPress={() => setVisible(false)}>暫不儲存，直接使用</Button> : null}
           </View>

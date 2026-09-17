@@ -1,8 +1,9 @@
+import { NativeInput as TextInput } from "@/ui/NativeInput";
 import type { JSX } from "react";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Image, Platform, TextInput, View } from "react-native";
+import { Alert, Image, Platform, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { Button, Card, Typography } from "heroui-native";
 
@@ -28,12 +29,12 @@ function dateLabel(value: string | null): string {
   return value ? new Date(value).toLocaleString("zh-TW") : "尚未建立";
 }
 
-const INPUT_CLASS = "rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-base text-white";
+const INPUT_CLASS = "rounded-xl border border-white/30 bg-white/10 px-4 py-3 type-body text-white";
 
 function AuthField({ children, label }: { children: JSX.Element; label: string }): JSX.Element {
   return (
     <View className="gap-2">
-      <Typography className="text-sm text-white/80">{label}</Typography>
+      <Typography className="type-body text-muted">{label}</Typography>
       {children}
     </View>
   );
@@ -116,12 +117,12 @@ function SignedOutAuthCard(): JSX.Element {
   const displayedError = formError ?? emailAuth.error ?? socialAuth.error ?? appleAuth.error;
 
   return (
-    <Card className="gap-4 border border-white/50 bg-glass/70 p-5">
+    <Card className="gap-4 border border-white/50 bg-glass p-5">
       {emailAuth.step === "form" ? (
         <>
           <View className="gap-1">
-            <Typography className="text-xs uppercase tracking-[2px] text-white/60">會員帳號</Typography>
-            <Typography.Heading className="text-xl text-white">{emailAuth.mode === "sign-in" ? "歡迎回來" : "建立深空省省帳號"}</Typography.Heading>
+            <Typography className="type-label text-muted">會員帳號</Typography>
+            <Typography.Heading type="h4" className="type-title text-white">{emailAuth.mode === "sign-in" ? "歡迎回來" : "建立深空省省帳號"}</Typography.Heading>
           </View>
 
           <View className="flex-row gap-2 rounded-2xl border border-white/20 bg-white/5 p-1">
@@ -131,19 +132,19 @@ function SignedOutAuthCard(): JSX.Element {
 
           {emailAuth.mode === "sign-up" ? (
             <AuthField label="顯示名稱（選填）">
-              <TextInput accessibilityLabel="顯示名稱" autoComplete="name" className={INPUT_CLASS} placeholder="怎麼稱呼你？" placeholderTextColor="rgba(255,255,255,.42)" value={name} onChangeText={setName} />
+              <TextInput accessibilityLabel="顯示名稱" autoComplete="name" className={INPUT_CLASS} placeholder="怎麼稱呼你？" placeholderTextColor="#ded7ed" value={name} onChangeText={setName} />
             </AuthField>
           ) : null}
 
           <AuthField label="Email">
-            <TextInput accessibilityLabel="Email" autoCapitalize="none" autoComplete="email" className={INPUT_CLASS} keyboardType="email-address" placeholder="name@example.com" placeholderTextColor="rgba(255,255,255,.42)" value={email} onChangeText={setEmail} />
+            <TextInput accessibilityLabel="Email" autoCapitalize="none" autoComplete="email" className={INPUT_CLASS} keyboardType="email-address" placeholder="name@example.com" placeholderTextColor="#ded7ed" value={email} onChangeText={setEmail} />
           </AuthField>
           <AuthField label="密碼">
-            <TextInput accessibilityLabel="密碼" autoCapitalize="none" autoComplete={emailAuth.mode === "sign-up" ? "new-password" : "current-password"} className={INPUT_CLASS} placeholder="至少 15 碼" placeholderTextColor="rgba(255,255,255,.42)" secureTextEntry value={password} onChangeText={setPassword} />
+            <TextInput accessibilityLabel="密碼" autoCapitalize="none" autoComplete={emailAuth.mode === "sign-up" ? "new-password" : "current-password"} className={INPUT_CLASS} placeholder="至少 15 碼" placeholderTextColor="#ded7ed" secureTextEntry value={password} onChangeText={setPassword} />
           </AuthField>
           {emailAuth.mode === "sign-up" ? (
             <AuthField label="再次輸入密碼">
-              <TextInput accessibilityLabel="再次輸入密碼" autoCapitalize="none" autoComplete="new-password" className={INPUT_CLASS} placeholder="再輸入一次" placeholderTextColor="rgba(255,255,255,.42)" secureTextEntry value={passwordConfirmation} onChangeText={setPasswordConfirmation} />
+              <TextInput accessibilityLabel="再次輸入密碼" autoCapitalize="none" autoComplete="new-password" className={INPUT_CLASS} placeholder="再輸入一次" placeholderTextColor="#ded7ed" secureTextEntry value={passwordConfirmation} onChangeText={setPasswordConfirmation} />
             </AuthField>
           ) : null}
 
@@ -153,7 +154,7 @@ function SignedOutAuthCard(): JSX.Element {
 
           {emailAuth.mode === "sign-in" ? <Button variant="ghost" size="sm" isDisabled={busy} onPress={() => void beginPasswordReset()}>忘記密碼？</Button> : null}
 
-          <View className="flex-row items-center gap-3"><View className="h-px flex-1 bg-white/20" /><Typography className="text-xs text-white/50">或</Typography><View className="h-px flex-1 bg-white/20" /></View>
+          <View className="flex-row items-center gap-3"><View className="h-px flex-1 bg-white/20" /><Typography className="type-label text-muted">或</Typography><View className="h-px flex-1 bg-white/20" /></View>
 
           <Button variant="outline" size="lg" isDisabled={busy} onPress={() => void socialAuth.signIn("oauth_google")}><GoogleMark /><Button.Label>{socialAuth.submitting === "oauth_google" ? "正在開啟 Google…" : "使用 Google 繼續"}</Button.Label></Button>
           {APPLE_SIGN_IN_ENABLED && Platform.OS === "ios" ? (
@@ -171,7 +172,7 @@ function SignedOutAuthCard(): JSX.Element {
         </>
       ) : emailAuth.step === "reset-password" ? (
         <>
-          <View className="gap-2"><Typography className="text-xs uppercase tracking-[2px] text-white/60">重設密碼</Typography><Typography.Heading className="text-xl text-white">設定新的密碼</Typography.Heading><Typography className="text-sm text-white/70">已完成 Email 驗證。新密碼至少需要 15 碼。</Typography></View>
+          <View className="gap-2"><Typography className="type-label text-muted">重設密碼</Typography><Typography.Heading type="h4" className="type-title text-white">設定新的密碼</Typography.Heading><Typography className="type-body text-muted">已完成 Email 驗證。新密碼至少需要 15 碼。</Typography></View>
           <AuthField label="新密碼"><TextInput accessibilityLabel="新密碼" autoComplete="new-password" className={INPUT_CLASS} secureTextEntry value={password} onChangeText={setPassword} /></AuthField>
           <AuthField label="再次輸入新密碼"><TextInput accessibilityLabel="再次輸入新密碼" autoComplete="new-password" className={INPUT_CLASS} secureTextEntry value={passwordConfirmation} onChangeText={setPasswordConfirmation} /></AuthField>
           <Button variant="secondary" size="lg" isDisabled={busy} onPress={() => void saveNewPassword()}>{busy ? "更新中…" : "更新密碼並登入"}</Button>
@@ -180,20 +181,20 @@ function SignedOutAuthCard(): JSX.Element {
       ) : (
         <>
           <View className="gap-2">
-            <Typography className="text-xs uppercase tracking-[2px] text-white/60">Email 驗證</Typography>
-            <Typography.Heading className="text-xl text-white">{emailAuth.step === "verify-sign-up" ? "完成會員註冊" : emailAuth.step === "verify-client-trust" ? "確認這台新裝置" : "重設你的密碼"}</Typography.Heading>
-            <Typography className="text-sm leading-5 text-white/70">請輸入寄到 {emailAuth.emailAddress} 的 6 位數驗證碼。</Typography>
+            <Typography className="type-label text-muted">Email 驗證</Typography>
+            <Typography.Heading type="h4" className="type-title text-white">{emailAuth.step === "verify-sign-up" ? "完成會員註冊" : emailAuth.step === "verify-client-trust" ? "確認這台新裝置" : "重設你的密碼"}</Typography.Heading>
+            <Typography className="type-body text-muted">請輸入寄到 {emailAuth.emailAddress} 的 6 位數驗證碼。</Typography>
           </View>
-          <AuthField label="驗證碼"><TextInput accessibilityLabel="6 位數驗證碼" autoComplete="one-time-code" className={`${INPUT_CLASS} text-center text-xl tracking-[8px]`} keyboardType="number-pad" maxLength={6} placeholder="000000" placeholderTextColor="rgba(255,255,255,.42)" value={code} onChangeText={(value) => setCode(value.replace(/\D/g, "").slice(0, 6))} /></AuthField>
+          <AuthField label="驗證碼"><TextInput accessibilityLabel="6 位數驗證碼" autoComplete="one-time-code" className={`${INPUT_CLASS} text-center type-title tracking-[8px]`} keyboardType="number-pad" maxLength={6} placeholder="000000" placeholderTextColor="#ded7ed" value={code} onChangeText={(value) => setCode(value.replace(/\D/g, "").slice(0, 6))} /></AuthField>
           <Button variant="secondary" size="lg" isDisabled={busy} onPress={() => void submitCode()}>{busy ? "驗證中…" : "確認驗證碼"}</Button>
           <View className="flex-row justify-center gap-2"><Button variant="ghost" size="sm" isDisabled={busy} onPress={() => void emailAuth.resendCode()}>重新寄送</Button><Button variant="ghost" size="sm" isDisabled={busy} onPress={() => void returnToForm()}>更換 Email</Button></View>
         </>
       )}
 
-      {emailAuth.notice ? <Typography className="rounded-xl border border-emerald-200/30 bg-emerald-950/20 p-3 text-sm text-emerald-100" accessibilityRole="text">{emailAuth.notice}</Typography> : null}
-      {displayedError ? <Typography className="rounded-xl border border-red-200/30 bg-red-950/20 p-3 text-sm text-red-100" accessibilityRole="alert">{displayedError}</Typography> : null}
-      <Typography className="text-xs leading-5 text-white/60">登入服務與 Email 驗證由 Clerk 提供；會員資料與 Neon 私人備份不會公開。未登入時仍可繼續使用本機資料。</Typography>
-      <Typography className="text-xs leading-5 text-white/60">建立帳號或登入即表示你已閱讀<Link href="/privacy" className="text-white underline">隱私政策</Link>；所有主要功能都可以不登入使用。</Typography>
+      {emailAuth.notice ? <Typography className="rounded-xl border border-emerald-200/30 bg-emerald-950/20 p-3 type-body text-emerald-100" accessibilityRole="text">{emailAuth.notice}</Typography> : null}
+      {displayedError ? <Typography className="rounded-xl border border-red-200/30 bg-red-950/20 p-3 type-body text-red-100" accessibilityRole="alert">{displayedError}</Typography> : null}
+      <Typography className="type-label text-muted">登入服務與 Email 驗證由 Clerk 提供；會員資料與 Neon 私人備份不會公開。未登入時仍可繼續使用本機資料。</Typography>
+      <Typography className="type-label text-muted">建立帳號或登入即表示你已閱讀<Link href="/privacy" className="text-white underline">隱私政策</Link>；所有主要功能都可以不登入使用。</Typography>
     </Card>
   );
 }
@@ -204,11 +205,11 @@ function SecurityRow({ detail, label, state, positive = false }: { detail: strin
   return (
     <View className="flex-row items-center justify-between gap-3 border-b border-white/15 py-3">
       <View className="min-w-0 flex-1 gap-0.5">
-        <Typography className="text-sm font-medium text-white">{label}</Typography>
-        <Typography className="text-xs leading-5 text-white/60">{detail}</Typography>
+        <Typography className="type-body font-medium text-white">{label}</Typography>
+        <Typography className="type-label text-muted">{detail}</Typography>
       </View>
       <View className={positive ? "shrink-0 rounded-full border border-emerald-200/40 bg-emerald-950/20 px-2.5 py-1" : "shrink-0 rounded-full border border-white/25 bg-white/5 px-2.5 py-1"}>
-        <Typography className={positive ? "text-xs text-emerald-100" : "text-xs text-white/70"}>{state}</Typography>
+        <Typography className={positive ? "type-label text-emerald-100" : "type-label text-muted"}>{state}</Typography>
       </View>
     </View>
   );
@@ -226,7 +227,7 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
   const user = model.user;
   const disabled = model.busy !== null;
 
-  if (!user) return <Card className="border border-white/50 bg-glass/70 p-5"><Typography className="text-white/80">正在載入會員資料…</Typography></Card>;
+  if (!user) return <Card className="border border-white/50 bg-glass p-5"><Typography className="text-muted">正在載入會員資料…</Typography></Card>;
 
   const email = user.primaryEmailAddress?.emailAddress ?? "尚未設定 Email";
   const emailVerified = user.primaryEmailAddress?.verification?.status === "verified";
@@ -261,27 +262,27 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
 
   return (
     <>
-      <Card className="gap-4 border border-white/50 bg-glass/70 p-5">
+      <Card className="gap-4 border border-white/50 bg-glass p-5">
         <View className="flex-row items-center gap-3">
           {user.imageUrl ? (
             <Image source={{ uri: user.imageUrl }} className="size-14 shrink-0 rounded-full border border-white/60" accessibilityIgnoresInvertColors />
           ) : (
-            <View className="size-14 shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/10"><Typography className="text-xl text-white">✦</Typography></View>
+            <View className="size-14 shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/10"><Typography className="type-title text-white">✦</Typography></View>
           )}
           <View className="min-w-0 flex-1">
-            <Typography className="text-xs uppercase tracking-[2px] text-white/60">會員中心</Typography>
-            <Typography.Heading className="text-xl text-white" numberOfLines={1}>{user.fullName ?? email}</Typography.Heading>
-            <Typography className="text-xs text-white/65" numberOfLines={1}>{email}</Typography>
+            <Typography className="type-label text-muted">會員中心</Typography>
+            <Typography.Heading type="h4" className="type-title text-white" numberOfLines={1}>{user.fullName ?? email}</Typography.Heading>
+            <Typography className="type-label text-muted" numberOfLines={1}>{email}</Typography>
           </View>
           <View className="shrink-0 flex-row items-center gap-1.5 rounded-full border border-emerald-200/40 bg-emerald-950/20 px-2.5 py-1">
             <View className="size-1.5 rounded-full bg-emerald-200" />
-            <Typography className="text-xs text-emerald-100">已登入</Typography>
+            <Typography className="type-label text-emerald-100">已登入</Typography>
           </View>
         </View>
 
-        <View className="flex-row gap-2">
-          <View className="min-w-0 flex-1 rounded-xl border border-white/20 bg-white/5 p-3"><Typography className="text-xs text-white/55">Email 狀態</Typography><Typography className="text-sm text-white">{emailVerified ? "已驗證" : "等待驗證"}</Typography></View>
-          <View className="min-w-0 flex-1 rounded-xl border border-white/20 bg-white/5 p-3"><Typography className="text-xs text-white/55">登入方式</Typography><Typography className="text-sm text-white" numberOfLines={2}>{methods}</Typography></View>
+        <View className="flex-row flex-wrap gap-2">
+          <View className="min-w-0 flex-1 rounded-xl border border-white/20 bg-white/5 p-3"><Typography className="type-label text-muted">Email 狀態</Typography><Typography className="type-body text-white">{emailVerified ? "已驗證" : "等待驗證"}</Typography></View>
+          <View className="min-w-0 flex-1 rounded-xl border border-white/20 bg-white/5 p-3"><Typography className="type-label text-muted">登入方式</Typography><Typography className="type-body text-white" numberOfLines={2}>{methods}</Typography></View>
         </View>
 
         <View className="gap-2">
@@ -293,13 +294,13 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
           <View className="gap-3 border-t border-white/15 pt-4">
             <AuthField label="名字"><TextInput accessibilityLabel="名字" autoComplete="name-given" className={INPUT_CLASS} maxLength={64} value={firstName} onChangeText={setFirstName} /></AuthField>
             <AuthField label="姓氏（選填）"><TextInput accessibilityLabel="姓氏" autoComplete="name-family" className={INPUT_CLASS} maxLength={64} value={lastName} onChangeText={setLastName} /></AuthField>
-            <View className="flex-row gap-2"><Button className="flex-1" size="sm" variant="secondary" isDisabled={disabled} onPress={() => void saveProfile()}>{model.busy === "profile" ? "儲存中…" : "儲存個人資料"}</Button><Button size="sm" variant="ghost" isDisabled={disabled} onPress={cancelProfileEdit}>取消</Button></View>
+            <View className="flex-row flex-wrap gap-2"><Button className="flex-1" size="sm" variant="secondary" isDisabled={disabled} onPress={() => void saveProfile()}>{model.busy === "profile" ? "儲存中…" : "儲存個人資料"}</Button><Button size="sm" variant="ghost" isDisabled={disabled} onPress={cancelProfileEdit}>取消</Button></View>
           </View>
         ) : null}
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <View className="gap-1"><Typography className="text-xs uppercase tracking-[2px] text-white/60">登入與安全性</Typography><Typography.Heading className="text-xl text-white">保護你的會員帳號</Typography.Heading></View>
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <View className="gap-1"><Typography className="type-label text-muted">登入與安全性</Typography><Typography.Heading type="h4" className="type-title text-white">保護你的會員帳號</Typography.Heading></View>
         <View>
           <SecurityRow label="主要 Email" detail={email} state={emailVerified ? "已驗證" : "待驗證"} positive={emailVerified} />
           <SecurityRow label="兩步驟驗證" detail="登入新裝置時提高帳號安全性" state={user.twoFactorEnabled ? "已啟用" : "未啟用"} positive={user.twoFactorEnabled} />
@@ -312,17 +313,17 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
             {showPasswordForm ? (
               <View className="gap-3 border-t border-white/15 pt-4">
                 <AuthField label="目前密碼"><TextInput accessibilityLabel="目前密碼" autoComplete="password" className={INPUT_CLASS} secureTextEntry value={currentPassword} onChangeText={setCurrentPassword} /></AuthField>
-                <AuthField label="新密碼"><TextInput accessibilityLabel="新密碼" autoComplete="new-password" className={INPUT_CLASS} placeholder="至少 15 碼" placeholderTextColor="rgba(255,255,255,.42)" secureTextEntry value={newPassword} onChangeText={setNewPassword} /></AuthField>
+                <AuthField label="新密碼"><TextInput accessibilityLabel="新密碼" autoComplete="new-password" className={INPUT_CLASS} placeholder="至少 15 碼" placeholderTextColor="#ded7ed" secureTextEntry value={newPassword} onChangeText={setNewPassword} /></AuthField>
                 <AuthField label="再次輸入新密碼"><TextInput accessibilityLabel="再次輸入新密碼" autoComplete="new-password" className={INPUT_CLASS} secureTextEntry value={passwordConfirmation} onChangeText={setPasswordConfirmation} /></AuthField>
-                <Typography className="text-xs leading-5 text-white/60">更新後會自動登出其他裝置，這台裝置會保持登入。</Typography>
+                <Typography className="type-label text-muted">更新後會自動登出其他裝置，這台裝置會保持登入。</Typography>
                 <Button size="sm" variant="secondary" isDisabled={disabled} onPress={() => void savePassword()}>{model.busy === "password" ? "更新中…" : "更新密碼"}</Button>
               </View>
             ) : null}
           </>
         ) : null}
 
-        {formError ? <Typography className="rounded-xl border border-red-200/30 bg-red-950/20 p-3 text-sm text-red-100" accessibilityRole="alert">{formError}</Typography> : null}
-        {model.profileStatus ? <Typography className={model.profileStatus.tone === "error" ? "rounded-xl border border-red-200/30 bg-red-950/20 p-3 text-sm text-red-100" : "rounded-xl border border-emerald-200/30 bg-emerald-950/20 p-3 text-sm text-emerald-100"} accessibilityRole={model.profileStatus.tone === "error" ? "alert" : "text"}>{model.profileStatus.message}</Typography> : null}
+        {formError ? <Typography className="rounded-xl border border-red-200/30 bg-red-950/20 p-3 type-body text-red-100" accessibilityRole="alert">{formError}</Typography> : null}
+        {model.profileStatus ? <Typography className={model.profileStatus.tone === "error" ? "rounded-xl border border-red-200/30 bg-red-950/20 p-3 type-body text-red-100" : "rounded-xl border border-emerald-200/30 bg-emerald-950/20 p-3 type-body text-emerald-100"} accessibilityRole={model.profileStatus.tone === "error" ? "alert" : "text"}>{model.profileStatus.message}</Typography> : null}
       </Card>
     </>
   );
@@ -381,35 +382,35 @@ export default function AccountScreen(): JSX.Element {
     <NativePage eyebrow="Account & Cloud" title="會員中心" description="管理個人資料、登入安全性與私人雲端備份。" showAccountEntry={false} showAboutLink={false}>
       <View className="items-start"><Button variant="outline" size="sm" onPress={() => router.back()}>← 返回</Button></View>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography className="text-xs uppercase tracking-[2px] text-white/60">Clerk × Neon</Typography>
-        <Typography.Heading className="text-2xl text-white">{model.isSignedIn ? `嗨，${model.user?.firstName ?? "深空旅人"}` : "登入後，換裝置也能帶走紀錄"}</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">未登入時仍會保存在本機；登入只會增加私人雲端備份。</Typography.Paragraph>
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography className="type-label text-muted">Clerk × Neon</Typography>
+        <Typography.Heading type="h4" className="type-headline text-white">{model.isSignedIn ? `嗨，${model.user?.firstName ?? "深空旅人"}` : "登入後，換裝置也能帶走紀錄"}</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">未登入時仍會保存在本機；登入只會增加私人雲端備份。</Typography.Paragraph>
       </Card>
 
       {!model.isLoaded ? (
-        <Card className="border border-white/50 bg-glass/70 p-5"><Typography className="text-white/80">正在確認登入狀態…</Typography></Card>
+        <Card className="border border-white/50 bg-glass p-5"><Typography className="text-muted">正在確認登入狀態…</Typography></Card>
       ) : !model.isSignedIn ? (
         <SignedOutAuthCard />
       ) : (
         <>
           <SignedInMemberCards model={model} />
 
-          <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-            <Typography className="text-xs uppercase tracking-[2px] text-white/60">私人雲端備份</Typography>
-            <Typography.Heading className="text-xl text-white">{model.snapshot?.data ? `版本 ${model.snapshot.revision}` : "尚無雲端備份"}</Typography.Heading>
-            <Typography className="text-sm text-white/70">最後更新：{dateLabel(model.snapshot?.updatedAt ?? null)}</Typography>
+          <Card className="gap-3 border border-white/50 bg-glass p-5">
+            <Typography className="type-label text-muted">私人雲端備份</Typography>
+            <Typography.Heading type="h4" className="type-title text-white">{model.snapshot?.data ? `版本 ${model.snapshot.revision}` : "尚無雲端備份"}</Typography.Heading>
+            <Typography className="type-body text-muted">最後更新：{dateLabel(model.snapshot?.updatedAt ?? null)}</Typography>
             <Button variant="secondary" isDisabled={disabled} onPress={confirmPush}>{model.busy === "push" ? "上傳中…" : "以這台裝置更新雲端"}</Button>
             <Button variant="outline" isDisabled={disabled || !model.snapshot?.data} onPress={confirmPull}>{model.busy === "pull" ? "下載中…" : "下載雲端備份到這台裝置"}</Button>
             <Button variant="ghost" size="sm" isDisabled={disabled || !model.snapshot?.data} onPress={confirmCloudDeletion}>{model.busy === "delete-cloud" ? "刪除中…" : "只刪除雲端備份"}</Button>
             <Button variant="ghost" size="sm" isDisabled={disabled} onPress={() => void model.refresh()}>重新整理雲端狀態</Button>
-            {model.status ? <Typography className={model.status.tone === "error" ? "text-sm text-red-200" : "text-sm text-emerald-200"}>{model.status.message}</Typography> : null}
-            <Typography className="text-xs leading-5 text-white/60">為避免衝突，系統不會在另一台裝置靜默覆寫資料。</Typography>
+            {model.status ? <Typography className={model.status.tone === "error" ? "type-body text-red-200" : "type-body text-emerald-200"}>{model.status.message}</Typography> : null}
+            <Typography className="type-label text-muted">為避免衝突，系統不會在另一台裝置靜默覆寫資料。</Typography>
           </Card>
 
           <Card className="gap-3 border border-red-200/50 bg-red-950/20 p-5">
-            <Typography.Heading className="text-xl text-white">刪除會員帳號</Typography.Heading>
-            <Typography className="text-sm leading-5 text-white/70">永久移除 Clerk 帳號與 Neon 雲端備份；本機資料會保留。</Typography>
+            <Typography.Heading type="h4" className="type-title text-white">刪除會員帳號</Typography.Heading>
+            <Typography className="type-body text-muted">永久移除 Clerk 帳號與 Neon 雲端備份；本機資料會保留。</Typography>
             <Button variant="danger" isDisabled={disabled} onPress={confirmDelete}>{model.busy === "delete" ? "刪除中…" : "永久刪除帳號"}</Button>
           </Card>
         </>

@@ -12,6 +12,47 @@
   --color-glass: #493b70;
   --color-glass-soft: #766ba5;
   --color-line: #c9c4e0;
+  --color-muted: #e5dff0;
+  /* Material 3 roles, with a 14pt floor for Chinese supporting text. */
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-title-sm: 18px;
+  --text-title-sm--line-height: 26px;
+  --text-title: 22px;
+  --text-title--line-height: 28px;
+  --text-headline: 28px;
+  --text-headline--line-height: 36px;
+  --text-display: 36px;
+  --text-display--line-height: 44px;
+}
+
+/* Shared HeroUI defaults. Content grows with iOS Text Size, including buttons. */
+@layer components {
+  .text__root--type-body { font-size: 16px; line-height: 24px; }
+  .text__root--type-body-sm,
+  .text__root--type-body-xs { font-size: 14px; line-height: 20px; }
+  .button__root--size-sm,
+  .button__root--size-md,
+  .button__root--size-lg {
+    height: auto;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 100%;
+    padding-block: 12px;
+    padding-inline: 12px;
+  }
+  .button__root--size-md,
+  .button__root--size-lg { min-height: 56px; }
+  .button__label--size-sm,
+  .button__label--size-md,
+  .button__label--size-lg {
+    font-size: 16px;
+    line-height: 24px;
+    flex-shrink: 1;
+    text-align: center;
+  }
 }
 
 /* Preserve the product palette for HeroUI controls in either system appearance. */
@@ -23,6 +64,7 @@
       --default: #645484;
       --default-foreground: #ffffff;
       --foreground: #ffffff;
+      --muted: #e5dff0;
       --focus: #cdbdff;
       --link: #e3d7ff;
     }
@@ -32,8 +74,39 @@
       --default: #645484;
       --default-foreground: #ffffff;
       --foreground: #ffffff;
+      --muted: #e5dff0;
       --focus: #cdbdff;
       --link: #e3d7ff;
     }
   }
+}
+
+@utility type-label {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+}
+
+@utility type-body {
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+}
+
+@utility type-title-sm {
+  font-size: var(--text-title-sm);
+  line-height: var(--text-title-sm--line-height);
+}
+
+@utility type-title {
+  font-size: var(--text-title);
+  line-height: var(--text-title--line-height);
+}
+
+@utility type-headline {
+  font-size: var(--text-headline);
+  line-height: var(--text-headline--line-height);
+}
+
+@utility type-display {
+  font-size: var(--text-display);
+  line-height: var(--text-display--line-height);
 }

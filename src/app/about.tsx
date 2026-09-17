@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { NativeLink as Link } from "@/ui/NativeLink";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
@@ -107,41 +107,41 @@ export default function AboutScreen(): JSX.Element {
       showAboutLink={false}
     >
       <View className="items-start">
-        <Link href="/schedule" className="rounded-xl border border-white/50 bg-white/10 px-3 py-2 text-sm text-white">← 返回排期</Link>
+        <Link href="/schedule" className="rounded-xl border border-white/50 bg-white/10 px-3 py-2 type-body text-white">← 返回排期</Link>
       </View>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography className="text-xs uppercase tracking-[2px] text-white/60">About</Typography>
-        <Typography.Heading className="text-2xl text-white">關於深空省省</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography className="type-label text-muted">About</Typography>
+        <Typography.Heading type="h4" className="type-headline text-white">關於深空省省</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           深空省省是玩家自製的抽卡課金規劃工具，支援《戀與深空》的排期整理、預算記錄與資源換算。本工具與遊戲開發商、發行商或營運商沒有隸屬、授權或合作關係。
         </Typography.Paragraph>
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">排期資訊</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">排期資訊</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           已公告內容與預測排期會分開標示。預測資訊僅供規劃參考，實際卡池、活動與日期請以《戀與深空》官方公告為準。
         </Typography.Paragraph>
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">本機優先，也能自選雲端備份</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">本機優先，也能自選雲端備份</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           未登入時，預算、花費、換算設定、抽卡規劃、五星紀錄與排期篩選只儲存在裝置中。登入後可明確選擇上傳至自己的 Neon 雲端備份；系統不會在另一台裝置靜默覆寫。本工具不含廣告 SDK，也不做跨 App 追蹤。
         </Typography.Paragraph>
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">會員資料與刪除</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">會員資料與刪除</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           Google／Apple 登入由 Clerk 提供，會處理帳號識別、姓名與電子郵件。你可以在「會員中心」中管理個人資料、更新密碼、登出或永久刪除會員帳號與雲端備份；刪除帳號時，本機紀錄仍會保留。
         </Typography.Paragraph>
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">本機備份與還原</Typography.Heading>
-        <Typography.Paragraph className="leading-6 text-white/80">
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">本機備份與還原</Typography.Heading>
+        <Typography.Paragraph className=" text-muted">
           JSON 備份包含預算、花費、換算設定、抽卡規劃、資源進度、五星紀錄與排期篩選，只在裝置上建立；還原前會再次確認並採交易式寫入。
         </Typography.Paragraph>
         <View className="gap-2">
@@ -150,16 +150,16 @@ export default function AboutScreen(): JSX.Element {
           <Button variant="ghost" isDisabled={backupBusy} onPress={() => void shareRecoveryCopy()}>匯出原始救援檔</Button>
         </View>
         {backupStatus ? (
-          <Typography accessibilityRole={backupStatus.tone === "error" ? "alert" : "text"} className={`text-sm leading-5 ${backupStatus.tone === "error" ? "text-[#ffc2cb]" : "text-[#bdf7e7]"}`}>
+          <Typography accessibilityRole={backupStatus.tone === "error" ? "alert" : "text"} className={`type-body ${backupStatus.tone === "error" ? "text-[#ffc2cb]" : "text-[#bdf7e7]"}`}>
             {backupStatus.message}
           </Typography>
         ) : null}
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass/70 p-5">
-        <Typography.Heading className="text-xl text-white">政策與支援</Typography.Heading>
-        <Link href="/privacy" className="text-sm text-white underline">閱讀完整隱私政策</Link>
-        <Link href="/support" className="text-sm text-white underline">前往支援中心</Link>
+      <Card className="gap-3 border border-white/50 bg-glass p-5">
+        <Typography.Heading type="h4" className="type-title text-white">政策與支援</Typography.Heading>
+        <Link href="/privacy" className="type-body text-white underline">閱讀完整隱私政策</Link>
+        <Link href="/support" className="type-body text-white underline">前往支援中心</Link>
       </Card>
     </NativePage>
   );
