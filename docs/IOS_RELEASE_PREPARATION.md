@@ -4,6 +4,8 @@
 
 尚未提交 App Review，也尚未上傳 TestFlight。使用者已授權完成 App、建置及送審；以下缺口是實際資料、服務設定與驗收，不是等待再次批准送審。
 
+2026-09-17 字體與 UI 調整後，使用者明確指定這次 TestFlight 為「內部 UI 測試，沿用測試環境」。本次使用 `testflight-ui` build profile 與 EAS `preview` environment，不等待下列正式登入／雲端條件完成；這些條件仍適用於後續正式上架。Apple 簽署與 App Store Connect 認證仍須完成。字體修改、完整模擬器建置及驗收見 `NATIVE_TYPOGRAPHY.md` 與 `../artifacts/2026-09-17-typography/QA.md`。
+
 - Apple Developer：`dev@tenten.co`，Team `RTK85AV2H2`。
 - 已註冊 App ID `com.tenten.deepspaceledger`，啟用 Sign in with Apple。
 - 已建立 [App Store Connect「深空省省」](https://appstoreconnect.apple.com/apps/6812909987/distribution)：Apple ID `6812909987`、繁體中文、SKU `deep-space-ledger-ios`；狀態為 Prepare for Submission。
@@ -47,6 +49,7 @@ CocoaPods UUID 衝突曾令 `PBXProject` 被 `ClerkKitUI` 物件覆蓋。`plugin
 - `npm run preflight:ios-submit`：正式設定及公開端點；目前應失敗，不可把確認旗標設為 true 來跳過工作。
 - `eas build --platform ios --profile ios-simulator`：內部模擬器驗收，不可送 App Store。
 - `eas build --platform ios --profile preview`：內部裝置驗收。
+- `eas build --platform ios --profile testflight-ui`：本次已授權的內部 TestFlight UI 驗收，使用既有測試環境與 App Store 發行簽署。
 - `eas build --platform ios --profile production`：完成正式條件後才建立上架版本。
 - `eas submit --platform ios --profile production`：上傳完成後仍需在 App Store Connect 送審。
 
