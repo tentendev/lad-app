@@ -1,0 +1,40 @@
+{
+  "buildId": "d7e1be8d-f37b-4922-acff-920be856eaf0",
+  "buildUrl": "https://expo.dev/accounts/tentenco/projects/deep-space-ledger/builds/d7e1be8d-f37b-4922-acff-920be856eaf0",
+  "status": "FINISHED",
+  "completedAt": "2026-09-17T02:50:56.480Z",
+  "sourceCommit": "e688e2043b3eadc46e2f9f2e0ccd4ca9830a7e25",
+  "profile": "ios-simulator",
+  "artifactKind": "unmodified EAS iOS simulator archive; not an IPA",
+  "bundleIdentifier": "com.tenten.deepspaceledger",
+  "binaryVersion": "1.0.0",
+  "binaryBuildNumber": "1",
+  "easMetadataBuildNumber": "2",
+  "buildNumberNote": "EAS metadata reports remote counter 2, but the simulator binary Info.plist reports 1. Binary value is authoritative for this artifact.",
+  "archiveSha256": "3812d978b232a5d6eb751f2149ea0a67c150e4f8cc2498f17bd3a4f747555da6",
+  "installedHermesBundleSha256": "0d4aad98937b40be3f43c1413159bf30397852c678d3cb05f16eec4b6badbc1a",
+  "device": "Isolated iPhone 17e, Maggie Typography QA, iOS 26.5",
+  "checks": [
+    "Cold startup",
+    "Standard text size",
+    "Live standard → accessibility-large → standard without restart",
+    "Date selection opens complete event list"
+  ],
+  "automatedValidation": {
+    "command": "npm run release:ios:validate",
+    "sourceCodeCommit": "3258d4f",
+    "passed": true,
+    "vitestTests": 114,
+    "nodeTests": 6,
+    "expoDoctorChecks": 21,
+    "hermesBundleMiB": 8.5,
+    "securityAudit": "Passed repository reviewed-advisory policy"
+  },
+  "screenshots": [
+    "iphone-schedule.png",
+    "iphone-live-large-text.png",
+    "iphone-date-list.png"
+  ],
+  "testflightUploaded": false,
+  "testflightBlocker": "Apple distribution signing credentials are not configured. User Apple login/2FA is required."
+}

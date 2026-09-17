@@ -49,7 +49,7 @@
       "passed": true,
       "failures": []
     },
-    "sourceCommit": "3258d4f9a16d1d1b5c958ead423b34b4bec6a083"
+    "sourceCommit": "e688e2043b3eadc46e2f9f2e0ccd4ca9830a7e25"
   },
   "verdict": "READY",
   "summary": {
@@ -145,5 +145,5 @@
       "suppressed": false
     }
   ],
-  "releaseStatus": "TestFlight signed build blocked: Apple distribution credentials are not set up. Updated simulator build pending."
+  "releaseStatus": "Latest full simulator build FINISHED, downloaded unchanged, installed and verified. TestFlight remains blocked by missing Apple distribution signing credentials."
 }
