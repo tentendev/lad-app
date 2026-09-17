@@ -23,7 +23,7 @@ export function WelcomeScreen() {
     <ImageBackground source={require("../../assets/generated/ios-launch/onboarding.jpg")} resizeMode="cover" style={{ flex: 1, backgroundColor: "#34294e" }}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", padding: 24, paddingTop: 280 }}>
-          <View style={{ maxWidth: 480, width: "100%", alignSelf: "center", gap: 20 }}>
+          <View style={{ maxWidth: 480, width: "100%", alignSelf: "center", gap: 20, padding: 20, borderRadius: 24, backgroundColor: "#241b42" }}>
             <View className="gap-3"><Typography accessibilityRole="header" className="type-display font-semibold text-white">深空省省</Typography><Typography className="type-title  text-muted">把喜歡留在計畫裡，{"\n"}也替生活留點餘裕。</Typography></View>
             <View className="gap-3 rounded-2xl border border-white/20 bg-[#241b42]/80 p-4">
               <Typography className="type-body text-white">01　看排期，提早準備資源</Typography>
