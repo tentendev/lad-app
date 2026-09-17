@@ -15,5 +15,6 @@
   "uploadKeyVerification": "Apple API GET app 6812909987 returned HTTP 200 with matching bundle identifier",
   "easSubmitKey": "assigned to deep-space-ledger",
   "privateMaterial": "Protected local configuration directory outside repository; credentials.json is ignored",
-  "testflightUploaded": false
+  "uploadWasPendingAtSetup": true,
+  "completedReleaseReceipt": "testflight-release.json"
 }

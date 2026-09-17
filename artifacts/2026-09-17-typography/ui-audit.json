@@ -145,5 +145,5 @@
       "suppressed": false
     }
   ],
-  "releaseStatus": "Latest full simulator build FINISHED, downloaded unchanged, installed and verified. TestFlight remains blocked by missing Apple distribution signing credentials."
+  "releaseStatus": "TestFlight 1.0.0 (3) uploaded successfully; Apple processing VALID. Chinese (Traditional) test notes saved. Internal preview environment. No testing groups or testers assigned, and no App Review submission."
 }

@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-09-17T07:19:23.909842+00:00",
+  "releaseScope": "Internal UI testing using the existing preview environment",
+  "sourceCommit": "9d0cd4de9a1e46e16f824b783a80629f4fc747bb",
+  "buildProfile": "testflight-ui",
+  "environment": "preview",
+  "easBuildId": "d62853e5-c24f-43b6-af11-9298abfed964",
+  "easBuildUrl": "https://expo.dev/accounts/tentenco/projects/deep-space-ledger/builds/d62853e5-c24f-43b6-af11-9298abfed964",
+  "easBuildCompletedAt": "2026-09-17T07:07:02.915Z",
+  "easSubmissionId": "a8e95c86-6080-43aa-983b-42eadc61348b",
+  "easSubmissionUrl": "https://expo.dev/accounts/tentenco/projects/deep-space-ledger/submissions/a8e95c86-6080-43aa-983b-42eadc61348b",
+  "easSubmissionCompletedAt": "2026-09-17T07:10:46.002Z",
+  "ipaVerification": {
+    "bundleIdentifier": "com.tenten.deepspaceledger",
+    "version": "1.0.0",
+    "buildNumber": "3",
+    "profileName": "Deep Space Ledger TestFlight UI 2026-09-17",
+    "profileUuid": "d04aba3f-2966-4976-a515-00039298bd57",
+    "codeSignatureVerified": true,
+    "ipaSha256": "8ba3664c72c4a8c7c39f5a480159ca59b04fc6b7a9127c9e6be537d70f075a65",
+    "ipaBytes": 30392999
+  },
+  "appleBuild": {
+    "id": "9995e182-9350-4245-86d5-e9307d3a9669",
+    "version": "3",
+    "processingState": "VALID",
+    "uploadedDate": "2026-09-17T00:11:37-07:00",
+    "expired": false,
+    "usesNonExemptEncryption": false
+  },
+  "testflightUrl": "https://appstoreconnect.apple.com/teams/2e9d3fb9-37c3-4806-b555-5c8a450ab9b4/apps/6812909987/testflight/ios/9995e182-9350-4245-86d5-e9307d3a9669",
+  "browserVerification": {
+    "buildUploadStatus": "Complete",
+    "buildStatus": "Ready to Submit",
+    "testInformationLanguage": "Chinese (Traditional)",
+    "testInformationSaveState": "Saved",
+    "groups": 0,
+    "individualTesters": 0
+  },
+  "testflightUploaded": true,
+  "appleProcessingComplete": true,
+  "testNotesSaved": true,
+  "appReviewSubmitted": false,
+  "testerInvitationsSent": false,
+  "validation": "Previously passed 120 tests, lint, TypeScript, Expo Doctor 21/21 and native visual/interaction QA; app code unchanged since those checks. Signed IPA verified with codesign --verify --deep --strict."
+}

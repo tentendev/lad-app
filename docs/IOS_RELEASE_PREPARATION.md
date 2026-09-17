@@ -2,9 +2,9 @@
 
 ## 目前狀態
 
-尚未提交 App Review，也尚未上傳 TestFlight。使用者已授權完成 App、建置及送審；以下缺口是實際資料、服務設定與驗收，不是等待再次批准送審。
+已成功上傳內部 UI 測試版 **1.0.0（3）** 至 TestFlight，Apple 處理完成（VALID）；尚未提交 App Review。使用者已授權完成 App、建置及送審；以下缺口是實際資料、服務設定與驗收，不是等待再次批准送審。
 
-2026-09-17 字體與 UI 調整後，使用者明確指定這次 TestFlight 為「內部 UI 測試，沿用測試環境」。本次使用 `testflight-ui` build profile 與 EAS `preview` environment，不等待下列正式登入／雲端條件完成；這些條件仍適用於後續正式上架。Apple 簽署與 App Store Connect 認證仍須完成。字體修改、完整模擬器建置及驗收見 `NATIVE_TYPOGRAPHY.md` 與 `../artifacts/2026-09-17-typography/QA.md`。
+2026-09-17 字體與 UI 調整後，使用者明確指定這次 TestFlight 為「內部 UI 測試，沿用測試環境」。本次使用 `testflight-ui` build profile 與 EAS `preview` environment，不等待下列正式登入／雲端條件完成；這些條件仍適用於後續正式上架。Apple 簽署與 App Store Connect 認證已透過 Ego Lite 完成，IPA 簽章驗證及 EAS 上傳均成功。繁中測試說明已儲存；目前未指定測試群組／人員。收據見 `../artifacts/2026-09-17-typography/testflight-release.json`。字體修改、完整模擬器建置及驗收見 `NATIVE_TYPOGRAPHY.md` 與 `../artifacts/2026-09-17-typography/QA.md`。
 
 - Apple Developer：`dev@tenten.co`，Team `RTK85AV2H2`。
 - 已註冊 App ID `com.tenten.deepspaceledger`，啟用 Sign in with Apple。

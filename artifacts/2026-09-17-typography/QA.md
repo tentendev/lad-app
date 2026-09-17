@@ -20,7 +20,7 @@ The screenshots outside `final-build/` and `intermediate-build/` use a locally e
 
 `contrast.json` records WCAG sRGB luminance calculations for primary supporting color pairs and every pixel in the app background composited with its 75% scrim. Minimum measured supporting-text contrast is 5.25:1 across the listed pairs; event-bar text also passes, with the lowest event color pair at 4.82:1. This is a targeted color check, not a full WCAG audit.
 
-## Release blocker
+## Earlier signing blocker (resolved)
 
 The user explicitly confirmed on 2026-09-17 that this release is for internal UI testing and must use the existing test environment. `testflight-ui` → `preview` is the approved build/environment pairing. Production authentication and cloud setup are outside this internal release's completion criteria; missing Apple signing credentials remain the immediate blocker.
 
@@ -43,3 +43,9 @@ The simulator binary reports version 1.0.0, build 1; EAS metadata reports the re
 ## Signing blocker resolved through Ego Lite
 
 On the user's request to retry through Ego Lite, the authenticated Apple browser session was used to create an Apple Distribution certificate, an App Store profile scoped to this app, and a dedicated Developer-role upload API key. Matching certificate/profile and App Store entitlements were checked locally; Apple API access to this app returned HTTP 200. Build credentials and the upload key are now assigned to this EAS project. Private signing material remains outside the repository, and `credentials.json` is ignored. See `signing-setup.json`. The previously recorded credential failure is historical; the signed TestFlight build and upload are the remaining steps.
+
+## TestFlight upload complete
+
+Version **1.0.0 (3)** was built with `testflight-ui` and the approved `preview` environment. The actual IPA bundle/version/profile were checked and `codesign --verify --deep --strict` passed. EAS build `d62853e5-c24f-43b6-af11-9298abfed964` finished; submission `a8e95c86-6080-43aa-983b-42eadc61348b` finished successfully at 2026-09-17 07:10:46 UTC. Apple build `9995e182-9350-4245-86d5-e9307d3a9669` is VALID, and TestFlight shows upload Complete.
+
+Traditional Chinese What to Test notes were saved directly in App Store Connect. EAS's optional changelog submission was unavailable on the current plan, so the successful submission omitted that optional field. No app code or release validation was weakened. No testing groups/testers have been assigned and no invitations or App Review submission were sent. See `testflight-release.json` for the complete receipt and links.
