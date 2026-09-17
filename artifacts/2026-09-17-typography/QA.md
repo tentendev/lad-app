@@ -39,3 +39,7 @@ Source 3258d4f adds leaf-level text/control remounting on font-scale changes wit
 Build `d7e1be8d-f37b-4922-acff-920be856eaf0`, source `e688e2043b3eadc46e2f9f2e0ccd4ca9830a7e25`, finished successfully at 2026-09-17 02:50:56 UTC. The downloaded archive was extracted without modification and installed on the isolated iPhone 17e. Its installed Hermes bundle hash matches the archive. Startup, live standard → accessibility-large → standard reflow, and calendar date → full list were visually verified. See `final-build/receipt.json` and the three screenshots.
 
 The simulator binary reports version 1.0.0, build 1; EAS metadata reports the remote build counter 2. This simulator artifact is not an IPA and cannot be uploaded to TestFlight. No TestFlight release was created.
+
+## Signing blocker resolved through Ego Lite
+
+On the user's request to retry through Ego Lite, the authenticated Apple browser session was used to create an Apple Distribution certificate, an App Store profile scoped to this app, and a dedicated Developer-role upload API key. Matching certificate/profile and App Store entitlements were checked locally; Apple API access to this app returned HTTP 200. Build credentials and the upload key are now assigned to this EAS project. Private signing material remains outside the repository, and `credentials.json` is ignored. See `signing-setup.json`. The previously recorded credential failure is historical; the signed TestFlight build and upload are the remaining steps.

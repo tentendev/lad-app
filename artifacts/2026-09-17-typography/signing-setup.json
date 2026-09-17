@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-17",
+  "method": "Authenticated Ego Lite Apple Developer and App Store Connect browser session",
+  "appleTeamId": "RTK85AV2H2",
+  "bundleIdentifier": "com.tenten.deepspaceledger",
+  "distributionCertificateId": "BK4V8NPZSJ",
+  "distributionCertificateSerial": "47163D3A81A1DCE906E31591341B3FE7",
+  "provisioningProfileId": "GG2S9DR6UG",
+  "provisioningProfileUuid": "d04aba3f-2966-4976-a515-00039298bd57",
+  "provisioningProfileType": "App Store",
+  "easBuildCredentials": "uploaded and ready",
+  "uploadKeyName": "DeepSpace TestFlight Upload",
+  "uploadKeyId": "YPJ86FC65Q",
+  "uploadKeyRole": "Developer",
+  "uploadKeyVerification": "Apple API GET app 6812909987 returned HTTP 200 with matching bundle identifier",
+  "easSubmitKey": "assigned to deep-space-ledger",
+  "privateMaterial": "Protected local configuration directory outside repository; credentials.json is ignored",
+  "testflightUploaded": false
+}
