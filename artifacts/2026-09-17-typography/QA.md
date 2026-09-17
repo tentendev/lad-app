@@ -22,6 +22,8 @@ The screenshots outside `final-build/` and `intermediate-build/` use a locally e
 
 ## Release blocker
 
+The user explicitly confirmed on 2026-09-17 that this release is for internal UI testing and must use the existing test environment. `testflight-ui` → `preview` is the approved build/environment pairing. Production authentication and cloud setup are outside this internal release's completion criteria; missing Apple signing credentials remain the immediate blocker.
+
 A signed TestFlight build was attempted using the `testflight-ui` profile. EAS incremented the remote build number to 2, then failed because this app has no configured distribution signing credentials. A credential setup attempt reached the Apple ID password prompt for dev@tenten.co; there is no available cached Apple session or local valid signing identity. No password was requested in chat, no IPA was generated, and nothing was uploaded to TestFlight.
 
 The user has been asked to complete Apple login and credential setup through `npx eas-cli credentials --platform ios`. Existing production service and App Review prerequisites remain unchanged.

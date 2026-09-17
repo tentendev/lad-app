@@ -31,6 +31,8 @@ Body and input text support unlimited system scaling, without shrink-to-fit. Fiv
 
 ## Builds and boundaries
 
+User-confirmed release scope (2026-09-17): internal UI testing, using the existing test environment. Build with `testflight-ui` and EAS environment `preview`; do not wait for production login/cloud setup to complete this internal release. The original authorization to package and upload to TestFlight remains in effect. Apple distribution signing and App Store Connect authentication are still required.
+
 `testflight-ui` extends production signing/version settings but uses the existing preview environment for internal UI testing. It is a store-distribution binary for TestFlight, distinct from EAS's ad-hoc `preview` profile. It is not evidence that production authentication/cloud services or App Review prerequisites are complete. Existing production submission gates stay unchanged; do not set confirmation flags to skip them.
 
 Commands after Apple credentials have been configured:
