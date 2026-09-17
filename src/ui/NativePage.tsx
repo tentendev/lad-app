@@ -21,7 +21,7 @@ export function NativePage({ title, showAccountEntry = true, showAboutLink = tru
       resizeMode="cover"
       className="flex-1 bg-[#7765a7]"
     >
-      <View className="absolute inset-0 bg-[#241b42]/65" />
+      <View className="absolute inset-0 bg-[#241b42]/75" />
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
           contentContainerClassName="px-4 pb-12 pt-4"

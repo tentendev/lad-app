@@ -45,6 +45,8 @@
   }
   .button__root--size-md,
   .button__root--size-lg { min-height: 56px; }
+  .button__root--variant-outline { border-color: #c9c4e0; }
+  .button__label--variant-secondary { color: #ffffff; }
   .button__label--size-sm,
   .button__label--size-md,
   .button__label--size-lg {
