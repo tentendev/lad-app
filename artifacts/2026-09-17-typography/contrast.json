@@ -1,0 +1,9 @@
+{
+  "mutedOnCard": 7.534325335198682,
+  "navigationInactive": 5.912232983301712,
+  "secondaryButton": 6.6811251442753745,
+  "placeholderOnInput": 5.253626114998835,
+  "mutedOnBrightestImagePixel": 5.472855760919361,
+  "method": "WCAG sRGB luminance; entire original background composited with #241b42 at 75% opacity; opaque UI color pairs",
+  "threshold": 4.5
+}

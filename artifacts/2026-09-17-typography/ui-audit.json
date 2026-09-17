@@ -1,0 +1,149 @@
+{
+  "audit": {
+    "ranAt": "2026-09-17",
+    "skill": "ui-audit",
+    "scope": {
+      "mode": "explicit",
+      "diffBase": "4148bbb",
+      "files": [
+        "src/app/(tabs)/_layout.tsx",
+        "src/app/(tabs)/feedback.tsx",
+        "src/app/+not-found.tsx",
+        "src/app/_layout.tsx",
+        "src/app/about.tsx",
+        "src/app/account.tsx",
+        "src/app/privacy.tsx",
+        "src/app/support.tsx",
+        "src/features/calculator/CalculatorScreen.native.tsx",
+        "src/features/calculator/PlannerSection.native.tsx",
+        "src/features/schedule/ScheduleScreen.native.tsx",
+        "src/features/wallet/SpendingDashboard.native.tsx",
+        "src/features/wallet/WalletScreen.native.tsx",
+        "src/features/wishTracker/WishTrackerScreen.native.tsx",
+        "src/native.css",
+        "src/ui/AccountEntry.tsx",
+        "src/ui/NativeDateField.tsx",
+        "src/ui/NativeInput.tsx",
+        "src/ui/NativeLink.tsx",
+        "src/ui/NativeMetricGrid.tsx",
+        "src/ui/NativePage.tsx",
+        "src/ui/WelcomeScreen.tsx",
+        "src/ui/NativeComponents.tsx"
+      ],
+      "filesAudited": 23,
+      "limitation": "Typography and native layout checks only, not a full behavioral/authentication audit"
+    },
+    "featuresDetected": [
+      "schedule",
+      "wallet",
+      "calculator",
+      "tracker",
+      "account",
+      "onboarding",
+      "modal",
+      "support"
+    ],
+    "rulesPlanned": 6,
+    "rulesRun": 6,
+    "selfCheck": {
+      "passed": true,
+      "failures": []
+    },
+    "sourceCommit": "3258d4f9a16d1d1b5c958ead423b34b4bec6a083"
+  },
+  "verdict": "READY",
+  "summary": {
+    "releaseBlockers": 0,
+    "fixThisSprint": 0,
+    "backlog": 0,
+    "unknown": 0,
+    "suppressed": 0
+  },
+  "deferredTo": [
+    {
+      "concern": "Full accessibility conformance",
+      "tool": "VoiceOver and physical-device testing",
+      "reason": "AX labels and native simulator visual checks do not establish complete conformance."
+    },
+    {
+      "concern": "Production authentication and cloud",
+      "tool": "Production service end-to-end QA",
+      "reason": "Current preview environment remains intended for internal UI testing."
+    }
+  ],
+  "findings": [
+    {
+      "rule": "type-readable-scale",
+      "layer": "surface",
+      "category": "type",
+      "feature": "native typography and controls",
+      "surface": "NativePage",
+      "file": "src/native.css",
+      "line": 17,
+      "result": "pass",
+      "observed": "Native type scale: 14/20 supporting text, 16/24 body, 22/28 section titles, 28/36 page titles.",
+      "suppressed": false
+    },
+    {
+      "rule": "type-measure-leading",
+      "layer": "surface",
+      "category": "type",
+      "feature": "native typography and controls",
+      "surface": "NativePage",
+      "file": "src/ui/NativePage.tsx",
+      "line": 31,
+      "result": "pass",
+      "observed": "Bounded native reading column; body leading 1.5. Verified standard and accessibility-large iPhone layouts.",
+      "suppressed": false
+    },
+    {
+      "rule": "forms-mobile-input-font-size",
+      "layer": "surface",
+      "category": "forms",
+      "feature": "native typography and controls",
+      "surface": "NativeInput",
+      "file": "src/ui/NativeInput.tsx",
+      "line": 14,
+      "result": "pass",
+      "observed": "Every native app-owned TextInput uses the shared component. Visible numeric field and software keyboard verified.",
+      "suppressed": false
+    },
+    {
+      "rule": "interaction-target-size",
+      "layer": "surface",
+      "category": "interaction",
+      "feature": "native typography and controls",
+      "surface": "NativeControls",
+      "file": "src/native.css",
+      "line": 40,
+      "result": "pass",
+      "observed": "Buttons and date cells have a minimum 48pt touch dimension. Link wrappers have a minimum 48pt target.",
+      "suppressed": false
+    },
+    {
+      "rule": "a11y-contrast-and-redundant-cues",
+      "layer": "surface",
+      "category": "a11y",
+      "feature": "native typography and controls",
+      "surface": "ScheduleScreenNative",
+      "file": "src/features/schedule/ScheduleScreen.native.tsx",
+      "line": 220,
+      "result": "pass",
+      "observed": "Status includes words; tentative bars use dashed outlines and full list text. Measured supporting color pairs pass 4.5:1; see contrast.json.",
+      "suppressed": false
+    },
+    {
+      "rule": "layout-long-content-safety",
+      "layer": "surface",
+      "category": "layout",
+      "feature": "native typography and controls",
+      "surface": "NativeMetricGrid",
+      "file": "src/ui/NativeMetricGrid.tsx",
+      "line": 7,
+      "result": "pass",
+      "observed": "Metric rows stack above fontScale 1.3; event list wraps full names; calendar overview ellipsizes only alongside full details. Verified accessibility-large numeric results and date modal. Runtime font-size increases and decreases reflow without restart; controlled target input remains 70.",
+      "suppressed": false
+    }
+  ],
+  "releaseStatus": "TestFlight signed build blocked: Apple distribution credentials are not set up. Updated simulator build pending."
+}
