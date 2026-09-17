@@ -6,7 +6,7 @@ import * as Sharing from "expo-sharing";
 import type { JSX } from "react";
 import { useState } from "react";
 import { Alert, Share, View } from "react-native";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { restoreLocalBackup } from "@/data/repositories/backupRestore";
 import { readLocalBackupData } from "@/data/repositories/localBackupData";

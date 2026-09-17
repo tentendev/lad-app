@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 import type { JSX } from "react";
 import { Image, Pressable, View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
-import { Typography } from "heroui-native";
+import { Typography } from "@/ui/NativeComponents";
 
 function MemberIcon(): JSX.Element {
   return (

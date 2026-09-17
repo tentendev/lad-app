@@ -1,7 +1,7 @@
 import { NativeInput as TextInput, type NativeInputRef } from "@/ui/NativeInput";
 import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 import { storage } from "@/data/repositories/storage";
 import { spendingRangeError, summarizeSpendingRange } from "@/domain/budget";
 import { formatCurrency, monthLabel, moveMonth } from "@/domain/format";

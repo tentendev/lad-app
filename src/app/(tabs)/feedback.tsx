@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Linking } from "react-native";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 import { FEEDBACK_DESCRIPTION, FEEDBACK_URL } from "@/config/feedback";
 import { NativePage } from "@/ui/NativePage";
 

@@ -5,7 +5,7 @@ import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, Platform, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { useEmailPasswordAuth } from "@/auth/useEmailPasswordAuth";
 import { useNativeAppleSignIn } from "@/auth/useNativeAppleSignIn";

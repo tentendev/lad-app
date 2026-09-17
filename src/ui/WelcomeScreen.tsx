@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ImageBackground, Modal, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Typography } from "heroui-native";
+import { Button, Typography } from "@/ui/NativeComponents";
 import { storage } from "@/data/repositories/storage";
 
 export function WelcomeScreen() {

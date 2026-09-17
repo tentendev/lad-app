@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { Card, Typography } from "heroui-native";
+import { Card, Typography } from "@/ui/NativeComponents";
 import { NativePage } from "@/ui/NativePage";
 import { NativeLink } from "@/ui/NativeLink";
 

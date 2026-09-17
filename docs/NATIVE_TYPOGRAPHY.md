@@ -42,3 +42,9 @@ npx eas-cli submit --platform ios --profile production --id BUILD_ID
 ```
 
 Only distribute this preview-backed build to internal UI testers. Production service configuration, real-device OAuth/cloud tests and App Review remain separate outstanding work recorded in `IOS_RELEASE_PREPARATION.md`.
+
+## Runtime Dynamic Type
+
+React Native 0.86 Fabric retains stale text measurements when iOS text size changes while the process is running (https://github.com/react/react-native/issues/57512). Native screens import `Typography` and `Button` through `NativeComponents`; only text/control leaves remount when `fontScale` changes. The same treatment applies to `NativeInput` and tab labels. Screen state, navigation and date-modal state stay mounted, and controlled input values remain intact. This avoids resetting the whole application or limiting the user's requested text size. A focused input may lose focus during a system font-size change.
+
+Verified in the simulator without restarting: standard → accessibility-large → standard, including a 70-pull input and its calculated result.

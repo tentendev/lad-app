@@ -3,7 +3,7 @@ import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { DIA_PER_PULL, PACK_DATA } from "@/data/packs";

@@ -2,7 +2,7 @@ import { NativeInput as TextInput, type NativeInputRef } from "@/ui/NativeInput"
 import { SpendingDashboardNative } from "./SpendingDashboard.native";
 import { NativeDateField } from "@/ui/NativeDateField";
 import { Pressable, ScrollView, Share, View } from "react-native";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 import { useEffect, useRef, useState } from "react";
 import Svg, { Path, Rect } from "react-native-svg";
 

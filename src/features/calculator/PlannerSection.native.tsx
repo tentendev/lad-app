@@ -3,7 +3,7 @@ import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { NativeDateField } from "@/ui/NativeDateField";
 import { useMemo, useState } from "react";
 import { ScrollView, Share, Switch, View } from "react-native";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { recommendPacksForGap, type GapPackRecommendation } from "@/domain/calculator";
 import { formatCurrency, formatNumber, todayKey } from "@/domain/format";

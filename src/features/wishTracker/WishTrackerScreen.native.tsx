@@ -4,7 +4,7 @@ import { NativeDateField } from "@/ui/NativeDateField";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Share, View } from "react-native";
 import { useRouter } from "expo-router";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { isValidDateKey, todayKey } from "@/domain/format";
 import {

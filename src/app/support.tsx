@@ -1,7 +1,7 @@
 import { NativeLink as Link } from "@/ui/NativeLink";
 import type { JSX } from "react";
 import { Linking, View } from "react-native";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { PUBLIC_INFO } from "@/config/publicInfo";
 import { NativePage } from "@/ui/NativePage";

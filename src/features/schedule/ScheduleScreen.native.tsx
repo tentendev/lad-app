@@ -3,7 +3,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 import { Linking, Pressable, ScrollView, Share, StyleSheet, useWindowDimensions, View } from "react-native";
 import { useRouter } from "expo-router";
-import { Button, Card, Typography } from "heroui-native";
+import { Button, Card, Typography } from "@/ui/NativeComponents";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { SCHEDULE_META } from "@/data/schedule";

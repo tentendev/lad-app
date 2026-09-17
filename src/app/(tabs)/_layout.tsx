@@ -52,7 +52,7 @@ export default function NativeTabsLayout(): JSX.Element {
         headerShown: false,
         tabBarActiveTintColor: "#ffffff",
         tabBarInactiveTintColor: "#e5dff0",
-        tabBarLabel: ({ children, color, focused }) => <Text allowFontScaling maxFontSizeMultiplier={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: focused ? "600" : "400", color, textAlign: "center" }}>{children}</Text>,
+        tabBarLabel: ({ children, color, focused }) => <Text key={fontScale} allowFontScaling maxFontSizeMultiplier={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: focused ? "600" : "400", color, textAlign: "center" }}>{children}</Text>,
         tabBarLabelPosition: "below-icon",
         tabBarItemStyle: { paddingTop: 5 },
         tabBarStyle: {

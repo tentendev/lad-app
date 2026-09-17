@@ -1,4 +1,4 @@
-import { Typography } from "heroui-native";
+import { Typography } from "@/ui/NativeComponents";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
 import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Pressable, View } from "react-native";

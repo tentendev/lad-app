@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Typography } from "heroui-native";
+import { Typography } from "@/ui/NativeComponents";
 import { Pressable } from "react-native";
 import type { ComponentProps, PropsWithChildren } from "react";
 

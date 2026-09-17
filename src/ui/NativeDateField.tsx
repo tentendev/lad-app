@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal, Platform, Pressable, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button, Typography } from "heroui-native";
+import { Button, Typography } from "@/ui/NativeComponents";
 import { toDateKey, isValidDateKey, todayKey } from "@/domain/format";
 
 export function NativeDateField({ label, value, onChange, disabled = false }: {
