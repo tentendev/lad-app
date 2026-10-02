@@ -1,6 +1,6 @@
 # iOS 封裝交接
 
-最新狀態及正式條件見 [iOS 上架準備](IOS_RELEASE_PREPARATION.md)。截至 2026-09-17，已建立 Apple App ID、App Store Connect app record 及 EAS project，尚未提交 App Review。
+2026-10-03 已同步 Maggie 10/2 設計並完成新版 iPhone／iPad build 與驗收。TestFlight 1.0.0 (4) 已進入 `IN_BETA_TESTING`；詳見 [發布紀錄](../artifacts/2026-10-03-expo-sync/RELEASE.md)、[QA 紀錄](../artifacts/2026-10-03-expo-sync/QA.md) 及 [Review 套件](APP_STORE_REVIEW_PACKAGE.md)。下文保留 9/17 封裝交接歷史；正式 App Review 尚未提交，不能把 TestFlight UI build 當作正式環境驗收完成。
 
 ## App 基礎
 

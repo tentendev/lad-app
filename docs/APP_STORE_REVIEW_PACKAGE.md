@@ -10,16 +10,18 @@ Bundle ID：`com.tenten.deepspaceledger`
 - 副標題：抽卡排期與預算規劃
 - Primary Category：Utilities
 - Secondary Category：Finance
-- Support URL：`https://lad-pocket.vercel.app/support`
-- Privacy Policy URL：`https://lad-pocket.vercel.app/privacy`
-- Privacy Choices URL：`https://lad-pocket.vercel.app/account`
+- Support URL：`https://deep-space-ledger-support.vercel.app/support`
+- Privacy Policy URL：`https://deep-space-ledger-support.vercel.app/privacy`
+- Privacy Choices URL：`https://deep-space-ledger-support.vercel.app/account`
 - Marketing URL：可留空，或日後使用公開首頁
 - 版本描述與 keywords：以 `store.config.json` 為單一草稿來源
-- Copyright：等待法律實體／版權名稱
+- Copyright：`2026 Maggie`（原創者姓名依本次需求；不代表第三方遊戲內容已授權）
 
 送審前確認名稱、副標題、關鍵字、截圖與描述沒有把第三方商標當成未經授權的搜尋字或誤導為官方產品。
 
-## Review Notes（可直接貼，最後再補版本）
+## 正式環境驗證完成後的 Review Notes 範本
+
+以下內容必須先逐項實測再使用。本次 App Store Connect 保存的是如實說明正式登入／後端尚未完成驗證的 notes，沒有宣稱下列登入與刪除流程已通過 production 驗收。
 
 > 深空省省的排期、錢包與換算主要功能不需要登入。開啟 App 後可直接使用。  
 > 會員入口位於各主要頁面右上方「登入／註冊」，頁面底部也有「會員中心」連結。登入後才會顯示使用者主動操作的私人雲端備份。App 不會自動上傳或跨裝置覆寫資料。  
@@ -50,20 +52,25 @@ Bundle ID：`com.tenten.deepspaceledger`
 
 ## App Review Contact
 
-- First / Last Name：待提供
-- Phone：待提供，必須能在審核時段接聽
-- Email：待提供
-- Notes：使用上方內容
+- First / Last Name：Kuan Yu / Chen（Apple Individual 帳號）
+- Phone：已依 Apple Developer Membership 聯絡資料填入 App Store Connect，不在 Repo 公開個人電話
+- Email：`dev@tenten.co`
+- Notes：完成正式環境驗收後使用上方範本；測試版本必須如實說明限制
 
-## 最後的人工作業
+## 正式送審前仍需確認的項目
 
-- Age Rating 問卷
-- Content Rights
-- EU DSA trader status
-- Export Compliance
-- Availability／territories
-- Pricing（目前 Free）
-- App Store release 設為 Manual
-- 選擇 production build
-- 確認 App Privacy 與 Privacy Nutrition Label
+- Content Rights 與第三方內容使用權證據
+- EU DSA trader status（依實際營運狀態）
+- 正式登入／後端、demo 帳號及資料刪除實測
+- 選擇通過正式環境驗收的 production build
 
+
+## 2026-10-03 實際狀態
+
+商店介紹、副標題、關鍵字、Utilities / Finance 分類、Manual release、版權與 review contact 已存入 App Store Connect。公開支援／隱私／資料刪除站台為獨立 Vercel project `deep-space-ledger-support`，不會覆蓋 Maggie 的 HTML prototype。Age rating 依 App 實際功能填寫，並依既有兒少政策提高為 13+。
+
+價格已設定 Free（各地區價格皆為 0），availability 設定所有 175 個國家／地區於正式發布後可下載。已上傳 3 張實際 iPhone 6.9 吋截圖（排期、錢包、換算）及 1 張 iPad 13 吋排期截圖；Apple 自動產生 iPhone 6.5 吋素材。App Privacy 的 8 項資料申報已 Publish，沒有 Data Used to Track You。
+
+正式 App Review 尚未送出。新的 Clerk production instance 已建立，但 domain proxy 尚未驗證；production Google / Apple、正式後端及測試帳號尚未完成。Content Rights 尚未勾選，因目前沒有第三方內容使用權的證據。不要把本次 TestFlight 上傳當成正式 App Store 送審，也不要把上述 Review Notes 範本當作已完成的實測聲明。
+
+TestFlight 1.0.0 (4) 已由 Apple 處理為 `VALID`，外部狀態 `IN_BETA_TESTING`，已加入既有 Core QA 與 Maggie & Erik UI Testing 群組。What to Test 明確說明此次同步項目、Clerk 測試環境及正式服務尚未驗收。完整發布證據見 [發布紀錄](../artifacts/2026-10-03-expo-sync/RELEASE.md)。

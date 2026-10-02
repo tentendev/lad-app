@@ -1,0 +1,93 @@
+{
+  "sourceCommit": "93ebcbddddb7c1928f120a54cbf82952d4c0b77c",
+  "maggieCommit": "521e7be4d1c9f6fca1b67077f23dc61c08a80657",
+  "iosBuild": {
+    "id": "edba79ee-be28-4577-b2b3-72a4f4680f46",
+    "status": "FINISHED",
+    "profile": "testflight-ui",
+    "environment": "preview",
+    "version": "1.0.0",
+    "buildNumber": "4",
+    "bundleIdentifier": "com.tenten.deepspaceledger",
+    "completedAt": "2026-10-02T17:30:10.779Z",
+    "ipaSha256": "ba8973ad16d7c52713d925aea4f07bc71fbb69dbe303605ac598e052fc8eed3b",
+    "url": "https://expo.dev/accounts/tentenco/projects/deep-space-ledger/builds/edba79ee-be28-4577-b2b3-72a4f4680f46"
+  },
+  "simulatorBuild": {
+    "id": "1b9c5248-7cf5-458f-9b82-fcf7c086ef24",
+    "status": "FINISHED"
+  },
+  "easSubmission": {
+    "id": "349c252d-7897-47c1-bc9e-d9f3299a427c",
+    "status": "CANCELED",
+    "reason": "Canceled queued upload after Apple altool validation succeeded; replaced with direct Apple upload"
+  },
+  "archiveValidation": {
+    "tool": "Apple altool 26.40.1",
+    "status": "VERIFY_SUCCEEDED",
+    "errors": 0
+  },
+  "appStoreConnectAppId": "6812909987",
+  "formalAppReviewSubmitted": false,
+  "appleUpload": {
+    "tool": "Apple altool 26.40.1",
+    "status": "UPLOAD_SUCCEEDED",
+    "errors": 0,
+    "deliveryId": "1ca9fdb8-6ee3-4cf1-b053-43e927bfc329",
+    "uploadedAt": "2026-10-02T18:08:13+00:00"
+  },
+  "testFlight": {
+    "appleBuildId": "1ca9fdb8-6ee3-4cf1-b053-43e927bfc329",
+    "processingState": "VALID",
+    "internalState": "READY_FOR_BETA_TESTING",
+    "externalState": "IN_BETA_TESTING",
+    "uploadedDate": "2026-10-02T11:09:09-07:00",
+    "groups": [
+      {
+        "id": "287bf928-368f-4837-85c9-c2ed186e301e",
+        "name": "Core QA",
+        "type": "INTERNAL"
+      },
+      {
+        "id": "1054bf9f-bd38-4b1e-9e4b-e60ace2bc0de",
+        "name": "Maggie & Erik UI Testing",
+        "type": "EXTERNAL",
+        "existingTesters": 2
+      }
+    ],
+    "url": "https://appstoreconnect.apple.com/teams/2e9d3fb9-37c3-4806-b555-5c8a450ab9b4/apps/6812909987/testflight/ios/1ca9fdb8-6ee3-4cf1-b053-43e927bfc329"
+  },
+  "supportSite": {
+    "url": "https://deep-space-ledger-support.vercel.app",
+    "vercelProject": "deep-space-ledger-support",
+    "deploymentId": "4ZH32TNnXNauBt7nXdcELu8v236G"
+  },
+  "storeMetadata": {
+    "version": "1.0.0",
+    "state": "PREPARE_FOR_SUBMISSION",
+    "categories": [
+      "UTILITIES",
+      "FINANCE"
+    ],
+    "release": "MANUAL",
+    "ageRating": "13+",
+    "price": "FREE",
+    "availabilityCountries": 175,
+    "privacyDataTypes": 8,
+    "privacyStatus": "PUBLISHED",
+    "screenshotSlots": {
+      "iphone69": 3,
+      "ipad13": 1
+    },
+    "contentRightsAttested": false
+  },
+  "productionPublicEnv": {
+    "environments": [
+      "production",
+      "preview"
+    ],
+    "legalEntityName": "Kuan Yu Chen",
+    "supportEmail": "dev@tenten.co",
+    "appliesTo": "Future builds only; build 4 is unchanged"
+  }
+}

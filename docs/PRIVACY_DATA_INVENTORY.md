@@ -36,6 +36,8 @@
 
 - Data Used to Track You：No。
 - Data Linked to You：上表所有申報項目均選 Yes；若 production 供應商書面確認 Device ID／diagnostic data 不保留，再有證據地縮減。
-- Purpose：依上表選 App Functionality；User ID、Device ID、Other Diagnostic Data 另選 Fraud Prevention and Security。
-- Privacy Policy URL：`https://lad-pocket.vercel.app/privacy`
-- Privacy Choices URL：`https://lad-pocket.vercel.app/account`
+- App Store Connect 的 Purpose：所有項目選 App Functionality；該選項包含登入、安全與防止濫用。原生 privacy manifest 另依 Apple 的 manifest 分類列出 Fraud Prevention and Security，兩個介面的選項名稱不同。
+- Privacy Policy URL：`https://deep-space-ledger-support.vercel.app/privacy`
+- Privacy Choices URL：`https://deep-space-ledger-support.vercel.app/account`
+
+2026-10-03 已在 App Store Connect 完成並發布上述 8 種資料申報：全數 App Functionality、Linked to You = Yes、Tracking = No。這是目前程式與供應商架構的保守申報；正式環境仍需依實測結果更新。

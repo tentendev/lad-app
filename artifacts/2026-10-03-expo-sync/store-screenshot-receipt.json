@@ -1,0 +1,26 @@
+[
+  {
+    "file": "iphone-schedule.png",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "01bfab5879d1cb548b1eac6e923c02ce7f4bb36b2df2995a668643d1dff15c02"
+  },
+  {
+    "file": "iphone-wallet.png",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "dc78a45ad1d2770cc8856ee6137377f94beadc98bef17b40660435a27ea2ea49"
+  },
+  {
+    "file": "iphone-calculator.png",
+    "width": 1320,
+    "height": 2868,
+    "sha256": "b1f39f92e05d14ae6332db4640e417906c98f464525b9406e25d66f986d44c77"
+  },
+  {
+    "file": "ipad-schedule.png",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "6685524fbc97339ebfdc50a427c2c6bc75ac23b66e3969bc9b2772640bdc5f22"
+  }
+]

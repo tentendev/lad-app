@@ -8,9 +8,11 @@
 
 - `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...`
 - `EXPO_PUBLIC_ENABLE_APPLE_SIGN_IN=true`
-- `EXPO_PUBLIC_SYNC_API_URL=https://lad-pocket.vercel.app`
-- `EXPO_PUBLIC_LEGAL_ENTITY_NAME=...`
-- `EXPO_PUBLIC_SUPPORT_EMAIL=...`
+- `EXPO_PUBLIC_SYNC_API_URL=https://<verified-expo-api-domain>`
+- `EXPO_PUBLIC_LEGAL_ENTITY_NAME=Kuan Yu Chen`
+- `EXPO_PUBLIC_SUPPORT_EMAIL=dev@tenten.co`
+
+2026-10-03 已將公開營運者與支援 Email 設定至此 EAS project 的 production / preview 環境；已建置的 1.0.0 (4) 不會因此改變，下次 build 才會包含新值。正式 Clerk key、Apple 登入與 API 網址尚未配置。`lad-pocket.vercel.app` 目前保留 Maggie HTML prototype，不能直接當作可用的 Expo API endpoint。
 
 ## Vercel Production
 
@@ -23,7 +25,7 @@ Server only：
 
 - `CLERK_SECRET_KEY=sk_live_...`
 - `DATABASE_URL=postgresql://...`（輪替後的 production credential）
-- `CLERK_AUTHORIZED_PARTIES=https://lad-pocket.vercel.app`
+- `CLERK_AUTHORIZED_PARTIES=https://<verified-expo-web-domain>`
 - `APPLE_TEAM_ID`
 - `APPLE_KEY_ID`
 - `APPLE_PRIVATE_KEY`（Sign in with Apple `.p8`，敏感）
@@ -33,6 +35,8 @@ Server only：
 ## 平台設定
 
 Clerk production instance：
+
+2026-10-03 已建立 `ins_3K9Bp4mNXHEd1vJdBIksRwBE0hr`（app `app_3HsU8GmAoCcKIzyTkwh4PjQxp0S`）。初始 domain 為 `lad-pocket.vercel.app`，proxy 尚未驗證、未投入正式使用。正式部署須先選定 Expo 獨立服務網域並完成 Clerk 驗證，避免覆蓋 prototype。
 
 - 正式 domain 與 `pk_live_`／`sk_live_`
 - Native application：Apple Team ID + Bundle ID
