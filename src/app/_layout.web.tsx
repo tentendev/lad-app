@@ -3,6 +3,8 @@ import { Stack } from "expo-router";
 import Head from "expo-router/head";
 
 import { ClerkAppProvider } from "@/auth/ClerkAppProvider";
+import { SiteUpdatesProvider } from "@/ui/SiteUpdatesProvider";
+import { SiteUpdatesDialog } from "@/ui/SiteUpdates.web";
 import "../web.css";
 
 export default function WebRootLayout(): JSX.Element {
@@ -26,7 +28,10 @@ export default function WebRootLayout(): JSX.Element {
         <meta name="apple-mobile-web-app-title" content="深空省省" />
       </Head>
       <ClerkAppProvider>
+        <SiteUpdatesProvider>
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "transparent" } }} />
+        <SiteUpdatesDialog />
+        </SiteUpdatesProvider>
       </ClerkAppProvider>
     </>
   );

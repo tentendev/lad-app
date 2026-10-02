@@ -8,6 +8,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    exclude: [...configDefaults.exclude, "scripts/sync-official-schedule.test.mjs"],
+    exclude: [...configDefaults.exclude, "scripts/*.test.mjs"],
   },
 });

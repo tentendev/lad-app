@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
-import { ImageBackground, Modal, ScrollView, View } from "react-native";
+import { ImageBackground, Modal, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Typography } from "@/ui/NativeComponents";
 import { storage } from "@/data/repositories/storage";
+import { useSiteUpdates } from "./SiteUpdatesProvider";
 
 export function WelcomeScreen() {
+  const { allowAutoOpen } = useSiteUpdates();
   const [visible, setVisible] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     let active = true;
-    void storage.get("welcome_v1", false).then(done => { if (active) setVisible(!done); }).catch(() => { if (active) setVisible(true); });
+    void storage.get("welcome_v1", false).then(done => { if (active) { setVisible(!done); if (done) allowAutoOpen(); } }).catch(() => { if (active) setVisible(true); });
     return () => { active = false; };
-  }, []);
+  }, [allowAutoOpen]);
+  function finishWelcome() { setVisible(false); if (Platform.OS !== "ios") allowAutoOpen(); }
   async function start() {
     setBusy(true);
-    try { await storage.set("welcome_v1", true); setVisible(false); }
+    try { await storage.set("welcome_v1", true); finishWelcome(); }
     catch { setError("介紹頁偏好未儲存。你仍可直接開始使用。下次啟動可能再次顯示。 "); }
     finally { setBusy(false); }
   }
-  return <Modal visible={visible} animationType="fade" onRequestClose={() => setVisible(false)}>
+  return <Modal visible={visible} animationType="fade" onRequestClose={finishWelcome} onDismiss={allowAutoOpen}>
     <ImageBackground source={require("../../assets/generated/ios-launch/onboarding.jpg")} resizeMode="cover" style={{ flex: 1, backgroundColor: "#34294e" }}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", padding: 24, paddingTop: 280 }}>
@@ -33,7 +36,7 @@ export function WelcomeScreen() {
             <Typography className="type-body text-muted">主要功能免登入。紀錄先保存在這台裝置，雲端備份由你主動選擇。這是玩家自製的非官方規劃工具。</Typography>
             {error ? <Typography accessibilityRole="alert" className="type-body text-[#ffd8df]">{error}</Typography> : null}
             <Button isDisabled={busy} onPress={() => void start()}>開始規劃</Button>
-            {error ? <Button variant="ghost" onPress={() => setVisible(false)}>暫不儲存，直接使用</Button> : null}
+            {error ? <Button variant="ghost" onPress={finishWelcome}>暫不儲存，直接使用</Button> : null}
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -2,6 +2,7 @@ import Head from "expo-router/head";
 import { useEffect, useRef, type PropsWithChildren, type ReactNode } from "react";
 
 import { AccountEntry } from "@/ui/AccountEntry.web";
+import { SiteUpdatesEntry } from "@/ui/SiteUpdates.web";
 
 type Props = PropsWithChildren<{
   eyebrow: string;
@@ -35,6 +36,7 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
         <p>{description}</p>
       </div>
       <header className="brand-header">
+        <SiteUpdatesEntry />
         <a href="/schedule" className="brand-home" aria-label="深空省省首頁">
           <svg aria-hidden="true" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"><path d="M24 6l4 7h-8zM16 13h16l8 11-16 17L8 24z"/><path d="M8 24h32M16 13l8 28M32 13l-8 28M20 13l4 6 4-6"/></svg>
           <span>深空省省</span>

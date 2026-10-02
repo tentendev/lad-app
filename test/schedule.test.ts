@@ -7,6 +7,7 @@ import {
   eventsForDate,
   eventsForMonth,
   eventStatus,
+  isScheduleForecast,
   normalizeSchedulePreferences,
   scheduleEventCalendarFilename,
   scheduleEventToIcs,
@@ -22,6 +23,15 @@ const events: ScheduleEvent[] = [
 ];
 
 describe("schedule visibility", () => {
+  it("shows a forecast as solid only after its effective end date", () => {
+    expect(isScheduleForecast(events[0], "2026-09-30")).toBe(true);
+    expect(isScheduleForecast(events[0], "2026-10-01")).toBe(false);
+    expect(isScheduleForecast(events[1], "2026-08-01")).toBe(false);
+    const unknownEnd = { ...events[0], end: "" };
+    expect(isScheduleForecast(unknownEnd, "2026-08-01")).toBe(true);
+    expect(isScheduleForecast(unknownEnd, "2026-08-02")).toBe(false);
+    expect(events[0].tentative).toBe(true);
+  });
   it("counts calendar days without local daylight-saving drift", () => {
     expect(daysBetween("2026-11-02", "2026-11-01")).toBe(1);
     expect(daysBetween("2026-03-09", "2026-03-08")).toBe(1);

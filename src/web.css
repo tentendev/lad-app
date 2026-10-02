@@ -14,7 +14,7 @@
   --line: rgb(255 255 255 / 55%);
   --line-soft: rgb(255 255 255 / 28%);
   --line-strong: rgb(255 255 255 / 85%);
-  --c-merch: #49b8ff;
+  --c-merch: #b8df78;
   --c-daily: #ff78b7;
   --c-monthly: #9b8cff;
   --c-mixed: #ffd166;
@@ -3126,6 +3126,28 @@ a:focus-visible {
 .brand-account { position: absolute; right: 0; top: 4px; }
 .brand-account .account-entry { width: 44px; min-width: 44px; height: 44px; padding: 5px; justify-content: center; }
 .brand-account .account-entry-copy, .brand-account .account-entry-chevron { display: none; }
+
+.updates-launch { position: absolute; left: 0; top: 4px; width: 44px; min-height: 44px; padding: 10px; border-radius: 50%; color: #fff; background: rgb(56 42 96 / 30%); border: 1px solid var(--line-soft); }
+.updates-launch svg { width: 22px; height: 22px; }
+.updates-launch-dot { position: absolute; right: 3px; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
+.updates-dialog { position: fixed; inset: 0; width: min(440px, calc(100% - 32px)); max-height: 80dvh; margin: auto; padding: 0; overflow: hidden; color: #fff; background: #312254; border: 1px solid var(--line); border-radius: 22px; }
+.updates-dialog[open] { display: flex; flex-direction: column; }
+.updates-dialog::backdrop { background: rgb(22 14 42 / 65%); backdrop-filter: blur(5px); }
+.updates-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid var(--line-soft); flex-shrink: 0; }
+.updates-heading { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.updates-dialog h2 { margin: 0; font-family: inherit; font-size: 1.125rem; font-weight: 600; letter-spacing: 0; }
+.updates-date { margin-top: 6px; font-size: .875rem; color: var(--muted); }
+.updates-unread, .update-kind { font-size: .875rem; letter-spacing: 0; border: 1px solid var(--line-soft); border-radius: 6px; padding: 1px 7px; }
+.updates-unread { color: #fff; background: rgb(255 179 223 / 15%); border-color: var(--pink); }
+.updates-close { width: 44px; min-height: 44px; flex-shrink: 0; padding: 0; border: 1px solid var(--line-soft); border-radius: 12px; background: transparent; color: #fff; font-size: 1.5rem; }
+.updates-content { padding: 18px 20px 20px; overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
+.updates-content ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
+.update-kind { display: table; color: var(--good); margin-bottom: 6px; }
+.updates-dialog h3 { font-size: 1rem; font-weight: 500; line-height: 1.6; margin: 0; overflow-wrap: anywhere; }
+.updates-dialog p { font-size: 1rem; color: var(--muted); margin: 5px 0 0; line-height: 1.7; overflow-wrap: anywhere; }
+.updates-read { margin-top: 18px; width: 100%; min-height: 46px; font-size: .875rem; border: 1px solid var(--line); border-radius: 12px; color: #fff; background: transparent; }
+.updates-launch:focus-visible, .updates-close:focus-visible, .updates-read:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (prefers-reduced-transparency: reduce) { .updates-dialog::backdrop { backdrop-filter: none; } }
 .page-chrome { min-height: 44px; margin-bottom: 12px; }
 .page-action { width: 100%; }
 .page-action .month-switcher { justify-content: space-between; }

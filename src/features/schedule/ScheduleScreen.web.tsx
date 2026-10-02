@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 
 import { SCHEDULE_META } from "@/data/schedule";
 import { pad, todayKey } from "@/domain/format";
-import { EVENT_LABELS, eventStatus, scheduleEventCalendarFilename, scheduleEventToIcs, scheduleEventsToIcs } from "@/domain/schedule";
+import { EVENT_LABELS, isScheduleForecast, eventStatus, scheduleEventCalendarFilename, scheduleEventToIcs, scheduleEventsToIcs } from "@/domain/schedule";
 import { canPlanScheduleEvent } from "@/domain/planner";
 import { LEADS, type Lead, type ScheduleEvent, type ScheduleEventType } from "@/domain/types";
 import { WebPage } from "@/ui/WebPage.web";
@@ -75,7 +75,7 @@ function EventRow({ event, onPlan, onCalendar }: { event: ScheduleEvent; onPlan:
           {lead ? <span className={`lead-tag lead-${lead.className}`}>{lead.label}</span> : null}
         </div>
         <div className="row-subtitle">
-          {event.tentative ? "預測 · " : "已公告 · "}{EVENT_LABELS[event.type]} · {event.start}{event.end ? event.end !== event.start ? ` ~ ${event.end}` : "" : " · 結束日待確認"}
+          {isScheduleForecast(event, todayKey()) ? "預測 · " : event.tentative ? "已結束 · " : "已公告 · "}{EVENT_LABELS[event.type]} · {event.start}{event.end ? event.end !== event.start ? ` ~ ${event.end}` : "" : " · 結束日待確認"}
           {event.source ? <a className="text-button" href={event.source} target="_blank" rel="noopener noreferrer">官方公告 ↗</a> : null}
         </div>
       </div>
@@ -326,7 +326,7 @@ export function ScheduleScreenWeb() {
             {model.calendarBars.map((segment) => (
               <span
                 aria-hidden="true"
-                className={`calendar-event motion-event motion-data t-${segment.event.type} ${segment.event.tentative ? "tentative" : ""}`}
+                className={`calendar-event motion-event motion-data t-${segment.event.type} ${isScheduleForecast(segment.event, todayKey()) ? "tentative" : ""}`}
                 key={segment.key}
                 style={{
                   gridColumn: `${segment.startColumn} / ${segment.endColumn + 1}`,

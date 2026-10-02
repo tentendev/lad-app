@@ -143,6 +143,11 @@ export function eventStatus(event: ScheduleEvent, today: string): { label: strin
   return { label: `${startDiff}天後`, tone: "soon" };
 }
 
+/** Past dates use solid bars, while their original provenance stays in the data. */
+export function isScheduleForecast(event: ScheduleEvent, today: string): boolean {
+  return Boolean(event.tentative && (event.end || event.start) >= today);
+}
+
 export function eventsForDate(events: ScheduleEvent[], dateKey: string): ScheduleEvent[] {
   return events.filter((event) => {
     if (event.type === "pass") return event.start === dateKey;

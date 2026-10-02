@@ -1,0 +1,13 @@
+.git/
+node_modules/
+.expo/
+dist/
+.vercel/
+.env*
+ios/
+android/
+credentials/
+credentials.json
+artifacts/
+references/
+.DS_Store

@@ -5,6 +5,7 @@ import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Pre
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AccountEntry } from "@/ui/AccountEntry";
+import { SiteUpdatesEntry } from "@/ui/SiteUpdates";
 
 type Props = PropsWithChildren<{
   eyebrow: string;
@@ -31,7 +32,7 @@ export function NativePage({ title, showAccountEntry = true, showAboutLink = tru
           <View className="w-full self-center" style={{ maxWidth: 520, gap: 16 }}>
             <View className="flex-row flex-wrap items-center justify-between gap-3">
               <View className="flex-row items-center gap-2"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 36, height: 36, borderRadius: 10 }} accessible={false} /><Typography className="type-title-sm font-semibold text-white">深空省省</Typography></View>
-              {showAccountEntry ? <AccountEntry /> : null}
+              <View className="flex-row items-center gap-2"><SiteUpdatesEntry />{showAccountEntry ? <AccountEntry /> : null}</View>
             </View>
             <Typography accessibilityRole="header" className="type-headline font-semibold text-white">{title}</Typography>
             {children}

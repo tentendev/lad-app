@@ -99,7 +99,7 @@ export function CalculatorScreenNative() {
         <View className="rounded-xl border border-white/20 bg-white/10 p-3">
           <Typography className="text-muted">官方金券（自動）</Typography>
           <Typography.Heading type="h4" className="text-white">{resource.officialTickets} 張</Typography.Heading>
-          <Typography className="text-muted">開池 {resource.initialTickets} 張 · 目標內返還 {resource.milestoneTickets} 張</Typography>
+          <Typography className="text-muted">免費贈送 {resource.initialTickets} 張 · 目標前可折抵累抽返還 {resource.milestoneTickets} 張</Typography>
         </View>
         <View className="flex-row flex-wrap items-end gap-2">
           <View className="w-full"><NumberField placeholder={`預留資源（${draft.reserveUnit === "dia" ? "鑽" : "抽"}）`} value={draft.reserve} onChange={(value) => model.updateNumber("reserve", value)} /></View>

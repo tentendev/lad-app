@@ -25,6 +25,34 @@ if (imports.length === 2 && imports.every(value => ["stream-json/streamers/Strea
   acceptedAdvisories.add(streamAdvisory);
 }
 
+// node-forge has no patched release. It is confined to Expo CLI certificate
+// tooling here; neither app/server code nor an OTA update client imports it.
+// Reject the exposure exception if a runtime consumer is introduced.
+const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+const forgeTree = spawnSync("npm", ["ls", "node-forge", "--omit=dev", "--json"], { encoding: "utf8" });
+let forgeOnlyInExpoCli = false;
+try {
+  const paths = [];
+  function findForge(node, chain = []) {
+    for (const [name, dependency] of Object.entries(node.dependencies ?? {})) {
+      const next = [...chain, name];
+      if (name === "node-forge") paths.push(next);
+      findForge(dependency, next);
+    }
+  }
+  findForge(JSON.parse(forgeTree.stdout));
+  forgeOnlyInExpoCli = paths.length > 0 && paths.every(chain => chain[0] === "expo" && chain[1] === "@expo/cli");
+} catch { /* An unreadable dependency tree must fail closed. */ }
+function runtimeImportsForge(directory) {
+  return readdirSync(directory, { withFileTypes: true }).some(entry => {
+    const file = path.join(directory, entry.name);
+    return entry.isDirectory() ? runtimeImportsForge(file) : /\.[cm]?[jt]sx?$/.test(file) && /node-forge|@expo\/code-signing-certificates/.test(readFileSync(file, "utf8"));
+  });
+}
+if (forgeOnlyInExpoCli && !packageJson.dependencies?.["expo-updates"] && !runtimeImportsForge("src") && !runtimeImportsForge("api")) {
+  acceptedAdvisories.add("https://github.com/advisories/GHSA-86w9-cpqp-85rv");
+}
+
 const audit = spawnSync("npm", ["audit", "--omit=dev", "--json"], {
   cwd: process.cwd(),
   encoding: "utf8",

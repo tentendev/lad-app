@@ -38,7 +38,7 @@ describe("original visual design contract", () => {
       story: "主線分線",
     });
     expect(EVENT_COLORS).toEqual({
-      merch: "#49b8ff",
+      merch: "#b8df78",
       daily: "#ff78b7",
       monthly: "#9b8cff",
       mixed: "#ffd166",

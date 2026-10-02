@@ -2,6 +2,12 @@
 
 Review date: 2026-09-17
 
+## 2026-10-03 synchronization review
+
+- Updated SDK 57 compatible Expo packages to the versions reported by Expo Doctor.
+- Updated compatible `brace-expansion` copies to remove the newly reported recursion and quadratic expansion denial-of-service advisories (`GHSA-q2hr-2g5m-vwhr`, `GHSA-qhr7-859c-m2p7`, `GHSA-6j4f-fj2g-mc7p`).
+- Reviewed [GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv), node-forge RSA signature verification with extra nested ASN.1 elements. No patched version is available. `npm ls node-forge --omit=dev --json` confines every path to Expo → Expo CLI, directly or through its code-signing certificate helper. This app has no `expo-updates` client, takes no certificates or keys from users, and its app/API code does not import forge or Expo's certificate helper. The helper signs locally generated developer manifests and validates locally supplied signing material; native release signing uses Apple/EAS, and authentication uses Clerk/Jose rather than forge. The audit allows this tooling-only exposure only while those dependency and source conditions hold. This records exposure, not a fix to the upstream library; continue to use trusted build/signing inputs and remove the exception when upstream is fixed.
+
 `npm audit --omit=dev` currently expands four reviewed advisory URLs through the Expo／React Native／Clerk dependency graph and reports 30 affected dependency entries (0 critical). The count does not represent 30 independent exploitable flaws.
 
 ## Reviewed root advisories

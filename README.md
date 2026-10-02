@@ -29,7 +29,7 @@ Web 沿用並遷移舊版 `lad_*` localStorage keys：
 - `lad_wish_tracker`
 - `lad_schedule_preferences`
 
-舊類別「抽卡」「禮包」「月卡」會在載入時轉成目前名稱。根目錄的 `index.html`、`packs.js` 保留作為原始版參考；`schedule.js` 是排期資料來源，`npm run export:web` 會自動產生 Expo 對應資料。2026-09-17 功能與設計同步詳見 `docs/HTML_EXPO_SYNC.md`。
+舊類別「抽卡」「禮包」「月卡」會在載入時轉成目前名稱。根目錄的 `index.html`、`packs.js` 保留作為原始版參考；`schedule.js` 是排期資料來源，`updates.js` 是 Maggie 最新核准公告的來源，`npm run export:web` 會自動產生 Expo 對應資料。最近一次同步包含 2026-10-02 的排期、周邊綠色色票、最新公告彈窗、已讀偏好與返券邊界修正；詳見 `docs/HTML_EXPO_SYNC.md`。
 
 ## 開發與驗證
 

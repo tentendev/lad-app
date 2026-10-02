@@ -10,7 +10,7 @@
 window.MONTHLY_DIA = 7060;                 // 月卡黨每月約可獲得鑽石
 window.PACK_POOLS  = ["日卡池","混池","月卡池","生日池","復刻池","協會補給","其他"];
 
-// 官方免費金券：initial 為開池即送；milestones 為完成該累抽數後返還的張數。
+// 官方免費金券：initial 為免費贈送；milestones 為完成該累抽數後返還的張數。
 window.OFFICIAL_TICKET_RULES = {
   "日卡池": {initial:10,milestones:[{every:10,reward:1,maxReward:10}]},
   "混池": {initial:10,milestones:[

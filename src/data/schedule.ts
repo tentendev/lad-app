@@ -2,7 +2,7 @@
 import type { ScheduleEvent } from "@/domain/types";
 
 export const SCHEDULE_META = {
-  "updated": "2026-09-15",
+  "updated": "2026-10-02",
   "label": "排期整理",
   "forecastSource": "0910排期預測更新.JPG（右側第 2 版）"
 };
@@ -35,9 +35,10 @@ export const SCHEDULE: ScheduleEvent[] = [
   {
     "name": "祁煜日卡",
     "type": "daily",
-    "start": "2026-08-14",
-    "end": "2026-08-28",
-    "tentative": true,
+    "start": "2026-08-17",
+    "end": "2026-08-31",
+    "tentative": false,
+    "source": "https://www.threads.com/@love_deepspace_tw/post/DcAXrYgmTFP/",
     "leads": [
       "祁煜"
     ]
@@ -57,7 +58,7 @@ export const SCHEDULE: ScheduleEvent[] = [
     "type": "birthday",
     "start": "2026-08-31",
     "end": "2026-09-07",
-    "tentative": true,
+    "tentative": false,
     "leads": [
       "黎深"
     ]
@@ -95,11 +96,12 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
-    "name": "新混池5",
+    "name": "如若午夜無眠",
     "type": "mixed",
-    "start": "2026-09-19",
-    "end": "2026-10-04",
-    "tentative": true,
+    "start": "2026-09-22",
+    "end": "2026-10-10",
+    "tentative": false,
+    "source": "https://www.taptap.cn/moment/850722755258091513?group_id=278979",
     "leads": [
       "沈星回",
       "黎深",
@@ -109,11 +111,19 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
+    "name": "於深空見證的系列周邊",
+    "type": "merch",
+    "start": "2026-09-25",
+    "end": "2026-10-05",
+    "tentative": false,
+    "leads": []
+  },
+  {
     "name": "祁煜長思入畫復刻",
     "type": "rerun",
-    "start": "2026-09-27",
-    "end": "2026-10-04",
-    "tentative": true,
+    "start": "2026-10-03",
+    "end": "2026-10-10",
+    "tentative": false,
     "leads": [
       "祁煜"
     ]
@@ -121,8 +131,8 @@ export const SCHEDULE: ScheduleEvent[] = [
   {
     "name": "半透明侵占復刻",
     "type": "rerun",
-    "start": "2026-10-04",
-    "end": "2026-10-11",
+    "start": "2026-10-21",
+    "end": "2026-10-27",
     "tentative": true,
     "leads": [
       "沈星回",

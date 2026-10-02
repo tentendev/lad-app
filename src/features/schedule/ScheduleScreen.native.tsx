@@ -8,7 +8,7 @@ import Svg, { Path, Rect } from "react-native-svg";
 
 import { SCHEDULE_META } from "@/data/schedule";
 import { pad, todayKey } from "@/domain/format";
-import { EVENT_LABELS, eventStatus, scheduleEventCalendarFilename, scheduleEventToIcs, scheduleEventsToIcs } from "@/domain/schedule";
+import { EVENT_LABELS, isScheduleForecast, eventStatus, scheduleEventCalendarFilename, scheduleEventToIcs, scheduleEventsToIcs } from "@/domain/schedule";
 import { canPlanScheduleEvent } from "@/domain/planner";
 import { LEADS, type ScheduleEvent, type ScheduleEventType } from "@/domain/types";
 import { EVENT_COLORS, LEAD_COLORS } from "@/theme/tokens";
@@ -217,8 +217,8 @@ export function ScheduleScreenNative() {
                       width,
                       backgroundColor: color,
                       borderColor: "rgba(255,255,255,0.72)",
-                      borderWidth: segment.event.tentative ? 1 : 0,
-                      borderStyle: segment.event.tentative ? "dashed" : "solid",
+                      borderWidth: isScheduleForecast(segment.event, todayKey()) ? 1 : 0,
+                      borderStyle: isScheduleForecast(segment.event, todayKey()) ? "dashed" : "solid",
                     },
                   ]}
                 >
@@ -266,7 +266,7 @@ export function ScheduleScreenNative() {
                 </View>
                 <View className="flex-1 gap-1">
                   <View className="flex-row flex-wrap items-center gap-1.5">
-                    <Typography.Paragraph className="font-semibold text-white">{event.name}{event.tentative ? " · 預測" : ""}</Typography.Paragraph>
+                    <Typography.Paragraph className="font-semibold text-white">{event.name}{isScheduleForecast(event, today) ? " · 預測" : ""}</Typography.Paragraph>
                     {lead ? (
                       <View className="rounded-full border px-2 py-0.5" style={{ borderColor: lead.color }}>
                         <Typography className="type-label text-muted">{lead.label}</Typography>

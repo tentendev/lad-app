@@ -16,7 +16,9 @@ const base: CalculatorDraft = {
 describe("officialTicketCount", () => {
   it("does not use a milestone reward earned exactly at the target", () => {
     expect(officialTicketCount("混池", 50)).toBe(10);
-    expect(officialTicketCount("混池", 51)).toBe(15);
+    expect(officialTicketCount("混池", 51)).toBe(11);
+    expect(officialTicketCount("混池", 54)).toBe(14);
+    expect(officialTicketCount("混池", 55)).toBe(15);
   });
 
   it("caps repeating daily-pool rewards", () => {

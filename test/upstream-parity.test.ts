@@ -2,14 +2,31 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { describe, expect, it } from "vitest";
 import { SCHEDULE, SCHEDULE_META } from "@/data/schedule";
-import { DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
+import { DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, officialTicketCount, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
 import { spendingRangeError, summarizeSpendingRange } from "@/domain/budget";
 import { eventStatus, eventsForDate, scheduleEventToIcs } from "@/domain/schedule";
 import { validateLocalBackupData } from "@/domain/backup";
+import { SITE_UPDATES } from "@/data/siteUpdates";
+import { POOLS } from "@/domain/types";
 
 const draft = { ...DEFAULT_CALCULATOR_DRAFT, pool: "日卡池" as const, pulls: 70 };
 
 describe("upstream HTML feature parity", () => {
+  it("ships only Maggie's latest approved announcement", () => {
+    const context = { window: {} as Record<string, unknown> };
+    vm.runInNewContext(readFileSync(new URL("../updates.js", import.meta.url), "utf8"), context);
+    expect(SITE_UPDATES).toEqual((context.window.SITE_UPDATES as unknown[]).slice(0, 1));
+  });
+  it("matches the HTML ticket calculation at every milestone and intermediate goal", () => {
+    const source = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+    const functionSource = source.slice(source.indexOf("function officialTicketCount("), source.indexOf("\nfunction ", source.indexOf("function officialTicketCount(") + 1));
+    const context = { window: {} as Record<string, unknown>, officialTicketCount: undefined as unknown as (pool: string, target: number) => number };
+    vm.runInNewContext(readFileSync(new URL("../packs.js", import.meta.url), "utf8"), context);
+    vm.runInNewContext(functionSource, context);
+    for (const pool of POOLS) for (let target = 0; target <= 300; target++) {
+      expect(officialTicketCount(pool, target), `${pool} ${target}`).toBe(context.officialTicketCount(pool, target));
+    }
+  });
   it("ships the same schedule as the HTML source, including provenance", () => {
     const context = { window: {} as Record<string, unknown> };
     vm.runInNewContext(readFileSync(new URL("../schedule.js", import.meta.url), "utf8"), context);

@@ -37,3 +37,16 @@ UI Design：Build mode；`design-guidelines.md` 及 colors、buttons、badges、
 UI Audit：針對本輪變更的 form、list、dashboard、modal；檢查資料保留、錯誤／空白狀態、焦點與键盤操作、標籤、觸控範圍及響應式排版。瀏覽器操作使用 ego-browser。
 
 已修正 390px 規劃／追蹤日期欄位超出父層的問題，320px／390px 複測通過。`ui-audit.json` 記錄本輪變更範圍的 9 項檢查；目前無未解決發現。Ego Lite 為 Chromium，Safari 原生渲染與完整輔助科技稽核未在本輪執行。
+
+## 2026-10-03 原作同步與 iOS 更新
+
+原作來源：`its-maggie/lad-app` 的 `main`，commit `521e7be`（2026-10-02）。採一般 Git merge，保留 Expo 原生版與本機已有的十個提交。唯一 merge conflict 是 Vercel 設定：保留 Expo 的輸出／安全規則，加入原作排期與公告檔案的重新驗證快取；原作自動部署限定在 Maggie Repo，避免 Expo fork 的 push 改寫 HTML 網站。
+
+- 最新公告彈窗與鈴鐺入口：所有頁面共用一次已讀判斷，關閉記住 `lad_readSiteUpdates`；首次原生介紹結束後才顯示，避免同時呈現兩個 iOS modal。只顯示原作最新核准公告，不額外新增功能公告。
+- 同步 24 筆排期與 2026-10-02 metadata，包括如若午夜無眠、於深空見證的周邊、祁煜復刻、半透明侵占復刻預測，以及祁煜八月日卡修正。
+- 周邊色改為 `#b8df78`，與主線藍色區分。已結束排期使用實線，保留來源是否為預測的資料；不把原本的預測冒稱官方公告。
+- 累抽里程碑返券僅折抵目標前剩餘抽數：50 抽返 5 券、目標 51 抽時只能用其中 1 張。所有池種、0–300 抽均對照原作 JS 計算，避免舊版在邊界低估資源缺口。
+- `sync:expo-data` 同步排期及最新公告；來源一致性測試可偵測遺漏。Node 測試與 Vitest 使用各自 runner，涵蓋上游新公告測試。
+- 更新 Expo SDK 57 相容 patch；Expo Doctor 21/21、ESLint、strict TypeScript、119 個 Vitest 與 9 個 Node 測試通過。相依套件審閱見 `DEPENDENCY_SECURITY_REVIEW.md`。
+
+UI Design 使用 Build mode、design-guidelines 與 colors、buttons、badges、border-radius、flexbox-layout、general、headers、icons、materials、navigation、responsive-design、svg、shadows、surfaces、typography；以 Maggie 原作與既有原生無障礙規格為準。Web 以 ego-browser 驗證公告、Escape、焦點復位、已讀保存與 390px 寬度。原生迭代使用舊 simulator binary 嵌入本輪 Hermes bundle；這份證據與後續完整 EAS binary 的驗收分開記錄。證據位於 `artifacts/2026-10-03-expo-sync/`。

@@ -19,7 +19,7 @@ export const LEAD_COLORS: Record<Lead, string> = {
 };
 
 export const EVENT_COLORS: Record<ScheduleEventType, string> = {
-  merch: "#49b8ff",
+  merch: "#b8df78",
   daily: "#ff78b7",
   monthly: "#9b8cff",
   mixed: "#ffd166",

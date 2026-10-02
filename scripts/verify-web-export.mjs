@@ -182,7 +182,7 @@ const originalPalette = {
   "--lead-rafayel": "#ff88bf",
   "--lead-sylus": "#ff6675",
   "--lead-caleb": "#ffad5c",
-  "--c-merch": "#49b8ff",
+  "--c-merch": "#b8df78",
   "--c-daily": "#ff78b7",
   "--c-monthly": "#9b8cff",
   "--c-mixed": "#ffd166",

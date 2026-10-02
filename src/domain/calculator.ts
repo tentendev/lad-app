@@ -155,7 +155,7 @@ export function officialTicketCount(
   for (const milestone of rule.milestones ?? []) {
     // A reward obtained exactly at the target cannot retroactively fund that target.
     if (milestone.at != null) {
-      if (milestone.at < target) count += Number(milestone.reward) || 0;
+      if (milestone.at < target) count += Math.min(Number(milestone.reward) || 0, target - Number(milestone.at));
       continue;
     }
 

@@ -122,7 +122,7 @@ export function CalculatorScreenWeb() {
               <div className="field-wrap">
                 <span className="field-label">官方金券（自動）</span>
                 <Input aria-label="官方金券" readOnly value={String(resource.officialTickets)} />
-                <span className="section-meta">開池 {resource.initialTickets} 張 · 目標內返還 {resource.milestoneTickets} 張</span>
+                <span className="section-meta">免費贈送 {resource.initialTickets} 張 · 目標前可折抵累抽返還 {resource.milestoneTickets} 張</span>
               </div>
               <label className="field-wrap full">
                 <span className="field-label">預留資源（{draft.reserveUnit === "dia" ? "鑽" : "抽"}）</span>
