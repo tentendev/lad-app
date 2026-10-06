@@ -74,3 +74,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 正式 App Review 尚未送出。新的 Clerk production instance 已建立，但 domain proxy 尚未驗證；production Google / Apple、正式後端及測試帳號尚未完成。Content Rights 尚未勾選，因目前沒有第三方內容使用權的證據。不要把本次 TestFlight 上傳當成正式 App Store 送審，也不要把上述 Review Notes 範本當作已完成的實測聲明。
 
 TestFlight 1.0.0 (4) 已由 Apple 處理為 `VALID`，外部狀態 `IN_BETA_TESTING`，已加入既有 Core QA 與 Maggie & Erik UI Testing 群組。What to Test 明確說明此次同步項目、Clerk 測試環境及正式服務尚未驗收。完整發布證據見 [發布紀錄](../artifacts/2026-10-03-expo-sync/RELEASE.md)。
+
+## 2026-10-07 後續進度
+
+已建立獨立正式 Web／API、全新 Neon 資料庫與 Clerk native app，並修正及驗證同步 API 的 Node 啟動錯誤。正式網域 DNS 與 Google／Apple OAuth 仍需完成。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`，build 尚未選定，review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。

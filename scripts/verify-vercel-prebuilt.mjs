@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { spawnSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -73,6 +74,31 @@ for (const [route, handler] of [["account", "api/account.js"], ["sync", "api/syn
   const functionConfig = JSON.parse(await readFile(path.join(functionDirectory, ".vc-config.json"), "utf8"));
   if (functionConfig.handler !== handler || !String(functionConfig.runtime).startsWith("nodejs")) {
     throw new Error(`Vercel prebuilt output is missing the Node function for /api/${route}.`);
+  }
+  // TypeScript path aliases can pass typecheck while failing in the deployed Node runtime.
+  const runtimeCheck = spawnSync(process.execPath, ["--eval", `
+    const assert = require("node:assert/strict");
+    const handler = require(process.argv[1]).default;
+    assert.equal(typeof handler, "function");
+    const headers = {};
+    const response = {
+      setHeader(name, value) { headers[name] = value; },
+      status(value) { this.statusCode = value; return this; },
+      json(value) { this.body = value; return this; },
+    };
+    Promise.resolve(handler({ method: process.argv[2], headers: {} }, response))
+      .then(() => {
+        assert.equal(response.statusCode, 401);
+        assert.equal(response.body.error, "token_missing");
+        assert.equal(headers["Cache-Control"], "private, no-store");
+      }).catch((error) => { console.error(error); process.exitCode = 1; });
+  `, path.join(functionDirectory, handler), route === "account" ? "DELETE" : "GET"], {
+    cwd: functionDirectory,
+    encoding: "utf8",
+    timeout: 10_000,
+  });
+  if (runtimeCheck.status !== 0) {
+    throw new Error(`Vercel /api/${route} failed its runtime load/auth check:\n${runtimeCheck.stderr || runtimeCheck.error?.message || runtimeCheck.stdout}`);
   }
   const files = await walk(functionDirectory);
   for (const file of files.filter((entry) => entry.startsWith(path.join(functionDirectory, "api") + path.sep) && entry.endsWith(".js"))) {

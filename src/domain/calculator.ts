@@ -1,5 +1,5 @@
-import { DIA_PER_PULL, MONTHLY_DIA, OFFICIAL_TICKET_RULES, PACK_DATA } from "@/data/packs";
-import { POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type PendingCalculatorTarget, type Pool, type TicketRule } from "@/domain/types";
+import { DIA_PER_PULL, MONTHLY_DIA, OFFICIAL_TICKET_RULES, PACK_DATA } from "../data/packs";
+import { POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type PendingCalculatorTarget, type Pool, type TicketRule } from "./types";
 
 export const DEFAULT_CALCULATOR_DRAFT: CalculatorDraft = {
   pool: "日卡池",

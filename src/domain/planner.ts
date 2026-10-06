@@ -1,8 +1,8 @@
-import { DIA_PER_PULL, MONTHLY_DIA } from "@/data/packs";
-import { officialTicketCount, recommendPacksForGap } from "@/domain/calculator";
-import { formatNumber, isValidDateKey } from "@/domain/format";
-import { POOLS } from "@/domain/types";
-import type { PlannerState, Pool, PullGoal, PullGoalDraft, ResourceCheckIn, ResourceCheckInDraft, ScheduleEvent } from "@/domain/types";
+import { DIA_PER_PULL, MONTHLY_DIA } from "../data/packs";
+import { officialTicketCount, recommendPacksForGap } from "./calculator";
+import { formatNumber, isValidDateKey } from "./format";
+import { POOLS } from "./types";
+import type { PlannerState, Pool, PullGoal, PullGoalDraft, ResourceCheckIn, ResourceCheckInDraft, ScheduleEvent } from "./types";
 
 const AVERAGE_DAYS_PER_YEAR = 365.2425;
 const MAX_GOALS = 200;

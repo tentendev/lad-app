@@ -104,7 +104,7 @@ if (!process.argv.includes("--skip-network")) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
   try {
-    const syncOrigin = publicValue("EXPO_PUBLIC_SYNC_API_URL") || "https://lad-pocket.vercel.app";
+    const syncOrigin = publicValue("EXPO_PUBLIC_SYNC_API_URL") || "https://deep-space-ledger-app.vercel.app";
     const syncUrl = `${syncOrigin.replace(/\/$/, "")}/api/sync`;
     const accountApiUrl = `${syncOrigin.replace(/\/$/, "")}/api/account`;
     const checks = [

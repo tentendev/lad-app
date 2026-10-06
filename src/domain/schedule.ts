@@ -1,5 +1,5 @@
-import { LEADS, type Lead, type ScheduleEvent, type ScheduleEventType } from "@/domain/types";
-import { pad, toDateKey } from "@/domain/format";
+import { LEADS, type Lead, type ScheduleEvent, type ScheduleEventType } from "./types";
+import { pad, toDateKey } from "./format";
 
 export type SchedulePreferences = {
   selectedLeads: Lead[];

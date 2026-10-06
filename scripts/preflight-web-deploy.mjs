@@ -3,9 +3,9 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 
 const expected = {
-  project: "lad-pocket",
+  project: "deep-space-ledger-app",
   scope: "tentenco",
-  productionUrl: "https://lad-pocket.vercel.app",
+  productionUrl: "https://deep-space-ledger-app.vercel.app",
 };
 
 function run(command, args) {
@@ -66,4 +66,4 @@ if (!response.ok) throw new Error(`${expected.productionUrl} returned HTTP ${res
 console.log(`Web deploy preflight passed for ${expected.scope}/${expected.project}.`);
 console.log(`Authenticated Vercel account: ${account}.`);
 console.log(`Existing production alias is healthy: ${expected.productionUrl} (${response.status}).`);
-console.log("No deployment was created. The verified .vercel/output is ready for an owner-approved prebuilt preview.");
+console.log("No deployment was created. The .vercel/output artifact passed validation for the Expo/API project.");

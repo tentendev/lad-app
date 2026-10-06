@@ -33,4 +33,10 @@ Google 與 Web Apple SSO 使用 Clerk Expo `useSSO()` 與 `expo-auth-session`，
 
 Google connection 已以真實瀏覽器驗證可進入 Google Accounts。Apple 原生 flow 與刪除時撤銷流程已實作，但目前 Clerk development instance 尚未啟用 Apple；UI 預設隱藏。取得 Apple Developer／Clerk Apple connection 憑證後，在 EAS 與 Web build 設定 `EXPO_PUBLIC_ENABLE_APPLE_SIGN_IN=true` 才會顯示。iOS 正式上架若保留 Google 登入，必須在送審前完成原生實機登入、重新登入、刪除與撤銷驗收。Production 應改用 Clerk production instance 與自有 Google／Apple OAuth credentials，不能沿用 development key。
 
-EAS build 必須在對應 environment 提供 `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`。原生同步預設指向 `https://lad-pocket.vercel.app/api/sync`，也可用 `EXPO_PUBLIC_SYNC_API_URL` 覆寫。
+EAS build 必須在對應 environment 提供 `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`。原生同步預設指向 `https://deep-space-ledger-app.vercel.app/api/sync`，也可用 `EXPO_PUBLIC_SYNC_API_URL` 覆寫。
+
+## 2026-10-07 正式環境準備
+
+獨立 Vercel project `deep-space-ledger-app` 已部署正式 Clerk key 與全新 Neon 專案憑證。共用 domain 模組改用 Node 與 Metro 都能解析的相對匯入，並在 prebuilt 驗證中實際載入兩個 API handler，防止僅通過 TypeScript 卻在 Vercel 啟動時失敗。線上未登入／無效 token 邊界已通過。Clerk 自訂網域 DNS、production Google／Apple OAuth 與登入後同步／永久刪除驗收仍待完成。
+
+`scripts/smoke-cloud-sync.mjs` 透過 Clerk Backend API 建立開發 session；Clerk production 禁止該操作，不能以這支腳本聲稱 production 已驗收。正式驗收必須使用真實登入流程與專用測試帳號。本次嘗試產生的臨時使用者已清理，正式 Clerk users 與 Neon snapshots 均為 0。

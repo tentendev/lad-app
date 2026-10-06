@@ -1,47 +1,39 @@
 # Web deployment handoff
 
-## Confirmed target
+## Current Expo/API target (2026-10-07)
 
 - Vercel scope: `tentenco`
-- Project: `lad-pocket`
-- Existing production alias: `https://lad-pocket.vercel.app`
-- Local release build: `59fd4733ce87`
-- Stable verified preview: `https://lad-pocket-auth-preview.vercel.app`
-- Immutable deployment: `https://lad-pocket-7y6eezg5g-tentenco.vercel.app`
+- Project: `deep-space-ledger-app`
+- Project ID: `prj_2O9QRjrN5IiXeoe2XqwS3OghyybU`
+- Production URL: `https://deep-space-ledger-app.vercel.app`
+- Verified build: `edc57a28dac0`
+- Deployment: `dpl_2wREAib9HsTXGeK54z44TCLrjBan`
+- Immutable URL: `https://deep-space-ledger-7xqzlykjq-tentenco.vercel.app`
 
-The workspace is linked through gitignored `.vercel/project.json`. Vercel environment and OIDC files are local credentials: never commit them, paste them into issues, or include them in release artifacts.
+`lad-pocket.vercel.app` remains the Maggie HTML prototype. Do not deploy the Expo project there. The workspace now links to the independent Expo/API project through gitignored `.vercel/project.json`.
 
-The verified preview is currently protected by Vercel Team SSO. Members with `tentenco` access can open it after signing in. Making it anonymous-public requires an explicit deployment-protection decision and is not implied by creating a preview.
+Production uses a Clerk production key and a fresh Neon database. Public routes and unauthenticated/invalid-token API boundaries pass. Clerk DNS verification, Google/Apple OAuth and authenticated end-to-end QA remain incomplete; this deployment is preparation for App Store submission, not a completed authentication release. See `APP_STORE_SUBMISSION_STATUS.md`.
 
-Preview environment contains the Expo Clerk publishable key plus sensitive Clerk server and Neon variables. Production environment and `https://lad-pocket.vercel.app` were not changed. The preview includes Email／密碼註冊、Email verification、Google sign-in 與 `api/sync`; browser QA completed password sign-in, Client Trust verification and sign-out, with all temporary Clerk users and Neon rows removed afterward.
+## Build and deploy
 
-## Reproducible preview path
+Use the existing user authorization for the requested release. Vercel environment/OIDC files and local credential files must never enter source control or release artifacts.
 
 ```bash
-npm run release:web
-vercel build --yes --scope tentenco
+vercel link --yes --project deep-space-ledger-app --scope tentenco
+vercel pull --yes --environment=production --scope tentenco
+npm run check
+vercel build --prod --scope tentenco
+npm run verify:web
 npm run verify:vercel-prebuilt
 npm run preflight:web-deploy
-vercel deploy --prebuilt --archive=tgz --scope tentenco
+vercel deploy --prebuilt --prod --yes --scope tentenco
+npm run verify:web-deployment -- https://deep-space-ledger-app.vercel.app
 ```
 
-The first four commands are local/read-only gates. The fifth creates an external preview deployment and therefore requires explicit owner approval.
+`verify:vercel-prebuilt` checks the static output and runs both compiled API handlers under Node to catch unresolved module imports before deployment. Then complete the browser and device journeys in `WEB_RELEASE_CHECKLIST.md`, including real production sign-in and data deletion.
 
-After receiving the preview URL:
+The fresh Neon project is `frosty-shape-90805190`, database `lad_app`. The old development database is separate. `scripts/smoke-cloud-sync.mjs` creates development-only Clerk sessions and is not a production authentication test.
 
-```bash
-npm run verify:web-deployment -- https://PREVIEW_URL
-```
+## Historical preview
 
-Then perform the browser journey and width checks in `docs/WEB_RELEASE_CHECKLIST.md`. Do not promote a preview if its build ID differs from the local receipt or any automated/manual gate fails.
-
-## Production promotion
-
-Production promotion changes the public reference site and requires a separate owner decision:
-
-```bash
-vercel promote https://VERIFIED_PREVIEW_URL --scope tentenco
-npm run verify:web-deployment -- https://lad-pocket.vercel.app
-```
-
-Confirm canonical/social URLs and legal wording before promotion. Keep the previous production deployment ID available for rollback.
+The August preview used `tentenco/lad-pocket`, with the protected alias `https://lad-pocket-auth-preview.vercel.app`. Those URLs are historical; the current release commands above target the independent project. Support/privacy/account-deletion information remains on `deep-space-ledger-support.vercel.app`.

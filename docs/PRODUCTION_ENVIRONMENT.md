@@ -8,11 +8,11 @@
 
 - `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...`
 - `EXPO_PUBLIC_ENABLE_APPLE_SIGN_IN=true`
-- `EXPO_PUBLIC_SYNC_API_URL=https://<verified-expo-api-domain>`
+- `EXPO_PUBLIC_SYNC_API_URL=https://deep-space-ledger-app.vercel.app`
 - `EXPO_PUBLIC_LEGAL_ENTITY_NAME=Kuan Yu Chen`
 - `EXPO_PUBLIC_SUPPORT_EMAIL=dev@tenten.co`
 
-2026-10-03 已將公開營運者與支援 Email 設定至此 EAS project 的 production / preview 環境；已建置的 1.0.0 (4) 不會因此改變，下次 build 才會包含新值。正式 Clerk key、Apple 登入與 API 網址尚未配置。`lad-pocket.vercel.app` 目前保留 Maggie HTML prototype，不能直接當作可用的 Expo API endpoint。
+2026-10-07 已將正式 Clerk publishable key 與獨立 API 網址設定至 EAS production。營運者與支援 Email 已在 2026-10-03 配置。Apple 登入開關仍待 OAuth 完成後啟用。既有 TestFlight 1.0.0 (4) 不會因環境值更新而改變，仍需要新的正式 build。`lad-pocket.vercel.app` 保留 Maggie HTML prototype。
 
 ## Vercel Production
 
@@ -25,7 +25,7 @@ Server only：
 
 - `CLERK_SECRET_KEY=sk_live_...`
 - `DATABASE_URL=postgresql://...`（輪替後的 production credential）
-- `CLERK_AUTHORIZED_PARTIES=https://<verified-expo-web-domain>`
+- `CLERK_AUTHORIZED_PARTIES=https://lad-app.tenten.co,https://deep-space-ledger-app.vercel.app`
 - `APPLE_TEAM_ID`
 - `APPLE_KEY_ID`
 - `APPLE_PRIVATE_KEY`（Sign in with Apple `.p8`，敏感）
@@ -36,7 +36,7 @@ Server only：
 
 Clerk production instance：
 
-2026-10-03 已建立 `ins_3K9Bp4mNXHEd1vJdBIksRwBE0hr`（app `app_3HsU8GmAoCcKIzyTkwh4PjQxp0S`）。初始 domain 為 `lad-pocket.vercel.app`，proxy 尚未驗證、未投入正式使用。正式部署須先選定 Expo 獨立服務網域並完成 Clerk 驗證，避免覆蓋 prototype。
+Production instance 為 `ins_3K9Bp4mNXHEd1vJdBIksRwBE0hr`（app `app_3HsU8GmAoCcKIzyTkwh4PjQxp0S`）。2026-10-07 已新增自訂 domain `lad-app.tenten.co`，Frontend API 為 `clerk.lad-app.tenten.co`，DNS 與 Email 仍未驗證。已建立 iOS native app `RTK85AV2H2 / com.tenten.deepspaceledger`，並確認 `deep-space-ledger://sso-callback` 與自動建立的 `com.tenten.deepspaceledger://callback`。
 
 - 正式 domain 與 `pk_live_`／`sk_live_`
 - Native application：Apple Team ID + Bundle ID
@@ -69,3 +69,13 @@ Vercel：
 - `APPLE_CONTENT_RIGHTS_STATUS=licensed` 或 `removed`
 
 這些不是密鑰，只是擁有者完成平台設定與權利確認後的 release attestation；不得在尚未完成時提前填 true。
+
+## 2026-10-07 部署狀態
+
+- Vercel：`tentenco/deep-space-ledger-app`，project ID `prj_2O9QRjrN5IiXeoe2XqwS3OghyybU`。
+- 公開 API：`https://deep-space-ledger-app.vercel.app`，sync/account 的未登入與無效 token 邊界通過。
+- Neon：全新專案 `frosty-shape-90805190`（LadApp App Store Production），新加坡、Postgres 18、database `lad_app`。沒有沿用舊 LadApp 的憑證或資料。
+- Vercel Production 已存正式 Clerk / Neon sensitive variables；公開 build 值、authorized parties、Apple Team ID / native client ID 已配置。Apple key、private key 與 Web Services ID 尚缺。
+- 舊開發環境曾暴露的憑證尚未撤銷，`PRODUCTION_SECRETS_ROTATED` 未勾選。
+- Cloudflare 等待本人雙重驗證，Apple Developer / Google Cloud 等待本人重新登入。自訂 Web domain 加入 Vercel 回傳 `domain_not_owned`，尚待 DNS 所有權處理，不能稱為已可用。
+- 詳細驗收、DNS 清單與送審阻擋見 `docs/APP_STORE_SUBMISSION_STATUS.md`。
