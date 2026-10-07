@@ -10,6 +10,7 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 - Added Clerk production publishable key and the new API URL to EAS production.
 - Stored Clerk production secret and a fresh Neon connection as sensitive Vercel production variables. Created the cloud snapshot schema in the new database.
 - Added Clerk custom domain `lad-app.tenten.co`; DNS verification remains pending.
+- Cloudflare authentication is complete. Added all four Clerk CNAMEs below as DNS-only records in the existing `tenten.co` zone. Clerk verification identified an existing zone-wide CNAME flattening setting that prevents direct CNAME answers. That setting has not been changed.
 - Configured Clerk native iOS app: team `RTK85AV2H2`, bundle `com.tenten.deepspaceledger`, redirects `deep-space-ledger://sso-callback` and `com.tenten.deepspaceledger://callback`.
 - Confirmed the Apple App ID already has `APPLE_ID_AUTH` with primary app consent.
 - After the owner signed in to Apple Developer, created Sign in with Apple key `32FPF2MRV9` and Services ID `com.tenten.deepspaceledger.web`. Bound the Services ID to the existing primary App ID and Clerk callback. Clerk now shows Apple as **Used for sign-in**.
@@ -38,8 +39,8 @@ Verified deployment: `dpl_6iXEtj2fVFsjcBBBpzbqmFABoVuf`, build `79bf378dae33`, `
 
 ## Remaining work requiring access or facts
 
-1. Complete Cloudflare two-factor verification (`service@tenten.co`), then install and verify the Clerk DNS records below.
-2. Apple Developer login and Apple credential configuration are complete. Sign in to Google Cloud (`service@tenten.co`) to finish production Google OAuth. After DNS is verified, recheck Apple relay SPF and test Apple sign-in/revocation. Cloudflare and Google authentication pages remain open for the owner.
+1. Resolve Cloudflare's existing `flatten_all_cnames` setting, then verify Clerk DNS and SSL. The four App records are installed. The zone contains 106 other CNAME records, including 90 DNS-only records, so preserve their existing resolution behavior when introducing exceptions for the App. A DNS export was saved locally; no global setting or existing DNS record has been modified.
+2. Apple Developer and Cloudflare authentication are complete. Sign in to Google Cloud (`service@tenten.co`) to finish production Google OAuth. After DNS is verified, recheck Apple relay SPF and test Apple sign-in/revocation. The browser remains with the owner after they took control.
 3. Confirm the legal basis for the third-party game, character and activity content before answering Apple's Content Rights declaration. The user was asked; no declaration has been made on their behalf.
 4. Resolve the `domain_not_owned` response before connecting `lad-app.tenten.co` to Vercel. The `.vercel.app` API endpoint is already deployed.
 5. Resolve the old exposed development credentials and release attestation. The new production database and Clerk instance do not reuse them, but old credentials have not been revoked.
@@ -48,7 +49,7 @@ Verified deployment: `dpl_6iXEtj2fVFsjcBBBpzbqmFABoVuf`, build `79bf378dae33`, `
 
 ## Clerk DNS records
 
-All records belong to the `tenten.co` zone and should use the DNS settings required by Clerk (DNS-only CNAMEs).
+All four records were added to the `tenten.co` zone as DNS-only CNAMEs. Verification is still blocked by zone-wide CNAME flattening. Cloudflare documents that this global setting cannot be overridden per record; see [CNAME flattening setup](https://developers.cloudflare.com/dns/cname-flattening/set-up-cname-flattening/). Do not treat successful record creation as successful Clerk verification.
 
 | Type | Name | Value |
 | --- | --- | --- |
