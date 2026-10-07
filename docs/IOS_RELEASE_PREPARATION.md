@@ -1,5 +1,7 @@
 # iOS 上架準備（2026-09-17）
 
+以下為 9 月準備紀錄；目前 10 月正式設定、驗收及送審狀態以 [APP_STORE_SUBMISSION_STATUS.md](APP_STORE_SUBMISSION_STATUS.md) 為準。首版提供 Apple 與 Email 登入，Google 不在範圍內。
+
 ## 目前狀態
 
 已成功上傳內部 UI 測試版 **1.0.0（3）** 至 TestFlight，Apple 處理完成（VALID）；尚未提交 App Review。使用者已授權完成 App、建置及送審；以下缺口是實際資料、服務設定與驗收，不是等待再次批准送審。

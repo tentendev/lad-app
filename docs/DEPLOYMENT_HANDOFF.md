@@ -7,9 +7,9 @@
 - Project ID: `prj_2O9QRjrN5IiXeoe2XqwS3OghyybU`
 - Production API URL: `https://deep-space-ledger-app.vercel.app`
 - Verified Web domain: `https://lad-app.tenten.co`
-- Verified build: `d7224ede0fed`
-- Deployment: `dpl_EDG8HfXHVnYPaLLyQNRY7Tpowqaf`
-- Immutable URL: `https://deep-space-ledger-9go0su9vd-tentenco.vercel.app`
+- Verified build: `834b812e1f56`
+- Deployment: `dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6`
+- Immutable URL: `https://deep-space-ledger-667xgyucn-tentenco.vercel.app`
 
 `lad-pocket.vercel.app` remains the Maggie HTML prototype. Do not deploy the Expo project there. The workspace now links to the independent Expo/API project through gitignored `.vercel/project.json`.
 

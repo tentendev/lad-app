@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-07",
+  "sourceCommit": "28f4fdee63e320a7cb6b11a5e9e0c720fe899b99",
+  "appVersion": "1.0.0",
+  "iosBuildNumber": "5",
+  "easBuildId": "26bd8bd2-8db0-49c2-b9b5-8ac04f8f1212",
+  "easStatus": "FINISHED",
+  "web": {
+    "deploymentId": "dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6",
+    "buildId": "834b812e1f56",
+    "url": "https://lad-app.tenten.co",
+    "immutableUrl": "https://deep-space-ledger-667xgyucn-tentenco.vercel.app",
+    "verified": true
+  },
+  "validation": {
+    "scriptTests": 15,
+    "vitestTests": 122,
+    "expoDoctor": "21/21",
+    "iosHermesMiB": 8.6,
+    "criticalAdvisories": 0
+  },
+  "appReviewSubmitted": false,
+  "ipa": {
+    "checks": {
+      "bundleIdentifier": true,
+      "version": true,
+      "team": true,
+      "appleSignIn": true,
+      "productionKey": true,
+      "productionApi": true,
+      "noDebugEntitlement": true
+    },
+    "version": "1.0.0",
+    "build": "5",
+    "bundleIdentifier": "com.tenten.deepspaceledger",
+    "minimumOS": "17.0",
+    "sdk": "iphoneos26.5",
+    "profileExpires": "2027-09-17T06:41:32",
+    "sha256": "1e86fc36a0b178cac1d1457cca597fccceac9aa003821c2a6ec3bce1f9854547"
+  }
+}

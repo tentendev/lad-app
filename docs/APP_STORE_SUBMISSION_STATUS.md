@@ -27,7 +27,7 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 | Check | Result |
 | --- | --- |
 | ESLint / TypeScript | Passed |
-| Script tests / Vitest | 9 + 122 passed |
+| Script tests / Vitest | 15 + 122 passed |
 | Web export / prebuilt verification | Passed; 89 static files and both Node API entry points |
 | Deployed routes and headers | Passed; 307 root redirect, branded 404, CSP, frame policy, service worker and asset cache |
 | Sync/account unauthenticated boundaries | Passed: 401 / 405 / 401 as applicable |
@@ -35,11 +35,11 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 | iOS Hermes export | Passed; 8.6 MiB and original-design background present |
 | Production Email/password, sync and deletion | Passed: real password + emailed Client Trust code, upload/download, stale revision 409, sign-out/re-login, cloud-only deletion and permanent account deletion. Clerk user is gone and its Neon row count is 0 |
 | Dependency / SDK verification | Expo Doctor 21/21; 0 critical and 5 reviewed root advisories; see dependency security review |
-| App Store submission preflight | Blocked; no new iOS build or review submission started |
+| App Store submission preflight | Blocked on remaining attestations; production build 5 is in progress, App Review not submitted |
 
 The development-session cloud smoke script cannot create a production Clerk session: Clerk returned `request_invalid_for_environment`. Its temporary user was removed. Before the later Email/password QA account was created, production Clerk users and Neon snapshots were both checked at 0. This is not recorded as a passed authenticated production test.
 
-Verified deployment: `dpl_EDG8HfXHVnYPaLLyQNRY7Tpowqaf`, build `d7224ede0fed`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
+Verified deployment: `dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6`, build `834b812e1f56`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
 
 ## Remaining work requiring access or facts
 
@@ -48,7 +48,7 @@ Verified deployment: `dpl_EDG8HfXHVnYPaLLyQNRY7Tpowqaf`, build `d7224ede0fed`, `
 3. A dedicated verified production reviewer account has been created. Only this account has the supported per-user Client Trust exception so reviewers do not need access to the owner’s mailbox. Its unique password is stored in a restricted, gitignored local file. Actual demo login verification and entry into App Store Connect are pending. Normal users retain Client Trust.
 4. Resolve old exposed development credentials and the release attestation. The new production database and Clerk instance do not reuse them, but old credentials have not been revoked.
 5. Apple Business confirms the Free Apps Agreement is active. DSA is completed as non-trader following the owner’s explicit confirmation that this is a personal noncommercial work. Apple shows all current regulatory requirements complete. No Paid Apps Agreement is required for this free app without purchases.
-6. Build a new production iOS binary, upload it, select it for 1.0.0, populate review credentials/notes and submit App Review. User authorization to do this is already granted.
+6. Production iOS 1.0.0 (5) is building in EAS (`26bd8bd2-8db0-49c2-b9b5-8ac04f8f1212`) from commit `28f4fde`. Upload it, complete native QA, select it for 1.0.0, populate review credentials/notes and submit App Review. User authorization to do this is already granted.
 
 ## Content rights and Web domain
 
