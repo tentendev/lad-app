@@ -6,13 +6,13 @@
 - Project: `deep-space-ledger-app`
 - Project ID: `prj_2O9QRjrN5IiXeoe2XqwS3OghyybU`
 - Production URL: `https://deep-space-ledger-app.vercel.app`
-- Verified build: `edc57a28dac0`
-- Deployment: `dpl_2wREAib9HsTXGeK54z44TCLrjBan`
-- Immutable URL: `https://deep-space-ledger-7xqzlykjq-tentenco.vercel.app`
+- Verified build: `79bf378dae33`
+- Deployment: `dpl_6iXEtj2fVFsjcBBBpzbqmFABoVuf`
+- Immutable URL: `https://deep-space-ledger-3rtd1wpjj-tentenco.vercel.app`
 
 `lad-pocket.vercel.app` remains the Maggie HTML prototype. Do not deploy the Expo project there. The workspace now links to the independent Expo/API project through gitignored `.vercel/project.json`.
 
-Production uses a Clerk production key and a fresh Neon database. Public routes and unauthenticated/invalid-token API boundaries pass. Clerk DNS verification, Google/Apple OAuth and authenticated end-to-end QA remain incomplete; this deployment is preparation for App Store submission, not a completed authentication release. See `APP_STORE_SUBMISSION_STATUS.md`.
+Production uses a Clerk production key and a fresh Neon database. Public routes and unauthenticated/invalid-token API boundaries pass. Apple credentials and the sign-in flag are configured. Clerk DNS verification, Google OAuth and authenticated end-to-end QA remain incomplete; this deployment is preparation for App Store submission, not a completed authentication release. See `APP_STORE_SUBMISSION_STATUS.md`.
 
 ## Build and deploy
 

@@ -17,7 +17,7 @@ try {
   const executable = process.platform === "win32" ? "npx.cmd" : "npx";
   const result = spawnSync(
     executable,
-    ["expo", "export", "--platform", "ios", "--output-dir", outputDirectory],
+    ["expo", "export", "--platform", "ios", "--clear", "--output-dir", outputDirectory],
     { cwd: process.cwd(), stdio: "inherit" },
   );
   if (result.status !== 0) throw new Error(`Expo iOS export failed with status ${result.status ?? "unknown"}.`);

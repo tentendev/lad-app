@@ -12,6 +12,10 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 - Added Clerk custom domain `lad-app.tenten.co`; DNS verification remains pending.
 - Configured Clerk native iOS app: team `RTK85AV2H2`, bundle `com.tenten.deepspaceledger`, redirects `deep-space-ledger://sso-callback` and `com.tenten.deepspaceledger://callback`.
 - Confirmed the Apple App ID already has `APPLE_ID_AUTH` with primary app consent.
+- After the owner signed in to Apple Developer, created Sign in with Apple key `32FPF2MRV9` and Services ID `com.tenten.deepspaceledger.web`. Bound the Services ID to the existing primary App ID and Clerk callback. Clerk now shows Apple as **Used for sign-in**.
+- Registered Apple private relay email source `bounces+116179987@clkmail.lad-app.tenten.co`; SPF verification still awaits the Clerk DNS records.
+- Stored all Apple server credentials in Vercel production and enabled the Apple sign-in build flag in Vercel/EAS production. The Web/API deployment includes these changes; a new iOS build and actual Apple sign-in/revocation QA are still pending.
+- Fixed stale Expo export caching that retained the disabled Apple flag after the environment changed. Web and iOS verification exports now clear the bundler cache.
 - Fixed a production `/api/sync` crash caused by TypeScript aliases left in compiled Node code. Shared domain modules now use relative imports; the prebuilt verifier loads and invokes both unauthenticated API entry points.
 
 ## Verification
@@ -30,12 +34,12 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 
 The development-session cloud smoke script cannot create a production Clerk session: Clerk returned `request_invalid_for_environment`. Its temporary user was removed. Production Clerk users and Neon snapshots were both checked at 0. This is not recorded as a passed authenticated production test.
 
-Verified deployment: `dpl_2wREAib9HsTXGeK54z44TCLrjBan`, build `edc57a28dac0`, `https://deep-space-ledger-app.vercel.app`. Apple Team ID/native client ID were added to stored Vercel variables afterward; the next deployment will include them together with the remaining Apple configuration.
+Verified deployment: `dpl_6iXEtj2fVFsjcBBBpzbqmFABoVuf`, build `79bf378dae33`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
 
 ## Remaining work requiring access or facts
 
 1. Complete Cloudflare two-factor verification (`service@tenten.co`), then install and verify the Clerk DNS records below.
-2. Sign in to Apple Developer (`dev@tenten.co`) and Google Cloud (`service@tenten.co`). Complete production Google OAuth, Apple Services ID / private key / Clerk connection / token revocation configuration. The browser pages are open for the owner to authenticate.
+2. Apple Developer login and Apple credential configuration are complete. Sign in to Google Cloud (`service@tenten.co`) to finish production Google OAuth. After DNS is verified, recheck Apple relay SPF and test Apple sign-in/revocation. Cloudflare and Google authentication pages remain open for the owner.
 3. Confirm the legal basis for the third-party game, character and activity content before answering Apple's Content Rights declaration. The user was asked; no declaration has been made on their behalf.
 4. Resolve the `domain_not_owned` response before connecting `lad-app.tenten.co` to Vercel. The `.vercel.app` API endpoint is already deployed.
 5. Resolve the old exposed development credentials and release attestation. The new production database and Clerk instance do not reuse them, but old credentials have not been revoked.

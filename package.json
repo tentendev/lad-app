@@ -9,7 +9,7 @@
     "ios": "expo run:ios",
     "android": "expo run:android",
     "sync:expo-data": "node scripts/sync-expo-schedule.mjs",
-    "export:web": "npm run sync:expo-data && expo export --platform web && node scripts/write-precache-manifest.mjs",
+    "export:web": "npm run sync:expo-data && expo export --platform web --clear && node scripts/write-precache-manifest.mjs",
     "verify:web": "node scripts/verify-web-export.mjs",
     "release:web": "npm run check && npm run doctor && npm run security:audit && npm run export:web && npm run verify:web",
     "release:ios:validate": "npm run check && npm run doctor && npm run security:audit && npm run verify:ios-bundle && npm run preflight:ios-build",
