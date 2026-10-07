@@ -1,8 +1,8 @@
 # Production 環境與密鑰清單
 
-## 必須先輪替
+## 已完成舊憑證輪替
 
-2026-08-14 前曾透過非 secret channel 分享的 Clerk secret 與 Neon connection string，視為已暴露。正式部署前要在 Clerk／Neon 產生新值並撤銷舊值；新值只能放在密碼管理器與平台的 encrypted/sensitive environment。
+2026-08-14 前曾透過非 secret channel 分享的 Clerk secret 與 Neon connection string，視為已暴露。2026-10-08 已依擁有者授權撤銷舊 Clerk 開發金鑰並重設舊 Neon role 密碼：舊金鑰回傳 HTTP 401、舊密碼驗證失敗；新金鑰與資料庫連線均驗證成功。本機與使用相同 Clerk 開發 instance 的 `lad-pocket` Vercel Preview 已更新，沒有重新部署原作 HTML。新值只保存在受限的 gitignored 本機檔案與平台 sensitive environment；已刪除輪替時暫存的舊憑證。證據見 [輪替與驗收紀錄](../artifacts/2026-10-08-production/verification.json)。
 
 ## EAS Production（會進 client bundle 的公開值）
 
@@ -75,7 +75,7 @@ Vercel：
 - 公開 API：`https://deep-space-ledger-app.vercel.app`，sync/account 的未登入與無效 token 邊界通過。
 - Neon：全新專案 `frosty-shape-90805190`（LadApp App Store Production），新加坡、Postgres 18、database `lad_app`。沒有沿用舊 LadApp 的憑證或資料。
 - Vercel Production 已存正式 Clerk / Neon sensitive variables；公開 build 值、authorized parties、Apple Team ID / native client ID 已配置。Apple key `32FPF2MRV9`、private key 與 Web Services ID `com.tenten.deepspaceledger.web` 已保存並部署至正式 API。
-- 舊開發環境曾暴露的憑證尚未撤銷，`PRODUCTION_SECRETS_ROTATED` 未勾選。
+- 舊開發環境曾暴露的憑證已於 2026-10-08 撤銷，`PRODUCTION_SECRETS_ROTATED` 驗收旗標可設為 `true`；Apple 實機驗收旗標仍為 `false`。
 - Apple Developer、Google Cloud 與 Cloudflare 已登入。Clerk 四筆 DNS 已驗證，SSL 已簽發；既有 90 筆 DNS-only CNAME 先保存個別 flattening 行為，再關閉全域 flattening，其他 DNS 名稱、值、TTL 與 proxy 均未變。DNS 臨時 token 已撤銷。
 - `lad-app.tenten.co` 已經 Vercel project-domain TXT challenge 驗證，CNAME 設定正確，正式 Web 會員頁可載入 Clerk。使用者確認首版不提供 Google 登入；Google connection 已停用，不需要 Google Cloud 專案或 OAuth 憑證。
 - 使用者確認未使用角色／活動素材，素材盤點見 `docs/APP_ASSET_REVIEW.md`；App Store Connect Content Rights 已保存 `DOES_NOT_USE_THIRD_PARTY_CONTENT`。DSA 已依擁有者確認的個人非商業作品填為非 trader，Apple 顯示合規要求已完成。

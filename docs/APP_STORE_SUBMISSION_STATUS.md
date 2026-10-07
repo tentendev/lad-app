@@ -1,4 +1,4 @@
-# App Store submission status — 2026-10-07
+# App Store submission status — 2026-10-08
 
 **Not submitted.** App Store Connect app `6812909987`, iOS version `1.0.0`, remains `PREPARE_FOR_SUBMISSION`. The version has no selected build. Review contact is present, but the required demo account credentials are empty. Content Rights is saved as `DOES_NOT_USE_THIRD_PARTY_CONTENT`, following the owner’s confirmation and the release asset review.
 
@@ -22,6 +22,9 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 - Fixed stale Expo export caching that retained the disabled Apple flag after the environment changed. Web and iOS verification exports now clear the bundler cache.
 - Fixed Web API origin selection: the custom Web domain now calls its own `/api` paths, while native clients retain the configured absolute API URL. Added regression tests for Web and native endpoint selection.
 - Fixed a production `/api/sync` crash caused by TypeScript aliases left in compiled Node code. Shared domain modules now use relative imports; the prebuilt verifier loads and invokes both unauthenticated API entry points.
+- Verified the dedicated reviewer account on the current production Web deployment: password login, cloud upload, cloud download, sign-out and password re-login passed. The account remains available for Apple review; its password is stored only in the restricted, gitignored credentials directory.
+- Revoked the exposed development Clerk key and reset the old Neon role password with the owner's authorization. The old Clerk key now returns HTTP 401 and the old database password fails authentication; the replacement key returns HTTP 200 and the replacement database connection passes `SELECT 1`.
+- Updated local development credentials and the matching `lad-pocket` Vercel Preview environment. No original HTML production deployment was triggered. Production credentials remain separate. The rotation release attestation is now true.
 
 ## Verification
 
@@ -35,6 +38,8 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 | Sync/account invalid token | Both 401 `token_invalid` |
 | iOS Hermes export | Passed; 8.6 MiB and original-design background present |
 | Production Email/password, sync and deletion | Passed: real password + emailed Client Trust code, upload/download, stale revision 409, sign-out/re-login, cloud-only deletion and permanent account deletion. Clerk user is gone and its Neon row count is 0 |
+| Dedicated reviewer account on current Web deployment | Passed: password login, upload/download, sign-out and re-login without an inaccessible verification-code challenge |
+| Old development credential revocation | Passed: old Clerk key HTTP 401, old database password rejected; both replacements verified |
 | Dependency / SDK verification | Expo Doctor 21/21; 0 critical and 5 reviewed root advisories; see dependency security review |
 | App Store submission preflight | Blocked on remaining attestations; production build 5 uploaded, App Review not submitted |
 
@@ -45,11 +50,11 @@ Verified deployment: `dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6`, build `834b812e1f56`, `
 ## Remaining work
 
 1. Complete native Sign in with Apple, Hide My Email and deletion/token revocation QA on a physical device or the new TestFlight build. The owner’s iPhone was unavailable to the Mac. Google sign-in is outside this release.
-2. Verify the dedicated reviewer account in the App after the Clerk dependency update, then enter its credentials and final review notes into App Store Connect. Only the reviewer account has a supported per-user Client Trust exception; normal users retain Client Trust. Its unique password is stored in a restricted, gitignored local file.
-3. Revoke the old exposed development credentials. The old Clerk development key still returned HTTP 200 during verification. Production uses separate credentials, but `PRODUCTION_SECRETS_ROTATED` remains false. The requested rotation confirmation is pending because Neon explicitly requires confirmation before password reset.
-4. Link build 5 and submit App Review after the outstanding checks. Apple processing is complete (`VALID`), Core QA has access to all builds, and the build is `READY_FOR_BETA_TESTING` internally. Traditional Chinese TestFlight validation notes are saved. The upload API key cannot select a version build: Apple returned HTTP 403 `FORBIDDEN_ERROR`. Use the legitimate App Store Connect UI after browser access is restored; do not assume the build was selected. Production iOS `1.0.0 (5)` was built in EAS (`26bd8bd2-8db0-49c2-b9b5-8ac04f8f1212`) from commit `28f4fde`, passed IPA signature/entitlement and Apple validation checks, and was successfully uploaded. Delivery ID: `9778f835-2bfb-4130-bf03-da8749612aec`. User authorization to upload and submit is already granted.
+2. Enter the verified reviewer credentials and final review notes into App Store Connect after native QA. Only the reviewer account has a supported per-user Client Trust exception; normal users retain Client Trust. Its unique password is stored in a restricted, gitignored local file.
+3. Link build 5 and submit App Review after the outstanding checks. Apple processing is complete (`VALID`), Core QA has access to all builds, and the build is `READY_FOR_BETA_TESTING` internally. Traditional Chinese TestFlight validation notes are saved. The upload API key cannot select a version build: Apple returned HTTP 403 `FORBIDDEN_ERROR`. Use the legitimate App Store Connect UI after authentication; do not assume the build was selected. Production iOS `1.0.0 (5)` was built in EAS (`26bd8bd2-8db0-49c2-b9b5-8ac04f8f1212`) from commit `28f4fde`, passed IPA signature/entitlement and Apple validation checks, and was successfully uploaded. Delivery ID: `9778f835-2bfb-4130-bf03-da8749612aec`. User authorization to upload, submit and release is already granted.
+4. Follow Apple's review result and publish the approved version, then confirm its public App Store availability. The owner's goal is a downloadable release, not only a TestFlight upload or an App Review submission.
 
-The previous browser task space no longer exists. The Ego browser skill requires asking before recovering with a new space; that confirmation is pending. No new browser space was created automatically. See the [QA record](../artifacts/2026-10-07-production/QA.md) and [release receipt](../artifacts/2026-10-07-production/release-receipt.json).
+The owner authorized a replacement browser workspace on 2026-10-08. App Store Connect now requires the account password; the browser was handed to the owner to complete login. The paired iPhone is still unavailable to the Mac. These are authentication/device prerequisites, not outstanding submission permission. See the [October 8 verification receipt](../artifacts/2026-10-08-production/verification.json), [QA record](../artifacts/2026-10-07-production/QA.md) and [build/upload receipt](../artifacts/2026-10-07-production/release-receipt.json).
 
 ## Content rights and Web domain
 

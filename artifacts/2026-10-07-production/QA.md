@@ -23,13 +23,13 @@ On the preceding production Web deployment containing the same account and endpo
 - Cloud-only deletion while retaining the account, then a fresh upload.
 - Permanent account deletion through the App. Backend verification returned Clerk user 404 and zero Neon snapshots for that user.
 
-This QA found a Web origin-selection bug: the custom domain attempted to call the separate Vercel origin. Web now uses same-origin API paths; native still uses the configured absolute API URL. Three regression tests cover these cases. Full authenticated UI QA has not yet been repeated after the Clerk dependency update.
+This QA found a Web origin-selection bug: the custom domain attempted to call the separate Vercel origin. Web now uses same-origin API paths; native still uses the configured absolute API URL. Three regression tests cover these cases. On October 8 the dedicated reviewer account passed password login, upload, download, sign-out and re-login on the current deployment after the Clerk dependency update.
 
 ## Remaining release validation
 
-- The dedicated reviewer account exists with a unique secret stored outside Git. Only that account uses Clerk's supported per-user Client Trust exception. Its real UI login and backup flow still need verification before its credentials are submitted to Apple.
+- The dedicated reviewer account exists with a unique secret stored outside Git. Only that account uses Clerk's supported per-user Client Trust exception. Its real Web UI login and backup flow passed on October 8; entering the credentials into App Store Connect still requires Apple authentication.
 - Native Sign in with Apple, Hide My Email and account deletion/token revocation need a connected physical device or the new TestFlight build. The owner's iPhone was unavailable to the Mac during this run.
-- The old Clerk development key still authenticated successfully (HTTP 200) during verification. Old exposed development credentials have not yet been revoked; production uses separate new credentials. The rotation attestation remains false.
+- On October 8 the old exposed development credentials were revoked. The old Clerk key returned HTTP 401 and the old Neon password failed authentication. The replacements were verified and applied locally and to the matching legacy Vercel Preview environment. The rotation attestation is true; the native Apple QA attestation remains false. See the [verification receipt](../2026-10-08-production/verification.json).
 - Production iOS build 5 completed. The IPA passes deep signature verification, matches version 1.0.0 (5), includes the signed Apple sign-in entitlement and embeds the expected production Clerk key/API URL. It uses iPhoneOS SDK 26.5 and targets iOS 17+. Apple validation and upload succeeded without errors (delivery `9778f835-2bfb-4130-bf03-da8749612aec`). Apple processed the build as `VALID` / internal `READY_FOR_BETA_TESTING`; Traditional Chinese TestFlight validation notes were saved. Final build selection and actual App Review submission remain pending: the existing upload API key returned HTTP 403 for build selection, requiring the authenticated App Store Connect UI.
 
 No app announcement was added for release preparation.

@@ -1,0 +1,48 @@
+{
+  "verifiedAt": "2026-10-07T17:11:18.379Z",
+  "appVersion": "1.0.0",
+  "iosBuildNumber": "5",
+  "clerk": {
+    "instanceId": "ins_3HsU8E9REajUBgLTsedoMJzdvcl",
+    "oldKeyStatus": 401,
+    "newKeyStatus": 200,
+    "oldKeyDeleted": true
+  },
+  "neon": {
+    "projectId": "jolly-pond-98246124",
+    "branchId": "br-little-sun-az2b0gkz",
+    "role": "neondb_owner",
+    "oldPasswordRejected": true,
+    "newConnectionVerified": true
+  },
+  "consumers": {
+    "localDevelopmentUpdated": true,
+    "legacyVercelPreview": {
+      "project": "lad-pocket",
+      "confirmedSameClerkPublishableKey": true,
+      "databaseUrlUpdated": true,
+      "clerkSecretUpdated": true,
+      "sensitive": true,
+      "redeployed": false
+    },
+    "originalHtmlProductionRedeployed": false,
+    "productionCredentialsChanged": false
+  },
+  "reviewerWebQA": {
+    "url": "https://lad-app.tenten.co/account",
+    "login": true,
+    "upload": true,
+    "download": true,
+    "signOut": true,
+    "relogin": true,
+    "clientTrustPromptRequired": false,
+    "reviewerAccountRetained": true
+  },
+  "remaining": {
+    "appStoreConnectAuthentication": true,
+    "nativeAppleSignInQA": true,
+    "selectedAppStoreBuild": false,
+    "appReviewSubmitted": false,
+    "appStoreReleased": false
+  }
+}
