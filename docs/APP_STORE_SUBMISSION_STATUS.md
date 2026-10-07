@@ -1,6 +1,6 @@
 # App Store submission status — 2026-10-07
 
-**Not submitted.** App Store Connect app `6812909987`, iOS version `1.0.0`, remains `PREPARE_FOR_SUBMISSION`. The version has no selected build. Review contact is present, but the required demo account credentials are empty. Content Rights is unset.
+**Not submitted.** App Store Connect app `6812909987`, iOS version `1.0.0`, remains `PREPARE_FOR_SUBMISSION`. The version has no selected build. Review contact is present, but the required demo account credentials are empty. Content Rights is saved as `DOES_NOT_USE_THIRD_PARTY_CONTENT`, following the owner’s confirmation and the release asset review.
 
 The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is not the production release candidate.
 
@@ -9,13 +9,14 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 - Created and deployed `tentenco/deep-space-ledger-app`, keeping the Maggie HTML prototype separate.
 - Added Clerk production publishable key and the new API URL to EAS production.
 - Stored Clerk production secret and a fresh Neon connection as sensitive Vercel production variables. Created the cloud snapshot schema in the new database.
-- Added Clerk custom domain `lad-app.tenten.co`; DNS verification remains pending.
-- Cloudflare authentication is complete. Added all four Clerk CNAMEs below as DNS-only records in the existing `tenten.co` zone. Clerk verification identified an existing zone-wide CNAME flattening setting that prevents direct CNAME answers. That setting has not been changed.
+- Added and verified Clerk custom domain `lad-app.tenten.co`: Frontend API, all three email records and SSL are verified/issued. The production Frontend API responds over HTTPS.
+- Added the four Clerk DNS-only CNAMEs. Preserved per-record flattening for all 90 existing DNS-only CNAMEs, verified that all 202 existing DNS records retained their names, values, TTLs and proxy settings, then disabled zone-wide CNAME flattening. Existing 16 proxied CNAMEs were unchanged. Backups and the verification receipt remain local. The temporary scoped Cloudflare token was revoked and its secret file removed after setup.
+- Removed the unused, unverified `lad-pocket.vercel.app` proxy domain from Clerk after the custom domain became verified. Only the verified primary domain remains; this did not modify the Maggie HTML deployment.
 - Google Cloud authentication is complete. Creating a dedicated project was blocked by the account's project limit. The inspected existing projects belong to other products; their OAuth brands and clients were not changed.
 - Configured Clerk native iOS app: team `RTK85AV2H2`, bundle `com.tenten.deepspaceledger`, redirects `deep-space-ledger://sso-callback` and `com.tenten.deepspaceledger://callback`.
 - Confirmed the Apple App ID already has `APPLE_ID_AUTH` with primary app consent.
 - After the owner signed in to Apple Developer, created Sign in with Apple key `32FPF2MRV9` and Services ID `com.tenten.deepspaceledger.web`. Bound the Services ID to the existing primary App ID and Clerk callback. Clerk now shows Apple as **Used for sign-in**.
-- Registered Apple private relay email source `bounces+116179987@clkmail.lad-app.tenten.co`; SPF verification still awaits the Clerk DNS records.
+- Registered Apple private relay email source `bounces+116179987@clkmail.lad-app.tenten.co` and reran SPF verification after DNS propagated.
 - Stored all Apple server credentials in Vercel production and enabled the Apple sign-in build flag in Vercel/EAS production. The Web/API deployment includes these changes; a new iOS build and actual Apple sign-in/revocation QA are still pending.
 - Fixed stale Expo export caching that retained the disabled Apple flag after the environment changed. Web and iOS verification exports now clear the bundler cache.
 - Fixed a production `/api/sync` crash caused by TypeScript aliases left in compiled Node code. Shared domain modules now use relative imports; the prebuilt verifier loads and invokes both unauthenticated API entry points.
@@ -31,26 +32,31 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 | Sync/account unauthenticated boundaries | Passed: 401 / 405 / 401 as applicable |
 | Sync/account invalid token | Both 401 `token_invalid` |
 | iOS Hermes export | Passed; 8.6 MiB and original-design background present |
-| Production sign-in, sync round-trip, permanent deletion | Pending DNS/OAuth and real sign-in |
+| Production sign-in, sync round-trip, permanent deletion | Web Email/password reaches Client Trust email verification; waiting for owner’s verification code. OAuth and authenticated data tests are pending |
 | App Store submission preflight | Blocked; no new iOS build or review submission started |
 
-The development-session cloud smoke script cannot create a production Clerk session: Clerk returned `request_invalid_for_environment`. Its temporary user was removed. Production Clerk users and Neon snapshots were both checked at 0. This is not recorded as a passed authenticated production test.
+The development-session cloud smoke script cannot create a production Clerk session: Clerk returned `request_invalid_for_environment`. Its temporary user was removed. Before the later Email/password QA account was created, production Clerk users and Neon snapshots were both checked at 0. This is not recorded as a passed authenticated production test.
 
 Verified deployment: `dpl_6iXEtj2fVFsjcBBBpzbqmFABoVuf`, build `79bf378dae33`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
 
 ## Remaining work requiring access or facts
 
-1. Resolve Cloudflare's existing `flatten_all_cnames` setting, then verify Clerk DNS and SSL. The four App records are installed. The zone contains 106 other CNAME records, including 90 DNS-only records. A DNS export, CNAME inventory, zone-settings backup and plan to preserve the 90 records' flattening behavior were saved locally. A dashboard API batch attempt returned HTTP 403. The subsequent scoped, same-day API-token creation flow redirected to sign-in before returning a credential. No successful batch or global-setting change was observed. Reauthenticate and check for a token named `Lad App DNS setup 2026-10-07 temporary` before attempting token creation again; revoke any temporary token after the DNS work.
-2. Apple Developer and Google Cloud authentication are complete. Google Cloud (`service@tenten.co`) cannot create another project until its project limit is resolved. The user was asked whether to retain Google sign-in pending a dedicated project or use Apple and Email for the initial release; no product change has been made. After DNS is verified, recheck Apple relay SPF and test Apple sign-in/revocation. Cloudflare requires sign-in again, and its page has been handed to the owner.
-3. Confirm the legal basis for the third-party game, character and activity content before answering Apple's Content Rights declaration. The user was asked; no declaration has been made on their behalf.
-4. Resolve the `domain_not_owned` response before connecting `lad-app.tenten.co` to Vercel. The `.vercel.app` API endpoint is already deployed.
-5. Resolve the old exposed development credentials and release attestation. The new production database and Clerk instance do not reuse them, but old credentials have not been revoked.
-6. Finish actual production login, upload/download, conflict handling, sign-out/re-login and permanent deletion including Apple revocation. Create and verify a dedicated reviewer account; do not commit its password.
-7. Recheck all App Store declarations, including EU DSA status, with the authenticated account. Build a new production iOS binary, upload it, select it for 1.0.0, populate review credentials/notes and submit App Review. User authorization to do this is already granted.
+1. Google Cloud (`service@tenten.co`) cannot create another project until its project limit is resolved. The user was asked whether to retain Google sign-in pending a dedicated project or use Apple and Email for the initial release; no product change has been made. Google project capacity is needed for Google OAuth credentials, not for Apple App Review itself.
+2. Finish actual production login, upload/download, conflict handling, sign-out/re-login and permanent deletion including Apple revocation. A disposable production Email/password QA account reaches the real Client Trust verification screen. The owner was asked for its emailed code. Native OAuth still needs device QA.
+3. Create and verify a dedicated reviewer account with a workable Client Trust/MFA path; do not commit its password. The disposable QA account is not the reviewer account.
+4. Resolve old exposed development credentials and the release attestation. The new production database and Clerk instance do not reuse them, but old credentials have not been revoked.
+5. Apple Business confirms the Free Apps Agreement is active and DSA status is not yet declared. The owner was asked to confirm whether this is a noncommercial hobby app, commercial activity, or an initial release excluding the EU. No DSA answer has been selected. The Paid Apps Agreement is not needed for the current free app with no purchases.
+6. Build a new production iOS binary, upload it, select it for 1.0.0, populate review credentials/notes and submit App Review. User authorization to do this is already granted.
+
+## Content rights and Web domain
+
+On 2026-10-07 the owner confirmed that no game character or event assets are used. The actual release icon, header mark, onboarding image and generic star-field backgrounds were reviewed; see [asset review](APP_ASSET_REVIEW.md). App Store Connect now saves “No, this app does not contain, show, or access third-party content”; a subsequent API read confirmed `DOES_NOT_USE_THIRD_PARTY_CONTENT`. The public API’s attempted update returned 409, so the supported App Store Connect UI was used and saved successfully.
+
+`lad-app.tenten.co` was attached to `deep-space-ledger-app` through Vercel’s project-domain flow, with the required `_vercel.tenten.co` TXT ownership challenge. Vercel confirms `verified: true` and `misconfigured: false`. The DNS-only CNAME points to the project’s recommended `70e4c0399b104308.vercel-dns-016.com`; HTTPS serves the membership page and Clerk loads successfully. The native API URL remains the independently deployed `.vercel.app` endpoint.
 
 ## Clerk DNS records
 
-All four records were added to the `tenten.co` zone as DNS-only CNAMEs. Verification is still blocked by zone-wide CNAME flattening. Cloudflare documents that this global setting cannot be overridden per record; see [CNAME flattening setup](https://developers.cloudflare.com/dns/cname-flattening/set-up-cname-flattening/). Do not treat successful record creation as successful Clerk verification.
+All four records are DNS-only, answer as CNAMEs and are verified by Clerk. The existing zone-wide flattening behavior was preserved per record for other DNS-only CNAMEs before changing the global setting; see [CNAME flattening setup](https://developers.cloudflare.com/dns/cname-flattening/set-up-cname-flattening/).
 
 | Type | Name | Value |
 | --- | --- | --- |

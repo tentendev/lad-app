@@ -66,7 +66,7 @@ requireCondition(/^[A-Z0-9]{10}$/.test(publicValue("APPLE_KEY_ID")), "Vercel pro
 requireCondition(publicValue("APPLE_PRIVATE_KEY").includes("BEGIN PRIVATE KEY"), "Vercel production 缺少 Sign in with Apple .p8 private key。");
 requireCondition(publicValue("APPLE_NATIVE_CLIENT_ID") === bundleIdentifier, "APPLE_NATIVE_CLIENT_ID 必須與 iOS bundle identifier 相同。");
 requireCondition(Boolean(publicValue("APPLE_WEB_CLIENT_ID")), "Web 同時提供 Apple 登入時，必須設定 APPLE_WEB_CLIENT_ID（Services ID）。");
-requireCondition(["licensed", "removed"].includes(publicValue("APPLE_CONTENT_RIGHTS_STATUS")), "第三方遊戲／角色／活動內容必須有上架授權（licensed）或自送審版移除（removed）。");
+requireCondition(["licensed", "removed", "not_used"].includes(publicValue("APPLE_CONTENT_RIGHTS_STATUS")), "確認第三方內容狀態：已授權（licensed）、已移除（removed），或經擁有者確認及素材盤點未使用（not_used）。");
 requireCondition(metadata.apple?.version === expo.version, "store.config.json 的 Apple version 必須與 app.json version 一致。");
 requireCondition(info.title === expo.name, "App Store 繁中 title 必須與安裝名稱一致。");
 requireCondition(typeof info.title === "string" && [...info.title].length <= 30, "App Store title 不可超過 30 個字元。");

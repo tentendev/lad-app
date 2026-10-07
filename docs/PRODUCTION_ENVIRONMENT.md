@@ -36,7 +36,7 @@ Server only：
 
 Clerk production instance：
 
-Production instance 為 `ins_3K9Bp4mNXHEd1vJdBIksRwBE0hr`（app `app_3HsU8GmAoCcKIzyTkwh4PjQxp0S`）。2026-10-07 已新增自訂 domain `lad-app.tenten.co`，Frontend API 為 `clerk.lad-app.tenten.co`，DNS 與 Email 仍未驗證。已建立 iOS native app `RTK85AV2H2 / com.tenten.deepspaceledger`，並確認 `deep-space-ledger://sso-callback` 與自動建立的 `com.tenten.deepspaceledger://callback`。
+Production instance 為 `ins_3K9Bp4mNXHEd1vJdBIksRwBE0hr`（app `app_3HsU8GmAoCcKIzyTkwh4PjQxp0S`）。2026-10-07 已新增自訂 domain `lad-app.tenten.co`，Frontend API 為 `clerk.lad-app.tenten.co`，DNS、Email 三筆紀錄與 SSL 均已驗證／簽發。已建立 iOS native app `RTK85AV2H2 / com.tenten.deepspaceledger`，並確認 `deep-space-ledger://sso-callback` 與自動建立的 `com.tenten.deepspaceledger://callback`。
 
 - 正式 domain 與 `pk_live_`／`sk_live_`
 - Native application：Apple Team ID + Bundle ID
@@ -66,7 +66,7 @@ Vercel：
 - `CLERK_NATIVE_APP_CONFIGURED=true`
 - `CLERK_GOOGLE_OAUTH_CONFIGURED=true`
 - `CLERK_APPLE_OAUTH_CONFIGURED=true`
-- `APPLE_CONTENT_RIGHTS_STATUS=licensed` 或 `removed`
+- `APPLE_CONTENT_RIGHTS_STATUS=licensed`、`removed` 或 `not_used`（擁有者確認未使用，且完成素材盤點）
 
 這些不是密鑰，只是擁有者完成平台設定與權利確認後的 release attestation；不得在尚未完成時提前填 true。
 
@@ -77,7 +77,9 @@ Vercel：
 - Neon：全新專案 `frosty-shape-90805190`（LadApp App Store Production），新加坡、Postgres 18、database `lad_app`。沒有沿用舊 LadApp 的憑證或資料。
 - Vercel Production 已存正式 Clerk / Neon sensitive variables；公開 build 值、authorized parties、Apple Team ID / native client ID 已配置。Apple key `32FPF2MRV9`、private key 與 Web Services ID `com.tenten.deepspaceledger.web` 已保存並部署至正式 API。
 - 舊開發環境曾暴露的憑證尚未撤銷，`PRODUCTION_SECRETS_ROTATED` 未勾選。
-- Apple Developer 與 Google Cloud 已由本人完成登入，Apple connection 已在 Clerk 啟用供登入／註冊。四筆 Clerk DNS-only CNAME 已加入 Cloudflare，但 `tenten.co` 既有的全域 CNAME flattening 使 Clerk 無法驗證；尚無成功變更全域設定或原有紀錄的結果。Cloudflare 在臨時 API token 建立流程中要求重新登入。Google Cloud 建立專用專案遭專案數量上限阻擋，其他產品的 OAuth 設定未變更，首版登入方案待使用者選擇。自訂 Web domain 加入 Vercel 回傳 `domain_not_owned`，尚待 DNS 所有權處理，不能稱為已可用。
+- Apple Developer、Google Cloud 與 Cloudflare 已登入。Clerk 四筆 DNS 已驗證，SSL 已簽發；既有 90 筆 DNS-only CNAME 先保存個別 flattening 行為，再關閉全域 flattening，其他 DNS 名稱、值、TTL 與 proxy 均未變。DNS 臨時 token 已撤銷。
+- `lad-app.tenten.co` 已經 Vercel project-domain TXT challenge 驗證，CNAME 設定正確，正式 Web 會員頁可載入 Clerk。Google Cloud 專用專案仍受數量上限阻擋，其他產品 OAuth 未變更，首版登入方案待使用者選擇。
+- 使用者確認未使用角色／活動素材，素材盤點見 `docs/APP_ASSET_REVIEW.md`；App Store Connect Content Rights 已保存 `DOES_NOT_USE_THIRD_PARTY_CONTENT`。DSA 身分待擁有者回答。
 - 詳細驗收、DNS 清單與送審阻擋見 `docs/APP_STORE_SUBMISSION_STATUS.md`。
 
-Apple Services ID 綁定原有 primary App ID，回跳網址為 `https://clerk.lad-app.tenten.co/v1/oauth_callback`。Private relay email source 已註冊，SPF 仍待 DNS；`CLERK_APPLE_OAUTH_CONFIGURED` 驗收旗標尚未勾選。私鑰以 0600 權限另存 gitignored `credentials/apple-sign-in/` 作為不可重新下載的備份。
+Apple Services ID 綁定原有 primary App ID，回跳網址為 `https://clerk.lad-app.tenten.co/v1/oauth_callback`。Private relay email source 已註冊，DNS 完成後已重新執行 SPF 驗證；`CLERK_APPLE_OAUTH_CONFIGURED` 驗收旗標尚未勾選。私鑰以 0600 權限另存 gitignored `credentials/apple-sign-in/` 作為不可重新下載的備份。

@@ -59,7 +59,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 
 ## 正式送審前仍需確認的項目
 
-- Content Rights 與第三方內容使用權證據
+- Content Rights 已於 2026-10-07 依擁有者確認與素材盤點完成；送審素材若變更，需重新檢查
 - EU DSA trader status（依實際營運狀態）
 - 正式登入／後端、demo 帳號及資料刪除實測
 - 選擇通過正式環境驗收的 production build
@@ -77,4 +77,6 @@ TestFlight 1.0.0 (4) 已由 Apple 處理為 `VALID`，外部狀態 `IN_BETA_TEST
 
 ## 2026-10-07 後續進度
 
-已建立獨立正式 Web／API、全新 Neon 資料庫與 Clerk native app，並修正及驗證同步 API 的 Node 啟動錯誤。正式網域 DNS 與 Google／Apple OAuth 仍需完成。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`，build 尚未選定，review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。
+已建立獨立正式 Web／API、全新 Neon 資料庫與 Clerk native app，並修正及驗證同步 API 的 Node 啟動錯誤。正式 DNS、Email、SSL 與自訂 Web 網域已完成；Apple connection 已設定，Google OAuth 與實際登入／備份／刪除驗收仍需完成。
+
+使用者確認未使用角色／活動素材；核對正式版素材後，App Store Connect Content Rights 已存為未使用第三方內容，見 [素材盤點](APP_ASSET_REVIEW.md)。Free Apps Agreement 為 Active，DSA 身分尚待擁有者回答。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`，build 尚未選定，review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。
