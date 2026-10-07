@@ -4,26 +4,14 @@ import * as AppleAuthentication from "expo-apple-authentication";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Image, Platform, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { useEmailPasswordAuth } from "@/auth/useEmailPasswordAuth";
 import { useNativeAppleSignIn } from "@/auth/useNativeAppleSignIn";
-import { APPLE_SIGN_IN_ENABLED, useSocialSignIn } from "@/auth/useSocialSignIn";
+import { APPLE_SIGN_IN_ENABLED } from "@/auth/useSocialSignIn";
 import { signInMethodLabel, validatePasswordChange, validateProfileName } from "@/features/account/accountProfile";
 import { useAccountModel } from "@/features/account/useAccountModel";
 import { NativePage } from "@/ui/NativePage";
-
-function GoogleMark() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" aria-hidden>
-      <Path fill="#4285f4" d="M21.6 12.23c0-.71-.06-1.24-.2-1.79H12v3.42h5.52a4.72 4.72 0 0 1-2.05 3.02l2.98 2.31c1.91-1.77 2.96-4.37 2.96-7.09Z" />
-      <Path fill="#34a853" d="M12 22c2.74 0 5.04-.9 6.72-2.46l-3.2-2.48c-.86.58-2.02.99-3.52.99-2.64 0-4.88-1.78-5.68-4.25l-3.25 2.51A10.15 10.15 0 0 0 12 22Z" />
-      <Path fill="#fbbc05" d="M6.32 13.8A6.1 6.1 0 0 1 6 11.87c0-.67.12-1.31.31-1.92L3.07 7.43A10.06 10.06 0 0 0 2 11.87c0 1.61.39 3.13 1.07 4.44l3.25-2.51Z" />
-      <Path fill="#ea4335" d="M12 5.7c1.91 0 3.2.83 3.94 1.52l2.85-2.79A9.58 9.58 0 0 0 12 1.75a10.15 10.15 0 0 0-8.93 5.68l3.24 2.52C7.12 7.48 9.36 5.7 12 5.7Z" />
-    </Svg>
-  );
-}
 
 function dateLabel(value: string | null): string {
   return value ? new Date(value).toLocaleString("zh-TW") : "尚未建立";
@@ -42,7 +30,6 @@ function AuthField({ children, label }: { children: JSX.Element; label: string }
 
 function SignedOutAuthCard(): JSX.Element {
   const emailAuth = useEmailPasswordAuth();
-  const socialAuth = useSocialSignIn();
   const appleAuth = useNativeAppleSignIn();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -51,7 +38,7 @@ function SignedOutAuthCard(): JSX.Element {
   const [code, setCode] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
-  const busy = emailAuth.submitting || socialAuth.submitting !== null || appleAuth.submitting;
+  const busy = emailAuth.submitting || appleAuth.submitting;
 
   function validateEmailAddress(): string | null {
     if (!email.trim()) return "請輸入 Email。";
@@ -114,7 +101,7 @@ function SignedOutAuthCard(): JSX.Element {
     await emailAuth.returnToForm();
   }
 
-  const displayedError = formError ?? emailAuth.error ?? socialAuth.error ?? appleAuth.error;
+  const displayedError = formError ?? emailAuth.error ?? appleAuth.error;
 
   return (
     <Card className="gap-4 border border-white/50 bg-glass p-5">
@@ -156,7 +143,6 @@ function SignedOutAuthCard(): JSX.Element {
 
           <View className="flex-row items-center gap-3"><View className="h-px flex-1 bg-white/20" /><Typography className="type-label text-muted">或</Typography><View className="h-px flex-1 bg-white/20" /></View>
 
-          <Button variant="outline" size="lg" isDisabled={busy} onPress={() => void socialAuth.signIn("oauth_google")}><GoogleMark /><Button.Label>{socialAuth.submitting === "oauth_google" ? "正在開啟 Google…" : "使用 Google 繼續"}</Button.Label></Button>
           {APPLE_SIGN_IN_ENABLED && Platform.OS === "ios" ? (
             <View pointerEvents={busy ? "none" : "auto"} style={{ opacity: busy ? 0.55 : 1 }}>
               <AppleAuthentication.AppleAuthenticationButton
@@ -304,7 +290,7 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
         <View>
           <SecurityRow label="主要 Email" detail={email} state={emailVerified ? "已驗證" : "待驗證"} positive={emailVerified} />
           <SecurityRow label="兩步驟驗證" detail="登入新裝置時提高帳號安全性" state={user.twoFactorEnabled ? "已啟用" : "未啟用"} positive={user.twoFactorEnabled} />
-          <SecurityRow label="密碼登入" detail={user.passwordEnabled ? "可以在這裡更新密碼" : "目前由 Google 或 Apple 管理登入"} state={user.passwordEnabled ? "已設定" : "未使用"} positive={user.passwordEnabled} />
+          <SecurityRow label="密碼登入" detail={user.passwordEnabled ? "可以在這裡更新密碼" : "目前由 Apple 管理登入"} state={user.passwordEnabled ? "已設定" : "未使用"} positive={user.passwordEnabled} />
         </View>
 
         {user.passwordEnabled ? (

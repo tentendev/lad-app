@@ -25,7 +25,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 
 > 深空省省的排期、錢包與換算主要功能不需要登入。開啟 App 後可直接使用。  
 > 會員入口位於各主要頁面右上方「登入／註冊」，頁面底部也有「會員中心」連結。登入後才會顯示使用者主動操作的私人雲端備份。App 不會自動上傳或跨裝置覆寫資料。  
-> Google 與 Sign in with Apple 均由 Clerk 提供。會員中心可編輯姓名、更新密碼（Email/password 帳號）、登出、只刪除雲端備份，或永久刪除會員帳號與雲端備份。永久刪除位於會員中心底部「帳號管理」，不需要聯絡客服。  
+> Email／密碼與 Sign in with Apple 由 Clerk 提供。會員中心可編輯姓名、更新密碼（Email/password 帳號）、登出、只刪除雲端備份，或永久刪除會員帳號與雲端備份。永久刪除位於會員中心底部「帳號管理」，不需要聯絡客服。
 > Privacy Policy、Support 與 Privacy Choices 均可在 App 內頁尾開啟，並有相同的公開 HTTPS 網址。  
 > 本版本免費，沒有廣告、App Tracking Transparency、App 內購買或訂閱。
 
@@ -60,7 +60,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 ## 正式送審前仍需確認的項目
 
 - Content Rights 已於 2026-10-07 依擁有者確認與素材盤點完成；送審素材若變更，需重新檢查
-- EU DSA trader status（依實際營運狀態）
+- EU DSA 已依擁有者確認填為非商業經營者
 - 正式登入／後端、demo 帳號及資料刪除實測
 - 選擇通過正式環境驗收的 production build
 
@@ -77,6 +77,6 @@ TestFlight 1.0.0 (4) 已由 Apple 處理為 `VALID`，外部狀態 `IN_BETA_TEST
 
 ## 2026-10-07 後續進度
 
-已建立獨立正式 Web／API、全新 Neon 資料庫與 Clerk native app，並修正及驗證同步 API 的 Node 啟動錯誤。正式 DNS、Email、SSL 與自訂 Web 網域已完成；Apple connection 已設定，Google OAuth 與實際登入／備份／刪除驗收仍需完成。
+已建立獨立正式 Web／API、全新 Neon 資料庫與 Clerk native app，並修正及驗證同步 API 的 Node 啟動錯誤。正式 DNS、Email、SSL 與自訂 Web 網域已完成；Apple connection 已設定，首版依使用者指示移除 Google 登入，Email 登入、備份上傳／下載、衝突處理、登出／再次登入、只刪雲端與永久帳號刪除已通過正式驗收；Apple native 登入與撤銷仍待實機驗收。
 
-使用者確認未使用角色／活動素材；核對正式版素材後，App Store Connect Content Rights 已存為未使用第三方內容，見 [素材盤點](APP_ASSET_REVIEW.md)。Free Apps Agreement 為 Active，DSA 身分尚待擁有者回答。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`，build 尚未選定，review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。
+使用者確認未使用角色／活動素材；核對正式版素材後，App Store Connect Content Rights 已存為未使用第三方內容，見 [素材盤點](APP_ASSET_REVIEW.md)。Free Apps Agreement 為 Active，DSA 已依擁有者確認填為非商業經營者，Apple 顯示已完成。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`，build 尚未選定，review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。

@@ -45,7 +45,7 @@ const iosPlugins = new Set((expo.plugins ?? []).map((plugin) => Array.isArray(pl
 requireCondition(/^\d+$/.test(String(ascAppId)), "建立 App Store Connect app record 後，把數字 Apple ID 寫入 eas.submit.production.ios.ascAppId。");
 requireCondition(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(projectId), "尚未連結 Expo EAS project；登入 Expo 後執行 eas init。");
 requireCondition(/^pk_live_/.test(publicValue("EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY")), "production build 必須使用 Clerk production publishable key（pk_live_），不可沿用 test instance。");
-requireCondition(publicValue("EXPO_PUBLIC_ENABLE_APPLE_SIGN_IN") === "true", "保留 Google 登入時，production 必須啟用 Apple 登入並完成 Clerk／Apple 設定。");
+requireCondition(publicValue("EXPO_PUBLIC_ENABLE_APPLE_SIGN_IN") === "true", "production 必須啟用首版提供的 Apple 登入並完成 Clerk／Apple 設定。");
 requireCondition(expo.ios?.usesAppleSignIn === true, "app.json 必須啟用 ios.usesAppleSignIn。");
 requireCondition(iosPlugins.has("expo-apple-authentication"), "app.json 必須包含 expo-apple-authentication plugin。");
 for (const dependency of ["@clerk/expo", "expo-apple-authentication", "expo-crypto", "expo-secure-store"]) {
@@ -59,7 +59,6 @@ requireCondition(/^sk_live_/.test(publicValue("CLERK_SECRET_KEY")), "Vercel prod
 requireCondition(/^postgres(ql)?:\/\//.test(publicValue("DATABASE_URL")), "請提供輪替後的 Neon production DATABASE_URL 供 server preflight 驗證。");
 requireCondition(publicValue("PRODUCTION_SECRETS_ROTATED") === "true", "先輪替曾暴露的 Clerk／Neon credentials，再設定 PRODUCTION_SECRETS_ROTATED=true。");
 requireCondition(publicValue("CLERK_NATIVE_APP_CONFIGURED") === "true", "完成 Clerk production Native application（Team ID／Bundle ID／redirect allowlist）後再確認旗標。");
-requireCondition(publicValue("CLERK_GOOGLE_OAUTH_CONFIGURED") === "true", "完成 Clerk production Google OAuth 與實機測試後再確認旗標。");
 requireCondition(publicValue("CLERK_APPLE_OAUTH_CONFIGURED") === "true", "完成 Clerk production Sign in with Apple 與實機測試後再確認旗標。");
 requireCondition(/^[A-Z0-9]{10}$/.test(publicValue("APPLE_TEAM_ID")), "Vercel production 缺少有效 APPLE_TEAM_ID。");
 requireCondition(/^[A-Z0-9]{10}$/.test(publicValue("APPLE_KEY_ID")), "Vercel production 缺少有效 APPLE_KEY_ID。");

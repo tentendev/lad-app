@@ -1,6 +1,14 @@
 # Production Dependency Security Review
 
-Review date: 2026-09-17
+Review date: 2026-10-07
+
+## 2026-10-07 production release review
+
+- Updated Expo and the SDK 57 packages to Expo Doctor's compatible patch versions.
+- Updated `shell-quote` to 1.12.0, removing the critical [command-injection advisory](https://github.com/advisories/GHSA-pqg4-j6r4-53mv), and `source-map-js` to 1.2.2, removing [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q).
+- Updated the compatible Clerk JS dependency to 6.38.0. Its dependency graph no longer includes Solana, jayson or stream-json. All three stream-json advisories are absent, and the previous stream-json exposure exception was removed from the audit gate.
+- Reviewed [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm). There is no fixed `braces` release. `npm ls braces --omit=dev --all --json` reports only `expo → @expo/metro → metro-file-map → micromatch → braces`. Metro's watcher matches repository-controlled glob configuration; the App and API do not parse user-supplied glob patterns. The audit accepts this build-tool exposure only while that exact dependency path remains and App/API source has no braces, micromatch or metro-file-map imports. Untrusted build configuration remains prohibited. This is an exposure assessment, not an upstream fix.
+- The current audit has 33 transitive findings, five reviewed root advisories, and zero critical findings. Existing image-size, uuid and node-forge limitations remain below. New advisories, critical findings, changed guarded dependency paths and invalid audit responses block release.
 
 ## 2026-10-03 synchronization review
 
@@ -8,7 +16,7 @@ Review date: 2026-09-17
 - Updated compatible `brace-expansion` copies to remove the newly reported recursion and quadratic expansion denial-of-service advisories (`GHSA-q2hr-2g5m-vwhr`, `GHSA-qhr7-859c-m2p7`, `GHSA-6j4f-fj2g-mc7p`).
 - Reviewed [GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv), node-forge RSA signature verification with extra nested ASN.1 elements. No patched version is available. `npm ls node-forge --omit=dev --json` confines every path to Expo → Expo CLI, directly or through its code-signing certificate helper. This app has no `expo-updates` client, takes no certificates or keys from users, and its app/API code does not import forge or Expo's certificate helper. The helper signs locally generated developer manifests and validates locally supplied signing material; native release signing uses Apple/EAS, and authentication uses Clerk/Jose rather than forge. The audit allows this tooling-only exposure only while those dependency and source conditions hold. This records exposure, not a fix to the upstream library; continue to use trusted build/signing inputs and remove the exception when upstream is fixed.
 
-`npm audit --omit=dev` currently expands four reviewed advisory URLs through the Expo／React Native／Clerk dependency graph and reports 30 affected dependency entries (0 critical). The count does not represent 30 independent exploitable flaws.
+At that review, `npm audit --omit=dev` reported 30 affected dependency entries (0 critical). These transitive counts do not represent independent exploitable flaws; the current result is recorded above.
 
 ## Reviewed root advisories
 
@@ -27,7 +35,7 @@ Review date: 2026-09-17
 
 ## Automated gate
 
-`npm run security:audit` allows only the reviewed advisory URLs above (with an import/exposure guard for stream-json) and fails on any new root advisory or critical finding. An allowlist is a review record, not a claim that the upstream issue is fixed.
+`npm run security:audit` allows only the current reviewed advisory URLs (with dependency/import exposure guards for braces and node-forge) and fails on any new root advisory or critical finding. An allowlist is a review record, not a claim that the upstream issue is fixed.
 
 
 ## 2026-09-17 release review

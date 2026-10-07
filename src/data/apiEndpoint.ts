@@ -1,6 +1,5 @@
 export function apiEndpoint(path: string): string {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const configured = process.env.EXPO_PUBLIC_SYNC_API_URL?.replace(/\/$/, "");
-  if (configured) return `${configured}${normalizedPath}`;
-  return normalizedPath;
+  // Web deployments serve their API on the same origin, including custom domains.
+  // The configured absolute URL is used by apiEndpoint.native.ts only.
+  return path.startsWith("/") ? path : `/${path}`;
 }

@@ -12,7 +12,7 @@
 - `EXPO_PUBLIC_LEGAL_ENTITY_NAME=Kuan Yu Chen`
 - `EXPO_PUBLIC_SUPPORT_EMAIL=dev@tenten.co`
 
-2026-10-07 已將正式 Clerk publishable key 與獨立 API 網址設定至 EAS production。營運者與支援 Email 已在 2026-10-03 配置。Apple 登入開關已在 Apple 憑證與 Clerk connection 配置後設為 `true`；實際登入驗收仍等待正式 DNS。既有 TestFlight 1.0.0 (4) 不會因環境值更新而改變，仍需要新的正式 build。`lad-pocket.vercel.app` 保留 Maggie HTML prototype。
+2026-10-07 已將正式 Clerk publishable key 與獨立 API 網址設定至 EAS production。營運者與支援 Email 已在 2026-10-03 配置。Apple 登入開關已在 Apple 憑證與 Clerk connection 配置後設為 `true`；正式 DNS 已完成，正在驗收正式登入與資料控制流程。既有 TestFlight 1.0.0 (4) 不會因環境值更新而改變，仍需要新的正式 build。`lad-pocket.vercel.app` 保留 Maggie HTML prototype。
 
 ## Vercel Production
 
@@ -41,7 +41,7 @@ Production instance 為 `ins_3K9Bp4mNXHEd1vJdBIksRwBE0hr`（app `app_3HsU8GmAoCc
 - 正式 domain 與 `pk_live_`／`sk_live_`
 - Native application：Apple Team ID + Bundle ID
 - Mobile SSO redirect allowlist
-- Google OAuth production credentials
+- 首版僅 Email／密碼與 Apple；Google OAuth connection 已停用
 - Sign in with Apple connection、Services ID、private key
 - Email delivery、密碼規則、Client Trust／MFA 與 demo reviewer account 可用性
 
@@ -64,7 +64,6 @@ Vercel：
 
 - `PRODUCTION_SECRETS_ROTATED=true`
 - `CLERK_NATIVE_APP_CONFIGURED=true`
-- `CLERK_GOOGLE_OAUTH_CONFIGURED=true`
 - `CLERK_APPLE_OAUTH_CONFIGURED=true`
 - `APPLE_CONTENT_RIGHTS_STATUS=licensed`、`removed` 或 `not_used`（擁有者確認未使用，且完成素材盤點）
 
@@ -78,8 +77,8 @@ Vercel：
 - Vercel Production 已存正式 Clerk / Neon sensitive variables；公開 build 值、authorized parties、Apple Team ID / native client ID 已配置。Apple key `32FPF2MRV9`、private key 與 Web Services ID `com.tenten.deepspaceledger.web` 已保存並部署至正式 API。
 - 舊開發環境曾暴露的憑證尚未撤銷，`PRODUCTION_SECRETS_ROTATED` 未勾選。
 - Apple Developer、Google Cloud 與 Cloudflare 已登入。Clerk 四筆 DNS 已驗證，SSL 已簽發；既有 90 筆 DNS-only CNAME 先保存個別 flattening 行為，再關閉全域 flattening，其他 DNS 名稱、值、TTL 與 proxy 均未變。DNS 臨時 token 已撤銷。
-- `lad-app.tenten.co` 已經 Vercel project-domain TXT challenge 驗證，CNAME 設定正確，正式 Web 會員頁可載入 Clerk。Google Cloud 專用專案仍受數量上限阻擋，其他產品 OAuth 未變更，首版登入方案待使用者選擇。
-- 使用者確認未使用角色／活動素材，素材盤點見 `docs/APP_ASSET_REVIEW.md`；App Store Connect Content Rights 已保存 `DOES_NOT_USE_THIRD_PARTY_CONTENT`。DSA 身分待擁有者回答。
+- `lad-app.tenten.co` 已經 Vercel project-domain TXT challenge 驗證，CNAME 設定正確，正式 Web 會員頁可載入 Clerk。使用者確認首版不提供 Google 登入；Google connection 已停用，不需要 Google Cloud 專案或 OAuth 憑證。
+- 使用者確認未使用角色／活動素材，素材盤點見 `docs/APP_ASSET_REVIEW.md`；App Store Connect Content Rights 已保存 `DOES_NOT_USE_THIRD_PARTY_CONTENT`。DSA 已依擁有者確認的個人非商業作品填為非 trader，Apple 顯示合規要求已完成。
 - 詳細驗收、DNS 清單與送審阻擋見 `docs/APP_STORE_SUBMISSION_STATUS.md`。
 
 Apple Services ID 綁定原有 primary App ID，回跳網址為 `https://clerk.lad-app.tenten.co/v1/oauth_callback`。Private relay email source 已註冊，DNS 完成後已重新執行 SPF 驗證；`CLERK_APPLE_OAUTH_CONFIGURED` 驗收旗標尚未勾選。私鑰以 0600 權限另存 gitignored `credentials/apple-sign-in/` 作為不可重新下載的備份。

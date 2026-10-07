@@ -135,7 +135,7 @@ export default function AboutScreen(): JSX.Element {
       <Card className="gap-3 border border-white/50 bg-glass p-5">
         <Typography.Heading type="h4" className="type-title text-white">會員資料與刪除</Typography.Heading>
         <Typography.Paragraph className=" text-muted">
-          Google／Apple 登入由 Clerk 提供，會處理帳號識別、姓名與電子郵件。你可以在「會員中心」中管理個人資料、更新密碼、登出或永久刪除會員帳號與雲端備份；刪除帳號時，本機紀錄仍會保留。
+          Apple 登入由 Clerk 提供，會處理帳號識別、姓名與電子郵件。你可以在「會員中心」中管理個人資料、更新密碼、登出或永久刪除會員帳號與雲端備份；刪除帳號時，本機紀錄仍會保留。
         </Typography.Paragraph>
       </Card>
 

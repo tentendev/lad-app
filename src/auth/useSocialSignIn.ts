@@ -8,7 +8,7 @@ import { Platform } from "react-native";
 
 import { isCurrentWebAuthOffline, OFFLINE_AUTH_MESSAGE } from "./networkAvailability";
 
-export type SocialStrategy = "oauth_google" | "oauth_apple";
+export type SocialStrategy = "oauth_apple";
 export const APPLE_SIGN_IN_ENABLED = process.env.EXPO_PUBLIC_ENABLE_APPLE_SIGN_IN === "true";
 
 WebBrowser.maybeCompleteAuthSession();

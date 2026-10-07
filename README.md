@@ -9,7 +9,7 @@
 - `/calculator`：鑽石、金券、官方返券、預留資源與禮包階梯換算，可帶入錢包；也能建立多活動抽卡規劃、切換情境、分享摘要、估算逐活動補足禮包或單輪限購可補上限，依截止日與每月存鑽預測全程缺口，並用每日資源進度校正預測。
 - `/tracker`：手動維護限定新池、復刻池與常駐池目前累計，提供 −1／+1／+10 快速調整、手動保證校正與 70/140 抽目標 handoff，保存五星抽數／結果／思念名稱，並提供單池線統計與 CSV 匯出。
 - `/about`：非官方定位、IP 免責、資料與隱私說明、本機 JSON 備份／還原（含排期男主篩選）與損壞資料救援檔。
-- `/account`：Clerk Email／密碼註冊與登入、Email 驗證、Google／原生 Apple 登入、個人資料與密碼管理、Neon 私人備份、衝突保護、離線狀態／重連恢復、登出、單獨刪除雲端備份與永久帳號刪除。
+- `/account`：Clerk Email／密碼註冊與登入、Email 驗證、原生 Apple 登入、個人資料與密碼管理、Neon 私人備份、衝突保護、離線狀態／重連恢復、登出、單獨刪除雲端備份與永久帳號刪除。
 - `/privacy`：App Store 可公開讀取的完整隱私政策、資料保留與刪除說明。
 - `/support`：App Store 支援網址、問題回報指引與會員／隱私入口。
 - PWA：安裝圖示、離線 app shell、五個主要工具路由、會員頁與分割 bundle 預快取。
@@ -75,7 +75,7 @@ npx serve dist
 ```text
 src/
 ├── app/                  Expo Router routes 與平台 layout
-├── auth/                 Clerk provider、Email／密碼與 Google／Apple custom flow
+├── auth/                 Clerk provider、Email／密碼與 Apple custom flow
 ├── data/                 禮包、排期、storage repository 與 cloud client
 ├── domain/               純 TypeScript 計算、驗證與格式化邏輯
 ├── features/             wallet、schedule、calculator、wish tracker renderer

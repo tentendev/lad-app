@@ -39,7 +39,7 @@ if (ios.privacyManifests?.NSPrivacyTracking !== false) {
   fail("the app must keep its no-tracking declaration.");
 }
 if (ios.usesAppleSignIn !== true) {
-  fail("Sign in with Apple entitlement must remain enabled while Google sign-in is offered.");
+  fail("Sign in with Apple entitlement must remain enabled for the Apple sign-in flow.");
 }
 const plugins = new Set((expo.plugins ?? []).map((plugin) => Array.isArray(plugin) ? plugin[0] : plugin));
 if (!plugins.has("expo-apple-authentication")) {

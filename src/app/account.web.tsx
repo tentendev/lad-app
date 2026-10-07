@@ -11,17 +11,6 @@ import { signInMethodLabel, validatePasswordChange, validateProfileName } from "
 import { useAccountModel } from "@/features/account/useAccountModel";
 import { WebPage } from "@/ui/WebPage.web";
 
-function GoogleMark() {
-  return (
-    <svg className="provider-mark" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="#4285f4" d="M21.6 12.23c0-.71-.06-1.24-.2-1.79H12v3.42h5.52a4.72 4.72 0 0 1-2.05 3.02l-.02.11 2.98 2.31.21.02c1.91-1.77 2.96-4.37 2.96-7.09Z" />
-      <path fill="#34a853" d="M12 22c2.74 0 5.04-.9 6.72-2.46l-3.2-2.48c-.86.58-2.02.99-3.52.99-2.64 0-4.88-1.78-5.68-4.25l-.11.01-3.1 2.4-.04.1A10.15 10.15 0 0 0 12 22Z" />
-      <path fill="#fbbc05" d="M6.32 13.8A6.1 6.1 0 0 1 6 11.87c0-.67.12-1.31.31-1.92v-.13L3.17 7.38l-.1.05A10.06 10.06 0 0 0 2 11.87c0 1.61.39 3.13 1.07 4.44l3.25-2.51Z" />
-      <path fill="#ea4335" d="M12 5.7c1.91 0 3.2.83 3.94 1.52l2.85-2.79A9.58 9.58 0 0 0 12 1.75a10.15 10.15 0 0 0-8.93 5.68l3.24 2.52C7.12 7.48 9.36 5.7 12 5.7Z" />
-    </svg>
-  );
-}
-
 function AppleMark() {
   return (
     <svg className="provider-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -249,9 +238,6 @@ function SignedOutAuthCard({ offline }: { offline: boolean }): JSX.Element {
 
           <div className="auth-divider"><span>或</span></div>
 
-          <Button fullWidth size="lg" variant="outline" isDisabled={busy} onPress={() => void socialAuth.signIn("oauth_google")}>
-            <GoogleMark />{socialAuth.submitting === "oauth_google" ? "正在開啟 Google…" : "使用 Google 繼續"}
-          </Button>
           {APPLE_SIGN_IN_ENABLED ? (
             <Button fullWidth size="lg" variant="outline" isDisabled={busy} onPress={() => void socialAuth.signIn("oauth_apple")}>
               <AppleMark />{socialAuth.submitting === "oauth_apple" ? "正在開啟 Apple…" : "使用 Apple 繼續"}
@@ -422,7 +408,7 @@ function SignedInMemberCards({ model, offline }: { model: AccountModel; offline:
         <div className="security-list" role="list">
           <div className="security-row" role="listitem"><div><strong>主要 Email</strong><span>{email}</span></div><span className={emailVerified ? "security-state good" : "security-state"}>{emailVerified ? "已驗證" : "待驗證"}</span></div>
           <div className="security-row" role="listitem"><div><strong>兩步驟驗證</strong><span>登入新裝置時提高帳號安全性</span></div><span className={user.twoFactorEnabled ? "security-state good" : "security-state"}>{user.twoFactorEnabled ? "已啟用" : "未啟用"}</span></div>
-          <div className="security-row" role="listitem"><div><strong>密碼登入</strong><span>{user.passwordEnabled ? "可以在這裡更新密碼" : "目前由 Google 或 Apple 管理登入"}</span></div><span className={user.passwordEnabled ? "security-state good" : "security-state"}>{user.passwordEnabled ? "已設定" : "未使用"}</span></div>
+          <div className="security-row" role="listitem"><div><strong>密碼登入</strong><span>{user.passwordEnabled ? "可以在這裡更新密碼" : "目前由 Apple 管理登入"}</span></div><span className={user.passwordEnabled ? "security-state good" : "security-state"}>{user.passwordEnabled ? "已設定" : "未使用"}</span></div>
         </div>
 
         {user.passwordEnabled ? (

@@ -8,21 +8,35 @@ const acceptedAdvisories = new Set([
   "https://github.com/advisories/GHSA-w5hq-g745-h8pq",
 ]);
 
-// This advisory affects path filters, which our only transitive consumer never
-// imports. Fail closed if that reviewed exposure changes (see security review).
-const streamAdvisory = "https://github.com/advisories/GHSA-528h-pc64-c93x";
-function sourceUsesStreamFilters(directory) {
+function sourceImports(directory, pattern) {
   return readdirSync(directory, { withFileTypes: true }).some(entry => {
     const file = path.join(directory, entry.name);
-    if (entry.isDirectory()) return sourceUsesStreamFilters(file);
-    return /\.[cm]?[jt]sx?$/.test(file) && /stream-json/.test(readFileSync(file, "utf8"));
+    if (entry.isDirectory()) return sourceImports(file, pattern);
+    return /\.[cm]?[jt]sx?$/.test(file) && pattern.test(readFileSync(file, "utf8"));
   });
 }
-const jayson = readFileSync("node_modules/jayson/lib/utils.js", "utf8");
-const imports = [...jayson.matchAll(/require\(['"](stream-json[^'"]*)['"]\)/g)].map(match => match[1]);
-if (imports.length === 2 && imports.every(value => ["stream-json/streamers/StreamValues", "stream-json/utils/Verifier"].includes(value))
-    && !sourceUsesStreamFilters("src") && !sourceUsesStreamFilters("api")) {
-  acceptedAdvisories.add(streamAdvisory);
+
+// braces has no fixed release. Its only production dependency consumer is
+// Metro's repository-controlled file watcher, not an app/API input parser.
+// A new dependency path or runtime import invalidates this exposure review.
+const bracesTree = spawnSync("npm", ["ls", "braces", "--omit=dev", "--all", "--json"], { encoding: "utf8" });
+let bracesOnlyInMetro = false;
+try {
+  const paths = [];
+  function findBraces(node, chain = []) {
+    for (const [name, dependency] of Object.entries(node.dependencies ?? {})) {
+      const next = [...chain, name];
+      if (name === "braces") paths.push(next);
+      findBraces(dependency, next);
+    }
+  }
+  findBraces(JSON.parse(bracesTree.stdout));
+  bracesOnlyInMetro = bracesTree.status === 0 && paths.length > 0 && paths.every(chain =>
+    chain.join("/") === "expo/@expo/metro/metro-file-map/micromatch/braces");
+} catch { /* An unreadable dependency tree must fail closed. */ }
+const globImports = /["'](?:braces|micromatch|metro-file-map)(?:[/'"])/;
+if (bracesOnlyInMetro && !sourceImports("src", globImports) && !sourceImports("api", globImports)) {
+  acceptedAdvisories.add("https://github.com/advisories/GHSA-vfj7-8cjw-p6xm");
 }
 
 // node-forge has no patched release. It is confined to Expo CLI certificate
@@ -62,6 +76,9 @@ const audit = spawnSync("npm", ["audit", "--omit=dev", "--json"], {
 let report;
 try {
   report = JSON.parse(audit.stdout);
+  if (report.error || !report.metadata?.vulnerabilities || !report.vulnerabilities) {
+    throw new Error("Incomplete audit report");
+  }
 } catch {
   console.error("Production dependency audit did not return valid JSON.");
   if (audit.stderr) console.error(audit.stderr.trim());

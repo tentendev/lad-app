@@ -107,7 +107,7 @@ export default function AboutScreen(): JSX.Element {
             <h2 id="about-privacy" className="trust-title">本機優先 · 雲端備份由你決定</h2>
             <p>未登入時，預算、花費、換算設定、抽卡規劃、五星紀錄與排期篩選只儲存在這個瀏覽器，不會送到深空省省的伺服器，也不會公開。</p>
             <p>登入後，你可以明確選擇把紀錄上傳至自己的 Neon 雲端備份。為避免跨裝置衝突，系統不會靜默覆寫；下載雲端資料前也會再次確認。</p>
-            <p>Google／Apple 登入由 Clerk 提供，會處理帳號識別、姓名與電子郵件。本工具不含廣告 SDK，也不做跨 App 追蹤。</p>
+            <p>Apple 登入由 Clerk 提供，會處理帳號識別、姓名與電子郵件。本工具不含廣告 SDK，也不做跨 App 追蹤。</p>
           </section>
 
           <section className="product-card card trust-card" aria-labelledby="about-account-delete">

@@ -22,7 +22,7 @@ export default function PrivacyScreen(): JSX.Element {
 
           <section className="product-card card trust-card"><h2 className="trust-title">適用範圍與營運者</h2><p>本政策適用於深空省省 App、公開網站、會員功能、雲端備份與支援聯絡。資料控制與營運者為 {PUBLIC_INFO.operatorName}；正式上架前會以同一法律實體名稱更新 App Store 與本頁。</p></section>
           <section className="product-card card trust-card"><h2 className="trust-title">本機資料</h2><p>未登入時，預算、花費、抽卡資源、備註、換算設定、抽卡規劃與五星紀錄只保存在你的裝置，不會自動上傳。移除 App、清除網站資料或裝置故障可能使這些資料消失。</p></section>
-          <section className="product-card card trust-card"><h2 className="trust-title">會員與登入資料</h2><p>建立會員或使用 Google／Apple 登入時，Clerk 會代表我們處理姓名、電子郵件、使用者識別碼、登入憑證與驗證狀態。為提供登入及防止濫用，Clerk、Vercel 或其基礎設施也可能處理 IP、裝置／瀏覽器資訊與必要請求紀錄。</p></section>
+          <section className="product-card card trust-card"><h2 className="trust-title">會員與登入資料</h2><p>建立會員或使用 Apple 登入時，Clerk 會代表我們處理姓名、電子郵件、使用者識別碼、登入憑證與驗證狀態。為提供登入及防止濫用，Clerk、Vercel 或其基礎設施也可能處理 IP、裝置／瀏覽器資訊與必要請求紀錄。</p></section>
           <section className="product-card card trust-card"><h2 className="trust-title">私人雲端備份</h2><p>只有在你點選上傳時，預算、花費、抽卡資源、備註、換算設定、抽卡規劃與五星紀錄才會經 Vercel API 儲存到 Neon，並以 Clerk 使用者識別碼隔離。系統不會自動讀取其他 App、付款卡、銀行帳戶或遊戲帳號。</p></section>
           <section className="product-card card trust-card"><h2 className="trust-title">處理目的</h2><p>資料只用於建立與保護會員、驗證登入、提供你主動選擇的私人備份／還原、處理版本衝突、回覆支援請求及履行適用的法律或安全義務。本 App 不含廣告 SDK、不出售個人資料，也不把資料用於跨 App 追蹤。</p></section>
           <section className="product-card card trust-card">
