@@ -12,6 +12,7 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 - Added and verified Clerk custom domain `lad-app.tenten.co`: Frontend API, all three email records and SSL are verified/issued. The production Frontend API responds over HTTPS.
 - Added the four Clerk DNS-only CNAMEs. Preserved per-record flattening for all 90 existing DNS-only CNAMEs, verified that all 202 existing DNS records retained their names, values, TTLs and proxy settings, then disabled zone-wide CNAME flattening. Existing 16 proxied CNAMEs were unchanged. Backups and the verification receipt remain local. The temporary scoped Cloudflare token was revoked and its secret file removed after setup.
 - Removed the unused, unverified `lad-pocket.vercel.app` proxy domain from Clerk after the custom domain became verified. Only the verified primary domain remains; this did not modify the Maggie HTML deployment.
+- Saved DSA non-trader status following the owner’s confirmation that this is a personal noncommercial work. Apple shows all current regulatory requirements complete; the Free Apps Agreement is active.
 - The owner confirmed the first release uses Apple and Email/password only (including Gmail addresses). Removed Google sign-in from Web/native UI and disabled its Clerk production connection. No Google Cloud project is required.
 - Configured Clerk native iOS app: team `RTK85AV2H2`, bundle `com.tenten.deepspaceledger`, redirects `deep-space-ledger://sso-callback` and `com.tenten.deepspaceledger://callback`.
 - Confirmed the Apple App ID already has `APPLE_ID_AUTH` with primary app consent.
@@ -35,20 +36,20 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 | iOS Hermes export | Passed; 8.6 MiB and original-design background present |
 | Production Email/password, sync and deletion | Passed: real password + emailed Client Trust code, upload/download, stale revision 409, sign-out/re-login, cloud-only deletion and permanent account deletion. Clerk user is gone and its Neon row count is 0 |
 | Dependency / SDK verification | Expo Doctor 21/21; 0 critical and 5 reviewed root advisories; see dependency security review |
-| App Store submission preflight | Blocked on remaining attestations; production build 5 is in progress, App Review not submitted |
+| App Store submission preflight | Blocked on remaining attestations; production build 5 uploaded, App Review not submitted |
 
 The development-session cloud smoke script cannot create a production Clerk session: Clerk returned `request_invalid_for_environment`. Its temporary user was removed. Before the later Email/password QA account was created, production Clerk users and Neon snapshots were both checked at 0. This is not recorded as a passed authenticated production test.
 
 Verified deployment: `dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6`, build `834b812e1f56`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
 
-## Remaining work requiring access or facts
+## Remaining work
 
-1. Apple native sign-in and revocation need final device QA. Google sign-in is outside this release.
-2. Web Email/password and the complete data-control flow passed on the deployed production App. The disposable QA account was permanently deleted, confirmed by Clerk 404 and zero matching Neon snapshots. Apple sign-in and token revocation still need device QA.
-3. A dedicated verified production reviewer account has been created. Only this account has the supported per-user Client Trust exception so reviewers do not need access to the owner’s mailbox. Its unique password is stored in a restricted, gitignored local file. Actual demo login verification and entry into App Store Connect are pending. Normal users retain Client Trust.
-4. Resolve old exposed development credentials and the release attestation. The new production database and Clerk instance do not reuse them, but old credentials have not been revoked.
-5. Apple Business confirms the Free Apps Agreement is active. DSA is completed as non-trader following the owner’s explicit confirmation that this is a personal noncommercial work. Apple shows all current regulatory requirements complete. No Paid Apps Agreement is required for this free app without purchases.
-6. Production iOS 1.0.0 (5) is building in EAS (`26bd8bd2-8db0-49c2-b9b5-8ac04f8f1212`) from commit `28f4fde`. Upload it, complete native QA, select it for 1.0.0, populate review credentials/notes and submit App Review. User authorization to do this is already granted.
+1. Complete native Sign in with Apple, Hide My Email and deletion/token revocation QA on a physical device or the new TestFlight build. The owner’s iPhone was unavailable to the Mac. Google sign-in is outside this release.
+2. Verify the dedicated reviewer account in the App after the Clerk dependency update, then enter its credentials and final review notes into App Store Connect. Only the reviewer account has a supported per-user Client Trust exception; normal users retain Client Trust. Its unique password is stored in a restricted, gitignored local file.
+3. Revoke the old exposed development credentials. The old Clerk development key still returned HTTP 200 during verification. Production uses separate credentials, but `PRODUCTION_SECRETS_ROTATED` remains false. The requested rotation confirmation is pending because Neon explicitly requires confirmation before password reset.
+4. Link build 5 and submit App Review after the outstanding checks. Apple processing is complete (`VALID`), Core QA has access to all builds, and the build is `READY_FOR_BETA_TESTING` internally. Traditional Chinese TestFlight validation notes are saved. The upload API key cannot select a version build: Apple returned HTTP 403 `FORBIDDEN_ERROR`. Use the legitimate App Store Connect UI after browser access is restored; do not assume the build was selected. Production iOS `1.0.0 (5)` was built in EAS (`26bd8bd2-8db0-49c2-b9b5-8ac04f8f1212`) from commit `28f4fde`, passed IPA signature/entitlement and Apple validation checks, and was successfully uploaded. Delivery ID: `9778f835-2bfb-4130-bf03-da8749612aec`. User authorization to upload and submit is already granted.
+
+The previous browser task space no longer exists. The Ego browser skill requires asking before recovering with a new space; that confirmation is pending. No new browser space was created automatically. See the [QA record](../artifacts/2026-10-07-production/QA.md) and [release receipt](../artifacts/2026-10-07-production/release-receipt.json).
 
 ## Content rights and Web domain
 

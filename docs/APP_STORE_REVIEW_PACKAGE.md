@@ -79,4 +79,4 @@ TestFlight 1.0.0 (4) 已由 Apple 處理為 `VALID`，外部狀態 `IN_BETA_TEST
 
 已建立獨立正式 Web／API、全新 Neon 資料庫與 Clerk native app，並修正及驗證同步 API 的 Node 啟動錯誤。正式 DNS、Email、SSL 與自訂 Web 網域已完成；Apple connection 已設定，首版依使用者指示移除 Google 登入，Email 登入、備份上傳／下載、衝突處理、登出／再次登入、只刪雲端與永久帳號刪除已通過正式驗收；Apple native 登入與撤銷仍待實機驗收。
 
-使用者確認未使用角色／活動素材；核對正式版素材後，App Store Connect Content Rights 已存為未使用第三方內容，見 [素材盤點](APP_ASSET_REVIEW.md)。Free Apps Agreement 為 Active，DSA 已依擁有者確認填為非商業經營者，Apple 顯示已完成。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`，build 尚未選定，review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。
+使用者確認未使用角色／活動素材；核對正式版素材後，App Store Connect Content Rights 已存為未使用第三方內容，見 [素材盤點](APP_ASSET_REVIEW.md)。Free Apps Agreement 為 Active，DSA 已依擁有者確認填為非商業經營者，Apple 顯示已完成。正式 iOS 1.0.0 (5) 已建置、驗證及上傳，Apple 處理為 `VALID`，可供 Core QA 內部 TestFlight 驗收。Apple version 1.0.0 仍為 `PREPARE_FOR_SUBMISSION`；上傳用 API key 沒有選定 build 的權限（HTTP 403），需恢復 App Store Connect 瀏覽器介面後完成。review demo credentials 尚空白。詳細已完成項目與阻擋見 [送審狀態](APP_STORE_SUBMISSION_STATUS.md)。

@@ -37,5 +37,28 @@
     "sdk": "iphoneos26.5",
     "profileExpires": "2027-09-17T06:41:32",
     "sha256": "1e86fc36a0b178cac1d1457cca597fccceac9aa003821c2a6ec3bce1f9854547"
+  },
+  "appleUpload": {
+    "validated": true,
+    "uploaded": true,
+    "deliveryId": "9778f835-2bfb-4130-bf03-da8749612aec",
+    "uploadedAtTaipei": "2026-10-07T17:29:01+08:00",
+    "tool": "altool 26.40.1",
+    "processingState": "VALID"
+  },
+  "appleBuildId": "9778f835-2bfb-4130-bf03-da8749612aec",
+  "testFlightInternalState": "READY_FOR_BETA_TESTING",
+  "testFlightExternalState": "READY_FOR_BETA_SUBMISSION",
+  "betaNotesSaved": true,
+  "appStoreVersion": {
+    "id": "4fd0ee06-92fb-4072-bb01-2106fd65681e",
+    "state": "PREPARE_FOR_SUBMISSION",
+    "selectedBuild": null,
+    "releaseType": "MANUAL"
+  },
+  "buildSelection": {
+    "succeeded": false,
+    "status": 403,
+    "reason": "Existing upload API key does not allow selecting an App Store version build; authenticated App Store Connect UI required."
   }
 }
