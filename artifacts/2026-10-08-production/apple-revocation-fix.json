@@ -1,0 +1,40 @@
+{
+  "recordedAt": "2026-10-08T05:39:43.468Z",
+  "affectedBuild": "1.0.0 (5)",
+  "defect": "Native Clerk OAuth grant unavailable: oauth_missing_refresh_token",
+  "fix": {
+    "freshAuthorizationAtDeletion": true,
+    "appleSignedSubjectBoundToAuthenticatedClerkMember": true,
+    "nativeAudienceAndExpiryVerified": true,
+    "refreshTokenRevokedBeforeMutation": true,
+    "credentialsOnlyTransient": true,
+    "cancellationRequiresExplicitFallbackBeforeDeletion": true,
+    "deviceCredentialStateCheckedBeforeSuccess": true,
+    "emailAndLegacyWebDeletionPreserved": true
+  },
+  "verification": {
+    "lint": true,
+    "typecheck": true,
+    "scriptTests": 15,
+    "vitestTests": 160,
+    "expoDoctor": "21/21",
+    "dependencyAudit": {
+      "critical": 0,
+      "reviewedRootAdvisories": 5
+    },
+    "javascriptSyntaxFiles": 27,
+    "iosHermesMiB": 8.6,
+    "iosBuildPreflight": true,
+    "webExport": {
+      "passed": true,
+      "staticFiles": 89,
+      "webMiB": 5.8,
+      "buildId": "f94f21158670"
+    },
+    "compiledApiRuntime": true
+  },
+  "serverDeployment": "pending",
+  "replacementNativeBuild": "pending",
+  "nativeDeletionAndRevocationQAPassed": false,
+  "appReviewSubmitted": false
+}

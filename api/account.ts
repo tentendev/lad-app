@@ -2,7 +2,7 @@ import { createClerkClient } from "@clerk/backend";
 import { neon } from "@neondatabase/serverless";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-import { readAppleRevocationConfig, revokeAppleToken } from "./_lib/appleRevocation";
+import { AppleGrantError, appleAuthorizationCodeFromBody, readAppleRevocationConfig, revokeAppleToken, revokeNativeAppleAuthorization } from "./_lib/appleRevocation";
 import { AuthenticationError, requiredServerEnvironment, userIdFromRequest } from "./_lib/requestAuth";
 
 type AppleAuthorization = "not_connected" | "revoked" | "manual_required";
@@ -14,11 +14,21 @@ function isAppleProvider(provider: string): boolean {
 async function revokeAppleAuthorization(
   userId: string,
   clerk: ReturnType<typeof createClerkClient>,
+  authorizationCode?: string,
 ): Promise<AppleAuthorization> {
   const user = await clerk.users.getUser(userId);
-  if (!user.externalAccounts.some((account) => isAppleProvider(account.provider))) return "not_connected";
+  const appleAccounts = user.externalAccounts.filter((account) => isAppleProvider(account.provider));
+  if (!appleAccounts.length) {
+    if (authorizationCode) throw new AppleGrantError("apple_grant_invalid");
+    return "not_connected";
+  }
 
   const config = readAppleRevocationConfig();
+  if (authorizationCode) {
+    if (!config) throw new AppleGrantError("apple_revocation_unavailable");
+    await revokeNativeAppleAuthorization(authorizationCode, appleAccounts.map((account) => account.providerUserId).filter(Boolean), config);
+    return "revoked";
+  }
   if (!config) return "manual_required";
 
   try {
@@ -63,6 +73,10 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   try {
     const clerk = createClerkClient({ secretKey: clerkSecret });
+    const authorizationCode = appleAuthorizationCodeFromBody(request.body);
+    // Validate account ownership and finish requested Apple revocation before
+    // any destructive mutation. Invalid or failed fresh grants retain data.
+    const appleAuthorization = await revokeAppleAuthorization(userId, clerk, authorizationCode);
     const sql = neon(databaseUrl);
     await sql.query(`
       CREATE TABLE IF NOT EXISTS lad_cloud_snapshots (
@@ -73,10 +87,12 @@ export default async function handler(request: VercelRequest, response: VercelRe
       )
     `);
     await sql.query("DELETE FROM lad_cloud_snapshots WHERE user_id = $1", [userId]);
-    const appleAuthorization = await revokeAppleAuthorization(userId, clerk);
     await clerk.users.deleteUser(userId);
     return response.status(200).json({ deleted: true, appleAuthorization });
-  } catch {
+  } catch (error) {
+    if (error instanceof AppleGrantError) {
+      return response.status(error.code === "apple_grant_invalid" ? 403 : 503).json({ error: error.code });
+    }
     return response.status(500).json({ error: "account_deletion_failed" });
   }
 }

@@ -34,4 +34,14 @@ describe("account deletion client", () => {
     await expect(deleteRemoteAccount(async () => null)).rejects.toThrow("登入狀態已失效");
     expect(fetchDouble).not.toHaveBeenCalled();
   });
+
+  it("sends a fresh Apple code only in the authenticated JSON body", async () => {
+    const fetchDouble = vi.fn().mockResolvedValue(Response.json({ deleted: true, appleAuthorization: "revoked" }));
+    vi.stubGlobal("fetch", fetchDouble);
+    await deleteRemoteAccount(async () => "session-token", "single-use-code");
+    expect(fetchDouble).toHaveBeenCalledWith("/api/account", expect.objectContaining({
+      headers: expect.objectContaining({ Authorization: "Bearer session-token", "Content-Type": "application/json" }),
+      body: JSON.stringify({ appleAuthorizationCode: "single-use-code" }),
+    }));
+  });
 });

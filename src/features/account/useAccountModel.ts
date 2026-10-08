@@ -145,12 +145,12 @@ export function useAccountModel() {
     }
   }
 
-  async function deleteAccount(): Promise<AccountDeletionResult | null> {
+  async function deleteAccount(appleAuthorizationCode?: string): Promise<AccountDeletionResult | null> {
     if (!isSignedIn) return null;
     setBusy("delete");
     setStatus(null);
     try {
-      const result = await deleteRemoteAccount(getTokenRef.current);
+      const result = await deleteRemoteAccount(getTokenRef.current, appleAuthorizationCode);
       try {
         await signOut();
       } catch {

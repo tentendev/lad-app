@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-08T04:44:22.738100Z",
+  "recordedAt": "2026-10-08T05:37:57.716782Z",
   "appVersion": "1.0.0",
   "buildNumber": "5",
   "device": "iPhone 15 Pro",
@@ -13,9 +13,9 @@
     "identifiersStoredOnlyInRestrictedIgnoredFile": true
   },
   "appleCancellation": "owner_reported_pass",
-  "appleHideMyEmail": "pending_owner_action",
-  "cloudBackup": "pending",
-  "appleRelogin": "pending",
+  "appleHideMyEmail": "passed_backend_and_owner_verified",
+  "cloudBackup": "owner_reported_upload_download_pass_backend_snapshot_verified",
+  "appleRelogin": "owner_reported_pass_backend_active_session_verified",
   "qaAccountDeletion": "pending",
   "appleAuthorizationRevocation": "pending",
   "nativeAppleQAPassed": false,
@@ -26,5 +26,29 @@
     "reviewerStillPresent": true,
     "independentPostCancellationUIVerified": false,
     "usbPostCancellationCapture": "black image; no UI conclusion inferred"
+  },
+  "localRecordsPreservedAfterRelogin": true,
+  "signInVerification": {
+    "productionUserCount": 2,
+    "newAppleUserCount": 1,
+    "privateRelayUsed": true,
+    "reviewerStillPresent": true
+  },
+  "backupVerification": {
+    "recordedAt": "2026-10-08T05:31:59.492Z",
+    "appleLinked": true,
+    "privateRelayUsed": true,
+    "activeSessionCount": 1,
+    "cloudRowCount": 1,
+    "cloudRevision": "1",
+    "reviewerStillPresent": true
+  },
+  "automaticRevocationDefect": {
+    "confirmed": true,
+    "buildNumber": "5",
+    "clerkErrorCode": "oauth_missing_refresh_token",
+    "nativeSDKForwardsAuthorizationCode": false,
+    "status": "fix_in_progress_new_build_required",
+    "qaAccountRetained": true
   }
 }
