@@ -1,7 +1,7 @@
 {
-  "recordedAt": "2026-10-08T06:21:38.087Z",
+  "recordedAt": "2026-10-08T06:23:05.277Z",
   "appVersion": "1.0.0",
-  "buildNumber": "5",
+  "buildNumber": "6",
   "device": "iPhone 15 Pro",
   "osVersion": "27.0.1",
   "installedBuildVerified": true,
@@ -58,7 +58,7 @@
     "sourceCommit": "86a9406",
     "ipaVerificationPassed": true,
     "appleUpload": "passed",
-    "deviceInstallation": "pending_owner_testflight_update",
+    "deviceInstallation": "verified_direct_usb",
     "deletionCancellation": "pending",
     "automaticRevocation": "pending",
     "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
@@ -81,9 +81,18 @@
     "passwordRetrievalNeeded": false
   },
   "latestDeviceAppQuery": {
-    "recordedAt": "2026-10-08T06:21:38.087Z",
+    "recordedAt": "2026-10-08T06:23:05.277Z",
     "version": "1.0.0",
-    "buildNumber": "5",
+    "buildNumber": "6",
     "result": "direct_usb_query"
+  },
+  "build6BeforeDeletion": {
+    "recordedAt": "2026-10-08T06:23:05.277Z",
+    "qaUserExists": true,
+    "appleLinked": true,
+    "activeSessionCount": 1,
+    "cloudRowCount": 1,
+    "cloudRevision": "1",
+    "reviewerStillPresent": true
   }
 }
