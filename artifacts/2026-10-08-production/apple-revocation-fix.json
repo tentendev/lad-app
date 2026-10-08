@@ -72,6 +72,13 @@
     "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
     "tool": "altool 27.0.5",
     "uploadedAtTaipei": "2026-10-08T13:54:49+08:00",
-    "processingState": "pending"
+    "processingState": "VALID"
+  },
+  "testflight": {
+    "notesSaved": true,
+    "betaReviewSubmissionStatus": 403,
+    "externalAvailability": false,
+    "existingGroupUnchanged": true,
+    "requiredNextAction": "owner App Store Connect browser re-login; continue existing group Beta Review using UI"
   }
 }

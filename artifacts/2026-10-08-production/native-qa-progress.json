@@ -61,11 +61,21 @@
     "deviceInstallation": "pending",
     "deletionCancellation": "pending",
     "automaticRevocation": "pending",
-    "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4"
+    "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
+    "processingState": "VALID",
+    "testflightNotesSaved": true,
+    "externalAvailability": false,
+    "betaReviewSubmissionStatus": 403
   },
   "serverFix": {
     "deploymentId": "dpl_D9XmUGWNiwJooXW36XmghmbihDsX",
     "buildId": "f94f21158670",
     "publicDeploymentVerified": true
+  },
+  "browserAuthentication": {
+    "status": "owner_action_required",
+    "reason": "expired login, password page",
+    "spaceId": 4,
+    "ownerHandoff": true
   }
 }
