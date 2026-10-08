@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-10-08T03:24:43.255566Z",
+  "name": "Erik-iPhone15",
+  "coreDeviceState": "connected",
+  "osVersion": "26.7.1",
+  "osBuild": "23H30",
+  "developerModeStatus": "enabled",
+  "connection": {
+    "pairingState": "paired",
+    "tunnelState": "connected",
+    "transportType": "wired"
+  },
+  "installedApp": {
+    "bundleIdentifier": "com.tenten.deepspaceledger",
+    "version": "1.0.0",
+    "build": "4"
+  },
+  "usbScreenCaptureAvailable": true,
+  "interactivePhoneUIControlEstablished": false,
+  "iPhoneMirroring": "iCloud Signed Out",
+  "macICloudSetup": "Start Using iCloud pending",
+  "validLocalCodeSigningIdentityCount": 0,
+  "nativeAppleQAPassed": false,
+  "previousObservation": {
+    "verifiedAt": "2026-10-08T02:18:28.489Z",
+    "name": "Erik-iPhone15",
+    "coreDeviceState": "available (paired)",
+    "developerModeStatus": "disabled",
+    "iPhoneMirroring": "iCloud Signed Out",
+    "nativeAppleQAPassed": false,
+    "osVersion": "26.6.1",
+    "connection": {
+      "pairingState": "paired",
+      "tunnelState": "connected"
+    }
+  }
+}

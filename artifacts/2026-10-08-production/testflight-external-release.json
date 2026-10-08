@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-08T02:18:28.161Z",
+  "appId": "6812909987",
+  "version": "1.0.0",
+  "buildNumber": "5",
+  "buildId": "9778f835-2bfb-4130-bf03-da8749612aec",
+  "groupId": "1054bf9f-bd38-4b1e-9e4b-e60ace2bc0de",
+  "groupName": "Maggie & Erik UI Testing",
+  "testerCount": 2,
+  "coreQAGroupTesterCount": 0,
+  "automaticallyNotifyTesters": true,
+  "betaReviewFlowSubmitted": true,
+  "externalTestingState": "Testing",
+  "nativeAppleQAPassed": false,
+  "appReviewSubmitted": false
+}
