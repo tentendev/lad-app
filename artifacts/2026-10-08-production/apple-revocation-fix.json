@@ -31,10 +31,26 @@
       "webMiB": 5.8,
       "buildId": "f94f21158670"
     },
-    "compiledApiRuntime": true
+    "compiledApiRuntime": {
+      "passed": true,
+      "isolatedDependencies": true,
+      "requireEsmDisabled": true,
+      "appleJwtDynamicImportExercised": true
+    }
   },
-  "serverDeployment": "pending",
-  "replacementNativeBuild": "pending",
+  "serverDeployment": "rebuilding_after_commonjs_esm_load_fix",
+  "replacementNativeBuild": {
+    "id": "9d8bd94a-b1bd-4a3e-9ff0-2a3dfc4328dd",
+    "buildNumber": "6",
+    "sourceCommit": "86a94064a1c83115a8d7f2ae9c81e4381f7dc26a",
+    "status": "IN_PROGRESS"
+  },
   "nativeDeletionAndRevocationQAPassed": false,
-  "appReviewSubmitted": false
+  "appReviewSubmitted": false,
+  "failedDeployment": {
+    "id": "dpl_4rxq3L1BHvyWR2ziJbmo35QiyYZc",
+    "error": "ERR_REQUIRE_ESM",
+    "rolledBackTo": "dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6",
+    "rollbackVerifiedAccountStatus": 405
+  }
 }

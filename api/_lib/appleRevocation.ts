@@ -1,12 +1,11 @@
 import { Buffer } from "node:buffer";
 import { createPrivateKey, sign } from "node:crypto";
-import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { JWTVerifyGetKey } from "jose";
 
 const APPLE_AUDIENCE = "https://appleid.apple.com";
 const APPLE_REVOKE_URL = "https://appleid.apple.com/auth/revoke";
 const APPLE_TOKEN_URL = "https://appleid.apple.com/auth/token";
-const applePublicKeys = createRemoteJWKSet(new URL(`${APPLE_AUDIENCE}/auth/keys`), { timeoutDuration: 5_000 });
+let applePublicKeys: JWTVerifyGetKey | undefined;
 
 export type AppleRevocationConfig = {
   teamId: string;
@@ -55,10 +54,14 @@ export async function verifyAppleIdentityToken(
   token: string,
   clientId: string,
   expectedSubjects: string[],
-  publicKeys: JWTVerifyGetKey = applePublicKeys,
+  publicKeys?: JWTVerifyGetKey,
 ): Promise<void> {
+  // Vercel's CommonJS launcher cannot require ESM-only packages, even on
+  // Node 24. Native import() is preserved by the server's NodeNext compiler.
+  const { createRemoteJWKSet, jwtVerify } = await import("jose");
+  applePublicKeys ??= createRemoteJWKSet(new URL(`${APPLE_AUDIENCE}/auth/keys`), { timeoutDuration: 5_000 });
   try {
-    const { payload } = await jwtVerify(token, publicKeys, {
+    const { payload } = await jwtVerify(token, publicKeys ?? applePublicKeys, {
       algorithms: ["RS256"],
       issuer: APPLE_AUDIENCE,
       audience: clientId,
@@ -143,7 +146,7 @@ export async function revokeNativeAppleAuthorization(
   expectedSubjects: string[],
   config: AppleRevocationConfig,
   fetchImpl: typeof fetch = fetch,
-  publicKeys: JWTVerifyGetKey = applePublicKeys,
+  publicKeys?: JWTVerifyGetKey,
 ): Promise<void> {
   const clientId = config.nativeClientId;
   if (!clientId) throw new AppleGrantError("apple_revocation_unavailable");
