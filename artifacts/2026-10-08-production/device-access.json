@@ -1,7 +1,7 @@
 {
   "recordedAt": "2026-10-08T03:24:43.255566Z",
   "name": "Erik-iPhone15",
-  "coreDeviceState": "connected",
+  "coreDeviceState": "unavailable",
   "osVersion": "26.7.1",
   "osBuild": "23H30",
   "developerModeStatus": "enabled",
@@ -33,5 +33,14 @@
       "pairingState": "paired",
       "tunnelState": "connected"
     }
-  }
+  },
+  "lastSuccessfulCoreDeviceState": "connected",
+  "finalRefreshAt": "2026-10-08T03:28:43.798648Z",
+  "finalInstalledAppRefresh": {
+    "succeeded": false,
+    "coreDeviceErrorCode": 4016,
+    "reason": "Device cannot fulfill requested usage assertions; device list reports unavailable"
+  },
+  "installedAppObservation": "Last successful query; final refresh unavailable",
+  "connectionObservation": "Last successful device details; final device list unavailable"
 }
