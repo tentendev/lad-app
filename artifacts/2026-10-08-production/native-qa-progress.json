@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-10-08T04:44:22.738100Z",
+  "appVersion": "1.0.0",
+  "buildNumber": "5",
+  "device": "iPhone 15 Pro",
+  "osVersion": "27.0.1",
+  "installedBuildVerified": true,
+  "nativeAccountNavigationVerified": true,
+  "signedOutAccountScreenVerified": true,
+  "productionBaseline": {
+    "totalUsers": 1,
+    "appleUsers": 0,
+    "identifiersStoredOnlyInRestrictedIgnoredFile": true
+  },
+  "appleCancellation": "owner_reported_pass",
+  "appleHideMyEmail": "pending_owner_action",
+  "cloudBackup": "pending",
+  "appleRelogin": "pending",
+  "qaAccountDeletion": "pending",
+  "appleAuthorizationRevocation": "pending",
+  "nativeAppleQAPassed": false,
+  "appReviewSubmitted": false,
+  "cancellationVerification": {
+    "productionUserCountAfter": 1,
+    "newUsersAfter": 0,
+    "reviewerStillPresent": true,
+    "independentPostCancellationUIVerified": false,
+    "usbPostCancellationCapture": "black image; no UI conclusion inferred"
+  }
+}

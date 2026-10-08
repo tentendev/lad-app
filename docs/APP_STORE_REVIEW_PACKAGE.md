@@ -86,3 +86,5 @@ TestFlight 1.0.0 (4) 已由 Apple 處理為 `VALID`，外部狀態 `IN_BETA_TEST
 同日進一步確認 Core QA 沒有測試者；已將 production build 5 加入既有 Maggie & Erik 外部群組，Apple 顯示 `Testing`，可更新正式候選版完成實機驗收。擁有者升級後，iPhone 已為 iOS 26.7.1、開發者模式啟用，USB 配對與 tunnel 連線成功；直接查詢手機仍安裝 build 4。USB 可取得畫面，但尚無互動控制介面。Mac 顯示尚未完成「Start Using iCloud」，iPhone Mirroring 仍顯示 `iCloud Signed Out`，待擁有者完成設定或配合直接在手機驗收；不得以連接／配對完成取代登入及刪除驗收。
 
 正式 Clerk 與 Neon 憑證已從正確 production 環境取得並驗證，Apple 私鑰已提供給完整 submission preflight。最新檢查僅剩原生 Apple QA 一項阻擋；憑證僅存受限、gitignored 本機檔案，驗收旗標維持 false。見 [preflight 紀錄](../artifacts/2026-10-08-production/submission-preflight.json)。
+
+擁有者後續已更新 TestFlight；手機直接查詢確認為 **1.0.0 (5)**。已透過 USB 開啟並核對原生會員中心的未登入畫面，裝置為 iPhone 15 Pro／iOS 27.0.1。正在配合擁有者操作進行 Apple 系統登入、隱藏 Email 與刪除／撤銷授權驗收；安裝與啟動完成不等於這些驗收已通過。
