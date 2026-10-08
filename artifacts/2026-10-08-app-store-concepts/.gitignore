@@ -1,0 +1,11 @@
+# Local Pinterest research images; not release artwork.
+reference-*.jpg
+*-references.png
+pinterest-board.png
+selected-references-contact.jpg
+gallery-*.png
+# Full CLI payloads/download URLs remain local; sanitized provenance is tracked.
+*-upload.json
+*-job.json
+*-result.json
+*-wait.json

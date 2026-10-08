@@ -1,0 +1,76 @@
+{
+  "model": "gpt_image_2_5",
+  "variant": "sunburst",
+  "quality": "high",
+  "resolution": "2k",
+  "aspectRatio": "21:9",
+  "deliverable": "five distinct five-slide carousel proposal boards; selected direction proceeds to individual final App Store images",
+  "concepts": [
+    {
+      "id": "01-lavender-editorial",
+      "name": "紫霧精品",
+      "pin": "157555686962669382",
+      "description": "Elegant editorial lavender and pearl. Warm off-white #F6F2EC, dusty lavender #AA9ACD, dark plum #352646. Spacious luxury magazine typography, crisp large Traditional Chinese display type with a tasteful modern serif feel, delicate thin lines and tiny orbital diagram details. Alternate pearl/light-lavender panels with one deeper plum budget panel for rhythm. Original tactile pearl-and-lavender star-pocket hero. Front-facing graphite iPhones with gentle 5-degree tilt and clean shadows, each screen large. Minimal quiet atmospheric star dust; use a single connected faint orbital ribbon across the carousel. Mature, feminine, calm, expensive and trustworthy. The Pinterest editorial typography reference informs spacing and hierarchy only; do not use its desert photograph or floating stone."
+    },
+    {
+      "id": "02-midnight-orbit",
+      "name": "星際微光",
+      "pin": "157555686962669381",
+      "description": "Immersive midnight space gallery, sophisticated cinematic purple rather than a game ad. Full-bleed near-black plum #161123 shifting through indigo #352955 and velvet purple #5B4382. Luminous pearl type, very clean oversized modern Chinese sans serif. Soft fine orbit lines link all five slides; original faceted pearl star and pocket float in subtle lavender light. Phones suspended in a calm three-dimensional orbital composition, softly rim-lit with lavender and a small muted aqua accent. Big clear screens, tiny star points, no busy nebula and no neon cyberpunk. Distinct compositions: large emblem hero, tall calendar phone, diagonal budget phone, calculator with a pearl diamond, phone with tiny cloud/pocket. Premium atmospheric depth and disciplined typography."
+    },
+    {
+      "id": "03-soft-pocket",
+      "name": "奶油星球",
+      "pin": "157555686962669377",
+      "description": "Friendly premium soft-clay art direction. Cream #FAF4E9, lilac #C7B7E7, muted peach #F1C2B1, soft sky blue #BCD9E9, sage #BED0BC. Each panel has one complementary pastel field, united by the lilac brand and consistent layout. Original matte 3D star-pocket emblem and tiny sculpted calendar, coin-disc, ticket and cloud props, visually soft and tactile like collectible design objects. NO faces, mascots, animals, humanoid characters or copied icons. Big friendly bold rounded Traditional Chinese headlines in dark plum, smooth phone shadows and dimensional clay plinths; lower phones show OUR genuine dark-purple UI, creating useful contrast. Whimsical warmth with exceptional breathing room and grown-up utility-app credibility."
+    },
+    {
+      "id": "04-bold-violet",
+      "name": "大字鮮紫",
+      "pin": "157555686953252609",
+      "description": "Bold high-conversion typographic product campaign, Swiss graphic grid. Saturated violet #6541C8, electric lavender #BDA7F4, warm ivory #F9F7F1, charcoal #211B2F; use one restrained aqua accent borrowed from the app budget progress bar. Alternating violet and ivory slides with XXL Traditional Chinese headlines in ultra-bold clean sans serif, sharp confident type hierarchy and limited small text. Dynamic oversized phones at purposeful 8-12 degree angles, cropped at lower edge for scale, one phone per feature panel. A huge abstract four-point star graphic can cross the first two panels but must not reduce headline contrast. Crisp high-key studio light, clean graphic circles, few decorative elements. Brand emblem remains lavender and pearl; app UI remains our purple glass design. Strong carousel rhythm and excellent thumbnail readability."
+    },
+    {
+      "id": "05-diary-collage",
+      "name": "星光手帳",
+      "pin": "157555686962669392",
+      "description": "Beautiful personal planning diary, warm editorial collage. Ivory paper #F5EFE4, dusty lilac #B3A0D0, muted sage #A9BEAD, subtle blush #E5BAB8 and dark plum ink #423347. Fine real paper texture, lightly offset translucent memo slips, thin elegant ruled planning lines, clean original star stamps and small tasteful numbered tabs 01 through 05. Warm friendly mature Chinese typography, bold short headlines aligned to a clear consistent grid, not messy handwriting. Phones stand on layered paper cards; true purple UI contrasts with quiet warm backgrounds. First panel features sculpted star-pocket against a large lilac paper circle; feature panels use actual calendar, wallet and calculator; final panel suggests a personal archive with tiny cloud/pocket paper symbols. Refined tactile scrapbook, emotional companionship, no stock people and no game characters. Avoid clutter, illegible cursive or busy stickers."
+    }
+  ],
+  "releaseTaskPreserved": true,
+  "finalSubmissionRequires": [
+    "native deletion and actual Apple revocation QA",
+    "owner selection of listing artwork"
+  ],
+  "copy": [
+    {
+      "headline": "把喜歡留在計畫裡",
+      "subline": "排期・預算・抽卡規劃"
+    },
+    {
+      "headline": "排期，一眼掌握",
+      "subline": "提早安排，從容準備"
+    },
+    {
+      "headline": "喜歡，也有預算",
+      "subline": "訂預算・記花費・看餘裕"
+    },
+    {
+      "headline": "每一抽，都有準備",
+      "subline": "資源換算・抽卡規劃"
+    },
+    {
+      "headline": "你的紀錄，由你掌握",
+      "subline": "本機保存・手動雲端備份"
+    }
+  ],
+  "referenceScreenshots": {
+    "source": "artifacts/2026-09-17-ios/final-build",
+    "screens": [
+      "iphone-6.9-schedule.png",
+      "iphone-6.9-wallet.png",
+      "iphone-6.9-calculator.png"
+    ],
+    "note": "Design proposals use screenshot references. Final selected artwork must use current actual build-6 captures and exact separately rendered typography."
+  }
+}
