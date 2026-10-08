@@ -2,9 +2,9 @@
 
 App: 深空省省 1.0.0 (5). Apple build ID: `9778f835-2bfb-4130-bf03-da8749612aec`.
 
-After the owner's upgrade, `Erik-iPhone15` (iPhone 15 Pro) reports iOS **26.7.1 (23H30)**, Developer Mode **enabled**, USB transport **wired**, pairing **paired** and tunnel **connected**. A device-side installed-app query still reports 深空省省 **1.0.0 (4)**. USB screen capture now works; interactive phone UI control is not established. Mac iPhone Mirroring reports `iCloud Signed Out`, and System Settings shows an unfinished **Start Using iCloud** step. No native Apple QA pass is recorded.
+The latest check after the owner's reconnection confirms `Erik-iPhone15` (iPhone 15 Pro) is **connected**, running iOS **27.0.1 (24A446)** with Developer Mode **enabled**, USB transport **wired**, pairing **paired** and tunnel **connected**. Both device details and installed-app queries succeeded. 深空省省 remains **1.0.0 (4)**. Mac iPhone Mirroring still reports `iCloud Signed Out`; interactive phone UI control is not established. Screen capture was verified earlier but was not repeated during this connection check. No native Apple QA pass is recorded.
 
-At the final readiness refresh, the installed-app query failed with CoreDevice error **4016**, and the device list reported **unavailable**. The successful OS, pairing, capture and build-4 observations above are retained as earlier evidence; they do not establish a current working connection. Recheck device access after the owner's TestFlight update before continuing native QA.
+An earlier readiness refresh failed with CoreDevice error **4016** and reported the device **unavailable** after a successful iOS 26.7.1 connection. That connection issue is resolved in the latest check. Earlier observations remain in the device receipt's history. Update the app to build 5 before native production QA.
 
 Core QA contains build 5 but has zero testers. The owner's external TestFlight installation was build 4. Build 5 has now been added to the existing two-person Maggie & Erik group; its Beta Review flow completed and Apple shows **Testing**. Automatic tester notification is enabled. See [external availability](testflight-external-release.json) and [device access](device-access.json). Build 5 remains selected in the App Store version; final App Store Review has not been submitted.
 
