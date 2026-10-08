@@ -39,7 +39,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 - 不要提供個人 Google／Apple 帳號
 - 送審前實測 demo 帳號：登入、下載／上傳、登出、再次登入與帳號刪除
 
-2026-10-08 已在最新正式 Web 部署驗證專用 reviewer 帳號的登入、下載／上傳、登出及再次登入，且不會要求 reviewer 無法取得的驗證碼。帳號刪除先前已使用獨立、可丟棄的 production QA 帳號驗證，reviewer 帳號保留供審查使用。App Store Connect 的 demo credentials 已填入並保存，重新載入後確認存在；production build 5 也已選定。Apple 原生登入、Hide My Email 與撤銷仍待實機驗收，尚未送審。
+2026-10-08 已在最新正式 Web 部署驗證專用 reviewer 帳號的登入、下載／上傳、登出及再次登入，且不會要求 reviewer 無法取得的驗證碼。帳號刪除先前已使用獨立、可丟棄的 production QA 帳號驗證，reviewer 帳號保留供審查使用。App Store Connect 的 demo credentials 已填入並保存，重新載入後確認存在；production build 5 也已選定。Apple 原生登入、Hide My Email、上傳／下載及重新登入已通過擁有者協助的實機驗收。Build 5 確認缺少可撤銷的 OAuth token，已改為刪除時取得新的 Apple 授權並驗證會員身分；build 6 已建置，待 TestFlight 刪除／撤銷實機驗收，尚未送審。
 
 ## App Privacy
 

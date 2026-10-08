@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-08T05:49:59.022949+00:00",
+  "version": "1.0.0",
+  "build": "6",
+  "bundleIdentifier": "com.tenten.deepspaceledger",
+  "minimumOS": "17.0",
+  "sdk": "iphoneos26.5",
+  "profileExpires": "2027-09-17T06:41:32",
+  "sha256": "00d4622827830dfe84b8f10a068dbb46cf7986b67bbff073160dadd22fdc206b",
+  "bytes": 30502407,
+  "checks": {
+    "signature": true,
+    "bundleIdentifier": true,
+    "version": true,
+    "buildNumber": true,
+    "appleSignIn": true,
+    "team": true,
+    "noDebug": true,
+    "productionClerk": true,
+    "productionApi": true,
+    "freshAppleDeletionCode": true,
+    "nativeCredentialStateCheck": true,
+    "noServerCredentials": true
+  },
+  "credentialScan": {
+    "decodedHermesStringCount": 14150,
+    "exactProductionClerkKey": true,
+    "noActualServerValues": true,
+    "fullSecretKeyPatternCount": 0,
+    "credentialedDatabasePatternCount": 0,
+    "genericSdkSecretPrefixLiteralsOnly": true,
+    "privateKeyMarkers": 0
+  },
+  "credentialScanNote": "Hermes stores adjacent strings without separators. Decoded actual string entries: Clerk SDK contains only the generic sk_live_/sk_test_ literals; no secret-key pattern, database credential or actual configured server value is embedded. Exact production publishable key verified."
+}

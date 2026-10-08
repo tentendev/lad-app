@@ -40,7 +40,7 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 | Check | Result |
 | --- | --- |
 | ESLint / TypeScript | Passed |
-| Script tests / Vitest | 15 + 122 passed |
+| Script tests / Vitest | 15 + 160 passed after native deletion fix |
 | Web export / prebuilt verification | Passed; 89 static files and both Node API entry points |
 | Deployed routes and headers | Passed; 307 root redirect, branded 404, CSP, frame policy, service worker and asset cache |
 | Sync/account unauthenticated boundaries | Passed: 401 / 405 / 401 as applicable |
@@ -58,7 +58,15 @@ The existing TestFlight `1.0.0 (4)` is a development-auth testing build. It is n
 
 The development-session cloud smoke script cannot create a production Clerk session: Clerk returned `request_invalid_for_environment`. Its temporary user was removed. Before the later Email/password QA account was created, production Clerk users and Neon snapshots were both checked at 0. This is not recorded as a passed authenticated production test.
 
-Verified deployment: `dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6`, build `834b812e1f56`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
+Verified deployment: `dpl_D9XmUGWNiwJooXW36XmghmbihDsX`, build `f94f21158670`, `https://deep-space-ledger-app.vercel.app`. The deployment includes the Apple server credentials and enabled sign-in build flag. A clean bundle inspection confirmed the production Clerk key and enabled Apple flag. The downloaded private key has a restricted local backup under the gitignored credentials directory and is not part of this document or Git history.
+
+## Replacement build and server fix (2026-10-08)
+
+Production native **1.0.0 (6)** completed in EAS (`9d8bd94a-b1bd-4a3e-9ff0-2a3dfc4328dd`) from commit `86a9406`. IPA inspection confirms its signature, bundle/version/build, Apple entitlement, production publishable key/API, fresh deletion code and device credential-state check. Decoded Hermes string entries contain no server credential patterns or configured server values. Apple archive validation and upload passed (delivery `df3d8be6-295b-4b4c-a634-9f2bf94d9fe4`); no device deletion/revocation pass is recorded.
+
+Server commit `f24e0db` changes the JWT library to native dynamic import for Vercel's CommonJS launcher. The first deployment failed with `ERR_REQUIRE_ESM` and was promptly rolled back. Strengthened prebuilt validation isolates traced dependencies and disables local require(ESM); the fixed staged deployment passed API boundaries and build identity, was promoted, then passed the complete public deployment verifier. Current deployment: `dpl_D9XmUGWNiwJooXW36XmghmbihDsX`, build `f94f21158670`. Native code is unchanged by this server-only follow-up, so build 6 contains the complete native fix.
+
+App Store Connect browser authentication expired and is currently handed to the owner at the password page for `dev@tenten.co`. API-key authentication is independently verified against the expected app. The existing upload key still requires authenticated UI for build selection, as previously observed. No new submission permission is needed; the remaining browser action is authentication.
 
 ## Remaining work
 
