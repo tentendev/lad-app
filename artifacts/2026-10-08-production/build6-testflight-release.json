@@ -1,24 +1,38 @@
 {
-  "recordedAt": "2026-10-08T06:01:44.216Z",
+  "recordedAt": "2026-10-08T06:21:38.086Z",
   "buildNumber": "6",
   "appleBuildId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
   "processingState": "VALID",
   "internalBuildState": "READY_FOR_BETA_TESTING",
-  "externalBuildState": "READY_FOR_BETA_SUBMISSION",
+  "externalBuildState": "IN_BETA_TESTING",
   "groupId": "1054bf9f-bd38-4b1e-9e4b-e60ace2bc0de",
   "groupName": "Maggie & Erik UI Testing",
   "existingTesterCount": 2,
   "newTestersAdded": 0,
-  "build6Linked": false,
-  "externalTestingAvailable": false,
+  "build6Linked": true,
+  "externalTestingAvailable": true,
   "betaNotesStatus": 200,
   "betaNotesSaved": true,
-  "betaReviewCredentialUpdateStatus": 403,
-  "browserState": "owner_handoff_password_page_login_expired",
-  "nextAction": "Resume authenticated App Store Connect UI after owner re-login; save beta reviewer credentials/notes and add build6 to existing group/Beta Review",
+  "browserState": "authenticated_agent_control",
+  "nextAction": "Upgrade existing iPhone installation to build 6 without uninstalling; complete deletion cancellation and actual Apple revocation QA before final App Review",
   "nativeDeletionAndRevocationQAPassed": false,
   "finalAppReviewSubmitted": false,
-  "betaReviewSubmissionStatus": 403,
-  "betaReviewState": null,
-  "betaReviewSubmissionId": null
+  "betaReviewState": "APPROVED",
+  "betaReviewSubmissionId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
+  "autoNotifyEnabled": true,
+  "betaReviewCredentialsSavedAndVerified": true,
+  "betaReviewSubmissionMethod": "authenticated_ui",
+  "apiPermissionLimits": {
+    "betaReviewCredentialUpdateStatus": 403,
+    "betaReviewSubmissionStatus": 403
+  },
+  "finalAppReviewPreparation": {
+    "build6Selected": true,
+    "reviewerRequired": true,
+    "reviewerUsernameMatches": true,
+    "reviewerPasswordMatches": true,
+    "reviewNotesMatch": true,
+    "versionState": "PREPARE_FOR_SUBMISSION",
+    "releaseType": "MANUAL"
+  }
 }

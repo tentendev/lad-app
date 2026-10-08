@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-08T05:37:57.716782Z",
+  "recordedAt": "2026-10-08T06:21:38.087Z",
   "appVersion": "1.0.0",
   "buildNumber": "5",
   "device": "iPhone 15 Pro",
@@ -58,14 +58,15 @@
     "sourceCommit": "86a9406",
     "ipaVerificationPassed": true,
     "appleUpload": "passed",
-    "deviceInstallation": "pending",
+    "deviceInstallation": "pending_owner_testflight_update",
     "deletionCancellation": "pending",
     "automaticRevocation": "pending",
     "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
     "processingState": "VALID",
     "testflightNotesSaved": true,
-    "externalAvailability": false,
-    "betaReviewSubmissionStatus": 403
+    "externalAvailability": true,
+    "betaReviewState": "APPROVED",
+    "finalAppReviewSelected": true
   },
   "serverFix": {
     "deploymentId": "dpl_D9XmUGWNiwJooXW36XmghmbihDsX",
@@ -73,9 +74,16 @@
     "publicDeploymentVerified": true
   },
   "browserAuthentication": {
-    "status": "owner_action_required",
-    "reason": "expired login, password page",
+    "status": "authenticated",
     "spaceId": 4,
-    "ownerHandoff": true
+    "ownerHandoff": false,
+    "bitwardenReady": true,
+    "passwordRetrievalNeeded": false
+  },
+  "latestDeviceAppQuery": {
+    "recordedAt": "2026-10-08T06:21:38.087Z",
+    "version": "1.0.0",
+    "buildNumber": "5",
+    "result": "direct_usb_query"
   }
 }

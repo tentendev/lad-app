@@ -15,6 +15,8 @@
 
 Production uses a Clerk production key and a fresh Neon database. Public routes and unauthenticated/invalid-token API boundaries pass. Apple credentials and the sign-in flag are configured. Clerk DNS, Email and SSL are verified, and the custom Web domain is live. Google sign-in is disabled for the Apple + Email first release; Email/password and cloud/account deletion QA passed; Apple native sign-in, Hide My Email, backup upload/download and re-login passed owner-assisted QA; automatic revocation awaits build-6 deletion QA; this deployment is preparation for App Store submission, not a completed authentication release. See `APP_STORE_SUBMISSION_STATUS.md`.
 
+Build 6 is now externally available in the existing two-person TestFlight group (`Testing`, Beta Review `APPROVED`) and selected as the final App Review candidate. The authenticated UI resolved the upload API key's review-permission limits. The latest USB app query still shows build 5; update without uninstalling, then complete build-6 deletion cancellation and actual Apple revocation checks before the final submission. Workspace `4` / `p1` remains authenticated and agent-owned. Authorized login credentials and available TOTP codes should be retrieved from the ready Bitwarden CLI without asking the owner to supply them again.
+
 ## Build and deploy
 
 Use the existing user authorization for the requested release. Vercel environment/OIDC files and local credential files must never enter source control or release artifacts.

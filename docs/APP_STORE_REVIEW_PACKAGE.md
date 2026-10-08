@@ -21,7 +21,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 
 ## 正式環境驗證完成後的 Review Notes 範本
 
-2026-10-08 已在 App Store Connect 保存 production 功能與專用審核帳號操作說明，並重新載入確認保存成功。Email／密碼與雲端流程已有正式 Web 驗收；Apple 原生登入、Hide My Email 與撤銷仍待實機驗收。已保存 notes 沒有宣稱 Apple 原生驗收完成，送審前仍需核對實測結果。
+2026-10-08 已在 App Store Connect 保存 production 功能與專用審核帳號操作說明。Email／密碼與雲端流程已有正式 Web 驗收；Apple 原生登入、Hide My Email、備份及重新登入已在 build 5 通過擁有者協助的實機驗收。Build 6 的永久刪除與授權撤銷仍待實測，notes 沒有宣稱這項驗收完成。
 
 > 深空省省的排期、錢包與換算主要功能不需要登入。開啟 App 後可直接使用。  
 > 會員入口位於各主要頁面右上方「登入／註冊」，頁面底部也有「會員中心」連結。登入後才會顯示使用者主動操作的私人雲端備份。App 不會自動上傳或跨裝置覆寫資料。  
@@ -39,7 +39,7 @@ Bundle ID：`com.tenten.deepspaceledger`
 - 不要提供個人 Google／Apple 帳號
 - 送審前實測 demo 帳號：登入、下載／上傳、登出、再次登入與帳號刪除
 
-2026-10-08 已在最新正式 Web 部署驗證專用 reviewer 帳號的登入、下載／上傳、登出及再次登入，且不會要求 reviewer 無法取得的驗證碼。帳號刪除先前已使用獨立、可丟棄的 production QA 帳號驗證，reviewer 帳號保留供審查使用。App Store Connect 的 demo credentials 已填入並保存，重新載入後確認存在；production build 5 也已選定。Apple 原生登入、Hide My Email、上傳／下載及重新登入已通過擁有者協助的實機驗收。Build 5 確認缺少可撤銷的 OAuth token，已改為刪除時取得新的 Apple 授權並驗證會員身分；build 6 已建置，待 TestFlight 刪除／撤銷實機驗收，尚未送審。
+2026-10-08 已在最新正式 Web 部署驗證專用 reviewer 帳號的登入、下載／上傳、登出及再次登入，且不會要求 reviewer 無法取得的驗證碼。帳號刪除先前已使用獨立、可丟棄的 production QA 帳號驗證，reviewer 帳號保留供審查使用。Final App Review 與 Beta Review 的 demo credentials 均已保存並核對相符；正式候選版已換成 build 6。Apple 原生登入、Hide My Email、上傳／下載及重新登入已通過擁有者協助的實機驗收。Build 5 缺少可撤銷 OAuth token 的問題已修正為刪除時取得新的 Apple 授權並驗證會員身分，伺服器修正已部署。Build 6 的 TestFlight Beta Review 已核准，既有兩人群組顯示 Testing；待手機更新並完成刪除／撤銷實機驗收後，再送出正式 App Review。
 
 ## App Privacy
 
