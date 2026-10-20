@@ -13,6 +13,8 @@ import { canPlanScheduleEvent } from "@/domain/planner";
 import { LEADS, type ScheduleEvent, type ScheduleEventType } from "@/domain/types";
 import { EVENT_COLORS, LEAD_COLORS } from "@/theme/tokens";
 import { NativePage } from "@/ui/NativePage";
+import { nativeCalendarWidth } from "@/ui/nativeLayout";
+import { NativeColumns } from "@/ui/NativeColumns";
 import { useScheduleModel } from "./useScheduleModel";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
@@ -71,7 +73,8 @@ export function ScheduleScreenNative() {
   const { width, fontScale } = useWindowDimensions();
   const [viewMode, setViewMode] = useState<"calendar" | "list" | null>(null);
   const showCalendar = (viewMode ?? (fontScale > 1.3 || width < 360 ? "list" : "calendar")) === "calendar";
-  const calendarWidth = Math.max(336, Math.min(520, width - 32) - 2);
+  const [calendarContainerWidth, setCalendarContainerWidth] = useState(0);
+  const calendarWidth = nativeCalendarWidth(calendarContainerWidth);
   const barHeight = Math.ceil(20 * fontScale + 8);
   const dayHeaderHeight = Math.ceil(24 * fontScale + 16);
 
@@ -115,7 +118,7 @@ export function ScheduleScreenNative() {
   }
 
   return (
-    <NativePage eyebrow={`${SCHEDULE_META.label} · 更新 ${SCHEDULE_META.updated}`} title="排期" description="官方公告與預測排期集中查看；虛線色條為排期預測。">
+    <NativePage workspace eyebrow={`${SCHEDULE_META.label} · 更新 ${SCHEDULE_META.updated}`} title="排期" description="官方公告與預測排期集中查看；虛線色條為排期預測。">
       {model.preferenceError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.preferenceError}</Typography></View> : null}
       {model.plannerError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.plannerError}</Typography></View> : null}
       {linkError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{linkError}</Typography> : null}
@@ -168,8 +171,9 @@ export function ScheduleScreenNative() {
           <Button className="flex-1" variant={!showCalendar ? "primary" : "secondary"} accessibilityState={{ selected: !showCalendar }} onPress={() => setViewMode("list")}>列表</Button>
         </View>
         {showCalendar ? <>
-        <Typography className="type-label text-muted">點日期查看完整活動；色條虛線代表預測。{calendarWidth > width - 34 ? "月曆可左右滑動。" : ""}</Typography>
-        <ScrollView horizontal showsHorizontalScrollIndicator className="-mx-3"><View style={{ width: calendarWidth }}>
+        <Typography className="type-label text-muted">點日期查看完整活動；色條虛線代表預測。{calendarContainerWidth > 0 && calendarWidth > calendarContainerWidth ? "月曆可左右滑動。" : ""}</Typography>
+        <View onLayout={event => setCalendarContainerWidth(event.nativeEvent.layout.width)}>
+        <ScrollView horizontal showsHorizontalScrollIndicator><View style={{ width: calendarWidth }}>
         <View className="flex-row">
           {WEEKDAYS.map((day) => (
             <View key={day} style={{ width: "14.2857%" }} className="items-center py-2">
@@ -229,7 +233,7 @@ export function ScheduleScreenNative() {
           </View>
         </View>
 
-        </View></ScrollView>
+        </View></ScrollView></View>
         </> : null}
 
         <View className="flex-row flex-wrap gap-x-3 gap-y-2 border-t border-white/25 pt-3">
@@ -254,7 +258,7 @@ export function ScheduleScreenNative() {
         </View>
         {model.selectedEvents.length === 0 ? <Typography.Paragraph className="py-8 text-center text-muted">{model.selectedDate ? "這天沒有排期" : "目前篩選沒有排期"}</Typography.Paragraph> : null}
         {model.selectedEvents.length === 0 && !allLeadsSelected ? <Button variant="secondary" onPress={model.showAllLeads}>顯示全部男主</Button> : null}
-        {model.selectedEvents.map((event, index) => {
+        <NativeColumns minimum={360}>{model.selectedEvents.map((event, index) => {
           const status = eventStatus(event, today);
           const lead = nativeLeadLabel(event);
           const statusColor = status.tone === "live" ? "#65d6c4" : status.tone === "soon" ? "#ffd166" : "rgba(255,255,255,.45)";
@@ -285,7 +289,7 @@ export function ScheduleScreenNative() {
               </View>
             </View>
           );
-        })}
+        })}</NativeColumns>
       </Card>
     </NativePage>
   );

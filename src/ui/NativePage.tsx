@@ -1,11 +1,12 @@
 import { Typography } from "@/ui/NativeComponents";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
-import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Pressable, View } from "react-native";
+import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Pressable, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AccountEntry } from "@/ui/AccountEntry";
 import { SiteUpdatesEntry } from "@/ui/SiteUpdates";
+import { nativePageLayout } from "./nativeLayout";
 
 type Props = PropsWithChildren<{
   eyebrow: string;
@@ -13,9 +14,12 @@ type Props = PropsWithChildren<{
   description: string;
   showAccountEntry?: boolean;
   showAboutLink?: boolean;
+  workspace?: boolean;
 }>;
 
-export function NativePage({ title, showAccountEntry = true, showAboutLink = true, children }: Props) {
+export function NativePage({ title, showAccountEntry = true, showAboutLink = true, workspace = false, children }: Props) {
+  const { width } = useWindowDimensions();
+  const layout = nativePageLayout(width, workspace);
   return (
     <ImageBackground
       source={require("../../public/mobile-bg.webp")}
@@ -23,13 +27,13 @@ export function NativePage({ title, showAccountEntry = true, showAboutLink = tru
       className="flex-1 bg-[#7765a7]"
     >
       <View className="absolute inset-0 bg-[#241b42]/75" />
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
-          contentContainerClassName="px-4 pb-12 pt-4"
+          contentContainerStyle={{ paddingHorizontal: layout.horizontalPadding, paddingTop: 16, paddingBottom: 48 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <View className="w-full self-center" style={{ maxWidth: 520, gap: 16 }}>
+          <View className="w-full self-center" style={{ maxWidth: layout.maxWidth, gap: 16 }}>
             <View className="flex-row flex-wrap items-center justify-between gap-3">
               <View className="flex-row items-center gap-2"><Image source={require("../../assets/generated/ios-launch/brand-mark.png")} style={{ width: 36, height: 36, borderRadius: 10 }} accessible={false} /><Typography className="type-title-sm font-semibold text-white">深空省省</Typography></View>
               <View className="flex-row items-center gap-2"><SiteUpdatesEntry />{showAccountEntry ? <AccountEntry /> : null}</View>

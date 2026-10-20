@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { Buffer } from 'node:buffer';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';

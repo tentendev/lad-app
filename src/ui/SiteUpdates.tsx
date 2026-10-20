@@ -16,7 +16,7 @@ export function SiteUpdatesDialog() {
   const { latest, unread, visible, dismiss } = useSiteUpdates();
   const { height } = useWindowDimensions();
   if (!latest) return null;
-  return <Modal transparent visible={visible} animationType="fade" onRequestClose={dismiss}>
+  return <Modal transparent visible={visible} animationType="fade" supportedOrientations={["portrait", "portrait-upside-down", "landscape-left", "landscape-right"]} onRequestClose={dismiss}>
     <View className="flex-1 items-center justify-center bg-[#160e2a]/75 px-4">
       <View accessibilityViewIsModal className="w-full overflow-hidden rounded-3xl border border-white/55 bg-[#312254]" style={{ maxWidth: 440, maxHeight: height * 0.8 }}>
         <View className="flex-row items-start justify-between gap-3 border-b border-white/25 p-5">

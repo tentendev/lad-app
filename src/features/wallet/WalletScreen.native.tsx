@@ -10,6 +10,7 @@ import { expensesToCsv } from "@/domain/budget";
 import { formatCurrency, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
 import { EXPENSE_CATEGORIES, type Expense, type ExpenseCategory } from "@/domain/types";
 import { NativePage } from "@/ui/NativePage";
+import { NativeColumns } from "@/ui/NativeColumns";
 import { useWalletModel } from "./useWalletModel";
 
 function WalletGlyph({ type }: { type: "wallet" | "plus" | "list" }) {
@@ -154,7 +155,7 @@ export function WalletScreenNative() {
 
   if (!model.ready) {
     return (
-      <NativePage eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
+      <NativePage workspace eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
         <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
           <Typography className="type-body text-muted">正在讀取預算與花費…</Typography>
           <View className="h-12 rounded-xl bg-white/10" />
@@ -165,7 +166,7 @@ export function WalletScreenNative() {
   }
 
   return (
-    <NativePage eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
+    <NativePage workspace eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
       <View className="flex-row flex-wrap items-center justify-between gap-2">
         <Button accessibilityLabel="上一個月" size="sm" variant="ghost" className="border border-white/45" onPress={model.previousMonth}>←</Button>
         <Typography.Heading type="h4" className="type-headline text-white">{monthLabel(model.month)}</Typography.Heading>
@@ -181,6 +182,7 @@ export function WalletScreenNative() {
         </View>
       ) : null}
 
+      <NativeColumns>
       <Card className="gap-4 border border-white/55 bg-glass p-5">
         <View className="flex-row items-center gap-2"><WalletGlyph type="wallet" /><Typography className="text-muted">當月剩餘可花</Typography></View>
         <Typography.Heading type="h4" className="type-display text-white">{formatCurrency(model.summary.remaining)}</Typography.Heading>
@@ -212,7 +214,7 @@ export function WalletScreenNative() {
           <Typography.Paragraph className="py-4 text-center text-muted">記下一筆花費後，這裡會顯示類別占比與月度趨勢。</Typography.Paragraph>
         ) : model.insights.categories.map((item) => (
           <View className="gap-2" key={item.category} accessibilityLabel={`${item.category} ${formatCurrency(item.amount)}，占 ${item.percentage}%`}>
-            <View className="flex-row justify-between gap-3">
+            <View className="flex-row flex-wrap justify-between gap-3">
               <Typography className="type-body text-white">{item.category}</Typography>
               <Typography className="type-body font-semibold text-white">{formatCurrency(item.amount)} · {item.percentage}%</Typography>
             </View>
@@ -224,6 +226,9 @@ export function WalletScreenNative() {
 
       </Card>
 
+      </NativeColumns>
+
+      <NativeColumns>
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <Typography.Heading type="h4" className="type-title text-white">預算設定</Typography.Heading>
         <Typography className="type-body text-muted">每月預算（NT$）</Typography>
@@ -252,6 +257,9 @@ export function WalletScreenNative() {
         <Button isDisabled={submitting || model.writeProtected} onPress={() => void submitExpense()}>加入花費</Button>
       </Card>
 
+      </NativeColumns>
+
+      <NativeColumns>
       <Card className="gap-3 border border-white/50 bg-glass p-4">
         <View className="flex-row flex-wrap items-center justify-between gap-2">
           <View className="flex-row items-center gap-2"><WalletGlyph type="list" /><Typography.Heading type="h4" className="type-title text-white">花費紀錄</Typography.Heading></View>
@@ -294,6 +302,7 @@ export function WalletScreenNative() {
       </Card>
 
       <SpendingDashboardNative expenses={model.allExpenses} month={model.month} onSelectMonth={model.selectMonth} />
+      </NativeColumns>
 
       {editing ? (
         <Card className="gap-4 border border-white/50 bg-glass p-4">

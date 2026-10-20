@@ -11,6 +11,7 @@ import type { GapPackRecommendation } from "@/domain/calculator";
 import { formatCurrency, formatNumber } from "@/domain/format";
 import { POOLS, type PullGoal } from "@/domain/types";
 import { NativePage } from "@/ui/NativePage";
+import { NativeColumns } from "@/ui/NativeColumns";
 import { useCalculatorModel } from "./useCalculatorModel";
 import { PlannerSectionNative } from "./PlannerSection.native";
 
@@ -64,7 +65,7 @@ export function CalculatorScreenNative() {
 
   if (!model.ready) {
     return (
-      <NativePage eyebrow="Pull Planner" title="換算" description={`把鑽石、金券、官方返券與預留資源一起算清楚。每抽 ${DIA_PER_PULL} 鑽。`}>
+      <NativePage workspace eyebrow="Pull Planner" title="換算" description={`把鑽石、金券、官方返券與預留資源一起算清楚。每抽 ${DIA_PER_PULL} 鑽。`}>
         <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
           <Typography className="type-body text-muted">正在讀取換算設定…</Typography>
           <View className="h-12 rounded-xl bg-white/10" />
@@ -75,7 +76,7 @@ export function CalculatorScreenNative() {
   }
 
   return (
-    <NativePage eyebrow="Pull Planner" title="換算" description={`把鑽石、金券、官方返券與預留資源一起算清楚。每抽 ${DIA_PER_PULL} 鑽。`}>
+    <NativePage workspace eyebrow="Pull Planner" title="換算" description={`把鑽石、金券、官方返券與預留資源一起算清楚。每抽 ${DIA_PER_PULL} 鑽。`}>
       {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.storageError}</Typography></View> : null}
       {model.targetHandoff ? (
         <View accessibilityRole="alert" className="gap-2 rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/15 p-3">
@@ -84,6 +85,7 @@ export function CalculatorScreenNative() {
         </View>
       ) : null}
 
+      <NativeColumns>
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="diamond" /><Typography.Heading type="h4" className="type-title text-white">目標設定</Typography.Heading></View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
@@ -109,6 +111,7 @@ export function CalculatorScreenNative() {
         <Typography className="text-muted">相當於 {formatNumber(resource.reservePulls)} 抽 · {formatNumber(resource.reserveDia)} 鑽</Typography>
       </Card>
 
+      <View style={{ gap: 16 }}>
       <NativeMetricGrid>
         <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{formatNumber(resource.gapDia)}</Typography.Heading><Typography className="type-label text-muted">還差鑽石</Typography></Card>
         <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{resource.paidPulls}</Typography.Heading><Typography className="type-label text-muted">需課金抽</Typography></Card>
@@ -133,6 +136,10 @@ export function CalculatorScreenNative() {
         )}
       </Card>
 
+      </View>
+      </NativeColumns>
+
+      <NativeColumns>
       <Card className="gap-3 border border-white/50 bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="steps" /><Typography.Heading type="h4" className="type-title text-white">階梯明細</Typography.Heading></View>
         <Button variant="secondary" onPress={model.applyRecommendedPacks}>套用建議包數</Button>
@@ -144,7 +151,7 @@ export function CalculatorScreenNative() {
               {recommendation.tier?.tier === tier.tier ? <Typography className="text-[#cdbdff]">推薦</Typography> : null}
             </View>
             {detailsOpen ? <Typography className="text-muted">{tier.packPulls != null ? `${tier.packPulls} 抽／包` : "抽數未固定"}{tier.qty ? ` · 限購 ${tier.qty} 包` : ""} · 累計買滿至本階 {formatCurrency(tier.cumCost)}</Typography> : null}
-            <View className="flex-row items-center justify-between gap-2">
+            <View className="flex-row flex-wrap items-center justify-between gap-2">
               <Typography className="type-body text-muted">限購 {tier.qty} 包</Typography>
               <View className="flex-row items-center gap-3">
                 <Button variant="secondary" size="sm" accessibilityLabel={`減少第 ${tier.tier} 階包數`} isDisabled={!selectedPacks.quantities[index]} onPress={() => model.setPackQuantity(index, (selectedPacks.quantities[index] ?? 0) - 1)}>−</Button>
@@ -163,6 +170,8 @@ export function CalculatorScreenNative() {
         {selectedPacks.unknownPulls ? <Typography className="type-body text-[#ffe0a3]">含抽數未固定的禮包，未計入抽數合計。</Typography> : null}
         <Button isDisabled={!selectedPacks.count} onPress={() => void recordRecommendation()}>帶入錢包記帳</Button>
       </Card>
+
+      </NativeColumns>
 
       <PlannerSectionNative
         calculatorPool={draft.pool}
