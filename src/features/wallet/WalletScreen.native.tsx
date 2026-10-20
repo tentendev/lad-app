@@ -1,7 +1,7 @@
 import { NativeInput as TextInput, type NativeInputRef } from "@/ui/NativeInput";
 import { SpendingDashboardNative } from "./SpendingDashboard.native";
 import { NativeDateField } from "@/ui/NativeDateField";
-import { Pressable, ScrollView, Share, View } from "react-native";
+import { Pressable, Share, View } from "react-native";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 import { useEffect, useRef, useState } from "react";
 import Svg, { Path, Rect } from "react-native-svg";
@@ -245,11 +245,11 @@ export function WalletScreenNative() {
         {handoffNotice ? <Typography accessibilityRole="alert" className="type-body text-[#c7f4e9]">已帶入換算選擇，請確認金額與日期後再加入花費。</Typography> : null}
         <Typography className="type-body text-muted">花費金額（NT$）</Typography>
         <TextInput ref={amountInput} accessibilityLabel="花費金額" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="金額（NT$）" placeholderTextColor="#ded7ed" value={amount} onChangeText={(value) => { setFormError(null); setAmount(value); }} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+        <View className="flex-row flex-wrap gap-2">
           {EXPENSE_CATEGORIES.map((item) => (
-            <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === category }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === category ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => { setFormError(null); setCategory(item); }}><Typography className="type-label font-semibold text-white">{item}</Typography></Pressable>
+            <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === category }} className={`min-h-12 max-w-full justify-center rounded-full border px-3 py-2 ${item === category ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => { setFormError(null); setCategory(item); }}><Typography className="type-label font-semibold text-white">{item}</Typography></Pressable>
           ))}
-        </ScrollView>
+        </View>
         <NativeDateField label="消費日期" value={date} onChange={(value) => { setFormError(null); setDate(value); }} />
         <Typography className="type-body text-muted">花費備註（選填）</Typography>
         <TextInput accessibilityLabel="花費備註" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" placeholder="備註（選填）" placeholderTextColor="#ded7ed" value={note} onChangeText={(value) => { setFormError(null); setNote(value); }} />
@@ -270,11 +270,11 @@ export function WalletScreenNative() {
         </View>
         <View className="gap-2">
           <Typography className="type-label text-muted">紀錄與匯出範圍</Typography>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+          <View className="flex-row flex-wrap gap-2">
             {(["全部", ...EXPENSE_CATEGORIES] as const).map((item) => (
-              <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === expenseFilter }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === expenseFilter ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => setExpenseFilter(item)}><Typography className="type-label font-semibold text-white">{item}</Typography></Pressable>
+              <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === expenseFilter }} className={`min-h-12 max-w-full justify-center rounded-full border px-3 py-2 ${item === expenseFilter ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => setExpenseFilter(item)}><Typography className="type-label font-semibold text-white">{item}</Typography></Pressable>
             ))}
-          </ScrollView>
+          </View>
         </View>
         {visibleExpenses.length === 0 ? <Typography.Paragraph className="py-8 text-center text-muted">{model.expenses.length === 0 ? "這個月還沒有花費紀錄" : "這個類別目前沒有花費紀錄"}</Typography.Paragraph> : null}
         {visibleExpenses.map((expense) => (
@@ -319,11 +319,11 @@ export function WalletScreenNative() {
             value={String(editing.amt)}
             onChangeText={(value) => { setEditError(null); setEditing({ ...editing, amt: Number(value) }); }}
           />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+          <View className="flex-row flex-wrap gap-2">
             {EXPENSE_CATEGORIES.map((item) => (
               <Button key={item} size="sm" variant={item === editing.cat ? "primary" : "secondary"} onPress={() => { setEditError(null); setEditing({ ...editing, cat: item }); }}>{item}</Button>
             ))}
-          </ScrollView>
+          </View>
           <NativeDateField label="編輯消費日期" value={editing.date} onChange={(value) => { setEditError(null); setEditing({ ...editing, date: value }); }} />
           <TextInput accessibilityLabel="編輯花費備註" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" value={editing.note} onChangeText={(value) => { setEditError(null); setEditing({ ...editing, note: value }); }} />
           {editError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{editError}</Typography> : null}

@@ -1,7 +1,7 @@
 import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
 import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 import Svg, { Path, Rect } from "react-native-svg";
@@ -88,11 +88,11 @@ export function CalculatorScreenNative() {
       <NativeColumns>
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="diamond" /><Typography.Heading type="h4" className="type-title text-white">目標設定</Typography.Heading></View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+        <View className="flex-row flex-wrap gap-2">
           {POOLS.map((pool) => (
             <Button key={pool} size="sm" variant={pool === draft.pool ? "primary" : "secondary"} onPress={() => model.setPool(pool)}>{pool}</Button>
           ))}
-        </ScrollView>
+        </View>
         <NumberField placeholder="目前持有（鑽）" value={draft.cur} onChange={(value) => model.updateNumber("cur", value)} />
         <NumberField placeholder="目標抽數" value={draft.pulls} onChange={(value) => model.updateNumber("pulls", value)} />
         <Button variant="ghost" accessibilityState={{ expanded: rulesOpen }} onPress={() => setRulesOpen(!rulesOpen)}>保底與繼承規則 {rulesOpen ? "⌃" : "⌄"}</Button>

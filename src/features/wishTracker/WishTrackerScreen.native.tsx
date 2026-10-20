@@ -2,7 +2,7 @@ import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
 import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { NativeDateField } from "@/ui/NativeDateField";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Share, View } from "react-native";
+import { Pressable, Share, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 
@@ -28,13 +28,13 @@ type GuaranteeChoice = (typeof GUARANTEE_CHOICES)[number];
 
 function ChoiceRow<T extends string>({ options, value, onChange, disabled = false }: { options: readonly T[]; value: T; onChange: (value: T) => void; disabled?: boolean }) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+    <View className="flex-row flex-wrap gap-2">
       {options.map((item) => (
-        <Pressable key={item} accessibilityRole="button" accessibilityState={{ disabled, selected: item === value }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === value ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"} ${disabled ? "opacity-45" : ""}`} disabled={disabled} onPress={() => onChange(item)}>
+        <Pressable key={item} accessibilityRole="button" accessibilityState={{ disabled, selected: item === value }} className={`min-h-12 max-w-full justify-center rounded-full border px-3 py-2 ${item === value ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"} ${disabled ? "opacity-45" : ""}`} disabled={disabled} onPress={() => onChange(item)}>
           <Typography className="type-label font-semibold text-white">{item}</Typography>
         </Pressable>
       ))}
-    </ScrollView>
+    </View>
   );
 }
 
