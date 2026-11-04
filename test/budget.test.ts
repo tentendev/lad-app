@@ -73,8 +73,8 @@ describe("summarizeBudget", () => {
       { id: 1, amt: 200, cat: "其他", note: '卡 "套組"', date: "2026-08-01" },
       { id: 2, amt: 150, cat: "抽卡禮包", note: "限定,一階", date: "2026-08-05" },
     ]);
-    expect(csv.split("\n")[0]).toBe('"date","amount_twd","category","note"');
-    expect(csv.split("\n")[1]).toContain('"2026-08-05","150","抽卡禮包","限定,一階"');
+    expect(csv.split("\n")[0]).toBe('"date","amount","currency","category","note"');
+    expect(csv.split("\n")[1]).toContain('"2026-08-05","150","TWD","抽卡禮包","限定,一階"');
     expect(csv).toContain('"卡 ""套組"""');
     expect(expensesToCsv([{ id: 3, amt: 1, cat: "其他", note: "=2+2", date: "2026-08-06" }]))
       .toContain('"\'=2+2"');

@@ -2,11 +2,11 @@ import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, normalizePackQuantities, normalizePendingCalculatorTarget, recommendPacks, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
-import { todayKey } from "@/domain/format";
-import type { CalculatorDraft, PendingExpense, Pool, ReserveUnit } from "@/domain/types";
+import { normalizeCurrency, todayKey } from "@/domain/format";
+import type { CalculatorDraft, Currency, PendingExpense, Pool, ReserveUnit } from "@/domain/types";
 import { storage } from "@/data/repositories/storage";
 import { STORAGE_KEYS } from "@/data/repositories/storage.types";
-import { DIA_PER_PULL } from "@/data/packs";
+import { DIA_PER_PULL, getPackTiers } from "@/data/packs";
 
 export function useCalculatorModel() {
   const [draft, setDraft] = useState<CalculatorDraft>(DEFAULT_CALCULATOR_DRAFT);
@@ -23,15 +23,17 @@ export function useCalculatorModel() {
       storage.get<unknown>(STORAGE_KEYS.calculator, DEFAULT_CALCULATOR_DRAFT),
       storage.get<unknown>(STORAGE_KEYS.pendingCalculatorTarget, null),
       storage.get<unknown>("packQuantities", null),
+      storage.get<unknown>("packCurrency", "TWD"),
     ])
-      .then(async ([stored, pendingValue, legacyQuantities]) => {
+      .then(async ([stored, pendingValue, legacyQuantities, savedCurrency]) => {
         if (!active) return;
         const normalized = normalizeCalculatorDraft(stored);
+        normalized.currency ??= normalizeCurrency(savedCurrency);
         if (normalized.packQuantities === undefined && legacyQuantities !== null) normalized.packQuantities = normalizePackQuantities(legacyQuantities);
         const pending = normalizePendingCalculatorTarget(pendingValue);
         setDraft(pending ? {
           ...normalized,
-          pool: pending.pool ?? (normalized.pool === "復刻池" ? "日卡池" : normalized.pool),
+          pool: pending.pool ?? normalized.pool,
           pulls: pending.pulls,
         } : normalized);
         setTargetHandoff(pending?.source ?? null);
@@ -98,8 +100,8 @@ export function useCalculatorModel() {
     if (!selectedPacks.count || !selectedPacks.cost) return false;
     try {
       await storage.set(STORAGE_KEYS.pendingExpense, {
-        amt: selectedPacks.cost, cat: "抽卡禮包", date: todayKey(),
-        note: `${draft.pool} · ${selectedPacks.items.join("、")}`,
+        amt: selectedPacks.cost, currency: draft.currency ?? "TWD", cat: "抽卡禮包", date: todayKey(),
+        note: `${selectedPacks.estimatedPrices ? "地區售價推估 · " : ""}${draft.pool} · ${selectedPacks.items.join("、")}`,
       } satisfies PendingExpense);
       setStorageError(null);
       return true;
@@ -138,6 +140,7 @@ export function useCalculatorModel() {
     if (!Number.isFinite(planCost) || planCost <= 0 || !tier.trim()) return false;
     const pending: PendingExpense = {
       amt: planCost,
+      currency: "TWD",
       cat: "抽卡禮包",
       note: `${context?.trim() ? `${context.trim()} · ` : ""}${pool} · 買到第 ${tier.trim()} 階`,
       date: todayKey(),
@@ -159,10 +162,25 @@ export function useCalculatorModel() {
 
   return {
     ready,
+    tiers: getPackTiers(draft.pool, draft.currency),
     draft,
     resource,
     recommendation,
     selectedPacks,
+    setCurrency: (currency: Currency) => setDraft(current => ({ ...current, currency })),
+    setOfficialTickets: (count: number) => setDraft(current => ({ ...current, officialTicketsByPool: { ...current.officialTicketsByPool, [current.pool]: Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0 } })),
+    restoreOfficialTickets: () => setDraft(current => {
+      const overrides = { ...current.officialTicketsByPool };
+      delete overrides[current.pool];
+      return { ...current, officialTicketsByPool: overrides };
+    }),
+    reset: async () => {
+      try {
+        await storage.remove("packQuantities");
+        setDraft({ ...DEFAULT_CALCULATOR_DRAFT, currency: draft.currency });
+        setStorageError(null);
+      } catch { setStorageError("無法重設換算，請確認裝置儲存空間後再試一次。"); }
+    },
     setPackQuantity,
     applyRecommendedPacks,
     saveSelectedPacksAsExpense,

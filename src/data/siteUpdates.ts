@@ -3,13 +3,18 @@ import type { SiteUpdate } from "@/domain/siteUpdates";
 
 export const SITE_UPDATES: SiteUpdate[] = [
   {
-    "id": "2026-10-02-rafayel-and-notices",
-    "date": "2026-10-02",
+    "id": "2026-11-03-mixed-confirmed-sylus-rerun-forecast",
+    "date": "2026-11-03",
     "items": [
       {
         "type": "schedule",
-        "title": "祁煜長思入畫復刻｜10/3–10/10",
-        "body": "排期已確認，原預測 9/27–10/4 調整為 10/3–10/10，月曆已同步更新。"
+        "title": "待異夢重啟｜官方排期確認",
+        "body": "原「新混池6」更名為「待異夢重啟」，官方活動時間為11月6日至11月24日。"
+      },
+      {
+        "type": "schedule",
+        "title": "秦徹熾光淋漓復刻｜預測日期調整",
+        "body": "預測日期由11月4日至11月11日調整為11月23日至11月30日。此為預測，實際時間請以官方公告為準。"
       }
     ]
   }

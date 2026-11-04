@@ -1,67 +1,60 @@
-import type { PackTier, Pool, TicketRule } from "@/domain/types";
+import { POOLS, type Currency, type Pool, type RegionalPackTier } from "../domain/types";
+import { PACK_DATA, REGIONAL_PACK_PRICES, REGIONAL_PACK_PRICE_REFERENCES } from "./packData";
 
-export const MONTHLY_DIA = 7060;
-export const DIA_PER_PULL = 150;
+export { MONTHLY_DIA, DIA_PER_PULL, OFFICIAL_TICKET_RULES, PACK_DATA, PACK_OTHER } from "./packData";
 
-export const OFFICIAL_TICKET_RULES: Record<Pool, TicketRule> = {
-  日卡池: { initial: 10, milestones: [{ every: 10, reward: 1, maxReward: 10 }] },
-  混池: {
-    initial: 10,
-    milestones: [
-      { at: 50, reward: 5 },
-      { at: 100, reward: 5 },
-      { at: 150, reward: 5 },
-      { at: 250, reward: 5 },
-    ],
-  },
-  月卡池: {
-    initial: 0,
-    milestones: [
-      { every: 5, reward: 1, from: 5, to: 50 },
-      { every: 10, reward: 2, from: 60, to: 100 },
-    ],
-  },
-  生日池: { initial: 20, milestones: [] },
-  復刻池: { initial: 0, milestones: [] },
-};
+export function normalizePool(value: unknown): Pool {
+  if (value === "復刻池" || value === "月卡／生日復刻池") return "生日復刻池";
+  return POOLS.includes(value as Pool) ? value as Pool : "日卡池";
+}
 
-const sharedMonthlyBirthday: PackTier[] = [
-  { tier: "一", price: 15, qty: 3, packPulls: 1, cumPulls: 3, cumCost: 45, per: 15 },
-  { tier: "二", price: 30, qty: 3, packPulls: 2, cumPulls: 9, cumCost: 135, per: 15 },
-  { tier: "三", price: 150, qty: 3, packPulls: 6, cumPulls: 27, cumCost: 585, per: 25 },
-  { tier: "四", price: 290, qty: 2, packPulls: 10, cumPulls: 47, cumCost: 1165, per: 29 },
-  { tier: "五", price: 390, qty: 2, packPulls: 12, cumPulls: 71, cumCost: 1945, per: 32.5 },
-  { tier: "六", price: 820, qty: 10, packPulls: 20, cumPulls: 271, cumCost: 10145, per: 41 },
-  { tier: "七", price: 1490, qty: 1, packPulls: null, cumPulls: 271, cumCost: 11635, per: null },
-];
+export function migratePoolRecords(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const result = { ...value as Record<string, unknown> };
+  for (const legacy of ["月卡／生日復刻池", "復刻池"]) {
+    if (Object.hasOwn(result, legacy) && !Object.hasOwn(result, "生日復刻池")) result["生日復刻池"] = result[legacy];
+    delete result[legacy];
+  }
+  return result;
+}
 
-export const PACK_DATA: Record<Pool, PackTier[]> = {
-  日卡池: [
-    { tier: "一", price: 15, qty: 5, packPulls: 1, cumPulls: 5, cumCost: 75, per: 15 },
-    { tier: "二", price: 30, qty: 5, packPulls: 2, cumPulls: 15, cumCost: 225, per: 15 },
-    { tier: "三", price: 150, qty: 5, packPulls: 6, cumPulls: 45, cumCost: 975, per: 25 },
-    { tier: "四", price: 320, qty: 5, packPulls: 10, cumPulls: 95, cumCost: 2575, per: 32 },
-    { tier: "五", price: 390, qty: 3, packPulls: 12, cumPulls: 131, cumCost: 3745, per: 32.5 },
-    { tier: "六", price: 820, qty: 10, packPulls: 20, cumPulls: 331, cumCost: 11945, per: 41 },
-    { tier: "七", price: 1690, qty: 1, packPulls: 40, cumPulls: 371, cumCost: 13635, per: 42.25 },
-  ],
-  混池: [
-    { tier: "一", price: 15, qty: 5, packPulls: 1, cumPulls: 5, cumCost: 75, per: 15 },
-    { tier: "二", price: 30, qty: 3, packPulls: 2, cumPulls: 11, cumCost: 165, per: 15 },
-    { tier: "三", price: 150, qty: 5, packPulls: 6, cumPulls: 41, cumCost: 915, per: 25 },
-    { tier: "四", price: 320, qty: 5, packPulls: 10, cumPulls: 91, cumCost: 2515, per: 32 },
-    { tier: "五", price: 390, qty: 5, packPulls: 12, cumPulls: 151, cumCost: 4465, per: 32.5 },
-    { tier: "六", price: 590, qty: 3, packPulls: 16, cumPulls: 199, cumCost: 6235, per: 36.88 },
-    { tier: "七", price: 820, qty: 10, packPulls: 20, cumPulls: 399, cumCost: 14435, per: 41 },
-    { tier: "八", price: 1690, qty: 1, packPulls: 40, cumPulls: 439, cumCost: 16125, per: 42.25 },
-  ],
-  月卡池: sharedMonthlyBirthday,
-  生日池: sharedMonthlyBirthday,
-  復刻池: [
-    { tier: "一", price: 30, qty: 1, packPulls: 2, cumPulls: 2, cumCost: 30, per: 15 },
-    { tier: "二", price: 150, qty: 3, packPulls: 6, cumPulls: 20, cumCost: 480, per: 25 },
-    { tier: "三", price: 320, qty: 5, packPulls: 10, cumPulls: 70, cumCost: 2080, per: 32 },
-    { tier: "四", price: 390, qty: 3, packPulls: 12, cumPulls: 106, cumCost: 3250, per: 32.5 },
-    { tier: "五", price: 820, qty: 10, packPulls: 20, cumPulls: 306, cumCost: 11450, per: 41 },
-  ],
-};
+export function resolvePackPrice(pool: Pool, tier: string, currency: Currency = "TWD") {
+  const base = PACK_DATA[pool].find(item => item.tier === tier);
+  const missing = (method: string) => ({ price: null, status: "missing" as const, source: "", method });
+  if (!base) return missing("缺少禮包內容");
+  if (currency === "TWD") return { price: base.price, status: "confirmed" as const, source: base.source ?? "戀與深空_禮包總表", method: base.source ? "玩家截圖實價" : "台灣原始資料" };
+  const rows = REGIONAL_PACK_PRICES.filter(row => row.currency === currency);
+  const direct = rows.filter(row => row.pool === pool && row.tier === tier);
+  if (direct.length) {
+    if (direct.some(row => row.price !== direct[0].price)) return missing("實價資料衝突，待確認");
+    return { price: direct[0].price, status: "confirmed" as const, source: direct[0].source, method: "玩家截圖實價" };
+  }
+  const reference = REGIONAL_PACK_PRICE_REFERENCES.find(row => row.pool === pool && row.tier === tier);
+  if (reference) {
+    const matches = rows.filter(row => row.pool === reference.referencePool && row.tier === reference.referenceTier);
+    if (!matches.length) return missing("缺少對應卡池的截圖售價");
+    if (matches.some(row => row.price !== matches[0].price)) return missing("參照售價衝突，待確認");
+    const confirmed = "confirmed" in reference && reference.confirmed;
+    return { price: matches[0].price, status: confirmed ? "confirmed" as const : "estimated" as const, source: matches[0].source, method: confirmed ? `使用者確認：比照${reference.referencePool}第${reference.referenceTier}階售價（${reference.confirmedAt}）` : `參考${reference.referencePool}第${reference.referenceTier}階截圖售價` };
+  }
+  if (pool === "混池復刻池") return missing("混池復刻池地區售價待確認");
+  const anchors = rows.filter(row => row.pool === "混池").sort((a, b) => a.twdPrice - b.twdPrice);
+  const match = anchors.find(row => row.twdPrice === base.price);
+  if (match) return { price: match.price, status: "estimated" as const, source: match.source, method: `參考混池 NT$${base.price} 同價位禮包` };
+  const lower = anchors.filter(row => row.twdPrice < base.price).at(-1);
+  const upper = anchors.find(row => row.twdPrice > base.price);
+  if (!lower || !upper) return missing("超出參考價位範圍，待確認");
+  const price = Math.round((lower.price + (upper.price - lower.price) * (base.price - lower.twdPrice) / (upper.twdPrice - lower.twdPrice)) * 100) / 100;
+  return { price, status: "estimated" as const, source: lower.source, method: `混池 NT$${lower.twdPrice}–${upper.twdPrice} 售價線性內插，非匯率換算` };
+}
+
+export function getPackTiers(pool: Pool, currency: Currency = "TWD"): RegionalPackTier[] {
+  let cumCost: number | null = 0;
+  let cumPulls = 0;
+  return PACK_DATA[pool].map(tier => {
+    const resolved = resolvePackPrice(pool, tier.tier, currency);
+    cumCost = resolved.price == null || cumCost == null ? null : Math.round((cumCost + resolved.price * (tier.qty ?? 1)) * 100) / 100;
+    cumPulls += (tier.packPulls ?? 0) * (tier.qty ?? 1);
+    return { ...tier, currency, price: resolved.price, cumCost, cumPulls, per: tier.packPulls && resolved.price != null ? resolved.price / tier.packPulls : null, priceStatus: resolved.status, priceSource: resolved.source, priceMethod: resolved.method };
+  });
+}

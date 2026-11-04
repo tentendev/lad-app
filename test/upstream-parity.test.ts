@@ -34,7 +34,7 @@ describe("upstream HTML feature parity", () => {
     expect(SCHEDULE_META).toEqual(context.window.SCHEDULE_META);
   });
   it("exports only the opening day when the end date is unknown", () => {
-    const event = SCHEDULE.find((item) => !item.end)!;
+    const event = { name: "未定密約", type: "pass" as const, start: "2026-10-21", end: "", tentative: true };
     const ics = scheduleEventToIcs(event).replaceAll("\r\n ", "");
     expect(ics).toContain("DTEND;VALUE=DATE:20261022");
     expect(ics).toContain("結束日待確認");
@@ -52,7 +52,7 @@ describe("upstream HTML feature parity", () => {
   it("bounds invalid saved quantities and keeps manual plans per pool", () => {
     const normalized = normalizeCalculatorDraft({ ...draft, packQuantities: { 日卡池: [999, -3, 2.8, "bad"], 復刻池: [1] } });
     expect(selectedPackQuantities(normalized)).toEqual([5, 0, 2, 0, 0, 0, 0]);
-    expect(selectedPackQuantities({ ...normalized, pool: "復刻池" })).toEqual([1, 0, 0, 0, 0]);
+    expect(selectedPackQuantities({ ...normalized, pool: "生日復刻池" })).toEqual([1, 0, 0, 0, 0]);
     expect(selectedPackQuantities({ ...draft, packQuantities: { 日卡池: [] } })).toEqual([0, 0, 0, 0, 0, 0, 0]);
   });
   it("does not invent pull counts for nonfixed packs", () => {

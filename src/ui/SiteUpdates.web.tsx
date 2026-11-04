@@ -38,7 +38,7 @@ export function SiteUpdatesDialog() {
     </div>
     <div className="updates-content">
       <ul role="list">{latest.items.map((item, index) => <li key={index}><div className="update-kind">{item.type === "schedule" ? "排期" : "功能"}</div><h3>{item.title}</h3><p>{item.body}</p></li>)}</ul>
-      <button type="button" className="updates-read" onClick={dismiss}>知道了</button>
+      <button type="button" className="updates-read" onClick={dismiss}>確認</button>
     </div>
   </dialog>;
 }

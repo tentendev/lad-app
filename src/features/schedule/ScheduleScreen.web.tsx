@@ -97,6 +97,8 @@ export function ScheduleScreenWeb() {
   const router = useRouter();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const today = todayKey();
+  const laneCount = Math.max(1, ...model.calendarBars.map(segment => segment.lane + 1));
+  const rowsPerWeek = laneCount + 1;
   const weeks = Math.ceil((model.calendar.leading + model.calendar.cells.length) / 7);
   const allLeadsSelected = model.selectedLeads.length === LEADS.length;
   const selectionTitle = model.selectedDate
@@ -303,7 +305,7 @@ export function ScheduleScreenWeb() {
             className="calendar-grid motion-detail motion-data"
             role="group"
             aria-label={`${model.year}年${model.monthIndex + 1}月月曆`}
-            style={{ gridTemplateRows: `repeat(${weeks}, 26px 14px 14px 14px)` }}
+            style={{ gridTemplateRows: `repeat(${weeks}, 26px ${Array(laneCount).fill("14px").join(" ")})` }}
           >
             {model.calendar.cells.map((cell) => {
               const index = model.calendar.leading + cell.day - 1;
@@ -314,7 +316,7 @@ export function ScheduleScreenWeb() {
                   type="button"
                   key={cell.key}
                   className={`calendar-day ${cell.eventCount ? "has" : ""} ${cell.key === today ? "today" : ""} ${cell.key === model.selectedDate ? "selected" : ""}`}
-                  style={{ gridColumn: column, gridRow: `${week * 4 + 1} / span 4` }}
+                  style={{ gridColumn: column, gridRow: `${week * rowsPerWeek + 1} / span ${rowsPerWeek}` }}
                   aria-label={`${cell.key}，${cell.eventCount} 個排期`}
                   aria-pressed={cell.key === model.selectedDate}
                   onClick={() => model.selectDate(cell.key)}
@@ -330,7 +332,7 @@ export function ScheduleScreenWeb() {
                 key={segment.key}
                 style={{
                   gridColumn: `${segment.startColumn} / ${segment.endColumn + 1}`,
-                  gridRow: segment.week * 4 + 2 + segment.lane,
+                  gridRow: segment.week * rowsPerWeek + 2 + segment.lane,
                 }}
                 title={segment.event.name}
               >

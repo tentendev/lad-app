@@ -14,6 +14,7 @@ export type Expense = {
   cat: ExpenseCategory;
   note: string;
   date: string;
+  currency?: Currency;
 };
 
 export type BudgetConfig = {
@@ -23,7 +24,9 @@ export type BudgetConfig = {
 
 export type BudgetMap = Record<string, BudgetConfig>;
 
-export const POOLS = ["日卡池", "混池", "月卡池", "生日池", "復刻池"] as const;
+export const CURRENCIES = ["TWD", "HKD", "MYR"] as const;
+export type Currency = (typeof CURRENCIES)[number];
+export const POOLS = ["日卡池", "混池", "月卡池", "生日池", "月卡復刻池", "生日復刻池", "混池復刻池", "協會補給", "其他"] as const;
 export type Pool = (typeof POOLS)[number];
 
 export type ReserveUnit = "pulls" | "dia";
@@ -37,6 +40,8 @@ export type CalculatorDraft = {
   reserve: number;
   reserveUnit: ReserveUnit;
   packQuantities?: PackQuantities;
+  currency?: Currency;
+  officialTicketsByPool?: Partial<Record<Pool, number>>;
 };
 
 export type TicketMilestone = {
@@ -61,6 +66,17 @@ export type PackTier = {
   cumPulls: number;
   cumCost: number;
   per: number | null;
+  source?: string;
+  received?: string;
+};
+
+export type RegionalPackTier = Omit<PackTier, "price" | "cumCost"> & {
+  price: number | null;
+  cumCost: number | null;
+  currency: Currency;
+  priceStatus: "confirmed" | "estimated" | "missing";
+  priceSource: string;
+  priceMethod: string;
 };
 
 export type ScheduleEventType =
@@ -92,6 +108,7 @@ export type PendingExpense = {
   cat: ExpenseCategory;
   note: string;
   date: string;
+  currency?: Currency;
 };
 
 export type PendingCalculatorTarget = {

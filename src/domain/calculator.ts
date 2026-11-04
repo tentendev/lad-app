@@ -1,5 +1,7 @@
-import { DIA_PER_PULL, MONTHLY_DIA, OFFICIAL_TICKET_RULES, PACK_DATA } from "../data/packs";
-import { POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type PendingCalculatorTarget, type Pool, type TicketRule } from "./types";
+import { DIA_PER_PULL, MONTHLY_DIA, OFFICIAL_TICKET_RULES, PACK_DATA, getPackTiers, migratePoolRecords, normalizePool } from "../data/packs";
+import { POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type Currency, type PendingCalculatorTarget, type Pool, type TicketRule } from "./types";
+
+import { normalizeCurrency } from "./format";
 
 export const DEFAULT_CALCULATOR_DRAFT: CalculatorDraft = {
   pool: "日卡池",
@@ -26,16 +28,18 @@ function cappedSafeNumber(value: number): number {
 }
 
 export function normalizeCalculatorDraft(value: unknown): CalculatorDraft {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return DEFAULT_CALCULATOR_DRAFT;
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return { ...DEFAULT_CALCULATOR_DRAFT };
   const stored = value as Partial<Record<keyof CalculatorDraft, unknown>>;
   return {
-    pool: typeof stored.pool === "string" && POOLS.includes(stored.pool as Pool) ? stored.pool as Pool : "日卡池",
+    pool: normalizePool(stored.pool),
     cur: nonNegativeInteger(stored.cur),
     tickets: nonNegativeInteger(stored.tickets),
     pulls: nonNegativeInteger(stored.pulls),
     reserve: nonNegativeNumber(stored.reserve),
     reserveUnit: stored.reserveUnit === "dia" ? "dia" : "pulls",
     ...(stored.packQuantities === undefined ? {} : { packQuantities: normalizePackQuantities(stored.packQuantities) }),
+    ...(stored.currency === undefined ? {} : { currency: normalizeCurrency(stored.currency) }),
+    ...(stored.officialTicketsByPool === undefined ? {} : { officialTicketsByPool: normalizeOfficialTickets(stored.officialTicketsByPool) }),
   };
 }
 
@@ -43,9 +47,9 @@ export function normalizePendingCalculatorTarget(value: unknown): PendingCalcula
   if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
   const stored = value as Partial<Record<keyof PendingCalculatorTarget, unknown>>;
   if (!Number.isSafeInteger(stored.pulls) || (stored.pulls as number) <= 0 || (stored.pulls as number) > 999) return null;
-  if (stored.pool !== null && (typeof stored.pool !== "string" || !POOLS.includes(stored.pool as Pool))) return null;
+  if (stored.pool !== null && (typeof stored.pool !== "string" || (!POOLS.includes(stored.pool as Pool) && !["復刻池", "月卡／生日復刻池"].includes(stored.pool)))) return null;
   if (typeof stored.source !== "string" || !stored.source.trim() || stored.source.trim().length > 120) return null;
-  return { pulls: stored.pulls as number, pool: stored.pool as Pool | null, source: stored.source.trim() };
+  return { pulls: stored.pulls as number, pool: stored.pool === null ? null : normalizePool(stored.pool), source: stored.source.trim() };
 }
 
 export type ResourcePlan = {
@@ -66,7 +70,7 @@ export type ResourcePlan = {
 };
 
 export type PackRecommendation = {
-  status: "idle" | "enough" | "recommended" | "overflow";
+  status: "idle" | "enough" | "recommended" | "overflow" | "missing-price";
   gapPulls: number;
   ownedPulls: number;
   tier?: PackTier;
@@ -77,7 +81,7 @@ export type PackRecommendation = {
 };
 
 export type GapPackRecommendation = {
-  status: "enough" | "recommended" | "overflow";
+  status: "enough" | "recommended" | "overflow" | "missing-price";
   gapDia: number;
   gapPulls: number;
   tier?: PackTier;
@@ -91,15 +95,17 @@ type PackPurchase = Pick<
   "status" | "gapPulls" | "tier" | "packsAtTier" | "planPulls" | "planCost"
 >;
 
-function purchasePacksForPullGap(pool: Pool, gapPulls: number): PackPurchase {
+function purchasePacksForPullGap(pool: Pool, gapPulls: number, currency: Currency = "TWD"): PackPurchase {
   if (gapPulls <= 0) return { status: "enough", gapPulls: 0 };
 
   let planPulls = 0;
   let planCost = 0;
   let lastTier: PackTier | undefined;
   let packsAtLastTier = 0;
-  for (const tier of PACK_DATA[pool]) {
-    if (tier.packPulls == null || tier.per == null) continue;
+  for (const regional of getPackTiers(pool, currency)) {
+    if (regional.packPulls == null) continue;
+    if (regional.price == null) return { status: "missing-price", gapPulls };
+    const tier: PackTier & { packPulls: number } = { ...regional, packPulls: regional.packPulls, price: regional.price, cumCost: regional.cumCost ?? 0 };
     const available = tier.qty ?? 1;
     const needed = Math.min(
       available,
@@ -107,7 +113,7 @@ function purchasePacksForPullGap(pool: Pool, gapPulls: number): PackPurchase {
     );
     if (needed > 0) {
       planPulls += needed * tier.packPulls;
-      planCost += needed * tier.price;
+      planCost = Math.round((planCost + needed * tier.price) * 100) / 100;
       lastTier = tier;
       packsAtLastTier = needed;
     }
@@ -138,10 +144,10 @@ function purchasePacksForPullGap(pool: Pool, gapPulls: number): PackPurchase {
  * and official ticket rewards. This avoids counting a pool's official tickets
  * a second time when the planner turns a forecast deficit into a purchase plan.
  */
-export function recommendPacksForGap(pool: Pool, rawGapDia: number): GapPackRecommendation {
+export function recommendPacksForGap(pool: Pool, rawGapDia: number, currency: Currency = "TWD"): GapPackRecommendation {
   const gapDia = nonNegativeNumber(rawGapDia);
   const gapPulls = Math.ceil(gapDia / DIA_PER_PULL);
-  return { gapDia, ...purchasePacksForPullGap(pool, gapPulls) };
+  return { gapDia, ...purchasePacksForPullGap(pool, gapPulls, currency) };
 }
 
 export function officialTicketCount(
@@ -189,7 +195,9 @@ export function calculateResources(draft: CalculatorDraft): ResourcePlan {
   const reservePulls = cappedSafeNumber(reserveAsPulls(draft));
   const reserveDia = cappedSafeNumber(reservePulls * DIA_PER_PULL);
   const totalPulls = cappedSafeNumber(targetPulls + reservePulls);
-  const officialTickets = officialTicketCount(draft.pool, targetPulls);
+  const estimatedTickets = officialTicketCount(draft.pool, targetPulls);
+  const override = normalizeOfficialTickets(draft.officialTicketsByPool)[draft.pool];
+  const officialTickets = override ?? estimatedTickets;
   const initialTickets = OFFICIAL_TICKET_RULES[draft.pool]?.initial ?? 0;
   const ownedTicketPulls = cappedSafeNumber(currentTickets + officialTickets);
   const requiredDia = cappedSafeNumber(Math.max(0, totalPulls - ownedTicketPulls) * DIA_PER_PULL);
@@ -228,7 +236,7 @@ export function recommendPacks(draft: CalculatorDraft): PackRecommendation {
 
   if (resource.totalPulls <= 0) return { status: "idle", gapPulls, ownedPulls };
   if (gapPulls <= 0) return { status: "enough", gapPulls: 0, ownedPulls };
-  const purchase = purchasePacksForPullGap(draft.pool, gapPulls);
+  const purchase = purchasePacksForPullGap(draft.pool, gapPulls, draft.currency);
   if (purchase.status !== "recommended") return { ...purchase, ownedPulls };
 
   const goalDia = cappedSafeNumber(Math.max(
@@ -242,14 +250,14 @@ export function recommendPacks(draft: CalculatorDraft): PackRecommendation {
   };
 }
 
-export function bestTierPrice(pool: Pool): number | null {
-  const prices = PACK_DATA[pool].flatMap((tier) => (tier.per == null ? [] : [tier.per]));
+export function bestTierPrice(pool: Pool, currency: Currency = "TWD"): number | null {
+  const prices = getPackTiers(pool, currency).flatMap((tier) => (tier.per == null ? [] : [tier.per]));
   return prices.length ? Math.min(...prices) : null;
 }
 
 export function normalizePackQuantities(value: unknown): PackQuantities {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
-  const entries = value as Record<string, unknown>;
+  const entries = migratePoolRecords(value);
   return Object.fromEntries(POOLS.flatMap((pool) => {
     const quantities = entries[pool];
     if (!Array.isArray(quantities)) return [];
@@ -275,18 +283,25 @@ export function summarizeSelectedPacks(draft: CalculatorDraft) {
   const resource = calculateResources(draft);
   let cost = 0, pulls = 0, count = 0, unknownPulls = false;
   const items: string[] = [];
-  PACK_DATA[draft.pool].forEach((tier, index) => {
+  let missingPrices = false, estimatedPrices = false;
+  getPackTiers(draft.pool, draft.currency).forEach((tier, index) => {
     const quantity = quantities[index];
     if (!quantity) return;
-    cost += tier.price * quantity;
+    if (tier.price == null) missingPrices = true;
+    else cost += tier.price * quantity;
+    estimatedPrices ||= tier.priceStatus === "estimated";
     count += quantity;
     pulls += (tier.packPulls ?? 0) * quantity;
     unknownPulls ||= tier.packPulls === null;
     items.push(`第${tier.tier}階 ${quantity}包`);
   });
   return {
-    quantities, cost, pulls, count, unknownPulls, items,
+    quantities, cost: missingPrices ? null : Math.round(cost * 100) / 100, pulls, count, unknownPulls, items, missingPrices, estimatedPrices,
     missingPulls: Math.max(0, resource.paidPulls - pulls),
     remainingDiaAfterTarget: Math.max(0, draft.cur - Math.max(0, draft.pulls - resource.ownedTicketPulls - pulls) * DIA_PER_PULL),
   };
+}
+
+export function normalizeOfficialTickets(value: unknown): Partial<Record<Pool, number>> {
+  return Object.fromEntries(Object.entries(migratePoolRecords(value)).filter(([pool, count]) => POOLS.includes(pool as Pool) && typeof count === "number" && Number.isFinite(count) && count >= 0).map(([pool, count]) => [pool, Math.min(Number.MAX_SAFE_INTEGER, Math.floor(count as number))]));
 }

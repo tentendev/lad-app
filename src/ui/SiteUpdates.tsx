@@ -25,7 +25,7 @@ export function SiteUpdatesDialog() {
         </View>
         <ScrollView style={{ flexGrow: 0, flexShrink: 1 }} contentContainerStyle={{ padding: 20, gap: 20 }}>
           {latest.items.map((item, index) => <View key={index} className="gap-2"><View className="self-start rounded-md border border-white/25 px-2 py-1"><Typography className="type-label text-[#65d6c4]">{item.type === "schedule" ? "排期" : "功能"}</Typography></View><Typography className="type-body font-semibold text-white">{item.title}</Typography><Typography className="type-body text-muted">{item.body}</Typography></View>)}
-          <Pressable accessibilityRole="button" onPress={dismiss} className="min-h-12 items-center justify-center rounded-xl border border-white/55 px-3 py-3"><Typography className="type-body text-white">知道了</Typography></Pressable>
+          <Pressable accessibilityRole="button" onPress={dismiss} className="min-h-12 items-center justify-center rounded-xl border border-white/55 px-3 py-3"><Typography className="type-body text-white">確認</Typography></Pressable>
         </ScrollView>
       </View>
     </View>

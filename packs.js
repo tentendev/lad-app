@@ -4,11 +4,22 @@
    -------------------------------------------------------------
    每個卡池的階級為「累計購買」：買到第 N 階即累計可得 cumPulls 抽、
    花費 cumCost、平均單抽 per。per = null 代表官方未固定抽數（X）。
-   價格幣別沿用 App 的 NT$；若你的數據是其他幣別，跟我說即可整批換。
+   此表為台灣價格與共同禮包內容；各地價格另由玩家提供的實價整理。
    ============================================================= */
 
 window.MONTHLY_DIA = 7060;                 // 月卡黨每月約可獲得鑽石
-window.PACK_POOLS  = ["日卡池","混池","月卡池","生日池","復刻池","協會補給","其他"];
+window.PACK_POOLS  = ["日卡池","混池","月卡池","生日池","月卡復刻池","生日復刻池","混池復刻池","協會補給","其他"];
+window.normalizePackPool = pool=>['復刻池','月卡／生日復刻池'].includes(pool)?'生日復刻池':pool;
+window.migratePackPoolRecords = records=>{
+  const migrated={...records};
+  // 舊合併選項沒有返還；遷移至生日復刻，避免替不明種類的舊紀錄多扣金券。
+  for(const legacy of ['月卡／生日復刻池','復刻池']){
+    if(!Object.hasOwn(migrated,legacy))continue;
+    if(!Object.hasOwn(migrated,'生日復刻池'))migrated['生日復刻池']=migrated[legacy];
+    delete migrated[legacy];
+  }
+  return migrated;
+};
 
 // 官方免費金券：initial 為免費贈送；milestones 為完成該累抽數後返還的張數。
 window.OFFICIAL_TICKET_RULES = {
@@ -21,7 +32,14 @@ window.OFFICIAL_TICKET_RULES = {
     {every:10,reward:2,from:60,to:100}
   ]},
   "生日池": {initial:20,milestones:[]},
-  "復刻池": {initial:0,milestones:[]},
+  "月卡復刻池": {initial:0,milestones:[
+    ...[10,20,30,40,50].map(at=>({at,reward:2})),
+    ...[75,100].map(at=>({at,reward:5}))
+  ]},
+  "生日復刻池": {initial:0,milestones:[]},
+  "混池復刻池": {initial:0,milestones:[
+    {at:50,reward:5},{at:100,reward:5},{at:150,reward:5}
+  ]},
   "協會補給": {initial:0,milestones:[]},
   "其他": {initial:0,milestones:[]}
 };
@@ -55,12 +73,12 @@ window.PACK_DATA = {
     {tier:"六",price:820,qty:10,packPulls:20,cumPulls:271,cumCost:10145,per:41},
     {tier:"七",price:1490,qty:1,packPulls:null,cumPulls:271,cumCost:11635,per:null},
   ],
-  "復刻池":[
+  "生日復刻池":[
     {tier:"一",price:30,qty:1,packPulls:2,cumPulls:2,cumCost:30,per:15},
-    {tier:"二",price:150,qty:3,packPulls:6,cumPulls:20,cumCost:480,per:25},
-    {tier:"三",price:320,qty:5,packPulls:10,cumPulls:70,cumCost:2080,per:32},
-    {tier:"四",price:390,qty:3,packPulls:12,cumPulls:106,cumCost:3250,per:32.5},
-    {tier:"五",price:820,qty:10,packPulls:20,cumPulls:306,cumCost:11450,per:41},
+    {tier:"二",price:150,qty:1,packPulls:6,cumPulls:8,cumCost:180,per:25},
+    {tier:"三",price:320,qty:1,packPulls:10,cumPulls:18,cumCost:500,per:32},
+    {tier:"四",price:390,qty:3,packPulls:12,cumPulls:54,cumCost:1670,per:32.5},
+    {tier:"五",price:820,qty:10,packPulls:20,cumPulls:254,cumCost:9870,per:41},
   ],
   "協會補給":[
     {tier:"Lv10",price:30,packPulls:2,cumPulls:2,cumCost:30,per:15},
@@ -79,6 +97,14 @@ window.PACK_DATA = {
 // 月卡池與生日池使用同一份禮包表，但官方免費金券規則不同。
 window.PACK_DATA["月卡池"] = window.PACK_DATA["月卡池/生日池"];
 window.PACK_DATA["生日池"] = window.PACK_DATA["月卡池/生日池"];
+window.PACK_DATA["月卡復刻池"] = window.PACK_DATA["生日復刻池"];
+
+// 混池復刻比月卡／生日復刻多一階 NT$590；每包 16 抽由玩家確認。
+window.PACK_DATA["混池復刻池"] = [
+  ...window.PACK_DATA["生日復刻池"].slice(0,4),
+  {tier:"五",price:590,qty:3,packPulls:16,cumPulls:102,cumCost:3440,per:36.875},
+  {tier:"六",price:820,qty:10,packPulls:20,cumPulls:302,cumCost:11640,per:41},
+].map(tier=>({...tier,source:'references/prices/混池復刻－台幣.PNG',received:'2026-10-19'}));
 
 // 「其他」為定期禮包，無累計抽數，僅列單抽 CP 值
 window.PACK_OTHER = [
@@ -86,3 +112,54 @@ window.PACK_OTHER = [
   {name:"特別密約",                 price:320, per:26.6},
   {name:"升級版特別密約（只計金券）", price:490, per:40.8},
 ];
+
+window.PACK_CURRENCIES = {
+  TWD:{label:'新台幣',symbol:'NT$'},
+  HKD:{label:'港幣',symbol:'HK$'},
+  MYR:{label:'馬來西亞令吉',symbol:'RM'}
+};
+window.formatMoney = (amount,currency='TWD')=>amount==null||!Number.isFinite(Number(amount))?'待確認':
+  (window.PACK_CURRENCIES[currency]||window.PACK_CURRENCIES.TWD).symbol+Number(amount).toLocaleString('zh-TW',{maximumFractionDigits:2});
+window.resolvePackPrice = (pool,tier,currency='TWD')=>{
+  pool=window.normalizePackPool(pool);
+  const base=(window.PACK_DATA[pool]||[]).find(p=>p.tier===tier);
+  if(!base)return {price:null,status:'missing',source:'',method:'缺少禮包內容'};
+  if(currency==='TWD')return {price:base.price,status:'confirmed',source:base.source||'戀與深空_禮包總表',method:base.source?'玩家截圖實價':'台灣原始資料'};
+  if(!window.PACK_CURRENCIES[currency])return {price:null,status:'missing',source:'',method:'不支援的幣別'};
+  const rows=(window.REGIONAL_PACK_PRICES||[]).filter(r=>r.currency===currency);
+  const direct=rows.filter(r=>r.pool===pool&&r.tier===tier);
+  if(direct.length){
+    if(direct.some(r=>r.price!==direct[0].price))return {price:null,status:'missing',source:direct.map(r=>r.source).join('；'),method:'實價資料衝突，待確認'};
+    return {price:direct[0].price,status:'confirmed',source:direct[0].source,method:'玩家截圖實價'};
+  }
+  const reference=(window.REGIONAL_PACK_PRICE_REFERENCES||[]).find(r=>r.pool===pool&&r.tier===tier);
+  if(reference){
+    const matches=rows.filter(r=>r.pool===reference.referencePool&&r.tier===reference.referenceTier);
+    if(!matches.length)return {price:null,status:'missing',source:'',method:'缺少對應卡池的截圖售價'};
+    if(matches.some(r=>r.price!==matches[0].price))return {price:null,status:'missing',source:matches.map(r=>r.source).join('；'),method:'參照售價衝突，待確認'};
+    return {price:matches[0].price,status:reference.confirmed?'confirmed':'estimated',source:matches[0].source,method:reference.confirmed?`使用者確認：比照${reference.referencePool}第${reference.referenceTier}階售價（${reference.confirmedAt}）`:`參考${reference.referencePool}第${reference.referenceTier}階截圖售價`};
+  }
+  if(pool==='混池復刻池')return {price:null,status:'missing',source:'',method:'混池復刻池地區售價待確認'};
+  // 未指定參照階級的舊資料（如協會補給）沿用混池價位估算。
+  const anchors=rows.filter(r=>r.pool==='混池').sort((a,b)=>a.twdPrice-b.twdPrice);
+  if(!anchors.length)return {price:null,status:'missing',source:'',method:'缺少地區參考價格'};
+  const match=anchors.find(r=>r.twdPrice===base.price);
+  if(match)return {price:match.price,status:'estimated',source:match.source,method:`參考混池 NT$${base.price} 同價位禮包`};
+  const lower=anchors.filter(r=>r.twdPrice<base.price).at(-1),upper=anchors.find(r=>r.twdPrice>base.price);
+  if(lower&&upper){
+    const price=lower.price+(upper.price-lower.price)*(base.price-lower.twdPrice)/(upper.twdPrice-lower.twdPrice);
+    return {price:Math.round(price*100)/100,status:'estimated',source:lower.source,method:`混池 NT$${lower.twdPrice}–${upper.twdPrice} 售價線性內插，非匯率換算`};
+  }
+  // 參考範圍外不外推，避免將未知價格當成實價。
+  return {price:null,status:'missing',source:'',method:'超出參考價位範圍，待確認'};
+};
+window.getPackTiers = (pool,currency='TWD')=>{
+  pool=window.normalizePackPool(pool);
+  let cumCost=0,cumPulls=0;
+  return (window.PACK_DATA[pool]||[]).map(t=>{
+    const resolved=window.resolvePackPrice(pool,t.tier,currency);
+    cumCost=resolved.price==null||cumCost==null?null:Math.round((cumCost+resolved.price*(t.qty||1))*100)/100;
+    cumPulls+=(t.packPulls||0)*(t.qty||1);
+    return {...t,currency,price:resolved.price,per:t.packPulls&&resolved.price!=null?resolved.price/t.packPulls:null,cumCost,cumPulls,priceStatus:resolved.status,priceSource:resolved.source,priceMethod:resolved.method};
+  });
+};

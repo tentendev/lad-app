@@ -143,9 +143,9 @@ export function eventStatus(event: ScheduleEvent, today: string): { label: strin
   return { label: `${startDiff}天後`, tone: "soon" };
 }
 
-/** Past dates use solid bars, while their original provenance stays in the data. */
-export function isScheduleForecast(event: ScheduleEvent, today: string): boolean {
-  return Boolean(event.tentative && (event.end || event.start) >= today);
+/** Forecast provenance remains visible even after an event ends. */
+export function isScheduleForecast(event: ScheduleEvent, _today?: string): boolean {
+  return Boolean(event.tentative);
 }
 
 export function eventsForDate(events: ScheduleEvent[], dateKey: string): ScheduleEvent[] {
@@ -206,7 +206,7 @@ export function calendarBarSegments(
   events: ScheduleEvent[],
   year: number,
   monthIndex: number,
-  maxLanes = 3,
+  maxLanes = Math.max(1, events.length),
 ): CalendarBarSegment[] {
   const firstWeekday = new Date(year, monthIndex, 1).getDay();
   const days = new Date(year, monthIndex + 1, 0).getDate();

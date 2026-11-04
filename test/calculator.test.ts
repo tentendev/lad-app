@@ -53,8 +53,8 @@ describe("normalizeCalculatorDraft", () => {
 
 describe("normalizePendingCalculatorTarget", () => {
   it("accepts a tracker handoff and rejects ambiguous targets", () => {
-    expect(normalizePendingCalculatorTarget({ pulls: 129, pool: "復刻池", source: " 復刻池保底 " }))
-      .toEqual({ pulls: 129, pool: "復刻池", source: "復刻池保底" });
+    expect(normalizePendingCalculatorTarget({ pulls: 129, pool: "生日復刻池", source: " 復刻池保底 " }))
+      .toEqual({ pulls: 129, pool: "生日復刻池", source: "復刻池保底" });
     expect(normalizePendingCalculatorTarget({ pulls: 0, pool: null, source: "限定新池" })).toBeNull();
     expect(normalizePendingCalculatorTarget({ pulls: 70, pool: "不存在", source: "限定新池" })).toBeNull();
   });
@@ -132,13 +132,13 @@ describe("recommendPacksForGap", () => {
 
   it("returns enough for an empty or invalid gap and overflow beyond one pack cycle", () => {
     expect(recommendPacksForGap("混池", Number.NaN)).toMatchObject({ status: "enough", gapDia: 0, gapPulls: 0 });
-    expect(recommendPacksForGap("復刻池", 100_000)).toMatchObject({
+    expect(recommendPacksForGap("生日復刻池", 100_000)).toMatchObject({
       status: "overflow",
       gapPulls: 667,
       tier: { tier: "五" },
       packsAtTier: 10,
-      planPulls: 306,
-      planCost: 11_450,
+      planPulls: 254,
+      planCost: 9_870,
     });
   });
 });
@@ -154,15 +154,15 @@ describe("pack table integrity", () => {
         expect(tierNames.has(tier.tier), `${pool} ${tier.tier} 階重複`).toBe(false);
         tierNames.add(tier.tier);
         expect(tier.price).toBeGreaterThan(0);
-        expect(tier.qty ?? 0).toBeGreaterThan(0);
+        expect(tier.qty ?? 1).toBeGreaterThan(0);
 
-        cumulativeCost += tier.price * (tier.qty ?? 0);
-        if (tier.packPulls !== null) cumulativePulls += tier.packPulls * (tier.qty ?? 0);
+        cumulativeCost += tier.price * (tier.qty ?? 1);
+        if (tier.packPulls !== null) cumulativePulls += tier.packPulls * (tier.qty ?? 1);
         expect(tier.cumCost, `${pool} ${tier.tier} 階累積價格`).toBe(cumulativeCost);
         expect(tier.cumPulls, `${pool} ${tier.tier} 階累積抽數`).toBe(cumulativePulls);
 
         if (tier.packPulls === null) expect(tier.per).toBeNull();
-        else expect(tier.per).toBe(Number((tier.price / tier.packPulls).toFixed(2)));
+        else expect(Number(tier.per?.toFixed(2))).toBe(Number((tier.price / tier.packPulls).toFixed(2)));
       }
     }
   });

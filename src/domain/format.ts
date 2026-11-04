@@ -1,5 +1,14 @@
-export function formatCurrency(value: number): string {
-  return `NT$${Number(value || 0).toLocaleString("zh-TW")}`;
+import { CURRENCIES, type Currency } from "./types";
+
+export const CURRENCY_LABELS: Record<Currency, string> = { TWD: "新台幣", HKD: "港幣", MYR: "馬來西亞令吉" };
+export const CURRENCY_SYMBOLS: Record<Currency, string> = { TWD: "NT$", HKD: "HK$", MYR: "RM" };
+
+export function normalizeCurrency(value: unknown): Currency {
+  return CURRENCIES.includes(value as Currency) ? value as Currency : "TWD";
+}
+
+export function formatCurrency(value: number | null, currency: Currency = "TWD"): string {
+  return value == null || !Number.isFinite(value) ? "待確認" : `${CURRENCY_SYMBOLS[currency]}${Number(value).toLocaleString("zh-TW", { maximumFractionDigits: 2 })}`;
 }
 
 export function formatNumber(value: number, maxFractionDigits = 2): string {

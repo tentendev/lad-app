@@ -2,12 +2,13 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { storage } from "@/data/repositories/storage";
 import { spendingRangeError, summarizeSpendingRange } from "@/domain/budget";
-import { formatCurrency, monthLabel, moveMonth } from "@/domain/format";
-import type { Expense } from "@/domain/types";
+import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency as formatMoney, monthLabel, moveMonth } from "@/domain/format";
+import type { Currency, Expense } from "@/domain/types";
 
 type Range = { mode: "6" | "12" | "custom"; start: string; end: string };
 
-export function SpendingDashboard({ expenses, month, onSelectMonth }: { expenses: Expense[]; month: string; onSelectMonth: (month: string) => void }) {
+export function SpendingDashboard({ expenses, month, onSelectMonth, currency = "TWD" }: { expenses: Expense[]; currency?: Currency; month: string; onSelectMonth: (month: string) => void }) {
+  const formatCurrency = (value: number | null) => formatMoney(value, currency);
   const [range, setRange] = useState<Range>({ mode: "6", start: moveMonth(month, -5), end: month });
   const [start, setStart] = useState(range.start);
   const [end, setEnd] = useState(range.end);
@@ -48,9 +49,9 @@ export function SpendingDashboard({ expenses, month, onSelectMonth }: { expenses
   }, [persist, range]);
   const from = range.mode === "custom" ? range.start : moveMonth(month, -Number(range.mode) + 1);
   const to = range.mode === "custom" ? range.end : month;
-  const data = summarizeSpendingRange(expenses, from, to);
+  const data = summarizeSpendingRange(expenses, from, to, currency);
   const maximum = Math.max(1, ...data.months.map((item) => item.amount));
-  const compact = (amount: number) => amount >= 10000 ? `NT$${new Intl.NumberFormat("zh-TW", { notation: "compact", maximumFractionDigits: 1 }).format(amount)}` : formatCurrency(amount);
+  const compact = (amount: number) => amount >= 10000 ? `${CURRENCY_SYMBOLS[currency]}${new Intl.NumberFormat("zh-TW", { notation: "compact", maximumFractionDigits: 1 }).format(amount)}` : formatCurrency(amount);
   function applyRange() {
     const invalid = spendingRangeError(start, end);
     setError(invalid);
@@ -91,7 +92,7 @@ export function SpendingDashboard({ expenses, month, onSelectMonth }: { expenses
           </div>
         </div>
         {data.total === 0 ? <p className="empty-state">這段期間還沒有花費紀錄，可在上方新增第一筆花費。</p> : null}
-        <p className="section-meta">點一下月份，可查看該月明細；金額單位為新臺幣。</p>
+        <p className="section-meta">點一下月份，可查看該月明細；金額單位為{CURRENCY_LABELS[currency]}。</p>
       </div>
     </details>
   );

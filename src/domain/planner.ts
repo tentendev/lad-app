@@ -1,4 +1,4 @@
-import { DIA_PER_PULL, MONTHLY_DIA } from "../data/packs";
+import { DIA_PER_PULL, MONTHLY_DIA, normalizePool } from "../data/packs";
 import { officialTicketCount, recommendPacksForGap } from "./calculator";
 import { formatNumber, isValidDateKey } from "./format";
 import { POOLS } from "./types";
@@ -135,7 +135,7 @@ function parseGoal(value: unknown, ids: Set<number>): PullGoal {
     throw new Error("stored planner goal id is invalid");
   }
   if (!title || title.length > MAX_TITLE_LENGTH) throw new Error("stored planner goal title is invalid");
-  if (typeof pool !== "string" || !POOLS.includes(pool as Pool)) throw new Error("stored planner pool is invalid");
+  if (typeof pool !== "string" || (!POOLS.includes(pool as Pool) && !["復刻池", "月卡／生日復刻池"].includes(pool))) throw new Error("stored planner pool is invalid");
   if (typeof targetPulls !== "number" || !Number.isSafeInteger(targetPulls) || targetPulls <= 0) {
     throw new Error("stored planner target is invalid");
   }
@@ -152,7 +152,7 @@ function parseGoal(value: unknown, ids: Set<number>): PullGoal {
   return {
     id,
     title,
-    pool: pool as Pool,
+    pool: normalizePool(pool),
     targetPulls,
     deadline: value.deadline,
     tentative: value.tentative,
@@ -254,14 +254,14 @@ export function normalizePullGoalDraft(value: unknown): PullGoalDraft | null {
   const targetPulls = Math.floor(safeNonNegative(value.targetPulls));
   const sourceEvent = value.sourceEvent;
   if (!title || title.length > MAX_TITLE_LENGTH) return null;
-  if (typeof pool !== "string" || !POOLS.includes(pool as Pool)) return null;
+  if (typeof pool !== "string" || (!POOLS.includes(pool as Pool) && !["復刻池", "月卡／生日復刻池"].includes(pool))) return null;
   if (typeof value.deadline !== "string" || !isValidDateKey(value.deadline)) return null;
   if (typeof value.tentative !== "boolean") return null;
   if (value.enabled !== undefined && typeof value.enabled !== "boolean") return null;
   if (sourceEvent !== null && (typeof sourceEvent !== "string" || sourceEvent.length > 240)) return null;
   return {
     title,
-    pool: pool as Pool,
+    pool: normalizePool(pool),
     targetPulls,
     deadline: value.deadline,
     tentative: value.tentative,
@@ -286,7 +286,7 @@ export function poolForScheduleEvent(event: ScheduleEvent): Pool | null {
     mixed: "混池",
     monthly: "月卡池",
     birthday: "生日池",
-    rerun: "復刻池",
+    rerun: "生日復刻池",
   };
   return pools[event.type] ?? null;
 }

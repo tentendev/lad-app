@@ -18,3 +18,20 @@ if (!Array.isArray(updates) || updates.some(update => !update.id || !update.date
 }
 await writeFile(new URL('src/data/siteUpdates.ts', root), `// Generated from updates.js by npm run sync:expo-data.\nimport type { SiteUpdate } from "@/domain/siteUpdates";\n\nexport const SITE_UPDATES: SiteUpdate[] = ${JSON.stringify(updates.slice(0, 1), null, 2)};\n`);
 console.log(`Synced ${Math.min(updates.length, 1)} latest announcement to Expo.`);
+
+vm.runInNewContext(await readFile(new URL('regional-prices.js', root), 'utf8'), context, { timeout: 1000 });
+vm.runInNewContext(await readFile(new URL('packs.js', root), 'utf8'), context, { timeout: 1000 });
+const packData = Object.fromEntries(context.window.PACK_POOLS.map(pool => [pool, context.window.PACK_DATA[pool] ?? []]));
+const generated = [
+  '// Generated from packs.js and regional-prices.js by npm run sync:expo-data.',
+  'import type { Pool, PackTier, TicketRule } from "@/domain/types";',
+  `export const MONTHLY_DIA = ${JSON.stringify(context.window.MONTHLY_DIA)};`,
+  'export const DIA_PER_PULL = 150;',
+  `export const OFFICIAL_TICKET_RULES: Record<Pool, TicketRule> = ${JSON.stringify(context.window.OFFICIAL_TICKET_RULES, null, 2)};`,
+  `export const PACK_DATA: Record<Pool, PackTier[]> = ${JSON.stringify(packData, null, 2)};`,
+  `export const PACK_OTHER = ${JSON.stringify(context.window.PACK_OTHER, null, 2)};`,
+  `export const REGIONAL_PACK_PRICES = ${JSON.stringify(context.window.REGIONAL_PACK_PRICES, null, 2)};`,
+  `export const REGIONAL_PACK_PRICE_REFERENCES = ${JSON.stringify(context.window.REGIONAL_PACK_PRICE_REFERENCES, null, 2)};`,
+].join('\n\n') + '\n';
+await writeFile(new URL('src/data/packData.ts', root), generated);
+console.log('Synced pack contents, ticket rules, and regional price evidence to Expo.');

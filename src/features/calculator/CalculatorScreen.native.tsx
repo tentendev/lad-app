@@ -6,10 +6,10 @@ import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 import Svg, { Path, Rect } from "react-native-svg";
 
-import { DIA_PER_PULL, PACK_DATA } from "@/data/packs";
+import { DIA_PER_PULL, PACK_OTHER } from "@/data/packs";
 import type { GapPackRecommendation } from "@/domain/calculator";
-import { formatCurrency, formatNumber } from "@/domain/format";
-import { POOLS, type PullGoal } from "@/domain/types";
+import { CURRENCY_SYMBOLS, formatCurrency as formatMoney, formatNumber } from "@/domain/format";
+import { CURRENCIES, POOLS, type PullGoal } from "@/domain/types";
 import { NativePage } from "@/ui/NativePage";
 import { useCalculatorModel } from "./useCalculatorModel";
 import { PlannerSectionNative } from "./PlannerSection.native";
@@ -29,7 +29,7 @@ function CalculatorGlyph({ type }: { type: "diamond" | "gift" | "steps" }) {
   return <Svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><Path d="m12 3 7 6-7 12L5 9l7-6Zm-7 6h14M9 9l3 12 3-12M9 3l3 6 3-6" /></Svg>;
 }
 
-function NumberField({ placeholder, value, onChange }: { placeholder: string; value: number; onChange: (value: number) => void }) {
+function NumberField({ placeholder, value, onChange, showZero = false }: { placeholder: string; value: number; showZero?: boolean; onChange: (value: number) => void }) {
   return (
     <View className="gap-2"><Typography className="type-body text-muted">{placeholder}</Typography><TextInput
       accessibilityLabel={placeholder}
@@ -37,7 +37,7 @@ function NumberField({ placeholder, value, onChange }: { placeholder: string; va
       keyboardType="numeric"
       placeholder={placeholder}
       placeholderTextColor="#ded7ed"
-      value={value ? String(value) : ""}
+      value={value || showZero ? String(value) : ""}
       onChangeText={(text) => onChange(Number(text))}
     /></View>
   );
@@ -47,6 +47,7 @@ export function CalculatorScreenNative() {
   const model = useCalculatorModel();
   const router = useRouter();
   const { draft, resource, recommendation, selectedPacks } = model;
+  const formatCurrency = (value: number | null) => formatMoney(value, draft.currency);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -91,14 +92,16 @@ export function CalculatorScreenNative() {
             <Button key={pool} size="sm" variant={pool === draft.pool ? "primary" : "secondary"} onPress={() => model.setPool(pool)}>{pool}</Button>
           ))}
         </ScrollView>
+        <Button size="sm" variant="ghost" onPress={() => void model.reset()}>重設換算</Button>
         <NumberField placeholder="目前持有（鑽）" value={draft.cur} onChange={(value) => model.updateNumber("cur", value)} />
         <NumberField placeholder="目標抽數" value={draft.pulls} onChange={(value) => model.updateNumber("pulls", value)} />
         <Button variant="ghost" accessibilityState={{ expanded: rulesOpen }} onPress={() => setRulesOpen(!rulesOpen)}>保底與繼承規則 {rulesOpen ? "⌃" : "⌄"}</Button>
         {rulesOpen ? <View className="gap-2 rounded-xl bg-white/10 p-3"><Typography className="type-body text-muted">日卡池以外的活動池：140 抽內必得當期活動五星卡。日卡池：140 抽可得活動五星卡；累計 150 抽會送自選盒。一般活動池之間會繼承抽數；復刻池只繼承同一復刻池的抽數。</Typography><Typography className="type-label text-muted">沿用原始版整理，實際規則以當期遊戲內公告為準。</Typography></View> : null}
         <NumberField placeholder="原本剩餘金券（張）" value={draft.tickets} onChange={(value) => model.updateNumber("tickets", value)} />
         <View className="rounded-xl border border-white/20 bg-white/10 p-3">
-          <Typography className="text-muted">官方金券（自動）</Typography>
-          <Typography.Heading type="h4" className="text-white">{resource.officialTickets} 張</Typography.Heading>
+          <NumberField showZero placeholder="官方金券（張）" value={resource.officialTickets} onChange={model.setOfficialTickets} />
+          <Button size="sm" variant="ghost" onPress={model.restoreOfficialTickets}>恢復自動</Button>
+          {Object.hasOwn(draft.officialTicketsByPool ?? {}, draft.pool) ? <Typography className="text-muted">手動設定，可恢復自動估算</Typography> : null}
           <Typography className="text-muted">免費贈送 {resource.initialTickets} 張 · 目標前可折抵累抽返還 {resource.milestoneTickets} 張</Typography>
         </View>
         <View className="flex-row flex-wrap items-end gap-2">
@@ -112,13 +115,13 @@ export function CalculatorScreenNative() {
       <NativeMetricGrid>
         <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{formatNumber(resource.gapDia)}</Typography.Heading><Typography className="type-label text-muted">還差鑽石</Typography></Card>
         <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{resource.paidPulls}</Typography.Heading><Typography className="type-label text-muted">需課金抽</Typography></Card>
-        <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{draft.pulls ? formatNumber(selectedPacks.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="type-label text-muted">剩餘鑽</Typography></Card>
+        <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{draft.pulls ? formatNumber(resource.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="type-label text-muted">剩餘鑽</Typography></Card>
       </NativeMetricGrid>
 
       <Card className="gap-3 border border-white/55 bg-glass p-5">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="gift" /><Typography className="text-muted">禮包建議 · {draft.pool}</Typography></View>
         <Typography.Heading type="h4" className="type-headline text-white">
-          {recommendation.status === "recommended" ? `買到第 ${recommendation.tier?.tier} 階` : recommendation.status === "enough" ? "無需課金" : recommendation.status === "overflow" ? "超過單輪上限" : "等待目標"}
+          {recommendation.status === "recommended" ? `買到第 ${recommendation.tier?.tier} 階` : recommendation.status === "enough" ? "無需課金" : recommendation.status === "overflow" ? "超過單輪上限" : recommendation.status === "missing-price" ? "地區售價待確認" : "等待目標"}
         </Typography.Heading>
         {recommendation.status === "recommended" ? (
           <>
@@ -128,28 +131,30 @@ export function CalculatorScreenNative() {
           </>
         ) : (
           <Typography.Paragraph className="text-muted">
-            {recommendation.status === "enough" ? "現有資源已達成目標。" : recommendation.status === "overflow" ? `還需 ${recommendation.gapPulls} 抽；一輪限購最多補 ${formatNumber(recommendation.planPulls ?? 0)} 抽（${formatCurrency(recommendation.planCost ?? 0)}），其餘 ${formatNumber(Math.max(0, recommendation.gapPulls - (recommendation.planPulls ?? 0)))} 抽需搭配存鑽、其他有效資源或下輪禮包。` : "填入目標後顯示建議。"}
+            {recommendation.status === "enough" ? "現有資源已達成目標。" : recommendation.status === "overflow" ? `還需 ${recommendation.gapPulls} 抽；一輪限購最多補 ${formatNumber(recommendation.planPulls ?? 0)} 抽（${formatCurrency(recommendation.planCost ?? 0)}），其餘 ${formatNumber(Math.max(0, recommendation.gapPulls - (recommendation.planPulls ?? 0)))} 抽需搭配存鑽、其他有效資源或下輪禮包。` : recommendation.status === "missing-price" ? "缺少地區售價，請先確認價格後再記帳。" : "填入目標後顯示建議。"}
           </Typography.Paragraph>
         )}
       </Card>
 
       <Card className="gap-3 border border-white/50 bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="steps" /><Typography.Heading type="h4" className="type-title text-white">階梯明細</Typography.Heading></View>
+        <View className="flex-row flex-wrap gap-2">{CURRENCIES.map(currency => <Button key={currency} size="sm" variant={(draft.currency ?? "TWD") === currency ? "primary" : "secondary"} accessibilityLabel={`禮包幣別 ${currency}`} accessibilityState={{ selected: (draft.currency ?? "TWD") === currency }} onPress={() => model.setCurrency(currency)}>{currency} · {CURRENCY_SYMBOLS[currency]}</Button>)}</View>
         <Button variant="secondary" onPress={model.applyRecommendedPacks}>套用建議包數</Button>
         <Button variant="ghost" accessibilityState={{ expanded: detailsOpen }} onPress={() => setDetailsOpen(!detailsOpen)}>{detailsOpen ? "收起" : "展開"}禮包明細</Button>
-        {PACK_DATA[draft.pool].map((tier, index) => (
+        {draft.pool === "其他" ? <View className="gap-2"><Typography className="text-muted">定期禮包以台灣原始售價列示，海外價格待確認。</Typography>{PACK_OTHER.map(pack => <Typography className="text-muted" key={pack.name}>{pack.name} · {formatMoney(pack.price)} · 每抽 {formatMoney(pack.per)}</Typography>)}</View> : null}
+        {model.tiers.map((tier, index) => (
           <View key={tier.tier} className={`gap-1 rounded-xl border p-3 ${recommendation.tier?.tier === tier.tier ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/20 bg-white/10"}`}>
             <View className="flex-row flex-wrap items-center justify-between gap-2">
-              <Typography.Paragraph className="font-semibold text-white">第 {tier.tier} 階 · {formatCurrency(tier.price)}／包</Typography.Paragraph>
+              <Typography.Paragraph className="font-semibold text-white">第 {tier.tier} 階 · {formatCurrency(tier.price)}／包{tier.priceStatus === "estimated" ? "（推估）" : ""}</Typography.Paragraph>
               {recommendation.tier?.tier === tier.tier ? <Typography className="text-[#cdbdff]">推薦</Typography> : null}
             </View>
             {detailsOpen ? <Typography className="text-muted">{tier.packPulls != null ? `${tier.packPulls} 抽／包` : "抽數未固定"}{tier.qty ? ` · 限購 ${tier.qty} 包` : ""} · 累計買滿至本階 {formatCurrency(tier.cumCost)}</Typography> : null}
             <View className="flex-row items-center justify-between gap-2">
-              <Typography className="type-body text-muted">限購 {tier.qty} 包</Typography>
+              <Typography className="type-body text-muted">限購 {tier.qty ?? 1} 包</Typography>
               <View className="flex-row items-center gap-3">
                 <Button variant="secondary" size="sm" accessibilityLabel={`減少第 ${tier.tier} 階包數`} isDisabled={!selectedPacks.quantities[index]} onPress={() => model.setPackQuantity(index, (selectedPacks.quantities[index] ?? 0) - 1)}>−</Button>
                 <Typography accessibilityLiveRegion="polite" accessibilityLabel={`第 ${tier.tier} 階已選 ${selectedPacks.quantities[index] ?? 0} 包`} className="type-title-sm font-semibold text-white">{selectedPacks.quantities[index] ?? 0}</Typography>
-                <Button variant="secondary" size="sm" accessibilityLabel={`增加第 ${tier.tier} 階包數`} isDisabled={(selectedPacks.quantities[index] ?? 0) >= (tier.qty ?? 0)} onPress={() => model.setPackQuantity(index, (selectedPacks.quantities[index] ?? 0) + 1)}>＋</Button>
+                <Button variant="secondary" size="sm" accessibilityLabel={`增加第 ${tier.tier} 階包數`} isDisabled={(selectedPacks.quantities[index] ?? 0) >= (tier.qty ?? 1)} onPress={() => model.setPackQuantity(index, (selectedPacks.quantities[index] ?? 0) + 1)}>＋</Button>
               </View>
             </View>
           </View>
@@ -157,11 +162,11 @@ export function CalculatorScreenNative() {
       </Card>
 
       <Card className="gap-3 border border-white/50 bg-glass p-4">
-        <Typography className="text-muted">實際選擇 · {selectedPacks.count} 包</Typography>
+        <Typography className="text-muted">實際選擇 · {selectedPacks.count} 包{selectedPacks.estimatedPrices ? " · 地區售價推估" : ""}</Typography>
         <Typography.Heading type="h4" className="type-headline text-white">{formatCurrency(selectedPacks.cost)}</Typography.Heading>
         <Typography className="text-muted">已知 {formatNumber(selectedPacks.pulls)} 抽 · 尚差 {formatNumber(selectedPacks.missingPulls)} 抽</Typography>
         {selectedPacks.unknownPulls ? <Typography className="type-body text-[#ffe0a3]">含抽數未固定的禮包，未計入抽數合計。</Typography> : null}
-        <Button isDisabled={!selectedPacks.count} onPress={() => void recordRecommendation()}>帶入錢包記帳</Button>
+        <Button isDisabled={!selectedPacks.count || selectedPacks.missingPrices} onPress={() => void recordRecommendation()}>帶入錢包記帳</Button>
       </Card>
 
       <PlannerSectionNative

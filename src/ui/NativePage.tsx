@@ -1,7 +1,7 @@
 import { Typography } from "@/ui/NativeComponents";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
-import { Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, Pressable, View } from "react-native";
+import { Image, ImageBackground, Linking, KeyboardAvoidingView, Platform, ScrollView, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AccountEntry } from "@/ui/AccountEntry";
@@ -41,6 +41,7 @@ export function NativePage({ title, showAccountEntry = true, showAboutLink = tru
                 {([
                   ["/account", "會員中心"], ["/about", "關於"], ["/privacy", "隱私政策"], ["/support", "支援"],
                 ] as const).map(([href, label]) => <Link key={href} href={href} asChild><Pressable className="min-h-12 min-w-12 items-center justify-center px-2"><Typography className="type-label text-muted underline">{label}</Typography></Pressable></Link>)}
+                <Pressable accessibilityRole="link" accessibilityLabel="製作：@chumei_0218" onPress={() => void Linking.openURL("https://www.threads.com/@chumei_0218")} className="min-h-12 items-center justify-center px-2"><Typography className="type-label text-muted underline">製作：@chumei_0218</Typography></Pressable>
               </View>
             ) : null}
           </View>

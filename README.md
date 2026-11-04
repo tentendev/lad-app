@@ -1,5 +1,11 @@
 # 深空省省
 
+## Maggie 本機預覽與最新同步（2026-11-04）
+
+已依 Maggie 網頁版 `0f0ed71` 同步排期、公告、復刻池規則、官方金券編輯與三種幣別的禮包／記帳。開發套件已在這台 Mac 安裝；於本資料夾執行 `npm run preview`，開啟 http://localhost:8081 即可先試用，不需要手機或正式登入設定。詳細步驟、原生模擬器需求與本次同步範圍見 [電腦預覽說明](docs/LOCAL_PREVIEW.md)。
+
+以下保留原專案功能與發布交接說明；本機預覽不代表已更新 TestFlight 或完成正式服務驗收。
+
 抽卡課金規劃工具，支援《戀與深空》的排期、預算、資源換算、多活動規劃與五星追蹤。專案以 Expo Router 建置 Web、iOS 與 Android 共用的 domain logic；Web 與未簽名 iOS bundle 均已有完整 release gate，正式簽名與商店驗收仍需擁有者平台資料。
 
 ## Web 現況

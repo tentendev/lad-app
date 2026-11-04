@@ -1,3 +1,4 @@
+import { isLocalPreview } from "@/auth/localPreview";
 import { Button } from "@heroui/react/button";
 import { Card } from "@heroui/react/card";
 import { Input } from "@heroui/react/input";
@@ -435,7 +436,7 @@ function SignedInMemberCards({ model, offline }: { model: AccountModel; offline:
   );
 }
 
-export default function AccountScreen(): JSX.Element {
+function ConnectedAccountScreen(): JSX.Element {
   const model = useAccountModel();
   const browserOffline = useBrowserOffline();
   const shouldRecoverClerkRef = useRef(browserOffline);
@@ -533,4 +534,9 @@ export default function AccountScreen(): JSX.Element {
       </main>
     </div>
   );
+}
+
+export default function AccountScreen(): JSX.Element {
+  if (isLocalPreview()) return <WebPage eyebrow="Local Preview" title="本機預覽" description="先試用錢包、排期、換算與追蹤。" showAccountEntry={false}><Card className="product-card"><h2 className="section-title">資料保存在這台電腦</h2><p>本機預覽未連線會員服務，登入與雲端備份暫不提供。正式 App 的會員設定不受影響。</p><a href="/schedule" className="backup-button">返回排期</a></Card></WebPage>;
+  return <ConnectedAccountScreen />;
 }

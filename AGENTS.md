@@ -12,3 +12,11 @@
 - 發布實質新消息時使用新的唯一 id，同一天再發布也要換 id。單純刪減公告、修整 UI 或移除未獲准內容時，保留所留下公告的原 id，避免已讀訪客再次收到相同消息；不要公告這類維護操作。
 - 官方同步腳本會自動新增排期公告；不要為同一批同步重複新增。
 - 發布前執行 `node --test scripts/*.test.mjs`，檢查 JavaScript 語法，並確認更新通知位於所有功能分頁之外。
+
+## 共用資料與本機預覽
+
+- 本機網頁來源位於同層 `../深空省省/`。更新排期／公告／禮包時依需要同步 `schedule.js`、`updates.js`、`packs.js`、`regional-prices.js`，再執行 `npm run sync:expo-data`。
+- `src/data/schedule.ts`、`src/data/siteUpdates.ts`、`src/data/packData.ts` 是產生的資料，不直接手動修改。
+- `npm run preview` 會先產生資料並以 development-only 本機模式啟動 localhost:8081，不連線會員／雲端。正式 build 不可略過 Clerk 必要設定。
+- 依變更執行 `npm run check`；改原生畫面時另驗證 `npm run verify:ios-bundle`。本機尚無可用的 iPhone Simulator，不把瀏覽器或 Hermes bundle 檢查稱為實機驗收。
+- 詳見 `docs/LOCAL_PREVIEW.md`。此同步不新增功能公告，也不自動發布 TestFlight。

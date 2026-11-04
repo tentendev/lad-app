@@ -23,13 +23,13 @@ const events: ScheduleEvent[] = [
 ];
 
 describe("schedule visibility", () => {
-  it("shows a forecast as solid only after its effective end date", () => {
+  it("keeps forecast styling after the event ends", () => {
     expect(isScheduleForecast(events[0], "2026-09-30")).toBe(true);
-    expect(isScheduleForecast(events[0], "2026-10-01")).toBe(false);
+    expect(isScheduleForecast(events[0], "2026-10-01")).toBe(true);
     expect(isScheduleForecast(events[1], "2026-08-01")).toBe(false);
     const unknownEnd = { ...events[0], end: "" };
     expect(isScheduleForecast(unknownEnd, "2026-08-01")).toBe(true);
-    expect(isScheduleForecast(unknownEnd, "2026-08-02")).toBe(false);
+    expect(isScheduleForecast(unknownEnd, "2026-08-02")).toBe(true);
     expect(events[0].tentative).toBe(true);
   });
   it("counts calendar days without local daylight-saving drift", () => {
@@ -132,20 +132,20 @@ describe("schedule visibility", () => {
     }
   });
 
-  it("never exceeds the three visible calendar lanes in the published data range", () => {
-    for (let offset = 0; offset < 7; offset += 1) {
+  it("keeps every published event visible without collisions when four forecasts overlap", () => {
+    for (let offset = 0; offset < 12; offset += 1) {
       const date = new Date(2026, 7 + offset, 1);
       const segments = calendarBarSegments(SCHEDULE, date.getFullYear(), date.getMonth());
       const occupancy = new Map<string, number>();
 
       for (const segment of segments) {
         for (let column = segment.startColumn; column <= segment.endColumn; column += 1) {
-          const key = `${segment.week}-${column}`;
+          const key = `${segment.week}-${segment.lane}-${column}`;
           occupancy.set(key, (occupancy.get(key) ?? 0) + 1);
         }
       }
 
-      expect(Math.max(0, ...occupancy.values())).toBeLessThanOrEqual(3);
+      expect(Math.max(0, ...occupancy.values())).toBeLessThanOrEqual(1);
       const visibleEvents = eventsForMonth(SCHEDULE, date.getFullYear(), date.getMonth())
         .filter((event) => event.type !== "pass" || event.start.startsWith(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`));
       for (const event of visibleEvents) {

@@ -2,9 +2,9 @@
 import type { ScheduleEvent } from "@/domain/types";
 
 export const SCHEDULE_META = {
-  "updated": "2026-10-02",
+  "updated": "2026-11-03",
   "label": "排期整理",
-  "forecastSource": "0910排期預測更新.JPG（右側第 2 版）"
+  "forecastSource": "排期預測1007.jpg、2026-10-24 排期推算（至 2027-07）"
 };
 
 export const SCHEDULE: ScheduleEvent[] = [
@@ -129,11 +129,21 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
+    "name": "沈星回生日＋生日復刻",
+    "type": "birthday",
+    "start": "2026-10-11",
+    "end": "2026-10-18",
+    "tentative": false,
+    "leads": [
+      "沈星回"
+    ]
+  },
+  {
     "name": "半透明侵占復刻",
     "type": "rerun",
-    "start": "2026-10-21",
+    "start": "2026-10-19",
     "end": "2026-10-27",
-    "tentative": true,
+    "tentative": false,
     "leads": [
       "沈星回",
       "黎深",
@@ -142,72 +152,32 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
-    "name": "沈星回生日＋生日復刻",
-    "type": "birthday",
-    "start": "2026-10-11",
-    "end": "2026-10-18",
-    "tentative": true,
+    "name": "新密約・夏以晝／沈星回",
+    "type": "pass",
+    "start": "2026-10-21",
+    "end": "2026-12-18",
+    "tentative": false,
     "leads": [
+      "夏以晝",
       "沈星回"
     ]
   },
   {
     "name": "祁煜單人月卡",
     "type": "monthly",
-    "start": "2026-10-21",
-    "end": "2026-10-30",
-    "tentative": true,
+    "start": "2026-10-27",
+    "end": "2026-11-05",
+    "tentative": false,
     "leads": [
       "祁煜"
     ]
   },
   {
-    "name": "新密約（開啟日待確認）",
-    "type": "pass",
-    "start": "2026-10-21",
-    "end": "",
-    "tentative": true,
-    "leads": []
-  },
-  {
-    "name": "遵命飼養官復刻",
-    "type": "rerun",
-    "start": "2026-11-02",
-    "end": "2026-11-10",
-    "tentative": true,
-    "leads": [
-      "沈星回",
-      "黎深",
-      "祁煜",
-      "秦徹"
-    ]
-  },
-  {
-    "name": "沈星回日卡3.0",
-    "type": "daily",
-    "start": "2026-11-13",
-    "end": "2026-11-27",
-    "tentative": true,
-    "leads": [
-      "沈星回"
-    ]
-  },
-  {
-    "name": "秦徹熾光淋漓復刻",
-    "type": "rerun",
-    "start": "2026-11-20",
-    "end": "2026-11-27",
-    "tentative": true,
-    "leads": [
-      "秦徹"
-    ]
-  },
-  {
-    "name": "新混池6",
+    "name": "待異夢重啟",
     "type": "mixed",
-    "start": "2026-11-30",
-    "end": "2026-12-14",
-    "tentative": true,
+    "start": "2026-11-06",
+    "end": "2026-11-24",
+    "tentative": false,
     "leads": [
       "沈星回",
       "黎深",
@@ -217,17 +187,55 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
+    "name": "雙十一周邊返場",
+    "type": "merch",
+    "start": "2026-11-08",
+    "end": "2026-11-18",
+    "tentative": false,
+    "leads": []
+  },
+  {
+    "name": "秦徹分線",
+    "type": "story",
+    "start": "2026-11-13",
+    "end": "2026-12-01",
+    "tentative": true,
+    "leads": [
+      "秦徹"
+    ]
+  },
+  {
+    "name": "秦徹熾光淋漓復刻",
+    "type": "rerun",
+    "start": "2026-11-23",
+    "end": "2026-11-30",
+    "tentative": true,
+    "leads": [
+      "秦徹"
+    ]
+  },
+  {
     "name": "黎深脈脈傾音復刻",
     "type": "rerun",
-    "start": "2026-12-07",
-    "end": "2026-12-14",
+    "start": "2026-11-24",
+    "end": "2026-12-01",
     "tentative": true,
     "leads": [
       "黎深"
     ]
   },
   {
-    "name": "奔湧至昨夜盡頭復刻",
+    "name": "沈星回日卡3.0",
+    "type": "daily",
+    "start": "2026-12-03",
+    "end": "2026-12-17",
+    "tentative": true,
+    "leads": [
+      "沈星回"
+    ]
+  },
+  {
+    "name": "遵命飼養官復刻",
     "type": "rerun",
     "start": "2026-12-14",
     "end": "2026-12-22",
@@ -236,15 +244,14 @@ export const SCHEDULE: ScheduleEvent[] = [
       "沈星回",
       "黎深",
       "祁煜",
-      "秦徹",
-      "夏以晝"
+      "秦徹"
     ]
   },
   {
-    "name": "夏以晝日卡2.0復刻",
+    "name": "夏以晝沈冥日卡2.0復刻",
     "type": "rerun",
     "start": "2026-12-22",
-    "end": "2026-12-28",
+    "end": "2026-12-29",
     "tentative": true,
     "leads": [
       "夏以晝"
@@ -265,13 +272,174 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
-    "name": "沈星回銀瀑奏鳴復刻",
+    "name": "沈星回銀瀑奏鳴復刻（月卡）",
     "type": "rerun",
-    "start": "2027-01-14",
-    "end": "2027-01-20",
+    "start": "2027-01-21",
+    "end": "2027-01-28",
     "tentative": true,
     "leads": [
       "沈星回"
+    ]
+  },
+  {
+    "name": "黎深單人月卡（新一輪）",
+    "type": "monthly",
+    "start": "2027-01-29",
+    "end": "2027-02-07",
+    "tentative": true,
+    "leads": [
+      "黎深"
+    ]
+  },
+  {
+    "name": "新混池2／情人節混池",
+    "type": "mixed",
+    "start": "2027-02-10",
+    "end": "2027-02-26",
+    "tentative": true,
+    "leads": [
+      "沈星回",
+      "黎深",
+      "祁煜",
+      "秦徹",
+      "夏以晝"
+    ]
+  },
+  {
+    "name": "祁煜生日",
+    "type": "birthday",
+    "start": "2027-03-01",
+    "end": "2027-03-07",
+    "tentative": true,
+    "leads": [
+      "祁煜"
+    ]
+  },
+  {
+    "name": "黎深新日卡3.0",
+    "type": "daily",
+    "start": "2027-03-08",
+    "end": "2027-03-22",
+    "tentative": true,
+    "leads": [
+      "黎深"
+    ]
+  },
+  {
+    "name": "奔湧至昨夜盡頭復刻（混池）",
+    "type": "rerun",
+    "start": "2027-03-23",
+    "end": "2027-03-29",
+    "tentative": true,
+    "leads": [
+      "沈星回",
+      "黎深",
+      "祁煜",
+      "秦徹"
+    ]
+  },
+  {
+    "name": "單人月卡（新一輪・角色待定）",
+    "type": "monthly",
+    "start": "2027-04-01",
+    "end": "2027-04-08",
+    "tentative": true,
+    "leads": []
+  },
+  {
+    "name": "秦徹生日",
+    "type": "birthday",
+    "start": "2027-04-13",
+    "end": "2027-04-19",
+    "tentative": true,
+    "leads": [
+      "秦徹"
+    ]
+  },
+  {
+    "name": "夏以晝觸痛訊號復刻（月卡）",
+    "type": "rerun",
+    "start": "2027-04-20",
+    "end": "2027-04-28",
+    "tentative": true,
+    "leads": [
+      "夏以晝"
+    ]
+  },
+  {
+    "name": "新混池3",
+    "type": "mixed",
+    "start": "2027-04-30",
+    "end": "2027-05-17",
+    "tentative": true,
+    "leads": [
+      "沈星回",
+      "黎深",
+      "祁煜",
+      "秦徹",
+      "夏以晝"
+    ]
+  },
+  {
+    "name": "明日無處可逃復刻（混池）",
+    "type": "rerun",
+    "start": "2027-05-12",
+    "end": "2027-05-18",
+    "tentative": true,
+    "leads": [
+      "沈星回",
+      "黎深",
+      "祁煜",
+      "秦徹",
+      "夏以晝"
+    ]
+  },
+  {
+    "name": "秦徹新日卡3.0",
+    "type": "daily",
+    "start": "2027-05-19",
+    "end": "2027-06-05",
+    "tentative": true,
+    "leads": [
+      "秦徹"
+    ]
+  },
+  {
+    "name": "夏以晝生日",
+    "type": "birthday",
+    "start": "2027-06-08",
+    "end": "2027-06-14",
+    "tentative": true,
+    "leads": [
+      "夏以晝"
+    ]
+  },
+  {
+    "name": "黎深願緣長復刻（月卡）",
+    "type": "rerun",
+    "start": "2027-06-17",
+    "end": "2027-06-23",
+    "tentative": true,
+    "leads": [
+      "黎深"
+    ]
+  },
+  {
+    "name": "單人月卡（新一輪・角色待定）",
+    "type": "monthly",
+    "start": "2027-06-26",
+    "end": "2027-07-04",
+    "tentative": true,
+    "leads": []
+  },
+  {
+    "name": "夏以晝新日卡3.0",
+    "type": "daily",
+    "start": "2027-07-09",
+    "end": "2027-07-26",
+    "tentative": true,
+    "leads": [
+      "夏以晝"
     ]
   }
 ];

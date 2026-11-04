@@ -1,3 +1,4 @@
+import { isLocalPreview } from "@/auth/localPreview";
 import { useAuth, useUser } from "@clerk/expo";
 import { Link } from "expo-router";
 import type { JSX } from "react";
@@ -14,7 +15,7 @@ function MemberIcon(): JSX.Element {
   );
 }
 
-export function AccountEntry(): JSX.Element {
+function ConnectedAccountEntry(): JSX.Element {
   const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
   const name = user?.firstName?.trim() || "會員中心";
@@ -41,4 +42,9 @@ export function AccountEntry(): JSX.Element {
       </Link>
     </View>
   );
+}
+
+export function AccountEntry(): JSX.Element {
+  if (isLocalPreview()) return <Link href="/account" accessibilityLabel="本機預覽說明"><Typography className="type-label text-white">本機預覽</Typography></Link>;
+  return <ConnectedAccountEntry />;
 }

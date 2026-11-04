@@ -1,9 +1,9 @@
 import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { expensesForMonth, nextExpenseId, normalizeBudgetConfig, normalizeBudgetMap, normalizeExpenseDraft, normalizePendingExpense, normalizeStoredExpenses, summarizeBudget, summarizeBudgetPace, summarizeSpendingInsights } from "@/domain/budget";
-import { currentMonthKey, moveMonth } from "@/domain/format";
-import type { BudgetConfig, BudgetMap, Expense, PendingExpense } from "@/domain/types";
+import { budgetKey, expensesForMonth, nextExpenseId, normalizeBudgetConfig, normalizeBudgetMap, normalizeExpenseDraft, normalizePendingExpense, normalizeStoredExpenses, summarizeBudget, summarizeBudgetPace, summarizeSpendingInsights } from "@/domain/budget";
+import { currentMonthKey, moveMonth, normalizeCurrency } from "@/domain/format";
+import type { BudgetConfig, BudgetMap, Currency, Expense, PendingExpense } from "@/domain/types";
 import { storage } from "@/data/repositories/storage";
 import { STORAGE_KEYS } from "@/data/repositories/storage.types";
 
@@ -11,6 +11,7 @@ const DEFAULT_BUDGET: BudgetConfig = { amount: 0, threshold: 80 };
 
 export function useWalletModel() {
   const currentMonth = currentMonthKey();
+  const [currency, setCurrencyState] = useState<Currency>("TWD");
   const [month, setMonth] = useState(currentMonthKey());
   const [budgets, setBudgets] = useState<BudgetMap>({});
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -24,11 +25,12 @@ export function useWalletModel() {
     let active = true;
     void (async () => {
       try {
-        const [storedBudgets, legacyBudget, storedExpenses, pending] = await Promise.all([
+        const [storedBudgets, legacyBudget, storedExpenses, pending, savedCurrency] = await Promise.all([
           storage.get<unknown>(STORAGE_KEYS.budgets, {}),
           storage.get<unknown>(STORAGE_KEYS.legacyBudget, DEFAULT_BUDGET),
           storage.get<unknown>(STORAGE_KEYS.expenses, []),
           storage.get<unknown>(STORAGE_KEYS.pendingExpense, null),
+          storage.get<unknown>("walletCurrency", "TWD"),
         ]);
         if (!active) return;
         const migratedBudgets = normalizeBudgetMap(storedBudgets);
@@ -40,6 +42,7 @@ export function useWalletModel() {
         lastExpenseId.current = migratedExpenses.reduce((largest, expense) => Math.max(largest, expense.id), 0);
         if (!active) return;
         setBudgets(migratedBudgets);
+        setCurrencyState(normalizeCurrency(migratedPendingExpense?.currency ?? savedCurrency));
         setExpenses(migratedExpenses);
         setPendingExpense(migratedPendingExpense);
         setWriteProtected(false);
@@ -47,6 +50,7 @@ export function useWalletModel() {
         await Promise.all([
           storage.set(STORAGE_KEYS.budgets, migratedBudgets),
           storage.set(STORAGE_KEYS.expenses, migratedExpenses),
+          storage.set("walletCurrency", normalizeCurrency(migratedPendingExpense?.currency ?? savedCurrency)),
         ]);
       } catch (error) {
         if (active) {
@@ -66,11 +70,11 @@ export function useWalletModel() {
     };
   }, []));
 
-  const monthExpenses = useMemo(() => expensesForMonth(expenses, month), [expenses, month]);
-  const config = budgets[month] ?? DEFAULT_BUDGET;
-  const previousConfig = budgets[moveMonth(month, -1)] ?? null;
-  const summary = useMemo(() => summarizeBudget(config, monthExpenses), [config, monthExpenses]);
-  const insights = useMemo(() => summarizeSpendingInsights(expenses, month), [expenses, month]);
+  const monthExpenses = useMemo(() => expensesForMonth(expenses, month, currency), [expenses, month, currency]);
+  const config = budgets[budgetKey(month, currency)] ?? DEFAULT_BUDGET;
+  const previousConfig = budgets[budgetKey(moveMonth(month, -1), currency)] ?? null;
+  const summary = useMemo(() => summarizeBudget(config, monthExpenses, currency), [config, monthExpenses, currency]);
+  const insights = useMemo(() => summarizeSpendingInsights(expenses, month, new Date(), currency), [expenses, month, currency]);
   const pace = useMemo(
     () => summarizeBudgetPace(summary, insights.projectedMonthEnd, month),
     [insights.projectedMonthEnd, month, summary],
@@ -84,7 +88,7 @@ export function useWalletModel() {
         amount: next.amount,
         threshold: Math.min(100, Math.max(1, Number(next.threshold) || 80)),
       };
-      const updated = { ...budgets, [month]: normalized };
+      const updated = { ...budgets, [budgetKey(month, currency)]: normalized };
       try {
         await storage.set(STORAGE_KEYS.budgets, updated);
         setBudgets(updated);
@@ -95,7 +99,7 @@ export function useWalletModel() {
         return false;
       }
     },
-    [budgets, month, writeProtected],
+    [budgets, month, currency, writeProtected],
   );
 
   const copyPreviousBudget = useCallback(async (): Promise<boolean> => {
@@ -106,7 +110,7 @@ export function useWalletModel() {
   const addExpense = useCallback(
     async (input: Omit<Expense, "id">): Promise<boolean> => {
       if (writeProtected) return false;
-      const normalized = normalizeExpenseDraft(input);
+      const normalized = normalizeExpenseDraft({ ...input, currency });
       if (!normalized) return false;
       const id = nextExpenseId(expenses, lastExpenseId.current);
       lastExpenseId.current = id;
@@ -123,7 +127,7 @@ export function useWalletModel() {
         return false;
       }
     },
-    [expenses, writeProtected],
+    [expenses, currency, writeProtected],
   );
 
   const updateExpense = useCallback(
@@ -192,7 +196,17 @@ export function useWalletModel() {
     }
   }, []);
 
+  const setCurrency = useCallback(async (next: Currency) => {
+    try {
+      await storage.set("walletCurrency", next);
+      setCurrencyState(next);
+      setStorageError(null);
+    } catch { setStorageError("無法儲存幣別設定，請稍後重試。"); }
+  }, []);
+
   return {
+    currency,
+    setCurrency,
     ready,
     writeProtected,
     month,

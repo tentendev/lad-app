@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { expensesToCsv } from "@/domain/budget";
-import { formatCurrency, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
-import { EXPENSE_CATEGORIES, type Expense, type ExpenseCategory } from "@/domain/types";
+import { CURRENCY_SYMBOLS, formatCurrency as formatMoney, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
+import { CURRENCIES, EXPENSE_CATEGORIES, type Expense, type ExpenseCategory } from "@/domain/types";
 import { NativePage } from "@/ui/NativePage";
 import { useWalletModel } from "./useWalletModel";
 
@@ -29,6 +29,7 @@ function WalletGlyph({ type }: { type: "wallet" | "plus" | "list" }) {
 
 export function WalletScreenNative() {
   const model = useWalletModel();
+  const formatCurrency = (value: number | null) => formatMoney(value, model.currency);
   const [budget, setBudget] = useState("");
   const [threshold, setThreshold] = useState("80");
   const [amount, setAmount] = useState("");
@@ -53,7 +54,7 @@ export function WalletScreenNative() {
       setThreshold(String(model.config.threshold || 80));
     });
     return () => cancelAnimationFrame(frame);
-  }, [model.config.amount, model.config.threshold, model.month]);
+  }, [model.config.amount, model.config.threshold, model.month, model.currency]);
 
   useEffect(() => {
     if (!pendingExpense) return;
@@ -147,7 +148,7 @@ export function WalletScreenNative() {
   const paceCopy = model.pace.status === "unavailable"
     ? null
     : model.pace.status === "over"
-      ? `已超出當月預算；接下來 ${model.pace.daysRemaining} 天的彈性額度先以 NT$0 計。`
+      ? `已超出當月預算；接下來 ${model.pace.daysRemaining} 天的彈性額度先以 ${formatCurrency(0)} 計。`
       : model.pace.status === "projected-over"
         ? `接下來 ${model.pace.daysRemaining} 天每日可彈性支出 ${formatCurrency(model.pace.dailyFlexibleSpend ?? 0)}；照目前速度月底仍可能超出 ${formatCurrency(Math.abs(model.pace.projectedVariance ?? 0))}。`
         : `接下來 ${model.pace.daysRemaining} 天每日可彈性支出 ${formatCurrency(model.pace.dailyFlexibleSpend ?? 0)}；照目前速度月底預計保留 ${formatCurrency(model.pace.projectedVariance ?? 0)}。`;
@@ -155,6 +156,7 @@ export function WalletScreenNative() {
   if (!model.ready) {
     return (
       <NativePage eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
+      <View className="gap-2"><Typography className="type-body text-muted">記帳幣別</Typography><View className="flex-row flex-wrap gap-2">{CURRENCIES.map(currency => <Button key={currency} size="sm" variant={model.currency === currency ? "primary" : "secondary"} accessibilityState={{ selected: model.currency === currency }} onPress={() => { setAmount(""); setNote(""); setFormError(null); void model.setCurrency(currency); }}>{currency} · {CURRENCY_SYMBOLS[currency]}</Button>)}</View></View>
         <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
           <Typography className="type-body text-muted">正在讀取預算與花費…</Typography>
           <View className="h-12 rounded-xl bg-white/10" />
@@ -226,7 +228,7 @@ export function WalletScreenNative() {
 
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <Typography.Heading type="h4" className="type-title text-white">預算設定</Typography.Heading>
-        <Typography className="type-body text-muted">每月預算（NT$）</Typography>
+        <Typography className="type-body text-muted">每月預算（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
         <TextInput accessibilityLabel="每月預算" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="每月預算" placeholderTextColor="#ded7ed" value={budget} onChangeText={(value) => { setBudgetError(null); setBudget(value); }} />
         <Typography className="type-body text-muted">提醒門檻（%）</Typography>
         <TextInput accessibilityLabel="提醒門檻" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="提醒門檻（%）" placeholderTextColor="#ded7ed" value={threshold} onChangeText={(value) => { setBudgetError(null); setThreshold(value); }} />
@@ -238,8 +240,8 @@ export function WalletScreenNative() {
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View className="flex-row items-center gap-2"><WalletGlyph type="plus" /><Typography.Heading type="h4" className="type-title text-white">新增花費</Typography.Heading></View>
         {handoffNotice ? <Typography accessibilityRole="alert" className="type-body text-[#c7f4e9]">已帶入換算選擇，請確認金額與日期後再加入花費。</Typography> : null}
-        <Typography className="type-body text-muted">花費金額（NT$）</Typography>
-        <TextInput ref={amountInput} accessibilityLabel="花費金額" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="金額（NT$）" placeholderTextColor="#ded7ed" value={amount} onChangeText={(value) => { setFormError(null); setAmount(value); }} />
+        <Typography className="type-body text-muted">花費金額（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
+        <TextInput ref={amountInput} accessibilityLabel="花費金額" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="decimal-pad" placeholder={`金額（${CURRENCY_SYMBOLS[model.currency]}）`} placeholderTextColor="#ded7ed" value={amount} onChangeText={(value) => { setFormError(null); setAmount(value); }} />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
           {EXPENSE_CATEGORIES.map((item) => (
             <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === category }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === category ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => { setFormError(null); setCategory(item); }}><Typography className="type-label font-semibold text-white">{item}</Typography></Pressable>
@@ -293,7 +295,7 @@ export function WalletScreenNative() {
         ))}
       </Card>
 
-      <SpendingDashboardNative expenses={model.allExpenses} month={model.month} onSelectMonth={model.selectMonth} />
+      <SpendingDashboardNative expenses={model.allExpenses} month={model.month} currency={model.currency} onSelectMonth={model.selectMonth} />
 
       {editing ? (
         <Card className="gap-4 border border-white/50 bg-glass p-4">
@@ -305,7 +307,7 @@ export function WalletScreenNative() {
             accessibilityLabel="編輯花費金額"
             className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white"
             keyboardType="numeric"
-            placeholder="金額（NT$）"
+            placeholder={`金額（${CURRENCY_SYMBOLS[model.currency]}）`}
             placeholderTextColor="#ded7ed"
             value={String(editing.amt)}
             onChangeText={(value) => { setEditError(null); setEditing({ ...editing, amt: Number(value) }); }}

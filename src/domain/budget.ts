@@ -1,6 +1,6 @@
-import type { BudgetConfig, Expense, ExpenseCategory, PendingExpense } from "./types";
-import { EXPENSE_CATEGORIES } from "./types";
-import { csvCell, currentMonthKey, isValidDateKey, isValidMonthKey, moveMonth, toDateKey } from "./format";
+import type { BudgetConfig, Currency, Expense, ExpenseCategory, PendingExpense } from "./types";
+import { CURRENCIES, EXPENSE_CATEGORIES } from "./types";
+import { csvCell, currentMonthKey, isValidDateKey, isValidMonthKey, moveMonth, normalizeCurrency, toDateKey } from "./format";
 
 const CATEGORY_MIGRATION: Record<string, ExpenseCategory> = {
   抽卡: "抽卡禮包",
@@ -30,6 +30,16 @@ export type MonthlySpending = {
   amount: number;
 };
 
+export function budgetKey(month: string, currency: Currency = "TWD"): string {
+  return currency === "TWD" ? month : `${currency}:${month}`;
+}
+
+export function isValidBudgetKey(key: string): boolean {
+  return isValidMonthKey(key) || /^(HKD|MYR):\d{4}-(0[1-9]|1[0-2])$/.test(key);
+}
+
+const roundMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
+
 export function spendingRangeError(start: string, end: string): string | null {
   if (!isValidMonthKey(start) || !isValidMonthKey(end)) return "請選擇有效的開始與結束月份。";
   const count = (Number(end.slice(0, 4)) - Number(start.slice(0, 4))) * 12 + Number(end.slice(5)) - Number(start.slice(5)) + 1;
@@ -38,16 +48,16 @@ export function spendingRangeError(start: string, end: string): string | null {
   return null;
 }
 
-export function summarizeSpendingRange(expenses: Expense[], start: string, end: string) {
+export function summarizeSpendingRange(expenses: Expense[], start: string, end: string, currency: Currency = "TWD") {
   const error = spendingRangeError(start, end);
   if (error) throw new Error(error);
   const months: MonthlySpending[] = [];
   for (let month = start; month <= end; month = moveMonth(month, 1)) {
-    months.push({ month, amount: expensesForMonth(expenses, month).reduce((sum, item) => sum + item.amt, 0) });
+    months.push({ month, amount: roundMoney(expensesForMonth(expenses, month, currency).reduce((sum, item) => sum + item.amt, 0)) });
   }
-  const total = months.reduce((sum, item) => sum + item.amount, 0);
+  const total = roundMoney(months.reduce((sum, item) => sum + item.amount, 0));
   const highest = months.reduce((best, item) => item.amount > best.amount ? item : best, months[0]);
-  return { months, total, average: Math.round(total / months.length), highest };
+  return { months, total, average: roundMoney(total / months.length), highest };
 }
 
 export type SpendingInsights = {
@@ -96,7 +106,7 @@ function isSafeAmount(value: unknown, allowZero = true): value is number {
 export function normalizeBudgetMap(value: unknown): Record<string, BudgetConfig> {
   if (!isRecord(value)) throw new Error("stored budget map is invalid");
   return Object.fromEntries(Object.entries(value).map(([month, config]) => {
-    if (!isValidMonthKey(month) || !isRecord(config)) throw new Error("stored budget entry is invalid");
+    if (!isValidBudgetKey(month) || !isRecord(config)) throw new Error("stored budget entry is invalid");
     const amount = config.amount;
     const threshold = config.threshold;
     if (!isSafeAmount(amount)) throw new Error("stored budget amount is invalid");
@@ -126,6 +136,7 @@ export function normalizeStoredExpenses(value: unknown): Expense[] {
     }
     const migratedCategory = typeof entry.cat === "string" ? CATEGORY_MIGRATION[entry.cat] ?? entry.cat : "";
     if (!EXPENSE_CATEGORIES.includes(migratedCategory as ExpenseCategory)) throw new Error("stored expense category is invalid");
+    if (entry.currency !== undefined && !CURRENCIES.includes(entry.currency as Currency)) throw new Error("stored expense currency is invalid");
     ids.add(entry.id);
     return {
       id: entry.id,
@@ -133,12 +144,14 @@ export function normalizeStoredExpenses(value: unknown): Expense[] {
       cat: migratedCategory as ExpenseCategory,
       note: typeof entry.note === "string" ? entry.note.trim() : "",
       date: entry.date,
+      ...(entry.currency === undefined ? {} : { currency: entry.currency as Currency }),
     };
   });
 }
 
 export function normalizePendingExpense(value: unknown): PendingExpense | null {
   if (!isRecord(value) || !isSafeAmount(value.amt, false)) return null;
+  if (value.currency !== undefined && !CURRENCIES.includes(value.currency as Currency)) return null;
   const migratedCategory = typeof value.cat === "string" ? CATEGORY_MIGRATION[value.cat] ?? value.cat : "";
   if (!EXPENSE_CATEGORIES.includes(migratedCategory as ExpenseCategory) || !isValidDateKey(value.date)) return null;
   return {
@@ -146,11 +159,13 @@ export function normalizePendingExpense(value: unknown): PendingExpense | null {
     cat: migratedCategory as ExpenseCategory,
     note: typeof value.note === "string" ? value.note.trim() : "",
     date: value.date,
+    ...(value.currency === undefined ? {} : { currency: value.currency as Currency }),
   };
 }
 
 export function normalizeExpenseDraft(value: unknown): Omit<Expense, "id"> | null {
   if (!isRecord(value) || !isSafeAmount(value.amt, false)) return null;
+  if (value.currency !== undefined && !CURRENCIES.includes(value.currency as Currency)) return null;
   const migratedCategory = typeof value.cat === "string" ? CATEGORY_MIGRATION[value.cat] ?? value.cat : "";
   if (!EXPENSE_CATEGORIES.includes(migratedCategory as ExpenseCategory) || !isValidDateKey(value.date)) return null;
   if (typeof value.note !== "string") return null;
@@ -159,29 +174,30 @@ export function normalizeExpenseDraft(value: unknown): Omit<Expense, "id"> | nul
     cat: migratedCategory as ExpenseCategory,
     note: value.note.trim(),
     date: value.date,
+    ...(value.currency === undefined ? {} : { currency: value.currency as Currency }),
   };
 }
 
-export function expensesForMonth(expenses: Expense[], month: string): Expense[] {
+export function expensesForMonth(expenses: Expense[], month: string, currency: Currency = "TWD"): Expense[] {
   return expenses
-    .filter((expense) => expense.date.slice(0, 7) === month)
+    .filter((expense) => expense.date.slice(0, 7) === month && normalizeCurrency(expense.currency) === currency)
     .sort((left, right) => right.date.localeCompare(left.date) || right.id - left.id);
 }
 
 export function expensesToCsv(expenses: Expense[]): string {
   return [
-    ["date", "amount_twd", "category", "note"].map(csvCell).join(","),
+    ["date", "amount", "currency", "category", "note"].map(csvCell).join(","),
     ...[...expenses]
       .sort((left, right) => right.date.localeCompare(left.date) || right.id - left.id)
-      .map((expense) => [expense.date, expense.amt, expense.cat, expense.note].map(csvCell).join(",")),
+      .map((expense) => [expense.date, expense.amt, normalizeCurrency(expense.currency), expense.cat, expense.note].map(csvCell).join(",")),
   ].join("\n");
 }
 
-export function summarizeBudget(config: BudgetConfig | undefined, expenses: Expense[]): BudgetSummary {
+export function summarizeBudget(config: BudgetConfig | undefined, expenses: Expense[], currency: Currency = "TWD"): BudgetSummary {
   const budget = Math.max(0, Number(config?.amount) || 0);
   const threshold = Math.min(100, Math.max(1, Number(config?.threshold) || 80));
-  const spent = expenses.reduce((total, expense) => total + Math.max(0, Number(expense.amt) || 0), 0);
-  const remaining = budget - spent;
+  const spent = roundMoney(expenses.filter(expense => normalizeCurrency(expense.currency) === currency).reduce((total, expense) => total + Math.max(0, Number(expense.amt) || 0), 0));
+  const remaining = roundMoney(budget - spent);
   const percentage = budget > 0 ? Math.round((spent / budget) * 100) : 0;
   const state: BudgetState =
     budget <= 0 ? "unset" : percentage >= 100 ? "over" : percentage >= threshold ? "warning" : "healthy";
@@ -221,8 +237,9 @@ export function summarizeSpendingInsights(
   expenses: Expense[],
   selectedMonth: string,
   now = new Date(),
+  currency: Currency = "TWD",
 ): SpendingInsights {
-  const selectedExpenses = expensesForMonth(expenses, selectedMonth);
+  const selectedExpenses = expensesForMonth(expenses, selectedMonth, currency);
   const spent = selectedExpenses.reduce((total, expense) => total + Math.max(0, expense.amt), 0);
   const categories = EXPENSE_CATEGORIES
     .map((category) => ({
@@ -239,13 +256,13 @@ export function summarizeSpendingInsights(
     }));
 
   const previousMonth = moveMonth(selectedMonth, -1);
-  const previousSpent = expensesForMonth(expenses, previousMonth)
+  const previousSpent = expensesForMonth(expenses, previousMonth, currency)
     .reduce((total, expense) => total + Math.max(0, expense.amt), 0);
   const changeAmount = spent - previousSpent;
   const changePercentage = previousSpent > 0 ? Math.round((changeAmount / previousSpent) * 100) : null;
   const months = Array.from({ length: 6 }, (_, index) => moveMonth(selectedMonth, index - 5)).map((month) => ({
     month,
-    amount: expensesForMonth(expenses, month).reduce((total, expense) => total + Math.max(0, expense.amt), 0),
+    amount: expensesForMonth(expenses, month, currency).reduce((total, expense) => total + Math.max(0, expense.amt), 0),
   }));
 
   let projectedMonthEnd: number | null = null;

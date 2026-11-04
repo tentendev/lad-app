@@ -1,3 +1,4 @@
+import { isLocalPreview } from "@/auth/localPreview";
 import { NativeInput as TextInput } from "@/ui/NativeInput";
 import type { JSX } from "react";
 import * as AppleAuthentication from "expo-apple-authentication";
@@ -315,7 +316,7 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
   );
 }
 
-export default function AccountScreen(): JSX.Element {
+function ConnectedAccountScreen(): JSX.Element {
   const router = useRouter();
   const model = useAccountModel();
   const disabled = model.busy !== null;
@@ -403,4 +404,9 @@ export default function AccountScreen(): JSX.Element {
       )}
     </NativePage>
   );
+}
+
+export default function AccountScreen(): JSX.Element {
+  if (isLocalPreview()) return <NativePage eyebrow="Local Preview" description="先試用錢包、排期、換算與追蹤。" title="本機預覽" showAccountEntry={false}><Card className="gap-3 border border-white/50 bg-glass p-4"><Typography className="type-body text-white">可先試用錢包、排期、換算與追蹤；資料保存在這台裝置。本機預覽未連線會員服務，登入與雲端備份暫不提供。</Typography><Link href="/schedule"><Typography className="type-body text-white underline">返回排期</Typography></Link></Card></NativePage>;
+  return <ConnectedAccountScreen />;
 }

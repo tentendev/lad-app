@@ -1,16 +1,15 @@
-import { isValidMonthKey } from "./format";
-import { normalizeStoredExpenses } from "./budget";
-import { normalizePackQuantities } from "./calculator";
+import { CURRENCIES, POOLS, type Currency, type BudgetMap, type CalculatorDraft, type Expense, type PlannerState, type WishTrackerState } from "./types";
+import { normalizePool } from "../data/packs";
+import { isValidBudgetKey, normalizeStoredExpenses } from "./budget";
+import { normalizeCalculatorDraft } from "./calculator";
 import { normalizePlannerState } from "./planner";
 import { normalizeSchedulePreferences } from "./schedule";
 import { normalizeWishTrackerState } from "./wishTracker";
-import { POOLS } from "./types";
 import type { SchedulePreferences } from "./schedule";
-import type { BudgetMap, CalculatorDraft, Expense, PlannerState, WishTrackerState } from "./types";
 
 const BACKUP_PRODUCT = "deep-space-ledger";
-const BACKUP_VERSION = 4;
-const SUPPORTED_BACKUP_VERSIONS = [1, 2, 3, BACKUP_VERSION];
+const BACKUP_VERSION = 5;
+const SUPPORTED_BACKUP_VERSIONS = [1, 2, 3, 4, BACKUP_VERSION];
 
 export type LocalBackupData = {
   budgets: BudgetMap;
@@ -44,7 +43,7 @@ function parseBudgets(value: unknown): BudgetMap {
   if (!isRecord(value)) throw new Error("預算資料格式不正確。");
   const budgets: BudgetMap = {};
   for (const [month, config] of Object.entries(value)) {
-    if (!isValidMonthKey(month) || !isRecord(config)) throw new Error("預算月份格式不正確。");
+    if (!isValidBudgetKey(month) || !isRecord(config)) throw new Error("預算月份格式不正確。");
     if (!isFiniteNonNegative(config.amount)) throw new Error("預算金額格式不正確。");
     if (typeof config.threshold !== "number" || !Number.isFinite(config.threshold) || config.threshold < 1 || config.threshold > 100) {
       throw new Error("預算提醒門檻格式不正確。");
@@ -65,20 +64,13 @@ function parseExpenses(value: unknown): Expense[] {
 function parseCalculator(value: unknown): CalculatorDraft | null {
   if (value === null) return null;
   if (!isRecord(value)) throw new Error("換算資料格式不正確。");
-  if (typeof value.pool !== "string" || !POOLS.includes(value.pool as never)) throw new Error("卡池類型格式不正確。");
+  if (typeof value.pool !== "string" || (!POOLS.includes(value.pool as never) && !["復刻池", "月卡／生日復刻池"].includes(value.pool))) throw new Error("卡池類型格式不正確。");
   if (value.reserveUnit !== "pulls" && value.reserveUnit !== "dia") throw new Error("預留資源單位格式不正確。");
   for (const key of ["cur", "tickets", "pulls", "reserve"] as const) {
     if (!isFiniteNonNegative(value[key])) throw new Error("換算數字格式不正確。");
   }
-  return {
-    pool: value.pool as CalculatorDraft["pool"],
-    cur: value.cur as number,
-    tickets: value.tickets as number,
-    pulls: value.pulls as number,
-    reserve: value.reserve as number,
-    reserveUnit: value.reserveUnit,
-    ...(value.packQuantities === undefined ? {} : { packQuantities: normalizePackQuantities(value.packQuantities) }),
-  };
+  if (value.currency !== undefined && !CURRENCIES.includes(value.currency as Currency)) throw new Error("幣別格式不正確。");
+  return normalizeCalculatorDraft({ ...value, pool: normalizePool(value.pool) });
 }
 
 function parsePlanner(value: unknown): PlannerState {
@@ -109,7 +101,7 @@ export function validateLocalBackupData(value: unknown): LocalBackupData {
     calculator: parseCalculator(value.calculator),
     planner: parsePlanner(value.planner),
     wishTracker: parseWishTracker(value.wishTracker),
-    schedulePreferences: value.schedulePreferences === undefined
+    schedulePreferences: value.schedulePreferences == null
       ? null
       : normalizeSchedulePreferences(value.schedulePreferences),
   };

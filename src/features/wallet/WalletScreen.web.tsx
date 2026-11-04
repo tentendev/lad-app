@@ -4,8 +4,8 @@ import { Input } from "@heroui/react/input";
 import { useEffect, useState } from "react";
 
 import { expensesToCsv } from "@/domain/budget";
-import { formatCurrency, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
-import { EXPENSE_CATEGORIES, type Expense, type ExpenseCategory } from "@/domain/types";
+import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency as formatMoney, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
+import { CURRENCIES, EXPENSE_CATEGORIES, type Currency, type Expense, type ExpenseCategory } from "@/domain/types";
 import { DeviceDataLoading } from "@/ui/DeviceDataLoading.web";
 import { RetryableError } from "@/ui/RetryableError.web";
 import { WebPage } from "@/ui/WebPage.web";
@@ -40,7 +40,8 @@ function WalletGlyph({ type }: { type: "wallet" | "plus" | "list" }) {
   );
 }
 
-function statusCopy(state: string, remaining: number, percentage: number): string {
+function statusCopy(state: string, remaining: number, percentage: number, currency: Currency): string {
+  const formatCurrency = (value: number) => formatMoney(value, currency);
   if (state === "unset") return "還沒設定當月預算，先建立一條舒服的消費界線。";
   if (state === "over") return `已超支 ${formatCurrency(Math.abs(remaining))}，建議先暫停新增非必要支出。`;
   if (state === "warning") return `已使用 ${percentage}%，目前還有 ${formatCurrency(remaining)} 可花。`;
@@ -49,6 +50,7 @@ function statusCopy(state: string, remaining: number, percentage: number): strin
 
 export function WalletScreenWeb() {
   const model = useWalletModel();
+  const formatCurrency = (value: number | null) => formatMoney(value, model.currency);
   const [budgetAmount, setBudgetAmount] = useState("");
   const [threshold, setThreshold] = useState("80");
   const [form, setForm] = useState<ExpenseForm>(EMPTY_FORM);
@@ -68,7 +70,7 @@ export function WalletScreenWeb() {
       setThreshold(String(model.config.threshold || 80));
     });
     return () => cancelAnimationFrame(frame);
-  }, [model.config.amount, model.config.threshold, model.month]);
+  }, [model.config.amount, model.config.threshold, model.month, model.currency]);
 
   useEffect(() => {
     if (!pendingExpense) return;
@@ -175,7 +177,7 @@ export function WalletScreenWeb() {
   const paceCopy = model.pace.status === "unavailable"
     ? null
     : model.pace.status === "over"
-      ? `已超出當月預算；接下來 ${model.pace.daysRemaining} 天的彈性額度先以 NT$0 計。`
+      ? `已超出當月預算；接下來 ${model.pace.daysRemaining} 天的彈性額度先以 ${formatCurrency(0)} 計。`
       : model.pace.status === "projected-over"
         ? `接下來 ${model.pace.daysRemaining} 天每日可彈性支出 ${formatCurrency(model.pace.dailyFlexibleSpend ?? 0)}；照目前速度月底仍可能超出 ${formatCurrency(Math.abs(model.pace.projectedVariance ?? 0))}。`
         : `接下來 ${model.pace.daysRemaining} 天每日可彈性支出 ${formatCurrency(model.pace.dailyFlexibleSpend ?? 0)}；照目前速度月底預計保留 ${formatCurrency(model.pace.projectedVariance ?? 0)}。`;
@@ -211,6 +213,7 @@ export function WalletScreenWeb() {
       action={pageAction}
     >
       <div className="page-grid">
+        <label className="field-wrap"><span className="field-label">記帳幣別</span><select className="native-select" aria-label="記帳幣別" value={model.currency} onChange={event => { setForm({ ...EMPTY_FORM, date: form.date }); void model.setCurrency(event.target.value as Currency); }}>{CURRENCIES.map(currency => <option key={currency} value={currency}>{CURRENCY_LABELS[currency]} · {CURRENCY_SYMBOLS[currency]}</option>)}</select></label>
         {model.storageError ? <RetryableError>{model.storageError}</RetryableError> : null}
         {deletedExpense ? (
           <div className="status-note undo-note" role="status">
@@ -243,13 +246,13 @@ export function WalletScreenWeb() {
               />
             </div>
             <div className={`status-note ${model.summary.state}`} role="status">
-              {statusCopy(model.summary.state, model.summary.remaining, model.summary.percentage)}
+              {statusCopy(model.summary.state, model.summary.remaining, model.summary.percentage, model.currency)}
             </div>
             <details className="budget-details">
               <summary>設定預算與提醒門檻</summary>
               <div className="form-grid">
                 <label className="field-wrap">
-                  <span className="field-label">每月預算（NT$）</span>
+                  <span className="field-label">每月預算（{CURRENCY_SYMBOLS[model.currency]}）</span>
                   <Input
                     id="wallet-budget-amount"
                     aria-label="每月預算"
@@ -327,7 +330,7 @@ export function WalletScreenWeb() {
             </div>
             <div className="form-grid" style={{ marginTop: 18 }}>
               <label className="field-wrap">
-                <span className="field-label">金額（NT$）</span>
+                <span className="field-label">金額（{CURRENCY_SYMBOLS[model.currency]}）</span>
                 <Input id="wallet-expense-amount" aria-label="花費金額" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="number" min="0" placeholder="170" value={form.amt} onChange={(event) => { setFormError(null); setForm({ ...form, amt: event.target.value }); }} />
               </label>
               <label className="field-wrap">
@@ -394,7 +397,7 @@ export function WalletScreenWeb() {
             </div>
           </Card>
 
-          <SpendingDashboard expenses={model.allExpenses} month={model.month} onSelectMonth={model.selectMonth} />
+          <SpendingDashboard expenses={model.allExpenses} month={model.month} currency={model.currency} onSelectMonth={model.selectMonth} />
 
           {editing ? (
             <Card className="product-card">
@@ -404,7 +407,7 @@ export function WalletScreenWeb() {
               </div>
               <div className="form-grid" style={{ marginTop: 18 }}>
                 <label className="field-wrap">
-                  <span className="field-label">金額（NT$）</span>
+                  <span className="field-label">金額（{CURRENCY_SYMBOLS[model.currency]}）</span>
                   <Input id="wallet-edit-amount" aria-label="編輯金額" aria-invalid={Boolean(editError)} aria-describedby={editError ? "wallet-edit-error" : undefined} type="number" value={String(editing.amt)} onChange={(event) => { setEditError(null); setEditing({ ...editing, amt: Number(event.target.value) }); }} />
                 </label>
                 <label className="field-wrap">

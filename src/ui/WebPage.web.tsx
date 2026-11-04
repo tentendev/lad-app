@@ -59,6 +59,8 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
           <a href="/privacy">隱私政策</a>
           <span aria-hidden="true">·</span>
           <a href="/support">支援</a>
+          <span aria-hidden="true">·</span>
+          <a href="https://www.threads.com/@chumei_0218" target="_blank" rel="noreferrer">製作：@chumei_0218</a>
         </footer>
       ) : null}
     </div>

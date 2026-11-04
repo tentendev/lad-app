@@ -196,10 +196,10 @@ describe("multi-event forecast", () => {
   it("keeps an overflow pack ceiling actionable in the shared summary", () => {
     const forecast = forecastPullPlan({
       monthlyIncome: 0,
-      goals: [{ id: 99, title: "極端復刻目標", pool: "復刻池", targetPulls: 667, deadline: "2026-08-19", tentative: false, enabled: true, sourceEvent: null }],
+      goals: [{ id: 99, title: "極端復刻目標", pool: "生日復刻池", targetPulls: 667, deadline: "2026-08-19", tentative: false, enabled: true, sourceEvent: null }],
       checkIns: [],
     }, { currentDia: 0, currentTickets: 0 }, "2026-08-19");
-    expect(pullPlanToText(forecast)).toContain("單輪限購最多估算 NT$11,450／306 抽，尚餘 361 抽需另備資源");
+    expect(pullPlanToText(forecast)).toContain("單輪限購最多估算 NT$9,870／254 抽，尚餘 413 抽需另備資源");
   });
 });
 

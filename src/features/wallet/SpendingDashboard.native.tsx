@@ -4,13 +4,14 @@ import { Pressable, ScrollView, View } from "react-native";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 import { storage } from "@/data/repositories/storage";
 import { spendingRangeError, summarizeSpendingRange } from "@/domain/budget";
-import { formatCurrency, monthLabel, moveMonth } from "@/domain/format";
-import type { Expense } from "@/domain/types";
+import { CURRENCY_LABELS, formatCurrency as formatMoney, monthLabel, moveMonth } from "@/domain/format";
+import type { Currency, Expense } from "@/domain/types";
 
 type Range = { mode: "6" | "12" | "custom"; start: string; end: string };
 
-export function SpendingDashboardNative({ expenses, month, onSelectMonth }: { expenses: Expense[]; month: string; onSelectMonth: (month: string) => void }) {
+export function SpendingDashboardNative({ expenses, month, onSelectMonth, currency = "TWD" }: { expenses: Expense[]; currency?: Currency; month: string; onSelectMonth: (month: string) => void }) {
   const initial = useRef<Range>({ mode: "6", start: moveMonth(month, -5), end: month });
+  const formatCurrency = (value: number | null) => formatMoney(value, currency);
   const [range, setRange] = useState<Range>({ mode: "6", start: moveMonth(month, -5), end: month });
   const [start, setStart] = useState(range.start);
   const [end, setEnd] = useState(range.end);
@@ -39,7 +40,7 @@ export function SpendingDashboardNative({ expenses, month, onSelectMonth }: { ex
   }, [ready, range]);
   const from = range.mode === "custom" ? range.start : moveMonth(month, -Number(range.mode) + 1);
   const to = range.mode === "custom" ? range.end : month;
-  const data = summarizeSpendingRange(expenses, from, to);
+  const data = summarizeSpendingRange(expenses, from, to, currency);
   const maximum = Math.max(1, ...data.months.map(item => item.amount));
   return <Card className="gap-4 border border-white/50 bg-glass p-4">
     <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} className="min-h-12 flex-row items-center justify-between" onPress={() => setOpen(!open)}><Typography.Heading type="h4" className="type-title text-white">每月花費統計</Typography.Heading><Typography className="text-white">{open ? "⌃" : "⌄"}</Typography></Pressable>
@@ -61,7 +62,7 @@ export function SpendingDashboardNative({ expenses, month, onSelectMonth }: { ex
         <View className="h-28 w-full justify-end rounded-lg bg-black/15"><View className={`w-full rounded-lg ${item.month === month ? "bg-[#cdbdff]" : "bg-[#65d6c4]"}`} style={{ height: `${Math.max(item.amount ? 2 : 0, item.amount / maximum * 100)}%` }} /></View>
         <Typography className="type-label text-muted">{item.month.slice(2).replace("-", "/")}</Typography>
       </Pressable>)}</ScrollView>
-      <Typography className="type-label text-muted">{data.total ? "點月份可查看明細，左右滑動可比較更多月份。金額單位為新臺幣。" : "這段期間還沒有花費紀錄，可在上方新增第一筆花費。"}</Typography>
+      <Typography className="type-label text-muted">{data.total ? `點月份可查看明細，左右滑動可比較更多月份。金額單位為${CURRENCY_LABELS[currency]}。` : "這段期間還沒有花費紀錄，可在上方新增第一筆花費。"}</Typography>
     </View> : <Typography className="type-body text-muted">比較近 6、12 個月或自訂期間</Typography>}
   </Card>;
 }
