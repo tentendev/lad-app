@@ -1,11 +1,8 @@
-/* Upstream 0.5.0 security fix; CommonJS and plus handling preserve the 0.2 API. */
-// Matches one or more consecutive percent-encoded bytes (e.g. `%C3%A5`).
 const token = '%[a-f0-9]{2}';
 const multiMatcher = new RegExp(`(${token})+`, 'gi');
 
 const hexPair = /^[a-f\d]{2}$/i;
 
-// Read a `%XX` sequence at `position`, returning the byte value and where to continue scanning.
 function parsePercentByte(input, position) {
 	if (input.codePointAt(position) !== 37 || position + 3 > input.length) {
 		return;
@@ -20,16 +17,11 @@ function parsePercentByte(input, position) {
 	return {byte: Number.parseInt(digits, 16), next: position + 3};
 }
 
-/**
- * Return how many bytes a UTF-8 code point needs based on its lead byte.
- * Returns 0 for continuation bytes and other invalid lead bytes.
- */
 function utf8SequenceLength(byte) {
 	if (byte <= 0x7F) {
 		return 1;
 	}
 
-	// Start at 0xC2 to exclude overlong 2-byte encodings (0xC0/0xC1).
 	if (byte >= 0xC2 && byte <= 0xDF) {
 		return 2;
 	}
@@ -49,10 +41,6 @@ function isContinuationByte(byte) {
 	return byte >= 0x80 && byte <= 0xBF;
 }
 
-/**
- * Decode as much of `input` as possible without throwing.
- *Scans left-to-right in O(n), decoding valid UTF-8 runs and leaving the rest literal.
- */
 function decode(input) {
 	try {
 		return decodeURIComponent(input);
@@ -69,7 +57,6 @@ function decode(input) {
 
 			const firstByte = parsePercentByte(input, position);
 
-			// `%` not followed by two hex digits (e.g. `%` or `%G`).
 			if (!firstByte) {
 				output += input.charAt(position);
 				position++;
@@ -78,8 +65,15 @@ function decode(input) {
 
 			const sequenceLength = utf8SequenceLength(firstByte.byte);
 
-			// Continuation byte or invalid lead byte — emit one `%XX` literally.
 			if (sequenceLength === 0) {
+				const pair = input.slice(position, position + 6);
+
+				if (pair === '%FE%FF' || pair === '%FF%FE') {
+					output += '\uFFFD\uFFFD';
+					position += 6;
+					continue;
+				}
+
 				output += input.slice(position, position + 3);
 				position += 3;
 				continue;
@@ -107,12 +101,12 @@ function decode(input) {
 					position = end;
 					continue;
 				} catch {
-					// Invalid UTF-8 despite correct structure — emit the first byte literally.
 				}
 			}
 
-			// Missing continuation bytes or decode failure — emit the first byte literally.
-			output += input.slice(position, position + 3);
+			const literal = input.slice(position, position + 3);
+
+			output += literal === '%C2' ? '\uFFFD' : literal;
 			position += 3;
 		}
 
@@ -121,41 +115,7 @@ function decode(input) {
 }
 
 function customDecodeURIComponent(input) {
-	// Keep track of all the replacements and prefill the map with the `BOM`
-	const replaceMap = {
-		'%FE%FF': '\uFFFD\uFFFD',
-		'%FF%FE': '\uFFFD\uFFFD',
-	};
-
-	// Find percent-encoded runs separated by literal text or lone `%` characters.
-	let match = multiMatcher.exec(input);
-
-	while (match) {
-		try {
-			// Decode as big chunks as possible
-			replaceMap[match[0]] = decodeURIComponent(match[0]);
-		} catch {
-			const result = decode(match[0]);
-
-			if (result !== match[0]) {
-				replaceMap[match[0]] = result;
-			}
-		}
-
-		match = multiMatcher.exec(input);
-	}
-
-	// Add `%C2` at the end of the map to make sure it does not replace the combinator before everything else
-	replaceMap['%C2'] = '\uFFFD';
-
-	const entries = Object.keys(replaceMap);
-
-	for (const key of entries) {
-		// Replace all decoded components
-		input = input.replace(new RegExp(key, 'g'), replaceMap[key]);
-	}
-
-	return input;
+	return input.replace(multiMatcher, run => decode(run));
 }
 
 module.exports = function decodeUriComponent(encodedURI) {
@@ -166,10 +126,8 @@ module.exports = function decodeUriComponent(encodedURI) {
 	encodedURI = encodedURI.replace(/\+/g, " ");
 
 	try {
-		// Try the built in decoder first
 		return decodeURIComponent(encodedURI);
 	} catch {
-		// Fallback to a more advanced decoder
 		return customDecodeURIComponent(encodedURI);
 	}
 };

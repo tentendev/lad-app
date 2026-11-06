@@ -1,6 +1,14 @@
 # Production Dependency Security Review
 
-Review date: 2026-10-07
+Review date: 2026-11-06
+
+## 2026-11-06 submission validation
+
+- Reproduced GHSA-qr28-fpjm-wq7f in the existing URL decoder: 32,000 distinct encoded runs exceeded a three-second child-process timeout, and decoded percent signs were interpreted a second time. Updated the vendored decoder to upstream 0.5.1 while retaining CommonJS and plus-to-space compatibility. Both new regression tests pass.
+- Updated the six Expo SDK 57 packages requested by Expo Doctor. Compatible transitive updates removed the new node-forge, deepmerge and Zod findings without changing the Expo SDK or React Native version.
+- Scoped glob 14.0.4 and minimatch 11.0.5 overrides to Expo's fingerprint tool to remove GHSA-3g3m-2fjr-6pw4 and GHSA-g3hv-75wg-m249. Verified an actual iOS fingerprint with 118 sources; application and API code do not import these tools.
+- Lint, TypeScript, 15 script tests, 177 Vitest tests and Expo Doctor 21/21 pass. The production audit reports one affected dependency and two previously reviewed image-size advisories, with zero critical findings. The audit gate and its exposure checks are unchanged.
+- These source changes require a new native build. Approval of build 7 does not validate the replacement binary.
 
 ## 2026-10-07 production release review
 
