@@ -2,6 +2,8 @@
 
 抽卡課金規劃工具，支援《戀與深空》的排期、預算、資源換算、多活動規劃與五星追蹤。專案以 Expo Router 建置 Web、iOS 與 Android 共用的 domain logic；Web 與未簽名 iOS bundle 均已有完整 release gate，正式簽名與商店驗收仍需擁有者平台資料。
 
+Maggie 維護與打包請先看 [開發與 TestFlight 快速開始](docs/MAGGIE_DEVELOPMENT_QUICKSTART.md)，包含帳號邀請、環境安裝、建置指令及可交給 agent 的工作說明。
+
 ## Web 現況
 
 - `/schedule`：月曆排期、保留男主篩選、官方／預測狀態、帶入規劃，以及單筆或目前顯示範圍的 RFC 5545 `.ics` 行事曆匯出。
