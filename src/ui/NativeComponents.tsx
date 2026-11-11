@@ -1,8 +1,25 @@
 import type { ComponentProps } from "react";
 import { useWindowDimensions } from "react-native";
-import { Button as HeroButton, Typography as HeroTypography } from "heroui-native";
+import { Button as HeroButton, Card as HeroCard, Typography as HeroTypography } from "heroui-native";
+import { APP_COLORS } from "@/theme/tokens";
+import { NATIVE_FONTS } from "@/theme/native";
 
-export { Card } from "heroui-native";
+function CardRoot({ style, variant = "transparent", ...props }: ComponentProps<typeof HeroCard>) {
+  return <HeroCard {...props} variant={variant} style={[{
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: APP_COLORS.line,
+    backgroundColor: APP_COLORS.glass,
+  }, style]} />;
+}
+
+export const Card = Object.assign(CardRoot, {
+  Header: HeroCard.Header,
+  Body: HeroCard.Body,
+  Footer: HeroCard.Footer,
+  Title: HeroCard.Title,
+  Description: HeroCard.Description,
+});
 
 // RN 0.86 Fabric can retain stale measurements after a runtime Dynamic Type
 // change (react-native#57512). Remount only text/control leaves, preserving
@@ -11,9 +28,9 @@ function Text(props: ComponentProps<typeof HeroTypography>) {
   const { fontScale } = useWindowDimensions();
   return <HeroTypography key={fontScale} {...props} />;
 }
-function Heading(props: ComponentProps<typeof HeroTypography.Heading>) {
+function Heading({ style, ...props }: ComponentProps<typeof HeroTypography.Heading>) {
   const { fontScale } = useWindowDimensions();
-  return <HeroTypography.Heading key={fontScale} {...props} />;
+  return <HeroTypography.Heading key={fontScale} {...props} style={[{ fontFamily: NATIVE_FONTS.heading }, style]} />;
 }
 function Paragraph(props: ComponentProps<typeof HeroTypography.Paragraph>) {
   const { fontScale } = useWindowDimensions();

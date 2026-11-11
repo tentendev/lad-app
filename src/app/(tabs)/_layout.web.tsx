@@ -11,8 +11,7 @@ const ITEMS = [
   { href: "/tracker", label: "追蹤", icon: "star" },
 ] as const;
 
-const SHOW_DEBUG_TOOLS = process.env.NODE_ENV !== "production"
-  || process.env.EXPO_PUBLIC_ENABLE_DEBUG_TOOLS === "true";
+const SHOW_DEBUG_TOOLS = process.env.EXPO_PUBLIC_ENABLE_DEBUG_TOOLS === "true";
 
 function NavIcon({ name }: { name: (typeof ITEMS)[number]["icon"] }) {
   if (name === "wallet") {

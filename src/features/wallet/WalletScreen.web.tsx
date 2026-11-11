@@ -213,7 +213,6 @@ export function WalletScreenWeb() {
       action={pageAction}
     >
       <div className="page-grid">
-        <label className="field-wrap"><span className="field-label">記帳幣別</span><select className="native-select" aria-label="記帳幣別" value={model.currency} onChange={event => { setForm({ ...EMPTY_FORM, date: form.date }); void model.setCurrency(event.target.value as Currency); }}>{CURRENCIES.map(currency => <option key={currency} value={currency}>{CURRENCY_LABELS[currency]} · {CURRENCY_SYMBOLS[currency]}</option>)}</select></label>
         {model.storageError ? <RetryableError>{model.storageError}</RetryableError> : null}
         {deletedExpense ? (
           <div className="status-note undo-note" role="status">
@@ -224,12 +223,13 @@ export function WalletScreenWeb() {
         <div className="stack">
           <Card className="hero-card">
             <div className="card-title-row">
-              <span className="card-kicker heading-with-icon"><WalletGlyph type="wallet" />當月剩餘可花</span>
-              <span>{model.summary.percentage}%</span>
+              <h2 className="section-title heading-with-icon"><WalletGlyph type="wallet" />本月預算</h2>
+              <label className="currency-choice"><span>幣別</span><select className="native-select" aria-label="記帳幣別" value={model.currency} onChange={event => { setForm({ ...EMPTY_FORM, date: form.date }); void model.setCurrency(event.target.value as Currency); }}>{CURRENCIES.map(currency => <option key={currency} value={currency}>{CURRENCY_LABELS[currency]} · {CURRENCY_SYMBOLS[currency]}</option>)}</select></label>
             </div>
+            <p className="currency-note">預算與花費依幣別分開記錄，不合併換算。</p>
             <div className="hero-value">{formatCurrency(model.summary.remaining)}</div>
             <div className="hero-caption">
-              已花 {formatCurrency(model.summary.spent)} · 預算 {formatCurrency(model.summary.budget)}
+              剩餘可花 · 預算 {formatCurrency(model.summary.budget)}
             </div>
             <div
               className="progress-track"
@@ -245,6 +245,7 @@ export function WalletScreenWeb() {
                 style={{ width: `${progress}%` }}
               />
             </div>
+            <div className="hero-caption">已花 {formatCurrency(model.summary.spent)} · 使用 {model.summary.percentage}%</div>
             <div className={`status-note ${model.summary.state}`} role="status">
               {statusCopy(model.summary.state, model.summary.remaining, model.summary.percentage, model.currency)}
             </div>
@@ -299,36 +300,14 @@ export function WalletScreenWeb() {
             </details>
           </Card>
 
-          <details className="product-card card spending-insights-card">
-            <summary>當月支出洞察與預估</summary>
-            <div className="insight-summary" role="group" aria-label="當月支出摘要">
-              <div><span>與上月相比</span><strong>{comparisonCopy}</strong></div>
-              <div><span>月底預估</span><strong>{model.insights.projectedMonthEnd === null ? "僅當月提供" : formatCurrency(model.insights.projectedMonthEnd)}</strong></div>
-            </div>
-            {paceCopy ? <div className={`status-note ${model.pace.status === "on-track" ? "healthy" : model.pace.status === "over" ? "over" : "warning"}`} role="status">{paceCopy}</div> : null}
-            {model.insights.categories.length === 0 ? (
-              <div className="empty-state">記下一筆花費後，這裡會顯示類別占比與月度趨勢。</div>
-            ) : (
-              <div className="category-breakdown" role="group" aria-label="當月各類支出占比">
-                {model.insights.categories.map((item) => (
-                  <div className="category-insight" key={item.category}>
-                    <div><span>{item.category}</span><strong>{formatCurrency(item.amount)} · {item.percentage}%</strong></div>
-                    <div className="insight-track" aria-hidden="true"><span style={{ width: `${item.percentage}%` }} /></div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </details>
-
         </div>
 
         <div className="stack">
           <Card className="product-card">
             <div className="section-heading">
-              <h2 className="section-title heading-with-icon"><WalletGlyph type="plus" />新增花費</h2>
-              <span className="section-meta">快速記一筆</span>
+              <h2 className="section-title heading-with-icon"><WalletGlyph type="plus" />記一筆花費</h2>
             </div>
-            <div className="form-grid" style={{ marginTop: 18 }}>
+            <div className="form-grid" style={{ marginTop: 3 }}>
               <label className="field-wrap">
                 <span className="field-label">金額（{CURRENCY_SYMBOLS[model.currency]}）</span>
                 <Input id="wallet-expense-amount" aria-label="花費金額" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="number" min="0" placeholder="170" value={form.amt} onChange={(event) => { setFormError(null); setForm({ ...form, amt: event.target.value }); }} />
@@ -339,11 +318,11 @@ export function WalletScreenWeb() {
                   {EXPENSE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
                 </select>
               </label>
-              <label className="field-wrap">
+              <label className="field-wrap full">
                 <span className="field-label">消費日期</span>
                 <span className="date-control"><Input id="wallet-expense-date" aria-label="消費日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} /></span>
               </label>
-              <label className="field-wrap">
+              <label className="field-wrap full">
                 <span className="field-label">備註（選填）</span>
                 <Input aria-label="花費備註" placeholder="例如：沈星回生日卡池" value={form.note} onChange={(event) => { setFormError(null); setForm({ ...form, note: event.target.value }); }} />
               </label>
@@ -397,6 +376,27 @@ export function WalletScreenWeb() {
             </div>
           </Card>
 
+          <details className="product-card card spending-insights-card">
+            <summary>當月支出洞察與預估</summary>
+            <div className="insight-summary" role="group" aria-label="當月支出摘要">
+              <div><span>與上月相比</span><strong>{comparisonCopy}</strong></div>
+              <div><span>月底預估</span><strong>{model.insights.projectedMonthEnd === null ? "僅當月提供" : formatCurrency(model.insights.projectedMonthEnd)}</strong></div>
+            </div>
+            {paceCopy ? <div className={`status-note ${model.pace.status === "on-track" ? "healthy" : model.pace.status === "over" ? "over" : "warning"}`} role="status">{paceCopy}</div> : null}
+            {model.insights.categories.length === 0 ? (
+              <div className="empty-state">記下一筆花費後，這裡會顯示類別占比與月度趨勢。</div>
+            ) : (
+              <div className="category-breakdown" role="group" aria-label="當月各類支出占比">
+                {model.insights.categories.map((item) => (
+                  <div className="category-insight" key={item.category}>
+                    <div><span>{item.category}</span><strong>{formatCurrency(item.amount)} · {item.percentage}%</strong></div>
+                    <div className="insight-track" aria-hidden="true"><span style={{ width: `${item.percentage}%` }} /></div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </details>
+
           <SpendingDashboard expenses={model.allExpenses} month={model.month} currency={model.currency} onSelectMonth={model.selectMonth} />
 
           {editing ? (
@@ -405,7 +405,7 @@ export function WalletScreenWeb() {
                 <h2 className="section-title">編輯花費</h2>
                 <Button size="sm" variant="ghost" onPress={() => { setEditError(null); setEditing(null); }}>取消</Button>
               </div>
-              <div className="form-grid" style={{ marginTop: 18 }}>
+              <div className="form-grid" style={{ marginTop: 3 }}>
                 <label className="field-wrap">
                   <span className="field-label">金額（{CURRENCY_SYMBOLS[model.currency]}）</span>
                   <Input id="wallet-edit-amount" aria-label="編輯金額" aria-invalid={Boolean(editError)} aria-describedby={editError ? "wallet-edit-error" : undefined} type="number" value={String(editing.amt)} onChange={(event) => { setEditError(null); setEditing({ ...editing, amt: Number(event.target.value) }); }} />

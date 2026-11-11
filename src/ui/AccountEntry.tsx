@@ -4,7 +4,6 @@ import { Link } from "expo-router";
 import type { JSX } from "react";
 import { Image, Pressable, View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
-import { Typography } from "@/ui/NativeComponents";
 
 function MemberIcon(): JSX.Element {
   return (
@@ -19,32 +18,22 @@ function ConnectedAccountEntry(): JSX.Element {
   const { isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
   const name = user?.firstName?.trim() || "會員中心";
-  const label = !isLoaded ? "會員中心" : isSignedIn ? name : "登入／註冊";
-
   return (
-    <View className="items-end">
       <Link href="/account" asChild>
         <Pressable
           accessibilityRole="link"
           accessibilityLabel={!isLoaded ? "會員中心" : isSignedIn ? `會員 ${name}` : "會員 登入／註冊"}
-          className="min-h-12 flex-row items-center gap-2 rounded-full border border-white/45 bg-[#3f315f]/70 py-1.5 pl-1.5 pr-3"
+          className="size-12 items-center justify-center overflow-hidden rounded-full border border-white/30 bg-[#382a60]/30"
         >
-          <View className="size-9 items-center justify-center overflow-hidden rounded-full border border-white/55 bg-white/10">
+          <View className="size-8 items-center justify-center overflow-hidden rounded-full">
             {isSignedIn && user?.imageUrl ? <Image source={{ uri: user.imageUrl }} className="size-full" accessibilityIgnoresInvertColors /> : <MemberIcon />}
           </View>
-          <View className="min-w-0">
-            <Typography className="max-w-36 type-label text-white" >{label}</Typography>
-          </View>
-          <Svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.72)" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <Path d="m9 18 6-6-6-6" />
-          </Svg>
         </Pressable>
       </Link>
-    </View>
   );
 }
 
 export function AccountEntry(): JSX.Element {
-  if (isLocalPreview()) return <Link href="/account" accessibilityLabel="本機預覽說明"><Typography className="type-label text-white">本機預覽</Typography></Link>;
+  if (isLocalPreview()) return <Link href="/account" asChild><Pressable accessibilityRole="link" accessibilityLabel="本機預覽說明" className="size-12 items-center justify-center rounded-full border border-white/30 bg-[#382a60]/30"><MemberIcon /></Pressable></Link>;
   return <ConnectedAccountEntry />;
 }

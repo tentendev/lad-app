@@ -51,7 +51,7 @@ export default function NativeTabsLayout(): JSX.Element {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#ffffff",
-        tabBarInactiveTintColor: "#e5dff0",
+        tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
         tabBarLabel: ({ children, color, focused }) => <Text key={fontScale} allowFontScaling maxFontSizeMultiplier={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: focused ? "600" : "400", color, textAlign: "center" }}>{children}</Text>,
         tabBarLabelPosition: "below-icon",
         tabBarItemStyle: { paddingTop: 5 },
@@ -60,13 +60,9 @@ export default function NativeTabsLayout(): JSX.Element {
           maxWidth: 520,
           alignSelf: "center",
           backgroundColor: APP_COLORS.navigation,
-          borderTopColor: "rgba(255,255,255,0.34)",
+          borderTopColor: APP_COLORS.line,
           borderTopWidth: 1,
-          borderLeftColor: "rgba(255,255,255,0.2)",
-          borderLeftWidth: 1,
-          borderRightColor: "rgba(255,255,255,0.2)",
-          borderRightWidth: 1,
-          height: 44 + 20 * Math.min(fontScale, 2) + insets.bottom,
+          height: 36 + 20 * Math.min(fontScale, 2) + insets.bottom,
         },
       }}
     >

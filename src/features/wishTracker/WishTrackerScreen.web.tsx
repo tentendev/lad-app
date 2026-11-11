@@ -194,7 +194,7 @@ export function WishTrackerScreenWeb() {
         <div className="stack">
           <Card className="product-card pity-card">
             <div className="section-heading">
-              <div><p className="card-kicker">Pity Counter</p><h2 className="section-title">目前累計</h2></div>
+              <div><h2 className="section-title">目前累計</h2></div>
               <span className="section-meta">手動更新</span>
             </div>
             <p className="page-description">請照遊戲內顯示的計數線填寫；不同類型不會在本工具中互相合併。</p>
@@ -261,7 +261,7 @@ export function WishTrackerScreenWeb() {
 
           <Card className="product-card">
             <div className="section-heading">
-              <div><p className="card-kicker">Manual Log</p><h2 className="section-title">新增五星紀錄</h2></div>
+              <div><h2 className="section-title">新增五星紀錄</h2></div>
             </div>
             <div className="form-grid" role="group" aria-label="新增五星紀錄">
               <label className="field-wrap">

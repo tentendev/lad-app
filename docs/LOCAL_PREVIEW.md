@@ -44,6 +44,16 @@ npm run preview:ios
 
 本次未發布 App Store／TestFlight，也未變更原網頁正式站。
 
+## 視覺基準與修改（2026-11-11）
+
+App 以同層網頁版 `index.html` 的星空背景、白色線稿品牌、半透明紫色卡片、細白框、20px 卡片圓角與 13px 按鈕圓角為基準。瀏覽器預覽沿用原網頁的 Noto Sans TC、Noto Serif TC 與 Cormorant Garamond；原生版使用系統字體與系統襯線字體，保留動態字級、至少 14pt 的輔助文字與 48pt 的主要觸控範圍。
+
+錢包的幣別選擇放入預算卡片，預算設定可展開，支出洞察移至花費紀錄後。換算輸入與結果集中在同一張卡片；規劃與追蹤保留原有功能，移除額外的英文小標。手機版的卡池、幣別及新增花費類別採用與原網頁相近的選擇欄位，點開後用可捲動的原生清單操作；原生日期選擇、鍵盤避讓及安全區域繼續保留。原生與 Web 檔案需一起維護，只修改 `.web.tsx` 不會改到手機原生畫面。
+
+預覽預設隱藏內部診斷浮動按鈕；需要診斷時可設定 `EXPO_PUBLIC_ENABLE_DEBUG_TOOLS=true` 啟動。此設定不涉及會員或正式服務金鑰。
+
+本次驗證涵蓋瀏覽器中的主要分頁、窄螢幕版面、換算與記帳保存、幣別隔離，以及 iOS／Android Hermes bundle。尚無可用的本機 Simulator，原生選擇清單、系統字型與動態字級仍需後續實機驗收。此次修改尚未發布到 TestFlight。
+
 ## 驗證紀錄
 
 - App `npm run check`：ESLint、TypeScript、15 項 Node 測試與 129 項 Vitest 測試通過；Vitest 的 alias 使用 `fileURLToPath`，支援目前含中文的資料夾名稱。

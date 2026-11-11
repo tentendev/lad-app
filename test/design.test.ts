@@ -1,19 +1,23 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 
 import { EVENT_LABELS } from "@/domain/schedule";
 import { APP_COLORS, EVENT_COLORS, LEAD_COLORS } from "@/theme/tokens";
 
 describe("original visual design contract", () => {
   it("keeps the original lavender glass shell colors", () => {
-    expect(APP_COLORS).toEqual({
-      canvas: "#7765a7",
-      glass: "#493b70",
-      navigation: "#60487f",
-      text: "#ffffff",
-      success: "#65d6c4",
-      warning: "#ffd166",
-      danger: "#ff6675",
-    });
+    const original = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+    const normalize = (value: string) => value.startsWith("rgba(")
+      ? `rgba(${value.slice(5, -1).split(",").map(Number).join(",")})`
+      : value.trim();
+    for (const [name, token] of [["glass", "card"], ["line", "line"], ["text", "txt"], ["success", "good"], ["warning", "warn"], ["danger", "bad"]] as const) {
+      const value = original.match(new RegExp(`--${token}:([^;]+);`))?.[1];
+      expect(value, `original CSS token --${token}`).toBeDefined();
+      expect(APP_COLORS[name]).toBe(normalize(value!));
+    }
+    const navigation = original.match(/nav\s*\{[^}]*background:([^;]+);/)?.[1];
+    expect(navigation).toBeDefined();
+    expect(APP_COLORS.navigation).toBe(normalize(navigation!));
   });
 
   it("keeps all five lead accents", () => {

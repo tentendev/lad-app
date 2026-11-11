@@ -1,7 +1,7 @@
 import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
 import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 import Svg, { Path, Rect } from "react-native-svg";
@@ -11,6 +11,7 @@ import type { GapPackRecommendation } from "@/domain/calculator";
 import { CURRENCY_SYMBOLS, formatCurrency as formatMoney, formatNumber } from "@/domain/format";
 import { CURRENCIES, POOLS, type PullGoal } from "@/domain/types";
 import { NativePage } from "@/ui/NativePage";
+import { NativeSelect } from "@/ui/NativeSelect";
 import { useCalculatorModel } from "./useCalculatorModel";
 import { PlannerSectionNative } from "./PlannerSection.native";
 
@@ -31,7 +32,7 @@ function CalculatorGlyph({ type }: { type: "diamond" | "gift" | "steps" }) {
 
 function NumberField({ placeholder, value, onChange, showZero = false }: { placeholder: string; value: number; showZero?: boolean; onChange: (value: number) => void }) {
   return (
-    <View className="gap-2"><Typography className="type-body text-muted">{placeholder}</Typography><TextInput
+    <View className="gap-2"><Typography className="type-label text-muted">{placeholder}</Typography><TextInput
       accessibilityLabel={placeholder}
       className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white"
       keyboardType="numeric"
@@ -86,13 +87,8 @@ export function CalculatorScreenNative() {
       ) : null}
 
       <Card className="gap-4 border border-white/50 bg-glass p-4">
-        <View className="flex-row items-center gap-2"><CalculatorGlyph type="diamond" /><Typography.Heading type="h4" className="type-title text-white">目標設定</Typography.Heading></View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
-          {POOLS.map((pool) => (
-            <Button key={pool} size="sm" variant={pool === draft.pool ? "primary" : "secondary"} onPress={() => model.setPool(pool)}>{pool}</Button>
-          ))}
-        </ScrollView>
-        <Button size="sm" variant="ghost" onPress={() => void model.reset()}>重設換算</Button>
+        <View className="flex-row flex-wrap items-center justify-between gap-2"><View className="flex-row items-center gap-2"><CalculatorGlyph type="diamond" /><Typography.Heading type="h4" className="type-title text-white">抽卡目標換算</Typography.Heading></View><Button size="sm" variant="ghost" onPress={() => void model.reset()}>重設換算</Button></View>
+        <NativeSelect label="卡池類型" value={draft.pool} options={POOLS} onChange={model.setPool} />
         <NumberField placeholder="目前持有（鑽）" value={draft.cur} onChange={(value) => model.updateNumber("cur", value)} />
         <NumberField placeholder="目標抽數" value={draft.pulls} onChange={(value) => model.updateNumber("pulls", value)} />
         <Button variant="ghost" accessibilityState={{ expanded: rulesOpen }} onPress={() => setRulesOpen(!rulesOpen)}>保底與繼承規則 {rulesOpen ? "⌃" : "⌄"}</Button>
@@ -110,13 +106,12 @@ export function CalculatorScreenNative() {
           <Button accessibilityLabel="預留資源使用鑽石" size="sm" variant={draft.reserveUnit === "dia" ? "primary" : "secondary"} onPress={() => model.setReserveUnit("dia")}>鑽</Button>
         </View>
         <Typography className="text-muted">相當於 {formatNumber(resource.reservePulls)} 抽 · {formatNumber(resource.reserveDia)} 鑽</Typography>
+        <NativeMetricGrid>
+          <View className="flex-1 items-center gap-1 rounded-[15px] border border-white/55 bg-white/10 p-3"><Typography.Heading type="h4" className="type-headline text-white">{formatNumber(resource.gapDia)}</Typography.Heading><Typography className="type-label text-muted">還差鑽石</Typography></View>
+          <View className="flex-1 items-center gap-1 rounded-[15px] border border-white/55 bg-white/10 p-3"><Typography.Heading type="h4" className="type-headline text-white">{resource.paidPulls}</Typography.Heading><Typography className="type-label text-muted">需課金抽</Typography></View>
+          <View className="flex-1 items-center gap-1 rounded-[15px] border border-white/55 bg-white/10 p-3"><Typography.Heading type="h4" className="type-headline text-white">{draft.pulls ? formatNumber(resource.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="type-label text-muted">剩餘鑽</Typography></View>
+        </NativeMetricGrid>
       </Card>
-
-      <NativeMetricGrid>
-        <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{formatNumber(resource.gapDia)}</Typography.Heading><Typography className="type-label text-muted">還差鑽石</Typography></Card>
-        <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{resource.paidPulls}</Typography.Heading><Typography className="type-label text-muted">需課金抽</Typography></Card>
-        <Card className="flex-1 gap-1 border border-white/40 bg-glass p-3"><Typography.Heading type="h4" className="text-white">{draft.pulls ? formatNumber(resource.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="type-label text-muted">剩餘鑽</Typography></Card>
-      </NativeMetricGrid>
 
       <Card className="gap-3 border border-white/55 bg-glass p-5">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="gift" /><Typography className="text-muted">禮包建議 · {draft.pool}</Typography></View>
@@ -138,7 +133,7 @@ export function CalculatorScreenNative() {
 
       <Card className="gap-3 border border-white/50 bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="steps" /><Typography.Heading type="h4" className="type-title text-white">階梯明細</Typography.Heading></View>
-        <View className="flex-row flex-wrap gap-2">{CURRENCIES.map(currency => <Button key={currency} size="sm" variant={(draft.currency ?? "TWD") === currency ? "primary" : "secondary"} accessibilityLabel={`禮包幣別 ${currency}`} accessibilityState={{ selected: (draft.currency ?? "TWD") === currency }} onPress={() => model.setCurrency(currency)}>{currency} · {CURRENCY_SYMBOLS[currency]}</Button>)}</View>
+        <NativeSelect label="禮包幣別" value={draft.currency ?? "TWD"} options={CURRENCIES} formatOption={currency => `${currency} · ${CURRENCY_SYMBOLS[currency]}`} onChange={model.setCurrency} />
         <Button variant="secondary" onPress={model.applyRecommendedPacks}>套用建議包數</Button>
         <Button variant="ghost" accessibilityState={{ expanded: detailsOpen }} onPress={() => setDetailsOpen(!detailsOpen)}>{detailsOpen ? "收起" : "展開"}禮包明細</Button>
         {draft.pool === "其他" ? <View className="gap-2"><Typography className="text-muted">定期禮包以台灣原始售價列示，海外價格待確認。</Typography>{PACK_OTHER.map(pack => <Typography className="text-muted" key={pack.name}>{pack.name} · {formatMoney(pack.price)} · 每抽 {formatMoney(pack.per)}</Typography>)}</View> : null}

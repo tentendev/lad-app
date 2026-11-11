@@ -4,7 +4,7 @@ import { Input } from "@heroui/react/input";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
-import { DIA_PER_PULL, PACK_OTHER } from "@/data/packs";
+import { PACK_OTHER } from "@/data/packs";
 import { bestTierPrice, type GapPackRecommendation } from "@/domain/calculator";
 import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency as formatMoney, formatNumber } from "@/domain/format";
 import { CURRENCIES, POOLS, type Currency, type Pool, type PullGoal } from "@/domain/types";
@@ -63,7 +63,6 @@ export function CalculatorScreenWeb() {
         eyebrow="Pull Planner"
         title="換算"
         description="把鑽石、金券、官方返券與預留資源一起算清楚，再依卡池階梯給出可執行的禮包建議。"
-        action={<span className="event-badge">每抽 {DIA_PER_PULL} 鑽</span>}
       >
         <DeviceDataLoading label="正在讀取換算設定…" />
       </WebPage>
@@ -75,7 +74,6 @@ export function CalculatorScreenWeb() {
       eyebrow="Pull Planner"
       title="換算"
       description="把鑽石、金券、官方返券與預留資源一起算清楚，再依卡池階梯給出可執行的禮包建議。"
-      action={<span className="event-badge">每抽 {DIA_PER_PULL} 鑽</span>}
     >
       <div className="page-grid">
         {model.storageError ? <RetryableError>{model.storageError}</RetryableError> : null}
@@ -88,17 +86,16 @@ export function CalculatorScreenWeb() {
         <div className="stack">
           <Card className="product-card">
             <div className="section-heading">
-              <h2 className="section-title heading-with-icon"><CalculatorGlyph type="diamond" />目標設定</h2>
+              <h2 className="section-title heading-with-icon"><CalculatorGlyph type="diamond" />抽卡目標換算</h2>
               <button className="text-button" type="button" onClick={() => void model.reset()}>重設換算</button>
             </div>
-            <div className="form-grid" style={{ marginTop: 18 }}>
+            <div className="form-grid" style={{ marginTop: 3 }}>
               <label className="field-wrap full">
-                <span className="field-label">① 先選擇卡池類型</span>
+                <span className="field-label">卡池類型</span>
                 <select className="native-select" value={draft.pool} onChange={(event) => model.setPool(event.target.value as Pool)}>
                   {POOLS.map((pool) => <option key={pool}>{pool}</option>)}
                 </select>
               </label>
-              <div className="section-meta full">② 再輸入持有資源與抽卡目標</div>
               <label className="field-wrap">
                 <span className="field-label aligned-target-label">目前持有（鑽）</span>
                 <Input aria-label="目前持有鑽石" type="number" min="0" placeholder="0" value={draft.cur ? String(draft.cur) : ""} onChange={(event) => model.updateNumber("cur", Number(event.target.value))} />
@@ -122,8 +119,10 @@ export function CalculatorScreenWeb() {
               </label>
               <div className="field-wrap">
                 <label className="field-label" htmlFor="official-tickets">官方金券（張）</label>
-                <Input id="official-tickets" aria-label="官方金券" type="number" min="0" step="1" value={String(resource.officialTickets)} onChange={event => model.setOfficialTickets(Number(event.target.value))} />
-                <button className="text-button" type="button" onClick={model.restoreOfficialTickets}>恢復自動</button>
+                <div className="official-ticket-control">
+                  <Input id="official-tickets" aria-label="官方金券" type="number" min="0" step="1" value={String(resource.officialTickets)} onChange={event => model.setOfficialTickets(Number(event.target.value))} />
+                  <button className="text-button" type="button" onClick={model.restoreOfficialTickets}>恢復自動</button>
+                </div>
                 <span className="section-meta">{Object.hasOwn(draft.officialTicketsByPool ?? {}, draft.pool) ? "手動設定，可恢復自動估算" : `自動估算：免費贈送 ${resource.initialTickets} 張＋目標前可折抵返還 ${resource.milestoneTickets} 張`}</span>
               </div>
               <label className="field-wrap full">
@@ -146,9 +145,6 @@ export function CalculatorScreenWeb() {
                 </span>
               </label>
             </div>
-          </Card>
-
-          <Card className="product-card">
             <div className={`status-note calculation-status ${resultTone}`} role="status">{resultCopy}</div>
             <div className="metric-grid">
               <div className="metric"><div className="metric-value">{formatNumber(resource.gapDia)}</div><div className="metric-label">還差幾鑽</div></div>

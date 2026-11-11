@@ -24,7 +24,7 @@ try {
 
   const files = await walk(outputDirectory);
   const bundle = files.find((file) => file.endsWith(".hbc"));
-  const background = files.find((file) => file.endsWith("mobile-bg.webp"));
+  const background = files.find((file) => file.endsWith("lad-bg.webp"));
   const metadata = files.find((file) => path.basename(file) === "metadata.json");
   if (!bundle || !background || !metadata) {
     throw new Error("iOS export is missing the Hermes bundle, star background, or metadata.");

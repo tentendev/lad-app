@@ -2,12 +2,14 @@ import type { Lead, ScheduleEventType } from "@/domain/types";
 
 export const APP_COLORS = {
   canvas: "#7765a7",
-  glass: "#493b70",
-  navigation: "#60487f",
+  glass: "rgba(56,42,96,0.4)",
+  navigation: "rgba(72,42,107,0.62)",
+  line: "rgba(255,255,255,0.55)",
+  input: "rgba(255,255,255,0.14)",
   text: "#ffffff",
-  success: "#65d6c4",
-  warning: "#ffd166",
-  danger: "#ff6675",
+  success: "#7af0c8",
+  warning: "#ffe08a",
+  danger: "#ff9bb3",
 } as const;
 
 export const LEAD_COLORS: Record<Lead, string> = {

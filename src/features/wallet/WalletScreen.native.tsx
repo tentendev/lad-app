@@ -7,9 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { expensesToCsv } from "@/domain/budget";
-import { CURRENCY_SYMBOLS, formatCurrency as formatMoney, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
+import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency as formatMoney, isValidDateKey, monthLabel, todayKey } from "@/domain/format";
 import { CURRENCIES, EXPENSE_CATEGORIES, type Expense, type ExpenseCategory } from "@/domain/types";
 import { NativePage } from "@/ui/NativePage";
+import { NativeSelect } from "@/ui/NativeSelect";
+import { NativeDisclosure } from "@/ui/NativeDisclosure";
+import { NATIVE_FONTS } from "@/theme/native";
 import { useWalletModel } from "./useWalletModel";
 
 function WalletGlyph({ type }: { type: "wallet" | "plus" | "list" }) {
@@ -156,7 +159,6 @@ export function WalletScreenNative() {
   if (!model.ready) {
     return (
       <NativePage eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
-      <View className="gap-2"><Typography className="type-body text-muted">記帳幣別</Typography><View className="flex-row flex-wrap gap-2">{CURRENCIES.map(currency => <Button key={currency} size="sm" variant={model.currency === currency ? "primary" : "secondary"} accessibilityState={{ selected: model.currency === currency }} onPress={() => { setAmount(""); setNote(""); setFormError(null); void model.setCurrency(currency); }}>{currency} · {CURRENCY_SYMBOLS[currency]}</Button>)}</View></View>
         <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
           <Typography className="type-body text-muted">正在讀取預算與花費…</Typography>
           <View className="h-12 rounded-xl bg-white/10" />
@@ -170,7 +172,7 @@ export function WalletScreenNative() {
     <NativePage eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
       <View className="flex-row flex-wrap items-center justify-between gap-2">
         <Button accessibilityLabel="上一個月" size="sm" variant="ghost" className="border border-white/45" onPress={model.previousMonth}>←</Button>
-        <Typography.Heading type="h4" className="type-headline text-white">{monthLabel(model.month)}</Typography.Heading>
+        <Typography.Heading type="h4" className="type-title text-white">{monthLabel(model.month)}</Typography.Heading>
         <Button accessibilityLabel="下一個月" size="sm" variant="ghost" className="border border-white/45" onPress={model.nextMonth}>→</Button>
       </View>
       {!model.isCurrentMonth ? <Button size="sm" variant="ghost" className="self-center border border-white/35" onPress={model.goToCurrentMonth}>回到當月</Button> : null}
@@ -184,69 +186,36 @@ export function WalletScreenNative() {
       ) : null}
 
       <Card className="gap-4 border border-white/55 bg-glass p-5">
-        <View className="flex-row items-center gap-2"><WalletGlyph type="wallet" /><Typography className="text-muted">當月剩餘可花</Typography></View>
-        <Typography.Heading type="h4" className="type-display text-white">{formatCurrency(model.summary.remaining)}</Typography.Heading>
-        <Typography.Paragraph className="text-muted">
-          已花 {formatCurrency(model.summary.spent)} · 預算 {formatCurrency(model.summary.budget)} · {model.summary.percentage}%
-        </Typography.Paragraph>
-        <View className="h-2 overflow-hidden rounded-full bg-black/20">
-          <View className="h-full rounded-full bg-[#65d6c4]" style={{ width: `${Math.min(100, model.summary.percentage)}%` }} />
-        </View>
-      </Card>
-
-      <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View className="flex-row flex-wrap items-center justify-between gap-2">
-          <Typography.Heading type="h4" className="type-title text-white">支出洞察</Typography.Heading>
-
+          <View className="flex-row items-center gap-2"><WalletGlyph type="wallet" /><Typography.Heading type="h4" className="type-title text-white">本月預算</Typography.Heading></View>
+          <View style={{ width: 190, maxWidth: "100%" }}><NativeSelect compact label="幣別" value={model.currency} options={CURRENCIES} formatOption={currency => `${CURRENCY_LABELS[currency]} · ${CURRENCY_SYMBOLS[currency]}`} disabled={submitting || model.writeProtected} onChange={currency => { setAmount(""); setNote(""); setFormError(null); void model.setCurrency(currency); }} /></View>
         </View>
-        <View className="gap-1 rounded-xl border border-white/20 bg-white/10 p-3">
-          <Typography className="type-label text-muted">與上月相比</Typography>
-          <Typography className="font-semibold text-white">{comparisonCopy}</Typography>
-          <Typography className="mt-2 type-label text-muted">月底預估</Typography>
-          <Typography className="font-semibold text-white">{model.insights.projectedMonthEnd === null ? "僅當月提供" : formatCurrency(model.insights.projectedMonthEnd)}</Typography>
+        <Typography className="type-label text-muted">預算與花費依幣別分開記錄，不合併換算。</Typography>
+        <Typography.Heading type="h4" className="type-display text-white" style={{ fontFamily: NATIVE_FONTS.number }}>{formatCurrency(model.summary.remaining)}</Typography.Heading>
+        <Typography.Paragraph className="text-muted">
+          剩餘可花 · 預算 {formatCurrency(model.summary.budget)}
+        </Typography.Paragraph>
+        <View className="h-2 overflow-hidden rounded-full border border-white/30 bg-white/20">
+          <View className="h-full rounded-full bg-white" style={{ width: `${Math.min(100, model.summary.percentage)}%` }} />
         </View>
-        {paceCopy ? (
-          <View accessibilityRole="summary" className={`rounded-xl border p-3 ${model.pace.status === "on-track" ? "border-[#9cf0dc] bg-[#65d6c4]/15" : model.pace.status === "over" ? "border-[#ffafbd] bg-[#ff6675]/20" : "border-[#ffd991] bg-[#f0b95e]/15"}`}>
-            <Typography className="type-body text-white">{paceCopy}</Typography>
-          </View>
-        ) : null}
-        {model.insights.categories.length === 0 ? (
-          <Typography.Paragraph className="py-4 text-center text-muted">記下一筆花費後，這裡會顯示類別占比與月度趨勢。</Typography.Paragraph>
-        ) : model.insights.categories.map((item) => (
-          <View className="gap-2" key={item.category} accessibilityLabel={`${item.category} ${formatCurrency(item.amount)}，占 ${item.percentage}%`}>
-            <View className="flex-row justify-between gap-3">
-              <Typography className="type-body text-white">{item.category}</Typography>
-              <Typography className="type-body font-semibold text-white">{formatCurrency(item.amount)} · {item.percentage}%</Typography>
-            </View>
-            <View className="h-1.5 overflow-hidden rounded-full bg-black/20">
-              <View className="h-full rounded-full bg-[#a78bfa]" style={{ width: `${item.percentage}%` }} />
-            </View>
-          </View>
-        ))}
-
+        <Typography className="type-label text-muted">已花 {formatCurrency(model.summary.spent)} · 使用 {model.summary.percentage}%</Typography>
+        <NativeDisclosure title="設定預算與提醒門檻">
+          <Typography className="type-body text-muted">每月預算（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
+          <TextInput accessibilityLabel="每月預算" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="每月預算" placeholderTextColor="#ded7ed" value={budget} onChangeText={(value) => { setBudgetError(null); setBudget(value); }} />
+          <Typography className="type-body text-muted">提醒門檻（%）</Typography>
+          <TextInput accessibilityLabel="提醒門檻" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="提醒門檻（%）" placeholderTextColor="#ded7ed" value={threshold} onChangeText={(value) => { setBudgetError(null); setThreshold(value); }} />
+          {budgetError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{budgetError}</Typography> : null}
+          <Button isDisabled={submitting || model.writeProtected} onPress={() => void saveBudget()}>儲存當月設定</Button>
+          {model.previousConfig ? <Button variant="ghost" isDisabled={submitting || model.writeProtected} onPress={() => void model.copyPreviousBudget()}>沿用上月 {formatCurrency(model.previousConfig.amount)}／{model.previousConfig.threshold}% 提醒</Button> : null}
+        </NativeDisclosure>
       </Card>
 
       <Card className="gap-4 border border-white/50 bg-glass p-4">
-        <Typography.Heading type="h4" className="type-title text-white">預算設定</Typography.Heading>
-        <Typography className="type-body text-muted">每月預算（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
-        <TextInput accessibilityLabel="每月預算" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="每月預算" placeholderTextColor="#ded7ed" value={budget} onChangeText={(value) => { setBudgetError(null); setBudget(value); }} />
-        <Typography className="type-body text-muted">提醒門檻（%）</Typography>
-        <TextInput accessibilityLabel="提醒門檻" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="numeric" placeholder="提醒門檻（%）" placeholderTextColor="#ded7ed" value={threshold} onChangeText={(value) => { setBudgetError(null); setThreshold(value); }} />
-        {budgetError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{budgetError}</Typography> : null}
-        <Button isDisabled={submitting || model.writeProtected} onPress={() => void saveBudget()}>儲存當月設定</Button>
-        {model.previousConfig ? <Button variant="ghost" isDisabled={submitting || model.writeProtected} onPress={() => void model.copyPreviousBudget()}>沿用上月 {formatCurrency(model.previousConfig.amount)}／{model.previousConfig.threshold}% 提醒</Button> : null}
-      </Card>
-
-      <Card className="gap-4 border border-white/50 bg-glass p-4">
-        <View className="flex-row items-center gap-2"><WalletGlyph type="plus" /><Typography.Heading type="h4" className="type-title text-white">新增花費</Typography.Heading></View>
+        <View className="flex-row items-center gap-2"><WalletGlyph type="plus" /><Typography.Heading type="h4" className="type-title text-white">記一筆花費</Typography.Heading></View>
         {handoffNotice ? <Typography accessibilityRole="alert" className="type-body text-[#c7f4e9]">已帶入換算選擇，請確認金額與日期後再加入花費。</Typography> : null}
         <Typography className="type-body text-muted">花費金額（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
         <TextInput ref={amountInput} accessibilityLabel="花費金額" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" keyboardType="decimal-pad" placeholder={`金額（${CURRENCY_SYMBOLS[model.currency]}）`} placeholderTextColor="#ded7ed" value={amount} onChangeText={(value) => { setFormError(null); setAmount(value); }} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
-          {EXPENSE_CATEGORIES.map((item) => (
-            <Pressable key={item} accessibilityRole="button" accessibilityState={{ selected: item === category }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === category ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"}`} onPress={() => { setFormError(null); setCategory(item); }}><Typography className="type-label font-semibold text-white">{item}</Typography></Pressable>
-          ))}
-        </ScrollView>
+        <NativeSelect label="類別" value={category} options={EXPENSE_CATEGORIES} disabled={submitting || model.writeProtected} onChange={value => { setFormError(null); setCategory(value); }} />
         <NativeDateField label="消費日期" value={date} onChange={(value) => { setFormError(null); setDate(value); }} />
         <Typography className="type-body text-muted">花費備註（選填）</Typography>
         <TextInput accessibilityLabel="花費備註" className="rounded-xl border border-white/30 bg-white/10 px-4 py-3 text-white" placeholder="備註（選填）" placeholderTextColor="#ded7ed" value={note} onChangeText={(value) => { setFormError(null); setNote(value); }} />
@@ -293,6 +262,36 @@ export function WalletScreenNative() {
             </View>
           </View>
         ))}
+      </Card>
+
+      <Card className="gap-4 border border-white/50 bg-glass p-4">
+        <NativeDisclosure title="當月支出洞察與預估">
+          <View className="gap-1 rounded-xl border border-white/20 bg-white/10 p-3">
+            <Typography className="type-label text-muted">與上月相比</Typography>
+            <Typography className="font-semibold text-white">{comparisonCopy}</Typography>
+            <Typography className="mt-2 type-label text-muted">月底預估</Typography>
+            <Typography className="font-semibold text-white">{model.insights.projectedMonthEnd === null ? "僅當月提供" : formatCurrency(model.insights.projectedMonthEnd)}</Typography>
+          </View>
+          {paceCopy ? (
+            <View accessibilityRole="summary" className={`rounded-xl border p-3 ${model.pace.status === "on-track" ? "border-[#9cf0dc] bg-[#65d6c4]/15" : model.pace.status === "over" ? "border-[#ffafbd] bg-[#ff6675]/20" : "border-[#ffd991] bg-[#f0b95e]/15"}`}>
+              <Typography className="type-body text-white">{paceCopy}</Typography>
+            </View>
+          ) : null}
+          {model.insights.categories.length === 0 ? (
+            <Typography.Paragraph className="py-4 text-center text-muted">記下一筆花費後，這裡會顯示類別占比與月度趨勢。</Typography.Paragraph>
+          ) : model.insights.categories.map((item) => (
+            <View className="gap-2" key={item.category} accessibilityLabel={`${item.category} ${formatCurrency(item.amount)}，占 ${item.percentage}%`}>
+              <View className="flex-row justify-between gap-3">
+                <Typography className="type-body text-white">{item.category}</Typography>
+                <Typography className="type-body font-semibold text-white">{formatCurrency(item.amount)} · {item.percentage}%</Typography>
+              </View>
+              <View className="h-1.5 overflow-hidden rounded-full bg-black/20">
+                <View className="h-full rounded-full bg-[#a78bfa]" style={{ width: `${item.percentage}%` }} />
+              </View>
+            </View>
+          ))}
+
+        </NativeDisclosure>
       </Card>
 
       <SpendingDashboardNative expenses={model.allExpenses} month={model.month} currency={model.currency} onSelectMonth={model.selectMonth} />

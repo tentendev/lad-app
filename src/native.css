@@ -6,13 +6,13 @@
 @source "../node_modules/heroui-native/lib";
 
 @theme {
-  --color-cosmic: #66528f;
+  --color-cosmic: #7765a7;
   --color-orbit: #a78bfa;
   --color-starlight: #fbf9ff;
-  --color-glass: #493b70;
+  --color-glass: rgba(56,42,96,0.4);
   --color-glass-soft: #766ba5;
-  --color-line: #c9c4e0;
-  --color-muted: #e5dff0;
+  --color-line: rgba(255,255,255,0.55);
+  --color-muted: rgba(255,255,255,0.82);
   /* Material 3 roles, with a 14pt floor for Chinese supporting text. */
   --text-label: 14px;
   --text-label--line-height: 20px;
@@ -20,12 +20,12 @@
   --text-body--line-height: 24px;
   --text-title-sm: 18px;
   --text-title-sm--line-height: 26px;
-  --text-title: 22px;
-  --text-title--line-height: 28px;
+  --text-title: 18px;
+  --text-title--line-height: 26px;
   --text-headline: 28px;
   --text-headline--line-height: 36px;
-  --text-display: 36px;
-  --text-display--line-height: 44px;
+  --text-display: 48px;
+  --text-display--line-height: 56px;
 }
 
 /* Shared HeroUI defaults. Content grows with iOS Text Size, including buttons. */
@@ -33,6 +33,7 @@
   .text__root--type-body { font-size: 16px; line-height: 24px; }
   .text__root--type-body-sm,
   .text__root--type-body-xs { font-size: 14px; line-height: 20px; }
+  .text__root--type-h4 { font-size: 18px; line-height: 26px; font-weight: 500; }
   .button__root--size-sm,
   .button__root--size-md,
   .button__root--size-lg {
@@ -40,13 +41,29 @@
     min-width: 48px;
     min-height: 48px;
     max-width: 100%;
-    padding-block: 12px;
+    border-radius: 13px;
+    padding-block: 11px;
     padding-inline: 12px;
   }
   .button__root--size-md,
-  .button__root--size-lg { min-height: 56px; }
-  .button__root--variant-outline { border-color: #c9c4e0; }
+  .button__root--size-lg { min-height: 48px; }
+  .button__root--variant-primary {
+    border-width: 1px;
+    border-color: rgba(255,255,255,0.85);
+    background-color: rgba(255,255,255,0.23);
+  }
+  .button__root--variant-secondary,
+  .button__root--variant-tertiary {
+    border-width: 1px;
+    border-color: rgba(255,255,255,0.55);
+    background-color: rgba(255,255,255,0.12);
+  }
+  .button__root--variant-outline { border-color: rgba(255,255,255,0.55); }
+  .button__label--variant-primary,
   .button__label--variant-secondary { color: #ffffff; }
+  .button__background--size-sm,
+  .button__background--size-md,
+  .button__background--size-lg { border-radius: 13px; }
   .button__label--size-sm,
   .button__label--size-md,
   .button__label--size-lg {

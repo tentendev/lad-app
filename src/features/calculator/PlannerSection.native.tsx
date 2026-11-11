@@ -123,7 +123,7 @@ export function PlannerSectionNative({
     <View className="gap-4">
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View className="gap-1">
-          <Typography className="type-label text-muted">Multi-event planner</Typography>
+
           <Typography.Heading type="h4" className="type-title text-white">活動抽卡規劃</Typography.Heading>
           <Typography.Paragraph className="type-body text-muted">
             以目前 {formatNumber(currentDia)} 鑽、{formatNumber(currentTickets)} 張金券為起點；金券只計入一次，再依活動截止日分配存鑽。
@@ -222,7 +222,7 @@ export function PlannerSectionNative({
       </Card>
 
       <Card className="gap-4 border border-white/50 bg-glass p-4">
-        <View className="gap-1"><Typography className="type-label text-muted">Progress Check-in</Typography><Typography.Heading type="h4" className="type-title text-white">資源進度</Typography.Heading></View>
+        <View className="gap-1"><Typography.Heading type="h4" className="type-title text-white">資源進度</Typography.Heading></View>
         <Typography.Paragraph className="type-body text-muted">定期記下實際鑽石與金券，回頭查看進度變化；套用最新紀錄後，活動預測會立即重算。</Typography.Paragraph>
         {deletedCheckIn ? <View accessibilityRole="alert" className="flex-row items-center justify-between gap-3 rounded-xl border border-white/35 bg-white/10 p-3"><Typography className="flex-1 type-body text-white">已移除 {deletedCheckIn.date} 的進度。</Typography><Button size="sm" variant="ghost" isDisabled={model.writeProtected || model.busy} onPress={() => void undoCheckInDelete()}>復原</Button></View> : null}
         <PlannerField label="資源進度日期（YYYY-MM-DD）" value={checkInDate} onChange={(value) => { model.clearCheckInError(); setCheckInDate(value); }} disabled={model.writeProtected || model.busy} />
@@ -263,7 +263,7 @@ export function PlannerSectionNative({
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View className="flex-row items-start justify-between gap-3">
           <View>
-            <Typography className="type-label text-muted">Forecast</Typography>
+
             <Typography.Heading type="h4" className="type-title text-white">資源時間線</Typography.Heading>
           </View>
           <View className={`rounded-full border px-2 py-1 ${model.forecast.peakShortfallDia > 0 ? "border-[#ffe08a]" : "border-[#7af0c8]"}`}>

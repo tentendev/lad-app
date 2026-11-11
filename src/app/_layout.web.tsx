@@ -17,6 +17,9 @@ export default function WebRootLayout(): JSX.Element {
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="description" content="深空省省：抽卡課金規劃工具，支援《戀與深空》的排期、預算與資源換算。" />
         <meta name="theme-color" content="#7765a7" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="zh_TW" />
         <meta property="og:site_name" content="深空省省" />

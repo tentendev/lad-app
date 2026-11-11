@@ -164,7 +164,7 @@ export function WishTrackerScreenNative() {
       {deletedRecord ? <View accessibilityRole="alert" className="flex-row items-center justify-between rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3"><Typography className="flex-1 type-body text-white">已移除 {deletedRecord.date} 的五星紀錄。</Typography><Button size="sm" variant="ghost" onPress={() => void undoDelete()}>復原</Button></View> : null}
 
       <Card className="gap-4 border border-white/50 bg-glass p-4">
-        <View><Typography className="type-label text-muted">Pity Counter</Typography><Typography.Heading type="h4" className="mt-1 type-title text-white">目前累計</Typography.Heading></View>
+        <View><Typography.Heading type="h4" className="mt-1 type-title text-white">目前累計</Typography.Heading></View>
         <Typography.Paragraph className="type-body text-muted">請照遊戲內顯示的計數線填寫；不同類型不會在本工具中互相合併。</Typography.Paragraph>
         {WISH_TRACKS.map((track) => (
           <View className="gap-2" key={track}>

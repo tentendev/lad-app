@@ -149,8 +149,8 @@ export function PlannerSectionWeb({
       <Card className="product-card planner-editor-card">
         <div className="section-heading">
           <div>
-            <p className="card-kicker heading-with-icon"><PlannerGlyph />Multi-event Planner</p>
-            <h2 className="section-title" id="pull-plan-title" tabIndex={-1}>活動抽卡規劃</h2>
+
+            <h2 className="section-title heading-with-icon" id="pull-plan-title" tabIndex={-1}><PlannerGlyph />活動抽卡規劃</h2>
           </div>
           <span className="section-meta">自動依截止日排序</span>
         </div>
@@ -272,7 +272,7 @@ export function PlannerSectionWeb({
 
       <Card className="product-card planner-checkin-card">
         <div className="section-heading">
-          <div><p className="card-kicker">Progress Check-in</p><h2 className="section-title">資源進度</h2></div>
+          <div><h2 className="section-title">資源進度</h2></div>
           <span className="section-meta">同日儲存會更新</span>
         </div>
         <p className="page-description">定期記下實際鑽石與金券，回頭查看進度變化；一鍵套用最新紀錄後，活動預測會立即重算。</p>
@@ -325,7 +325,7 @@ export function PlannerSectionWeb({
       <Card className="product-card planner-forecast-card">
         <div className="section-heading">
           <div>
-            <p className="card-kicker">Forecast</p>
+
             <h2 className="section-title">資源時間線</h2>
           </div>
           <div className="planner-forecast-actions">
