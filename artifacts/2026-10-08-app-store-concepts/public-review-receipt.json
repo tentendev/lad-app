@@ -1,0 +1,122 @@
+{
+  "verifiedAt": "2026-10-08T07:56:56.490Z",
+  "provider": "Vercel",
+  "scope": "tentenco",
+  "projectName": "deep-space-ledger-store-review-20261008",
+  "projectId": "prj_ClpDZZf5pvxsJSuEIfQeiJvymlzG",
+  "deploymentId": "dpl_GSBSrgX9f3c7h2ykPT7bw73fE1xu",
+  "deploymentUrl": "https://deep-space-ledger-store-review-20261008-7gbsxo69b-tentenco.vercel.app",
+  "publicUrl": "https://deep-space-ledger-store-review-2026.vercel.app/",
+  "authorization": "Owner requested public temporary review link for existing concept gallery",
+  "anonymousCheck": {
+    "authenticationHeaders": false,
+    "cookies": false,
+    "files": [
+      {
+        "path": "/",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/",
+        "contentType": "text/html; charset=utf-8",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 12762,
+        "sha256": "3083674af6ad54de8e41adc9679a0b37eb2af37f394a3b6a7647884ab63570ca",
+        "matchesLocal": true
+      },
+      {
+        "path": "01-lavender-editorial.png",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/01-lavender-editorial.png",
+        "contentType": "image/png",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 4088597,
+        "sha256": "0078f280c5e73693b102903eadaf21c1190309fa3f285e85eb4be2f2f5d22591",
+        "matchesLocal": true
+      },
+      {
+        "path": "02-midnight-orbit.png",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/02-midnight-orbit.png",
+        "contentType": "image/png",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 4241366,
+        "sha256": "5162de1e6a6d9bac3781c9d931c3c6884cddf4ec282032e010a27d9ec666a629",
+        "matchesLocal": true
+      },
+      {
+        "path": "03-soft-pocket.png",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/03-soft-pocket.png",
+        "contentType": "image/png",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 3522590,
+        "sha256": "59f684c1444785b897cf46c73330081261ac8484edd7f11ed34a5d89418cb03c",
+        "matchesLocal": true
+      },
+      {
+        "path": "04-bold-violet.png",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/04-bold-violet.png",
+        "contentType": "image/png",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 3911877,
+        "sha256": "e6677de70e2d108f157bc58abea5e4b230c97bd7caff9b5867dbe36bd2d7e9c5",
+        "matchesLocal": true
+      },
+      {
+        "path": "05-diary-collage.png",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/05-diary-collage.png",
+        "contentType": "image/png",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 4756038,
+        "sha256": "6ebdc4a05ac7397b93f823b9cb46f75ef1f8c4df8e514b2c6f410dd3329b51ac",
+        "matchesLocal": true
+      },
+      {
+        "path": "robots.txt",
+        "status": 200,
+        "url": "https://deep-space-ledger-store-review-2026.vercel.app/robots.txt",
+        "contentType": "text/plain; charset=utf-8",
+        "robots": "noindex, nofollow, noarchive",
+        "bytes": 26,
+        "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1",
+        "matchesLocal": true
+      }
+    ]
+  },
+  "expiry": {
+    "automatic": false,
+    "removal": "Delete only the isolated review project after review"
+  },
+  "publicPayload": {
+    "html": 1,
+    "png": 5,
+    "robots": 1,
+    "config": 1,
+    "credentials": false,
+    "appSource": false
+  },
+  "browserQA": {
+    "browser": "Ego Lite",
+    "spaceId": 4,
+    "page": "p1",
+    "desktop": {
+      "carouselLastSlide": "5/5",
+      "nextAndDirectNavigation": true
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "documentWidth": 390,
+      "imagesLoaded": 5,
+      "imageDimensions": [
+        2688,
+        1152
+      ],
+      "previewAspectRatio": 0.46667625485401987,
+      "selectionToastWithinViewport": true
+    },
+    "preferenceStorage": "browser-local only; QA marking is not owner approval",
+    "handoffPublicGallery": true
+  }
+}

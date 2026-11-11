@@ -56,6 +56,18 @@ App 以同層網頁版 `index.html` 的星空背景、白色線稿品牌、半�
 
 ## 驗證紀錄
 
+### Erik 開發交接整合（2026-11-11）
+
+依 `docs/MAGGIE_DEVELOPMENT_QUICKSTART.md` 與 Erik 當日交接信，在 `maggie/web-visual-alignment` 工作分支整合 `origin/main` 的 `d106d89`，包含 Build 8 來源 `7dd6764`。保留本機 `4fa519c` 的資料／幣別修改及 `6d35c61` 的視覺對齊，並合併新版 Apple 刪除授權修正、網址解碼修正、iPad 工作區與可見選項調整。Expo version 已準備為 `1.0.1`；App 身分、EAS 專案與遠端憑證設定沿用既有值。
+
+Node.js 為 `22.17.0`，已執行 `npm ci`，並確認指定的 `eas-cli/27.7.2` 可用。`npm run release:ios:validate` 通過：ESLint、TypeScript、15 項 Node 測試、184 項 Vitest 測試、Expo Doctor 21/21、既有審查政策下的 production 相依套件稽核、8.6 MiB iOS Hermes 匯出與 build preflight。
+
+帳號接手仍需本人操作：Expo 以 `maggie@tenten.co` 接受 Developer 邀請、GitHub 以 `its-maggie` 接受協作者邀請、App Store Connect 使用自己的 Apple Account 接受最新 App Manager 邀請。此次尚未確認上述個人登入，未拉取 `.env.local`、未推送分支、未建立或上傳新的 TestFlight build；GitHub 命令列當時仍登入 `tentendev`，不可當作 Maggie 已完成接手。帳號完成後，依快速開始文件以 EAS preview 環境啟動 `npm run web`。在此之前可繼續使用既有 `npm run preview` 離線預覽。
+
+Erik 信中另提醒新版 Apple 開發者協議需由 Account Holder 審閱接受；這一步不屬於 Maggie 的 App Manager 權限，目前尚未查驗其最新完成狀態。
+
+### 11/4 本機同步驗證
+
 - App `npm run check`：ESLint、TypeScript、15 項 Node 測試與 129 項 Vitest 測試通過；Vitest 的 alias 使用 `fileURLToPath`，支援目前含中文的資料夾名稱。
 - `npm run verify:ios-bundle`：8.6 MiB Hermes iOS bundle 通過。
 - 網頁原專案的 40 項 Node 測試通過；四份共用來源檔案逐字相同。

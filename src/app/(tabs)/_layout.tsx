@@ -57,8 +57,6 @@ export default function NativeTabsLayout(): JSX.Element {
         tabBarItemStyle: { paddingTop: 5 },
         tabBarStyle: {
           width: "100%",
-          maxWidth: 520,
-          alignSelf: "center",
           backgroundColor: APP_COLORS.navigation,
           borderTopColor: APP_COLORS.line,
           borderTopWidth: 1,

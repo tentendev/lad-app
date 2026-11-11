@@ -1,0 +1,98 @@
+{
+  "recordedAt": "2026-10-08T06:23:05.277Z",
+  "appVersion": "1.0.0",
+  "buildNumber": "6",
+  "device": "iPhone 15 Pro",
+  "osVersion": "27.0.1",
+  "installedBuildVerified": true,
+  "nativeAccountNavigationVerified": true,
+  "signedOutAccountScreenVerified": true,
+  "productionBaseline": {
+    "totalUsers": 1,
+    "appleUsers": 0,
+    "identifiersStoredOnlyInRestrictedIgnoredFile": true
+  },
+  "appleCancellation": "owner_reported_pass",
+  "appleHideMyEmail": "passed_backend_and_owner_verified",
+  "cloudBackup": "owner_reported_upload_download_pass_backend_snapshot_verified",
+  "appleRelogin": "owner_reported_pass_backend_active_session_verified",
+  "qaAccountDeletion": "pending",
+  "appleAuthorizationRevocation": "pending",
+  "nativeAppleQAPassed": false,
+  "appReviewSubmitted": false,
+  "cancellationVerification": {
+    "productionUserCountAfter": 1,
+    "newUsersAfter": 0,
+    "reviewerStillPresent": true,
+    "independentPostCancellationUIVerified": false,
+    "usbPostCancellationCapture": "black image; no UI conclusion inferred"
+  },
+  "localRecordsPreservedAfterRelogin": true,
+  "signInVerification": {
+    "productionUserCount": 2,
+    "newAppleUserCount": 1,
+    "privateRelayUsed": true,
+    "reviewerStillPresent": true
+  },
+  "backupVerification": {
+    "recordedAt": "2026-10-08T05:31:59.492Z",
+    "appleLinked": true,
+    "privateRelayUsed": true,
+    "activeSessionCount": 1,
+    "cloudRowCount": 1,
+    "cloudRevision": "1",
+    "reviewerStillPresent": true
+  },
+  "automaticRevocationDefect": {
+    "confirmed": true,
+    "buildNumber": "5",
+    "clerkErrorCode": "oauth_missing_refresh_token",
+    "nativeSDKForwardsAuthorizationCode": false,
+    "status": "fixed_in_build6_pending_runtime_qa",
+    "qaAccountRetained": true
+  },
+  "replacementBuild": {
+    "buildNumber": "6",
+    "easBuildId": "9d8bd94a-b1bd-4a3e-9ff0-2a3dfc4328dd",
+    "status": "FINISHED",
+    "sourceCommit": "86a9406",
+    "ipaVerificationPassed": true,
+    "appleUpload": "passed",
+    "deviceInstallation": "verified_direct_usb",
+    "deletionCancellation": "pending",
+    "automaticRevocation": "pending",
+    "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
+    "processingState": "VALID",
+    "testflightNotesSaved": true,
+    "externalAvailability": true,
+    "betaReviewState": "APPROVED",
+    "finalAppReviewSelected": true
+  },
+  "serverFix": {
+    "deploymentId": "dpl_D9XmUGWNiwJooXW36XmghmbihDsX",
+    "buildId": "f94f21158670",
+    "publicDeploymentVerified": true
+  },
+  "browserAuthentication": {
+    "status": "authenticated",
+    "spaceId": 4,
+    "ownerHandoff": false,
+    "bitwardenReady": true,
+    "passwordRetrievalNeeded": false
+  },
+  "latestDeviceAppQuery": {
+    "recordedAt": "2026-10-08T06:23:05.277Z",
+    "version": "1.0.0",
+    "buildNumber": "6",
+    "result": "direct_usb_query"
+  },
+  "build6BeforeDeletion": {
+    "recordedAt": "2026-10-08T06:23:05.277Z",
+    "qaUserExists": true,
+    "appleLinked": true,
+    "activeSessionCount": 1,
+    "cloudRowCount": 1,
+    "cloudRevision": "1",
+    "reviewerStillPresent": true
+  }
+}

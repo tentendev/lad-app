@@ -13,6 +13,13 @@
         "simulator": true
       }
     },
+    "ios-review-simulator": {
+      "extends": "production",
+      "autoIncrement": false,
+      "ios": {
+        "simulator": true
+      }
+    },
     "preview": {
       "environment": "preview",
       "distribution": "internal",

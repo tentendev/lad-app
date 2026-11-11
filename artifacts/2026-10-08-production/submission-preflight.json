@@ -1,0 +1,13 @@
+{
+  "verifiedAt": "2026-10-08T03:21:46.739Z",
+  "productionClerkKeyValidated": true,
+  "productionDatabaseValidated": true,
+  "applePrivateKeyProvided": true,
+  "secretsStoredInRestrictedIgnoredFile": true,
+  "localPreflightExitCode": 1,
+  "remainingIssues": [
+    "完成 Clerk production Sign in with Apple 與實機測試後再確認旗標。"
+  ],
+  "nativeAppleQAPassed": false,
+  "appReviewSubmitted": false
+}

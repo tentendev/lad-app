@@ -2,7 +2,7 @@ import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
 import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { NativeDateField } from "@/ui/NativeDateField";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Share, View } from "react-native";
+import { Pressable, Share, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Card, Typography } from "@/ui/NativeComponents";
 
@@ -16,6 +16,7 @@ import {
 } from "@/domain/types";
 import { wishRecordsToCsv } from "@/domain/wishTracker";
 import { NativePage } from "@/ui/NativePage";
+import { NativeColumns } from "@/ui/NativeColumns";
 import { useWishTrackerModel } from "./useWishTrackerModel";
 
 type RecordForm = { track: WishTrack; pity: string; date: string; memory: string; outcome: FiveStarOutcome };
@@ -27,13 +28,13 @@ type GuaranteeChoice = (typeof GUARANTEE_CHOICES)[number];
 
 function ChoiceRow<T extends string>({ options, value, onChange, disabled = false }: { options: readonly T[]; value: T; onChange: (value: T) => void; disabled?: boolean }) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+    <View className="flex-row flex-wrap gap-2">
       {options.map((item) => (
-        <Pressable key={item} accessibilityRole="button" accessibilityState={{ disabled, selected: item === value }} className={`min-h-12 justify-center rounded-full border px-3 py-2 ${item === value ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"} ${disabled ? "opacity-45" : ""}`} disabled={disabled} onPress={() => onChange(item)}>
+        <Pressable key={item} accessibilityRole="button" accessibilityState={{ disabled, selected: item === value }} className={`min-h-12 max-w-full justify-center rounded-full border px-3 py-2 ${item === value ? "border-[#a78bfa] bg-[#a78bfa]/25" : "border-white/30 bg-white/5"} ${disabled ? "opacity-45" : ""}`} disabled={disabled} onPress={() => onChange(item)}>
           <Typography className="type-label font-semibold text-white">{item}</Typography>
         </Pressable>
       ))}
-    </ScrollView>
+    </View>
   );
 }
 
@@ -148,7 +149,7 @@ export function WishTrackerScreenNative() {
 
   if (!model.ready) {
     return (
-      <NativePage eyebrow="Wish Tracker" title="追蹤" description="手動保存各計數線目前累計與五星紀錄，不需要遊戲帳號或授權 Token。">
+      <NativePage workspace eyebrow="Wish Tracker" title="追蹤" description="手動保存各計數線目前累計與五星紀錄，不需要遊戲帳號或授權 Token。">
         <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
           <Typography className="type-body text-muted">正在讀取抽卡計數與紀錄…</Typography>
           <View className="h-12 rounded-xl bg-white/10" />
@@ -159,10 +160,11 @@ export function WishTrackerScreenNative() {
   }
 
   return (
-    <NativePage eyebrow="Wish Tracker" title="追蹤" description="手動保存各計數線目前累計與五星紀錄，不需要遊戲帳號或授權 Token。">
+    <NativePage workspace eyebrow="Wish Tracker" title="追蹤" description="手動保存各計數線目前累計與五星紀錄，不需要遊戲帳號或授權 Token。">
       {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.storageError}</Typography></View> : null}
       {deletedRecord ? <View accessibilityRole="alert" className="flex-row items-center justify-between rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3"><Typography className="flex-1 type-body text-white">已移除 {deletedRecord.date} 的五星紀錄。</Typography><Button size="sm" variant="ghost" onPress={() => void undoDelete()}>復原</Button></View> : null}
 
+      <NativeColumns>
       <Card className="gap-4 border border-white/50 bg-glass p-4">
         <View><Typography.Heading type="h4" className="mt-1 type-title text-white">目前累計</Typography.Heading></View>
         <Typography.Paragraph className="type-body text-muted">請照遊戲內顯示的計數線填寫；不同類型不會在本工具中互相合併。</Typography.Paragraph>
@@ -236,6 +238,8 @@ export function WishTrackerScreenNative() {
           </View>
         ))}
       </Card>
+
+      </NativeColumns>
 
       {editing ? (
         <Card className="gap-4 border border-white/50 bg-glass p-4">

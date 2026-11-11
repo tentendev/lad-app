@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { readFile, readdir } from "node:fs/promises";
+import { cp, mkdtemp, readFile, readdir, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -75,8 +76,13 @@ for (const [route, handler] of [["account", "api/account.js"], ["sync", "api/syn
   if (functionConfig.handler !== handler || !String(functionConfig.runtime).startsWith("nodejs")) {
     throw new Error(`Vercel prebuilt output is missing the Node function for /api/${route}.`);
   }
-  // TypeScript path aliases can pass typecheck while failing in the deployed Node runtime.
-  const runtimeCheck = spawnSync(process.execPath, ["--eval", `
+  // Isolate traced dependencies from the workspace's node_modules. Vercel's
+  // launcher disables require(ESM), unlike recent local Node defaults.
+  const isolatedDirectory = await mkdtemp(path.join(tmpdir(), "lad-vercel-function-"));
+  let runtimeCheck;
+  try {
+    await cp(functionDirectory, isolatedDirectory, { recursive: true, dereference: true });
+    runtimeCheck = spawnSync(process.execPath, ["--no-experimental-require-module", "--eval", `
     const assert = require("node:assert/strict");
     const handler = require(process.argv[1]).default;
     assert.equal(typeof handler, "function");
@@ -87,16 +93,27 @@ for (const [route, handler] of [["account", "api/account.js"], ["sync", "api/syn
       json(value) { this.body = value; return this; },
     };
     Promise.resolve(handler({ method: process.argv[2], headers: {} }, response))
-      .then(() => {
+      .then(async () => {
         assert.equal(response.statusCode, 401);
         assert.equal(response.body.error, "token_missing");
         assert.equal(headers["Cache-Control"], "private, no-store");
+        if (process.argv[2] === "DELETE") {
+          const apple = require("./api/_lib/appleRevocation.js");
+          await assert.rejects(
+            apple.verifyAppleIdentityToken("invalid-token", "test-client", ["test-subject"]),
+            error => error.code === "apple_grant_invalid",
+          );
+        }
       }).catch((error) => { console.error(error); process.exitCode = 1; });
-  `, path.join(functionDirectory, handler), route === "account" ? "DELETE" : "GET"], {
-    cwd: functionDirectory,
+  `, path.join(isolatedDirectory, handler), route === "account" ? "DELETE" : "GET"], {
+    cwd: isolatedDirectory,
+    env: { ...process.env, NODE_PATH: "" },
     encoding: "utf8",
     timeout: 10_000,
   });
+  } finally {
+    await rm(isolatedDirectory, { recursive: true, force: true });
+  }
   if (runtimeCheck.status !== 0) {
     throw new Error(`Vercel /api/${route} failed its runtime load/auth check:\n${runtimeCheck.stderr || runtimeCheck.error?.message || runtimeCheck.stdout}`);
   }

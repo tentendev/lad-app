@@ -1,13 +1,14 @@
 import { Typography } from "@/ui/NativeComponents";
 import type { PropsWithChildren } from "react";
 import { Link } from "expo-router";
-import { ImageBackground, Linking, KeyboardAvoidingView, Platform, ScrollView, Pressable, StyleSheet, View } from "react-native";
+import { ImageBackground, Linking, KeyboardAvoidingView, Platform, ScrollView, Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Defs, LinearGradient, Path, Rect, Stop } from "react-native-svg";
 import { NATIVE_FONTS } from "@/theme/native";
 
 import { AccountEntry } from "@/ui/AccountEntry";
 import { SiteUpdatesEntry } from "@/ui/SiteUpdates";
+import { nativePageLayout } from "./nativeLayout";
 
 type Props = PropsWithChildren<{
   eyebrow: string;
@@ -15,9 +16,12 @@ type Props = PropsWithChildren<{
   description: string;
   showAccountEntry?: boolean;
   showAboutLink?: boolean;
+  workspace?: boolean;
 }>;
 
-export function NativePage({ title, showAccountEntry = true, showAboutLink = true, children }: Props) {
+export function NativePage({ title, showAccountEntry = true, showAboutLink = true, workspace = false, children }: Props) {
+  const { width } = useWindowDimensions();
+  const layout = nativePageLayout(width, workspace);
   return (
     <ImageBackground
       source={require("../../public/lad-bg.webp")}
@@ -28,13 +32,13 @@ export function NativePage({ title, showAccountEntry = true, showAboutLink = tru
         <Defs><LinearGradient id="page-shade" x1="0" y1="0" x2="0" y2="1"><Stop offset="0" stopColor="#2a1e48" stopOpacity={0.06} /><Stop offset="1" stopColor="#281c42" stopOpacity={0.34} /></LinearGradient></Defs>
         <Rect width="100" height="100" fill="url(#page-shade)" />
       </Svg>
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
-          contentContainerClassName="px-4 pb-12 pt-2"
+          contentContainerStyle={{ paddingHorizontal: layout.horizontalPadding, paddingTop: 8, paddingBottom: 48 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <View className="w-full self-center" style={{ maxWidth: 520, gap: 14 }}>
+          <View className="w-full self-center" style={{ maxWidth: layout.maxWidth, gap: 14 }}>
             <View className="relative items-center pb-3" style={{ minHeight: 104 }}>
               <View className="absolute left-0 top-0"><SiteUpdatesEntry /></View>
               {showAccountEntry ? <View className="absolute right-0 top-0"><AccountEntry /></View> : null}

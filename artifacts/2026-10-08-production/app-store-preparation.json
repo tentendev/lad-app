@@ -1,0 +1,36 @@
+{
+  "verifiedAt": "2026-10-07T20:41:58.633Z",
+  "appId": "6812909987",
+  "version": "1.0.0",
+  "buildNumber": "5",
+  "buildId": "9778f835-2bfb-4130-bf03-da8749612aec",
+  "state": "1.0.0 Prepare for Submission",
+  "reviewSignInRequired": true,
+  "reviewAccountPresent": true,
+  "reviewPasswordPresent": true,
+  "reviewNotesCharacters": 401,
+  "reviewNotes": "深空省省的排期、錢包、資源換算、抽卡規劃與五星紀錄主要功能不需要登入，開啟 App 後可直接使用。\n\n會員入口位於主要頁面右上方「登入／註冊」，頁面底部也有「會員中心」連結。會員功能提供 Email／密碼及 Sign in with Apple 登入；私人雲端備份由使用者主動上傳或下載，不會自動上傳或跨裝置覆寫本機資料。\n\n請使用 Sign-In Information 中的專用 Email／密碼帳號審查會員與雲端功能。該審核帳號不會要求審核者無法取得的 Email 裝置信任驗證碼。\n\n會員中心可編輯姓名、更新 Email 帳號密碼、登出、只刪除雲端備份，或永久刪除會員帳號與雲端備份。永久刪除位於會員中心底部「帳號管理」，不需要聯絡客服。\n\n隱私政策、支援與資料控制說明均可從 App 內頁尾開啟，並提供公開 HTTPS 網址。\n\n本版本免費，沒有廣告、跨 App 追蹤、App 內購買或訂閱。",
+  "buildRows": [
+    "BUILD\n\t\nVERSION\n\t\nHAS APP CLIP\n\t\n\n5\n\t\n1.0.0\n\t\n\nNO\n\n\t"
+  ],
+  "saveDisabled": true,
+  "releaseOptions": [
+    {
+      "name": "releaseType",
+      "value": "MANUAL",
+      "checked": true
+    },
+    {
+      "name": "releaseType",
+      "value": "AFTER_APPROVAL",
+      "checked": false
+    },
+    {
+      "name": "releaseType",
+      "value": "SCHEDULED",
+      "checked": false
+    }
+  ],
+  "appReviewSubmitted": false,
+  "nativeAppleQAPassed": false
+}

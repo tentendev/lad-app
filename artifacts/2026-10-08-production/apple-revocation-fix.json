@@ -1,0 +1,84 @@
+{
+  "recordedAt": "2026-10-08T05:51:08.877Z",
+  "affectedBuild": "1.0.0 (5)",
+  "defect": "Native Clerk OAuth grant unavailable: oauth_missing_refresh_token",
+  "fix": {
+    "freshAuthorizationAtDeletion": true,
+    "appleSignedSubjectBoundToAuthenticatedClerkMember": true,
+    "nativeAudienceAndExpiryVerified": true,
+    "refreshTokenRevokedBeforeMutation": true,
+    "credentialsOnlyTransient": true,
+    "cancellationRequiresExplicitFallbackBeforeDeletion": true,
+    "deviceCredentialStateCheckedBeforeSuccess": true,
+    "emailAndLegacyWebDeletionPreserved": true
+  },
+  "verification": {
+    "lint": true,
+    "typecheck": true,
+    "scriptTests": 15,
+    "vitestTests": 160,
+    "expoDoctor": "21/21",
+    "dependencyAudit": {
+      "critical": 0,
+      "reviewedRootAdvisories": 5
+    },
+    "javascriptSyntaxFiles": 27,
+    "iosHermesMiB": 8.6,
+    "iosBuildPreflight": true,
+    "webExport": {
+      "passed": true,
+      "staticFiles": 89,
+      "webMiB": 5.8,
+      "buildId": "f94f21158670"
+    },
+    "compiledApiRuntime": {
+      "passed": true,
+      "isolatedDependencies": true,
+      "requireEsmDisabled": true,
+      "appleJwtDynamicImportExercised": true
+    },
+    "submissionPreflight": {
+      "remainingIssueCount": 1,
+      "blocker": "native Apple deletion/revocation QA",
+      "nativeAttestationFalse": true
+    }
+  },
+  "serverDeployment": {
+    "id": "dpl_D9XmUGWNiwJooXW36XmghmbihDsX",
+    "buildId": "f94f21158670",
+    "sourceCommit": "f24e0db",
+    "productionUrl": "https://deep-space-ledger-app.vercel.app",
+    "immutableUrl": "https://deep-space-ledger-ooy74od5p-tentenco.vercel.app",
+    "stagedApiVerified": true,
+    "publicDeploymentVerified": true
+  },
+  "replacementNativeBuild": {
+    "id": "9d8bd94a-b1bd-4a3e-9ff0-2a3dfc4328dd",
+    "buildNumber": "6",
+    "sourceCommit": "86a94064a1c83115a8d7f2ae9c81e4381f7dc26a",
+    "status": "FINISHED"
+  },
+  "nativeDeletionAndRevocationQAPassed": false,
+  "appReviewSubmitted": false,
+  "failedDeployment": {
+    "id": "dpl_4rxq3L1BHvyWR2ziJbmo35QiyYZc",
+    "error": "ERR_REQUIRE_ESM",
+    "rolledBackTo": "dpl_CzHvzhsxDrKUxgftQNAFFJHZniU6",
+    "rollbackVerifiedAccountStatus": 405
+  },
+  "appleUpload": {
+    "validated": true,
+    "uploaded": true,
+    "deliveryId": "df3d8be6-295b-4b4c-a634-9f2bf94d9fe4",
+    "tool": "altool 27.0.5",
+    "uploadedAtTaipei": "2026-10-08T13:54:49+08:00",
+    "processingState": "VALID"
+  },
+  "testflight": {
+    "notesSaved": true,
+    "betaReviewSubmissionStatus": 403,
+    "externalAvailability": false,
+    "existingGroupUnchanged": true,
+    "requiredNextAction": "owner App Store Connect browser re-login; continue existing group Beta Review using UI"
+  }
+}

@@ -15,7 +15,7 @@ Neon 不是 authentication provider，因此不拿它取代 Clerk。未登入使
 會員中心提供兩種明確控制：
 
 - 只刪除雲端備份：刪除 Neon snapshot，保留 Clerk user 與本機資料。
-- 永久刪除會員：受驗證的 `DELETE /api/account` 先刪 Neon snapshot；Apple 會員會以 Apple REST API 嘗試撤銷 token，接著刪 Clerk user。本機資料不自動刪除。若 Clerk 無法提供 Apple token，會員與 snapshot 仍會完成刪除，UI 會引導使用者到 Apple ID 設定手動撤銷。
+- 永久刪除會員：受驗證的 `DELETE /api/account` 先確認會員的 Apple 連結。iOS 可在刪除時取得新的 Apple authorization code；伺服器交換 token、驗證 Apple JWT 簽章／issuer／native audience／時效及 Clerk 會員的 Apple subject，撤銷該 refresh token 後才刪除 Neon snapshot 與 Clerk user。App 另查 Apple credential state 確認撤銷。本機資料不自動刪除。Code 與 token 僅短暫存在記憶體，不寫入 metadata、資料庫或 log。取消 Apple 驗證會保留帳號；使用者仍可明確選擇只刪除會員與雲端資料，再依 UI 到 Apple 設定手動撤銷。Web Apple 與舊原生版本仍沿用 Clerk token／manual fallback。
 
 ## 安全邊界
 

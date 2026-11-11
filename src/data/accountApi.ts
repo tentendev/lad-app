@@ -8,7 +8,7 @@ export type AccountDeletionResult = {
   appleAuthorization: AppleAuthorization;
 };
 
-export async function deleteRemoteAccount(getToken: GetToken): Promise<AccountDeletionResult> {
+export async function deleteRemoteAccount(getToken: GetToken, appleAuthorizationCode?: string): Promise<AccountDeletionResult> {
   const token = await getToken();
   if (!token) throw new Error("登入狀態已失效，請重新登入。");
 
@@ -19,7 +19,9 @@ export async function deleteRemoteAccount(getToken: GetToken): Promise<AccountDe
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
+        ...(appleAuthorizationCode ? { "Content-Type": "application/json" } : {}),
       },
+      ...(appleAuthorizationCode ? { body: JSON.stringify({ appleAuthorizationCode }) } : {}),
     });
   } catch {
     throw new Error("無法連上帳號服務，請確認網路後再試一次。");

@@ -9,6 +9,7 @@ import { Button, Card, Typography } from "@/ui/NativeComponents";
 
 import { useEmailPasswordAuth } from "@/auth/useEmailPasswordAuth";
 import { useNativeAppleSignIn } from "@/auth/useNativeAppleSignIn";
+import { isAppleAuthorizationRevoked, requestAppleDeletionCredential } from "@/auth/nativeAppleDeletion";
 import { APPLE_SIGN_IN_ENABLED } from "@/auth/useSocialSignIn";
 import { signInMethodLabel, validatePasswordChange, validateProfileName } from "@/features/account/accountProfile";
 import { useAccountModel } from "@/features/account/useAccountModel";
@@ -202,7 +203,7 @@ function SecurityRow({ detail, label, state, positive = false }: { detail: strin
   );
 }
 
-function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
+function SignedInMemberCards({ model, verifyingApple }: { model: AccountModel; verifyingApple: boolean }): JSX.Element {
   const [editingProfile, setEditingProfile] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [firstName, setFirstName] = useState(model.user?.firstName ?? "");
@@ -212,7 +213,7 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const user = model.user;
-  const disabled = model.busy !== null;
+  const disabled = model.busy !== null || verifyingApple;
 
   if (!user) return <Card className="border border-white/50 bg-glass p-5"><Typography className="text-muted">正在載入會員資料…</Typography></Card>;
 
@@ -319,7 +320,8 @@ function SignedInMemberCards({ model }: { model: AccountModel }): JSX.Element {
 function ConnectedAccountScreen(): JSX.Element {
   const router = useRouter();
   const model = useAccountModel();
-  const disabled = model.busy !== null;
+  const [verifyingApple, setVerifyingApple] = useState(false);
+  const disabled = model.busy !== null || verifyingApple;
 
   function confirmPull() {
     Alert.alert("下載雲端備份？", "會覆蓋這台裝置目前的預算、花費、換算設定、抽卡規劃、五星紀錄與排期篩選。", [
@@ -336,25 +338,48 @@ function ConnectedAccountScreen(): JSX.Element {
     ]);
   }
 
+  async function performDeletion(withAppleVerification: boolean) {
+    let credential: Awaited<ReturnType<typeof requestAppleDeletionCredential>> | undefined;
+    if (withAppleVerification) {
+      setVerifyingApple(true);
+      try {
+        credential = await requestAppleDeletionCredential();
+      } catch {
+        Alert.alert("Apple 驗證未完成", "會員帳號與雲端備份仍保留。你可以再試一次，或只刪除會員帳號，之後到 Apple 設定手動撤銷授權。", [
+          { text: "保留帳號", style: "cancel" },
+          { text: "只刪除會員帳號", style: "destructive", onPress: () => void performDeletion(false) },
+        ]);
+        setVerifyingApple(false);
+        return;
+      }
+    }
+    try {
+      const result = await model.deleteAccount(credential?.authorizationCode);
+      if (!result) return;
+      const nativeRevocationVerified = credential && result.appleAuthorization === "revoked"
+        ? await isAppleAuthorizationRevoked(credential.user)
+        : false;
+      if (result.appleAuthorization === "manual_required" || (credential && !nativeRevocationVerified)) {
+        Alert.alert(
+          "帳號與雲端資料已刪除",
+          "尚無法確認 Apple 授權已撤銷。請到 iOS「設定」>「你的名字」>「使用 Apple 登入」>「深空省省」>「停止使用 Apple ID」確認或完成撤銷；本機資料仍保留。",
+        );
+      } else {
+        Alert.alert("帳號已刪除", nativeRevocationVerified
+          ? "會員帳號、雲端備份與 Apple 授權已移除；這台裝置的本機資料仍會保留。"
+          : "會員帳號與雲端備份已永久刪除；這台裝置的本機資料仍會保留。");
+      }
+    } finally {
+      setVerifyingApple(false);
+    }
+  }
+
   function confirmDelete() {
-    Alert.alert("永久刪除會員帳號？", "Clerk 帳號與 Neon 雲端備份都會刪除；這台裝置的本機資料會保留。", [
+    const appleMember = Platform.OS === "ios" && model.user?.externalAccounts.some((account) => account.provider.toLowerCase().replace(/^oauth_/, "") === "apple");
+    Alert.alert("永久刪除會員帳號？", `會員帳號與雲端備份都會刪除；這台裝置的本機資料會保留。${appleMember ? "\n\n選擇撤銷 Apple 授權時，會先透過 Apple 確認身分。只刪除會員帳號則需到 Apple 設定手動撤銷。" : ""}`, [
       { text: "取消", style: "cancel" },
-      {
-        text: "永久刪除",
-        style: "destructive",
-        onPress: () => void (async () => {
-          const result = await model.deleteAccount();
-          if (!result) return;
-          if (result.appleAuthorization === "manual_required") {
-            Alert.alert(
-              "帳號與雲端資料已刪除",
-              "Apple 授權無法自動撤銷。請到 iOS「設定」>「你的名字」>「使用 Apple 登入」>「深空省省」>「停止使用 Apple ID」完成撤銷。",
-            );
-          } else {
-            Alert.alert("帳號已刪除", "會員帳號與雲端備份已永久刪除；這台裝置的本機資料仍會保留。");
-          }
-        })(),
-      },
+      ...(appleMember ? [{ text: "只刪除會員帳號", style: "destructive" as const, onPress: () => void performDeletion(false) }] : []),
+      { text: appleMember ? "刪除並撤銷 Apple" : "永久刪除", style: "destructive", onPress: () => void performDeletion(Boolean(appleMember)) },
     ]);
   }
 
@@ -381,7 +406,7 @@ function ConnectedAccountScreen(): JSX.Element {
         <SignedOutAuthCard />
       ) : (
         <>
-          <SignedInMemberCards model={model} />
+          <SignedInMemberCards model={model} verifyingApple={verifyingApple} />
 
           <Card className="gap-3 border border-white/50 bg-glass p-5">
             <Typography className="type-label text-muted">私人雲端備份</Typography>
