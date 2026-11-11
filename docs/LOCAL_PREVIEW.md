@@ -15,6 +15,19 @@ npm run preview
 
 `preview` 會先從專案根目錄的 `schedule.js`、`updates.js`、`packs.js`、`regional-prices.js` 產生 Expo 資料。這個步驟不會自行下載 Maggie 網頁專案的最新修改；跨專案同步需先複製或整理這四份來源資料。
 
+## 使用 Erik 的 preview 環境
+
+這台 Mac 已登入 Maggie 的 Expo 帳號 `its_maggie`，接受 `tentenco` Developer 邀請，並確認既有專案 ID 正確。已依交接文件透過 `eas-cli@27.7.2` 將 preview 設定下載至 `.env.local`；此檔案受 Git 忽略且權限為 `600`，內容只有 Clerk 測試用公開金鑰、公開營運者名稱及支援信箱。
+
+要開啟含測試會員入口的預覽，使用：
+
+```sh
+npm run sync:expo-data
+npm run web
+```
+
+目前開發伺服器使用上述模式，網址為 **http://localhost:8081/schedule**。`npm run preview` 與父資料夾的 `預覽App.command` 仍提供免連線會員的本機預覽模式。兩個模式使用相同的瀏覽器本機資料；測試會員登入不等於正式 Apple 登入或正式雲端備份已驗收，完整流程須在 production TestFlight 另測。
+
 ## 可以驗證什麼
 
 這是同一份 Expo App 專案的 Web renderer，可以操作排期、換算、三種幣別的錢包、規劃及五星追蹤。將瀏覽器視窗縮窄，也能先檢查窄螢幕排版。Web 與原生 renderer 共用資料與 domain 計算，原生按鈕、日期選擇器、鍵盤及 Apple 登入則需要模擬器或實機驗證。
@@ -62,7 +75,11 @@ App 以同層網頁版 `index.html` 的星空背景、白色線稿品牌、半�
 
 Node.js 為 `22.17.0`，已執行 `npm ci`，並確認指定的 `eas-cli/27.7.2` 可用。`npm run release:ios:validate` 通過：ESLint、TypeScript、15 項 Node 測試、184 項 Vitest 測試、Expo Doctor 21/21、既有審查政策下的 production 相依套件稽核、8.6 MiB iOS Hermes 匯出與 build preflight。
 
-帳號接手仍需本人操作：Expo 以 `maggie@tenten.co` 接受 Developer 邀請、GitHub 以 `its-maggie` 接受協作者邀請、App Store Connect 使用自己的 Apple Account 接受最新 App Manager 邀請。此次尚未確認上述個人登入，未拉取 `.env.local`、未推送分支、未建立或上傳新的 TestFlight build；GitHub 命令列當時仍登入 `tentendev`，不可當作 Maggie 已完成接手。帳號完成後，依快速開始文件以 EAS preview 環境啟動 `npm run web`。在此之前可繼續使用既有 `npm run preview` 離線預覽。
+Expo 已以 `its_maggie` 接受 Developer 邀請並完成這台 Mac 的 EAS CLI 登入；`whoami` 與 `project:info` 確認 `@tentenco/deep-space-ledger`、專案 ID `46cd6a19-3d6a-4b81-b08b-a531cb15664f`。GitHub 已切換至本人 `its-maggie`，接受 `tentendev/lad-app` 協作者邀請，API 確認有 push 權限；此專案後續提交的本機作者設定也已切換為 Maggie。工作分支為 `maggie/web-visual-alignment`，不合併或推送至 `main`。
+
+preview 的 `.env.local` 已拉取，使用 `npm run web` 啟動後，以 Ego Lite 確認排期月曆、換算、錢包、追蹤頁及 Clerk 測試會員登入表單可載入，`Clerk.loaded` 為 `true`。排期月曆及錢包未出現水平溢出。未登入測試會員，也未測試正式雲端 API；原生實機驗收仍待進行。
+
+App Store Connect 最新邀請已開啟至 Apple 帳號登入頁，需要 Maggie 使用自己的 Apple Account 登入及完成驗證後，才能確認 App Manager 權限及 Core QA 測試群組。此次尚未建立或上傳新的 TestFlight build。
 
 Erik 信中另提醒新版 Apple 開發者協議需由 Account Holder 審閱接受；這一步不屬於 Maggie 的 App Manager 權限，目前尚未查驗其最新完成狀態。
 
