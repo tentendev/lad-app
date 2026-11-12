@@ -1,5 +1,7 @@
 # Maggie 開發與 TestFlight 快速開始
 
+個人 Apple 帳號地址以本機 `.agent-local/setup-status.json` 及最新邀請為準，不放進共用 Git 文件。
+
 先接受 Expo、Apple 與 GitHub 邀請，再在自己的電腦執行下方指令。iOS 安裝包由 EAS 雲端建置；只做 Web 預覽及上傳 TestFlight，不需要先安裝 Xcode。
 
 ## 1. 接受邀請
@@ -7,9 +9,9 @@
 | 平台 | 使用方式 |
 | --- | --- |
 | Expo | 用 `maggie@tenten.co` 註冊或登入，接受 `tentenco` 的 Developer 邀請。 |
-| App Store Connect | 開啟寄到 `maggie@tenten.co` 的最新 Apple 邀請，用自己的 Apple Account 接受。權限是「深空省省」的 App Manager。若沒有 Apple Account，依 Apple 畫面建立並完成雙重認證。 |
+| App Store Connect | 開啟寄到 `你的 Apple Account Email` 的最新 Apple 邀請，用這個實際 Apple Account 登入並接受。權限僅限「深空省省」的 App Manager；工作通知信箱仍是 `maggie@tenten.co`。 |
 | GitHub | 用原作帳號 `its-maggie` 接受 `tentendev/lad-app` 的協作者邀請，取得寫入權限。 |
-| TestFlight | iPhone 安裝 [TestFlight](https://apps.apple.com/app/testflight/id899247664)，從 `maggie@tenten.co` 收到的測試邀請開啟 App。這封與開發權限邀請是不同的信。 |
+| TestFlight | iPhone 安裝 [TestFlight](https://apps.apple.com/app/testflight/id899247664)。`你的 Apple Account Email` 已在既有外部測試群組，Apple 顯示已安裝 Build 6；這項資格與 App Manager 邀請分開。 |
 
 Expo 專案：[tentenco/deep-space-ledger](https://expo.dev/accounts/tentenco/projects/deep-space-ledger)
 
@@ -47,7 +49,7 @@ EAS 請登入 Maggie 自己的 Expo 帳號。`project:info` 應顯示 `@tentenco
 git switch -c maggie/my-change
 ```
 
-完成修改後，將 `app.json` 的 `expo.version` 改為下一個版本。目前 1.0.0（Build 8）已是 `Ready for Distribution`，下一版可從 1.0.1 開始；不要只修改 `package.json`。Build number 由 EAS 自動遞增。
+完成修改後，將 `app.json` 的 `expo.version` 改為下一個版本，並同步 `store.config.json` 的 `apple.version`。目前 1.0.0（Build 8）已是 `Ready for Distribution`，下一版可從 1.0.1 開始；不要只修改 `package.json`。Build number 由 EAS 自動遞增。
 
 ```bash
 npm run sync:expo-data
@@ -102,6 +104,6 @@ Apple 處理完後，在 App Store Connect → 深空省省 → TestFlight：
 
 ## 5. 目前需要本人完成
 
-2026-11-11 已送出上述邀請，帳號啟用仍需 Maggie 接受與完成自己的驗證。Apple 另外提示開發者協議已更新，後續更新 App 前，需要 Account Holder 在 [Apple Developer 帳號頁](https://developer.apple.com/account) 審閱並接受。Maggie 的 App Manager 權限無法代替 Account Holder 完成這一步。
+2026-11-11 已送出 Expo 與 GitHub 邀請；2026-11-12 Apple App Manager 邀請改寄至 Maggie 的實際 Apple Account `你的 Apple Account Email`，舊公司信箱的 Apple 權限邀請已撤回。帳號啟用仍需 Maggie 接受與完成自己的驗證，之後才能加入內部 `Core QA` 清單。Apple 先前另提示開發者協議已更新，後續更新 App 前，需由 Account Holder 在 [Apple Developer 帳號頁](https://developer.apple.com/account) 確認協議狀態。Maggie 的 App Manager 權限無法代替 Account Holder 完成這一步。
 
 已用 GitHub 的全新 clone 驗證 `npm ci`、lint、TypeScript、192 項測試、iOS build preflight、preview 環境下載與 Web export。這些是開發環境檢查；Maggie 自己電腦的登入、建置及 iPhone 安裝，需要在接受邀請後完成。

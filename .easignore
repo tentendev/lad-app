@@ -8,6 +8,7 @@ ios/
 android/
 credentials/
 credentials.json
+.agent-local/
 artifacts/
 references/
 .DS_Store

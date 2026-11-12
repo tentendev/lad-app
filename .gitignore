@@ -29,3 +29,4 @@ coverage/
 # Local Apple signing material used by EAS credentials import
 /credentials.json
 /credentials/
+.agent-local/

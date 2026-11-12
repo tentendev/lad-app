@@ -20,3 +20,8 @@
 - `npm run preview` 會先產生資料並以 development-only 本機模式啟動 localhost:8081，不連線會員／雲端。正式 build 不可略過 Clerk 必要設定。
 - 依變更執行 `npm run check`；改原生畫面時另驗證 `npm run verify:ios-bundle`。本機尚無可用的 iPhone Simulator，不把瀏覽器或 Hermes bundle 檢查稱為實機驗收。
 - 詳見 `docs/LOCAL_PREVIEW.md`。此同步不新增功能公告，也不自動發布 TestFlight。
+
+## 環境與發布接手
+
+- 先讀 `docs/AGENT_SETUP.md` 的能力狀態及 `docs/RELEASE_RUNBOOK.md` 的操作範圍；本機帳號對應與待辦見受 Git／EAS 排除的 `.agent-local/setup-status.json`，不沿用其他電腦的 session 或驗收結果。
+- 設定環境、接受邀請或加入既有測試群組，不代表獲准建立新 build 或發布版本。Apple 本人驗證完成後，只把本人加入既有 Core QA，保留原有外部測試資格。
