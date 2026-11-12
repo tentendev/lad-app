@@ -12,11 +12,11 @@ export const NativeInput = forwardRef<TextInput, TextInputProps & { className?: 
       ref={ref}
       allowFontScaling
       maxFontSizeMultiplier={0}
-      placeholderTextColor="#ded7ed"
+      placeholderTextColor="#887d94"
       {...props}
       style={[{
         fontSize: 16, lineHeight: 24, minHeight: 48, paddingVertical: 11, paddingHorizontal: 13,
-        borderRadius: 13, borderWidth: 1, borderColor: APP_COLORS.line, backgroundColor: APP_COLORS.input,
+        color: APP_COLORS.text, borderRadius: 14, borderWidth: 1, borderColor: APP_COLORS.line, backgroundColor: APP_COLORS.input,
       }, style]}
     />;
   },

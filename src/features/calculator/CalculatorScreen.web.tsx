@@ -7,7 +7,7 @@ import { useState } from "react";
 import { PACK_OTHER } from "@/data/packs";
 import { bestTierPrice, type GapPackRecommendation } from "@/domain/calculator";
 import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency as formatMoney, formatNumber } from "@/domain/format";
-import { CURRENCIES, POOLS, type Currency, type Pool, type PullGoal } from "@/domain/types";
+import { CURRENCIES, CALCULATOR_POOLS, type Currency, type Pool, type PullGoal } from "@/domain/types";
 import { DeviceDataLoading } from "@/ui/DeviceDataLoading.web";
 import { RetryableError } from "@/ui/RetryableError.web";
 import { WebPage } from "@/ui/WebPage.web";
@@ -92,8 +92,8 @@ export function CalculatorScreenWeb() {
             <div className="form-grid" style={{ marginTop: 3 }}>
               <label className="field-wrap full">
                 <span className="field-label">卡池類型</span>
-                <select className="native-select" value={draft.pool} onChange={(event) => model.setPool(event.target.value as Pool)}>
-                  {POOLS.map((pool) => <option key={pool}>{pool}</option>)}
+                <select aria-label="卡池類型" className="native-select" value={draft.pool} onChange={(event) => model.setPool(event.target.value as Pool)}>
+                  {CALCULATOR_POOLS.map((pool) => <option key={pool}>{pool}</option>)}
                 </select>
               </label>
               <label className="field-wrap">

@@ -50,7 +50,7 @@ function OfflineAccountCard(): JSX.Element {
         <h2>本機資料仍可照常使用</h2>
       </div>
       <p>{OFFLINE_AUTH_MESSAGE}</p>
-      <p className="account-fine-print">會員登入、帳號設定與 Neon 雲端備份需要網路；重新連線後，這個頁面會自動確認登入狀態。</p>
+      <p className="account-fine-print">會員登入、帳號設定與 私人雲端備份需要網路；重新連線後，這個頁面會自動確認登入狀態。</p>
     </Card>
   );
 }
@@ -78,7 +78,8 @@ function SignedOutAuthCard({ offline }: { offline: boolean }): JSX.Element {
     setFormError(null);
     const emailError = validateEmailAddress();
     if (emailError) return setFormError(emailError);
-    if (password.length < 15) return setFormError("密碼至少需要 15 碼。");
+    if (!password) return setFormError("請輸入密碼。");
+    if (emailAuth.mode === "sign-up" && password.length < 15) return setFormError("密碼至少需要 15 碼。");
 
     if (emailAuth.mode === "sign-up") {
       if (password !== passwordConfirmation) return setFormError("兩次輸入的密碼不一致。");
@@ -196,11 +197,11 @@ function SignedOutAuthCard({ offline }: { offline: boolean }): JSX.Element {
                 aria-label="密碼"
                 aria-invalid={Boolean(formError)}
                 autoComplete={emailAuth.mode === "sign-up" ? "new-password" : "current-password"}
-                minLength={15}
+                minLength={emailAuth.mode === "sign-up" ? 15 : 1}
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="至少 15 碼"
+                placeholder={emailAuth.mode === "sign-up" ? "至少 15 碼" : "輸入密碼"}
               />
             </label>
             {emailAuth.mode === "sign-up" ? (
@@ -221,7 +222,7 @@ function SignedOutAuthCard({ offline }: { offline: boolean }): JSX.Element {
             ) : null}
 
             {emailAuth.mode === "sign-up" ? (
-              <div id="clerk-captcha" data-cl-theme="dark" data-cl-size="flexible" data-cl-language="zh-tw" />
+              <div id="clerk-captcha" data-cl-theme="light" data-cl-size="flexible" data-cl-language="zh-tw" />
             ) : null}
 
             <Button fullWidth size="lg" type="submit" variant="secondary" isDisabled={busy}>
@@ -237,7 +238,7 @@ function SignedOutAuthCard({ offline }: { offline: boolean }): JSX.Element {
             </button>
           ) : null}
 
-          <div className="auth-divider"><span>或</span></div>
+          {APPLE_SIGN_IN_ENABLED ? <div className="auth-divider"><span>或</span></div> : null}
 
           {APPLE_SIGN_IN_ENABLED ? (
             <Button fullWidth size="lg" variant="outline" isDisabled={busy} onPress={() => void socialAuth.signIn("oauth_apple")}>
@@ -297,7 +298,7 @@ function SignedOutAuthCard({ offline }: { offline: boolean }): JSX.Element {
 
       {emailAuth.notice ? <p className="account-status ok" role="status">{emailAuth.notice}</p> : null}
       {displayedError ? <p className="account-status error" role="alert">{displayedError}</p> : null}
-      <p className="account-fine-print">登入服務與 Email 驗證由 Clerk 提供；會員資料與 Neon 私人備份不會公開。未登入時仍可繼續使用本機資料。</p>
+      <p className="account-fine-print">登入後可保存個人資料，並主動備份到私人雲端空間。未登入時仍可繼續使用本機資料。</p>
       <p className="account-fine-print">建立帳號或登入即表示你已閱讀<a href="/privacy">隱私政策</a>；所有主要功能都可以不登入使用。</p>
     </Card>
   );
@@ -463,7 +464,7 @@ function ConnectedAccountScreen(): JSX.Element {
   }
 
   async function removeAccount() {
-    if (!window.confirm("刪除會員帳號會永久刪除 Clerk 帳號與雲端備份；這台裝置的本機資料會保留。確定刪除嗎？")) return;
+    if (!window.confirm("刪除會員帳號會永久刪除 會員帳號與雲端備份；這台裝置的本機資料會保留。確定刪除嗎？")) return;
     const result = await model.deleteAccount();
     if (!result) return;
     if (result.appleAuthorization === "manual_required") {
@@ -474,7 +475,7 @@ function ConnectedAccountScreen(): JSX.Element {
   }
 
   async function removeCloudBackup() {
-    if (!window.confirm("只刪除 Neon 上的私人備份；會員帳號與這台裝置的資料都會保留。確定刪除嗎？")) return;
+    if (!window.confirm("只刪除你的私人雲端備份；會員帳號與這台裝置的資料都會保留。確定刪除嗎？")) return;
     await model.removeCloudBackup();
   }
 
@@ -490,7 +491,7 @@ function ConnectedAccountScreen(): JSX.Element {
           action={<a className="back-link" href="/schedule"><span aria-hidden="true">‹</span>返回排期</a>}
         >
           <Card className="product-card card account-hero">
-            <p className="card-kicker">Clerk × Neon</p>
+            <p className="card-kicker">會員與私人備份</p>
             <h2>{model.isSignedIn ? `嗨，${model.user?.firstName ?? "深空旅人"}` : "登入後，換裝置也能帶走紀錄"}</h2>
             <p>未登入時仍會照常保存在本機；登入只會增加私人雲端備份，不影響原本使用方式。</p>
           </Card>
@@ -504,16 +505,17 @@ function ConnectedAccountScreen(): JSX.Element {
             <SignedOutAuthCard offline={browserOffline} />
           ) : (
             <>
+              {model.isAdmin ? <Card className="product-card card account-card"><h2>會員管理</h2><p>搜尋會員、查看帳號與備份狀態，管理停權與恢復。</p><a className="backup-button" href="/admin">開啟管理後台</a></Card> : null}
               <SignedInMemberCards model={model} offline={browserOffline} />
 
               <Card className="product-card card account-card">
                 <div className="cloud-heading">
-                  <div><p className="card-kicker">私人雲端備份</p><h2>{model.snapshot?.data ? `版本 ${model.snapshot.revision}` : "尚無雲端備份"}</h2></div>
+                  <div><p className="card-kicker">私人雲端備份</p><h2>{model.snapshot?.data ? `版本 ${model.snapshot.revision}` : model.snapshot ? "尚無雲端備份" : "雲端狀態待確認"}</h2></div>
                   <Button size="sm" variant="ghost" isDisabled={disabled} onPress={() => void model.refresh()}>重新整理</Button>
                 </div>
                 <dl className="cloud-meta"><div><dt>最後更新</dt><dd>{displayDate(model.snapshot?.updatedAt ?? null)}</dd></div><div><dt>同步方式</dt><dd>明確上傳／下載</dd></div></dl>
                 <div className="cloud-actions">
-                  <Button fullWidth variant="secondary" isDisabled={disabled} onPress={() => void uploadLocal()}>{model.busy === "push" ? "上傳中…" : "以這台裝置更新雲端"}</Button>
+                  <Button fullWidth variant="secondary" isDisabled={disabled || !model.snapshot} onPress={() => void uploadLocal()}>{model.busy === "push" ? "上傳中…" : "以這台裝置更新雲端"}</Button>
                   <Button fullWidth variant="outline" isDisabled={disabled || !model.snapshot?.data} onPress={() => void downloadCloud()}>{model.busy === "pull" ? "下載中…" : "下載雲端備份到這台裝置"}</Button>
                   <Button fullWidth variant="ghost" isDisabled={disabled || !model.snapshot?.data} onPress={() => void removeCloudBackup()}>{model.busy === "delete-cloud" ? "刪除中…" : "只刪除雲端備份"}</Button>
                 </div>
@@ -523,7 +525,7 @@ function ConnectedAccountScreen(): JSX.Element {
 
               <Card className="product-card card account-card danger-zone">
                 <div><p className="card-kicker">帳號管理</p><h2>刪除會員帳號</h2></div>
-                <p>會永久移除 Clerk 帳號與 Neon 雲端備份。本機資料會保留，方便你先匯出或繼續離線使用。</p>
+                <p>會永久移除會員帳號與私人雲端備份。本機資料會保留，方便你先匯出或繼續離線使用。</p>
                 <Button variant="danger" isDisabled={disabled} onPress={() => void removeAccount()}>{model.busy === "delete" ? "刪除中…" : "永久刪除帳號"}</Button>
               </Card>
             </>

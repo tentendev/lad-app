@@ -20,11 +20,12 @@ export default function RootLayout(): JSX.Element {
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: APP_COLORS.canvas } }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="account" />
+            <Stack.Screen name="admin" />
             <Stack.Screen name="sso-callback" />
           </Stack>
           <WelcomeScreen />
           <SiteUpdatesDialog />
-          <StatusBar style="light" />
+          <StatusBar style="dark" />
           </SiteUpdatesProvider>
         </HeroUINativeProvider>
       </GestureHandlerRootView>

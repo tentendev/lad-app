@@ -1,5 +1,9 @@
 # Web deployment handoff
 
+## Pending 02A and membership changes (2026-11-12)
+
+The current App working branch adds `/admin`, `/api/admin`, `/api/member`, and `sql/002_member_audit.sql`. Before deploying it, provision matching preview Clerk and database settings, run all schema migrations, assign the intended member administrator server-side, and verify the real user journeys. The project currently exposes only production-scoped environment configuration; no production settings or database were changed for this implementation. See [implementation and verification status](02A_MEMBERSHIP_IMPLEMENTATION.md). The original HTML site remains frozen except for separately requested schedule updates.
+
 ## Current Expo/API target (2026-10-08)
 
 - Vercel scope: `tentenco`
@@ -35,7 +39,7 @@ vercel promote DEPLOYMENT_ID --yes --scope tentenco
 npm run verify:web-deployment -- https://deep-space-ledger-app.vercel.app
 ```
 
-`verify:vercel-prebuilt` checks the static output and runs both compiled API handlers under Node to catch unresolved module imports before deployment. Then complete the browser and device journeys in `WEB_RELEASE_CHECKLIST.md`, including real production sign-in and data deletion.
+`verify:vercel-prebuilt` checks the static output and runs the compiled account, sync, member and admin handlers under Node to catch unresolved module imports before deployment. Then complete the browser and device journeys in `WEB_RELEASE_CHECKLIST.md`, including real sign-in, member isolation, administrator permissions and data deletion in the intended environment.
 
 The fresh Neon project is `frosty-shape-90805190`, database `lad_app`. The old development database is separate. `scripts/smoke-cloud-sync.mjs` creates development-only Clerk sessions and is not a production authentication test.
 

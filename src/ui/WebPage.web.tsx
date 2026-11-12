@@ -15,6 +15,7 @@ type Props = PropsWithChildren<{
 
 export function WebPage({ eyebrow, title, description, action, showAccountEntry = true, showAboutLink = true, children }: Props) {
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const motto = ({ 錢包: "把喜歡，留在計畫裡。", 換算: "離心願，再近一點。", 追蹤: "記下每次心動的軌跡。", 會員中心: "把計畫，好好保存。" } as Record<string, string>)[title];
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -38,10 +39,9 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
       <header className="brand-header">
         <SiteUpdatesEntry />
         <a href="/schedule" className="brand-home" aria-label="深空省省首頁">
-          <svg aria-hidden="true" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"><path d="M24 6l4 7h-8zM16 13h16l8 11-16 17L8 24z"/><path d="M8 24h32M16 13l8 28M32 13l-8 28M20 13l4 6 4-6"/></svg>
+          <svg aria-hidden="true" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="24" cy="24" rx="21" ry="8" transform="rotate(-35 24 24)"/><path d="M32 4v8M28 8h8"/></svg>
           <span>深空省省</span>
         </a>
-        <p>你的抽卡與課金規劃好幫手</p>
         {showAccountEntry ? <div className="brand-account"><AccountEntry /></div> : null}
       </header>
       {action ? (
@@ -49,6 +49,7 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
           {action ? <div className="page-action">{action}</div> : <span />}
         </div>
       ) : null}
+      {motto ? <p className="page-motto">{motto}<span aria-hidden="true">✦</span></p> : null}
       {children}
       {showAboutLink ? (
         <footer className="legal-footer">

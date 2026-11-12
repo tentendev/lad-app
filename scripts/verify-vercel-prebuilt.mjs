@@ -70,7 +70,7 @@ for (const relativeFile of relativeDistFiles) {
   }
 }
 
-for (const [route, handler] of [["account", "api/account.js"], ["sync", "api/sync.js"]]) {
+for (const [route, handler] of [["account", "api/account.js"], ["sync", "api/sync.js"], ["member", "api/member.js"], ["admin", "api/admin.js"]]) {
   const functionDirectory = path.join(functionsDirectory, "api", `${route}.func`);
   const functionConfig = JSON.parse(await readFile(path.join(functionDirectory, ".vc-config.json"), "utf8"));
   if (functionConfig.handler !== handler || !String(functionConfig.runtime).startsWith("nodejs")) {
@@ -127,4 +127,4 @@ for (const [route, handler] of [["account", "api/account.js"], ["sync", "api/syn
 }
 
 const precache = JSON.parse(await readFile(path.join(staticDirectory, "precache-manifest.json"), "utf8"));
-console.log(`Vercel prebuilt verified: ${relativeStaticFiles.length} static files and sync/account Node functions are release-safe (build ${precache.version}).`);
+console.log(`Vercel prebuilt verified: ${relativeStaticFiles.length} static files and sync/account/member/admin Node functions are release-safe (build ${precache.version}).`);

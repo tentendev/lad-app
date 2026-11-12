@@ -50,8 +50,9 @@ export default function NativeTabsLayout(): JSX.Element {
       initialRouteName="schedule"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#ffffff",
-        tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
+        tabBarActiveTintColor: APP_COLORS.accent,
+        tabBarInactiveTintColor: APP_COLORS.muted,
+        tabBarActiveBackgroundColor: "#eee7f6",
         tabBarLabel: ({ children, color, focused }) => <Text key={fontScale} allowFontScaling maxFontSizeMultiplier={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: focused ? "600" : "400", color, textAlign: "center" }}>{children}</Text>,
         tabBarLabelPosition: "below-icon",
         tabBarItemStyle: { paddingTop: 5 },

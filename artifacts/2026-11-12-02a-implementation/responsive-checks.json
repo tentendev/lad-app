@@ -1,0 +1,82 @@
+[
+  {
+    "route": "schedule",
+    "width": 390,
+    "document": 390,
+    "main": 390,
+    "title": "深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "schedule",
+    "width": 320,
+    "document": 320,
+    "main": 320,
+    "title": "排期｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "calculator",
+    "width": 390,
+    "document": 390,
+    "main": 390,
+    "title": "換算｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "calculator",
+    "width": 320,
+    "document": 320,
+    "main": 320,
+    "title": "換算｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "tracker",
+    "width": 390,
+    "document": 390,
+    "main": 390,
+    "title": "追蹤｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "tracker",
+    "width": 320,
+    "document": 320,
+    "main": 320,
+    "title": "追蹤｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "account",
+    "width": 390,
+    "document": 390,
+    "main": 390,
+    "title": "會員中心｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "account",
+    "width": 320,
+    "document": 320,
+    "main": 320,
+    "title": "會員中心｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "admin",
+    "width": 390,
+    "document": 390,
+    "main": 390,
+    "title": "會員管理｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  },
+  {
+    "route": "admin",
+    "width": 320,
+    "document": 320,
+    "main": 320,
+    "title": "會員管理｜深空省省",
+    "background": "rgba(0, 0, 0, 0)"
+  }
+]

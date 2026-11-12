@@ -10,6 +10,7 @@ function CardRoot({ style, variant = "transparent", ...props }: ComponentProps<t
     borderWidth: 1,
     borderColor: APP_COLORS.line,
     backgroundColor: APP_COLORS.glass,
+    boxShadow: "0px 5px 18px rgba(79,57,108,0.08)",
   }, style]} />;
 }
 

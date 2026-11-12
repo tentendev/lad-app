@@ -1,6 +1,6 @@
 # 深空省省資料清冊與 App Privacy 對照
 
-更新日期：2026-08-14
+更新日期：2026-11-12
 
 這份清冊是 App Store Connect「App Privacy」問卷的填寫依據。送審前仍要以 Clerk、Vercel、Neon 的 production 設定與最新 SDK 行為再核對一次；若新增分析、廣告、推播、付款或崩潰回報 SDK，必須先更新本表、隱私政策與 manifest。
 
@@ -16,6 +16,8 @@
 | Customer Support | 使用者主動寄送支援信時的 Email、內容與附件 | 公開支援信箱供應商 | 是 | 否 | App Functionality |
 
 ## 不收集／不使用
+
+本次新增會員管理 API 與畫面。只有後端驗證的管理者能查詢名稱、Email、驗證／停權狀態、加入／最近登入時間與備份版本／更新時間；不查詢或傳回 snapshot 內容。Neon 的 `lad_member_audit` 保存 actor ID、target ID、停權／恢復、原因、時間與執行狀態；屬會員安全與維運紀錄，不公開。此功能尚未完成真實測試環境與原生裝置驗收，不將原有商店申報日期當作新增功能驗收證據。
 
 - 不存取付款卡、銀行帳戶或遊戲帳號。
 - 不含廣告 SDK，不建立跨 App／網站廣告追蹤資料。

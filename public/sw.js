@@ -6,12 +6,14 @@ const APP_SHELL = [
   "/tracker",
   "/about",
   "/account",
+  "/admin",
   "/manifest.webmanifest",
   "/favicon.svg",
   "/icon-192.png",
   "/icon-512.png",
   "/lad-bg.webp",
   "/mobile-bg.webp",
+  "/pearl-orbits.svg",
 ];
 
 self.addEventListener("install", (event) => {

@@ -16,7 +16,7 @@ export default function WebRootLayout(): JSX.Element {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.webmanifest" />
         <meta name="description" content="深空省省：抽卡課金規劃工具，支援《戀與深空》的排期、預算與資源換算。" />
-        <meta name="theme-color" content="#7765a7" />
+        <meta name="theme-color" content="#f7f6fa" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -27,7 +27,7 @@ export default function WebRootLayout(): JSX.Element {
         <meta property="og:description" content="整理排期、控制預算、換算抽卡資源；資料預設只留在你的裝置。" />
         <meta name="application-name" content="深空省省" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="深空省省" />
       </Head>
       <ClerkAppProvider>

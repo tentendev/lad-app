@@ -1,0 +1,38 @@
+[
+  {
+    "route": "/wallet",
+    "width": 1024,
+    "document": 1024,
+    "main": 520
+  },
+  {
+    "route": "/schedule",
+    "width": 1024,
+    "document": 1024,
+    "main": 520
+  },
+  {
+    "route": "/calculator",
+    "width": 1024,
+    "document": 1024,
+    "main": 520
+  },
+  {
+    "route": "/tracker",
+    "width": 1024,
+    "document": 1024,
+    "main": 520
+  },
+  {
+    "route": "/account",
+    "width": 1024,
+    "document": 1024,
+    "main": 520
+  },
+  {
+    "route": "/admin",
+    "width": 1024,
+    "document": 1024,
+    "main": 1024
+  }
+]

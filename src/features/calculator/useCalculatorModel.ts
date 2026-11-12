@@ -1,7 +1,7 @@
 import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, normalizePackQuantities, normalizePendingCalculatorTarget, recommendPacks, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
+import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft, normalizeCalculatorPool, normalizePackQuantities, normalizePendingCalculatorTarget, recommendPacks, selectedPackQuantities, summarizeSelectedPacks } from "@/domain/calculator";
 import { normalizeCurrency, todayKey } from "@/domain/format";
 import type { CalculatorDraft, Currency, PendingExpense, Pool, ReserveUnit } from "@/domain/types";
 import { storage } from "@/data/repositories/storage";
@@ -118,7 +118,7 @@ export function useCalculatorModel() {
     setDraft((current) => ({ ...current, [key]: safeValue }));
   }, []);
 
-  const setPool = useCallback((pool: Pool) => setDraft((current) => ({ ...current, pool })), []);
+  const setPool = useCallback((pool: Pool) => setDraft((current) => ({ ...current, pool: normalizeCalculatorPool(pool) })), []);
 
   const setReserveUnit = useCallback((unit: ReserveUnit) => {
     setDraft((current) => {

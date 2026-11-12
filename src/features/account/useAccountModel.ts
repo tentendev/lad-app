@@ -9,6 +9,7 @@ import type { CloudSnapshot } from "@/data/cloudSync";
 import { readLocalBackupData } from "@/data/repositories/localBackupData";
 import { restoreLocalBackup } from "@/data/repositories/backupRestore";
 import { storage } from "@/data/repositories/storage";
+import { useMemberAccess } from "./useMemberAccess";
 
 type Status = { tone: "ok" | "error" | "info"; message: string } | null;
 type BusyAction = "refresh" | "push" | "pull" | "delete-cloud" | "profile" | "password" | "signout" | "delete";
@@ -18,31 +19,46 @@ function formatSyncError(error: unknown): string {
 }
 
 export function useAccountModel() {
-  const { isLoaded, isSignedIn, getToken } = useAuth();
+  const { isLoaded, isSignedIn, getToken, userId } = useAuth();
+  const { isAdmin } = useMemberAccess();
   const { user } = useUser();
   const { signOut } = useClerk();
   const getTokenRef = useRef(getToken);
-  const [snapshot, setSnapshot] = useState<CloudSnapshot | null>(null);
+  const [ownedSnapshot, setOwnedSnapshot] = useState<{ owner: string; value: CloudSnapshot } | null>(null);
+  const snapshot = isSignedIn && ownedSnapshot?.owner === userId ? ownedSnapshot.value : null;
+  const ownerRef = useRef(userId);
   const [busy, setBusy] = useState<BusyAction | null>(null);
   const [status, setStatus] = useState<Status>(null);
   const [profileStatus, setProfileStatus] = useState<Status>(null);
 
   useEffect(() => {
     getTokenRef.current = getToken;
-  }, [getToken]);
+    ownerRef.current = userId;
+  }, [getToken, userId]);
+
+  const setSnapshot = useCallback((value: CloudSnapshot) => {
+    if (userId && ownerRef.current === userId) setOwnedSnapshot({ owner: userId, value });
+  }, [userId]);
+
+  const memberToken = useCallback(async () => {
+    const token = await getTokenRef.current();
+    if (!userId || ownerRef.current !== userId) throw new Error("登入帳號已變更，請重新確認會員頁面。");
+    return token;
+  }, [userId]);
 
   const refresh = useCallback(async () => {
     if (!isSignedIn) return;
+    const owner = userId;
     setBusy("refresh");
     setStatus(null);
     try {
-      setSnapshot(await getCloudSnapshot(getTokenRef.current));
+      setSnapshot(await getCloudSnapshot(memberToken));
     } catch (error) {
-      setStatus({ tone: "error", message: formatSyncError(error) });
+      if (ownerRef.current === owner) setStatus({ tone: "error", message: formatSyncError(error) });
     } finally {
-      setBusy(null);
+      if (ownerRef.current === owner) setBusy(null);
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, setSnapshot, userId, memberToken]);
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
@@ -51,12 +67,12 @@ export function useAccountModel() {
   }, [isLoaded, isSignedIn, refresh]);
 
   async function push() {
-    if (!isSignedIn) return;
+    if (!isSignedIn || !snapshot) return;
     setBusy("push");
     setStatus(null);
     try {
       const local = await readLocalBackupData(storage);
-      const next = await putCloudSnapshot(getTokenRef.current, local, snapshot?.revision ?? 0);
+      const next = await putCloudSnapshot(memberToken, local, snapshot.revision);
       setSnapshot(next);
       setStatus({ tone: "ok", message: "這台裝置的資料已安全更新到雲端。" });
     } catch (error) {
@@ -72,7 +88,13 @@ export function useAccountModel() {
     setBusy("pull");
     setStatus(null);
     try {
-      await restoreLocalBackup(storage, snapshot.data);
+      // Re-read before replacing local data: another device may have updated
+      // the backup since this screen was opened.
+      const latest = await getCloudSnapshot(memberToken);
+      if (ownerRef.current !== userId) return;
+      setSnapshot(latest);
+      if (!latest.data) throw new Error("雲端備份已移除，這台裝置的資料未變更。");
+      await restoreLocalBackup(storage, latest.data);
       setStatus({ tone: "ok", message: "雲端資料已下載到這台裝置；回到錢包即可查看。" });
     } catch (error) {
       setStatus({ tone: "error", message: formatSyncError(error) });
@@ -86,7 +108,7 @@ export function useAccountModel() {
     setBusy("delete-cloud");
     setStatus(null);
     try {
-      await deleteCloudSnapshot(getTokenRef.current);
+      await deleteCloudSnapshot(memberToken);
       setSnapshot({ data: null, revision: 0, updatedAt: null });
       setStatus({ tone: "ok", message: "雲端備份已刪除；會員帳號與這台裝置的資料都會保留。" });
       return true;
@@ -150,7 +172,7 @@ export function useAccountModel() {
     setBusy("delete");
     setStatus(null);
     try {
-      const result = await deleteRemoteAccount(getTokenRef.current, appleAuthorizationCode);
+      const result = await deleteRemoteAccount(memberToken, appleAuthorizationCode);
       try {
         await signOut();
       } catch {
@@ -170,6 +192,7 @@ export function useAccountModel() {
     deleteAccount,
     isLoaded,
     isSignedIn,
+    isAdmin,
     logOut,
     profileStatus,
     pull,

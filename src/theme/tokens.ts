@@ -1,15 +1,19 @@
 import type { Lead, ScheduleEventType } from "@/domain/types";
 
 export const APP_COLORS = {
-  canvas: "#7765a7",
-  glass: "rgba(56,42,96,0.4)",
-  navigation: "rgba(72,42,107,0.62)",
-  line: "rgba(255,255,255,0.55)",
-  input: "rgba(255,255,255,0.14)",
-  text: "#ffffff",
-  success: "#7af0c8",
-  warning: "#ffe08a",
-  danger: "#ff9bb3",
+  canvas: "#f7f6fa",
+  glass: "rgba(255,255,255,0.88)",
+  navigation: "rgba(250,248,254,0.96)",
+  line: "#ddd5e9",
+  input: "#fbf9fe",
+  text: "#383144",
+  muted: "#71667e",
+  accent: "#80639f",
+  lavender: "#bbb0dc",
+  ice: "#dcecf5",
+  success: "#2a7564",
+  warning: "#8b632e",
+  danger: "#a94161",
 } as const;
 
 export const LEAD_COLORS: Record<Lead, string> = {

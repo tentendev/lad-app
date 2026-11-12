@@ -13,6 +13,8 @@ const requiredFiles = [
   "privacy.html",
   "support.html",
   "account.html",
+  "admin.html",
+  "pearl-orbits.svg",
   "sso-callback.html",
   "404.html",
   "manifest.webmanifest",
@@ -54,7 +56,7 @@ const serviceWorker = await readFile(path.join(distDirectory, "sw.js"), "utf8");
 if (serviceWorker.includes("__BUILD_ID__") || !serviceWorker.includes(`deep-space-ledger-${precache.version}`)) {
   throw new Error("Service worker cache version does not match the exported precache manifest.");
 }
-for (const primaryRoute of ["/schedule", "/wallet", "/calculator", "/tracker", "/about", "/account"]) {
+for (const primaryRoute of ["/schedule", "/wallet", "/calculator", "/tracker", "/about", "/account", "/admin"]) {
   if (!serviceWorker.includes(`"${primaryRoute}"`)) {
     throw new Error(`Service worker app shell is missing primary route: ${primaryRoute}.`);
   }

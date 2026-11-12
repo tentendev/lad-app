@@ -6,9 +6,17 @@ import { calculateResources, DEFAULT_CALCULATOR_DRAFT, normalizeCalculatorDraft,
 import { budgetKey, expensesForMonth, normalizeBudgetMap, normalizeStoredExpenses, summarizeBudget, summarizeSpendingRange } from "@/domain/budget";
 import { createLocalBackup, parseLocalBackup, validateLocalBackupData } from "@/domain/backup";
 import { isLocalPreview } from "@/auth/localPreview";
-import { CURRENCIES, POOLS, type Currency, type Pool, type RegionalPackTier } from "@/domain/types";
+import { CALCULATOR_POOLS, CURRENCIES, POOLS, type Currency, type Pool, type RegionalPackTier } from "@/domain/types";
 
 describe("current HTML data and native calculation parity", () => {
+  it("offers event pools while safely reading retired calculator choices without dropping resources", () => {
+    expect(CALCULATOR_POOLS).not.toContain("協會補給");
+    expect(CALCULATOR_POOLS).not.toContain("其他");
+    for (const pool of ["協會補給", "其他"]) {
+      const data = validateLocalBackupData({ budgets: {}, expenses: [], calculator: { ...DEFAULT_CALCULATOR_DRAFT, pool, cur: 12600, tickets: 16, pulls: 140 } });
+      expect(data.calculator).toMatchObject({ pool: "日卡池", cur: 12600, tickets: 16, pulls: 140 });
+    }
+  });
   it("uses identical regional prices, evidence status, quantities and cumulative totals in all supported pools", () => {
     const context = { window: {} as { getPackTiers: (pool: Pool, currency: Currency) => RegionalPackTier[] } };
     for (const name of ["regional-prices.js", "packs.js"]) vm.runInNewContext(readFileSync(new URL(`../${name}`, import.meta.url), "utf8"), context);

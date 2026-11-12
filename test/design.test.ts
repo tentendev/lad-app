@@ -1,23 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
 
 import { EVENT_LABELS } from "@/domain/schedule";
 import { APP_COLORS, EVENT_COLORS, LEAD_COLORS } from "@/theme/tokens";
 
-describe("original visual design contract", () => {
-  it("keeps the original lavender glass shell colors", () => {
-    const original = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-    const normalize = (value: string) => value.startsWith("rgba(")
-      ? `rgba(${value.slice(5, -1).split(",").map(Number).join(",")})`
-      : value.trim();
-    for (const [name, token] of [["glass", "card"], ["line", "line"], ["text", "txt"], ["success", "good"], ["warning", "warn"], ["danger", "bad"]] as const) {
-      const value = original.match(new RegExp(`--${token}:([^;]+);`))?.[1];
-      expect(value, `original CSS token --${token}`).toBeDefined();
-      expect(APP_COLORS[name]).toBe(normalize(value!));
+function luminance(hex: string) {
+  const channels = hex.slice(1).match(/../g)!.map(value => parseInt(value, 16) / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
+  return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+}
+
+describe("02A readability and schedule semantics", () => {
+  it("keeps text and semantic status colors readable on the pearl canvas", () => {
+    for (const role of ["text", "muted", "accent", "success", "warning", "danger"] as const) {
+      const light = luminance(APP_COLORS.canvas), dark = luminance(APP_COLORS[role]);
+      expect((Math.max(light, dark) + .05) / (Math.min(light, dark) + .05), role).toBeGreaterThanOrEqual(4.5);
     }
-    const navigation = original.match(/nav\s*\{[^}]*background:([^;]+);/)?.[1];
-    expect(navigation).toBeDefined();
-    expect(APP_COLORS.navigation).toBe(normalize(navigation!));
   });
 
   it("keeps all five lead accents", () => {

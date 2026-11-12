@@ -3,7 +3,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 import { validateLocalBackupData } from "../src/domain/backup";
 import { isSafeRevision } from "../src/domain/sync";
-import { AuthenticationError, requiredServerEnvironment, userIdFromRequest } from "./_lib/requestAuth";
+import { AuthenticationError, requiredServerEnvironment } from "./_lib/requestAuth";
+import { activeMemberFromRequest } from "./_lib/membership";
 
 const MAX_BODY_BYTES = 1_000_000;
 let schemaReady: Promise<void> | null = null;
@@ -67,10 +68,10 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   let userId: string;
   try {
-    userId = await userIdFromRequest(request);
+    userId = (await activeMemberFromRequest(request)).id;
   } catch (error) {
-    const code = error instanceof AuthenticationError ? error.code : "token_invalid";
-    return response.status(401).json({ error: code });
+    if (error instanceof AuthenticationError) return response.status(401).json({ error: error.code });
+    return response.status(503).json({ error: "membership_unavailable" });
   }
 
   try {
@@ -102,19 +103,16 @@ export default async function handler(request: VercelRequest, response: VercelRe
     } catch {
       return response.status(400).json({ error: "invalid_data" });
     }
-    const rows = await sql.query(
-      `
-        INSERT INTO lad_cloud_snapshots (user_id, data, revision, updated_at)
-        VALUES ($1, $2::jsonb, 1, now())
-        ON CONFLICT (user_id) DO UPDATE
-        SET data = EXCLUDED.data,
-            revision = lad_cloud_snapshots.revision + 1,
-            updated_at = now()
-        WHERE lad_cloud_snapshots.revision = $3
-        RETURNING data, revision, updated_at
-      `,
-      [userId, JSON.stringify(data), body.expectedRevision],
-    );
+    // Updating a deleted backup must conflict rather than silently recreating
+    // it with stale data. Creation and revision-checked updates are separate.
+    const rows = body.expectedRevision === 0
+      ? await sql.query(`INSERT INTO lad_cloud_snapshots (user_id, data, revision, updated_at)
+          VALUES ($1, $2::jsonb, 1, now()) ON CONFLICT (user_id) DO NOTHING
+          RETURNING data, revision, updated_at`, [userId, JSON.stringify(data)])
+      : await sql.query(`UPDATE lad_cloud_snapshots SET data = $2::jsonb,
+          revision = revision + 1, updated_at = now()
+          WHERE user_id = $1 AND revision = $3 RETURNING data, revision, updated_at`,
+        [userId, JSON.stringify(data), body.expectedRevision]);
     if (!rows[0]) return response.status(409).json({ error: "revision_conflict" });
     return response.status(200).json(responseSnapshot(rows[0] as Record<string, unknown>));
   } catch {

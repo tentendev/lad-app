@@ -280,7 +280,7 @@ export function WishTrackerScreenWeb() {
               </label>
               <label className="field-wrap">
                 <span className="field-label">結果</span>
-                <select className="native-select" value={form.outcome} onChange={(event) => { setFormError(null); setForm({ ...form, outcome: event.target.value as FiveStarOutcome }); }}>
+                <select aria-label="五星結果" className="native-select" value={form.outcome} onChange={(event) => { setFormError(null); setForm({ ...form, outcome: event.target.value as FiveStarOutcome }); }}>
                   {FIVE_STAR_OUTCOMES.map((outcome) => <option key={outcome}>{outcome}</option>)}
                 </select>
               </label>

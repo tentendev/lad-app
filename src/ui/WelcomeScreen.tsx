@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { ImageBackground, Modal, Platform, ScrollView, useWindowDimensions, View } from "react-native";
+import { Modal, Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Typography } from "@/ui/NativeComponents";
 import { storage } from "@/data/repositories/storage";
 import { useSiteUpdates } from "./SiteUpdatesProvider";
+import { OrbitBackdrop } from "./OrbitBackdrop";
 
 export function WelcomeScreen() {
   const { allowAutoOpen } = useSiteUpdates();
@@ -24,23 +25,24 @@ export function WelcomeScreen() {
     finally { setBusy(false); }
   }
   return <Modal visible={visible} animationType="fade" supportedOrientations={["portrait", "portrait-upside-down", "landscape-left", "landscape-right"]} onRequestClose={finishWelcome} onDismiss={allowAutoOpen}>
-    <ImageBackground source={require("../../assets/generated/ios-launch/onboarding.jpg")} resizeMode="cover" style={{ flex: 1, backgroundColor: "#34294e" }}>
+    <View style={{ flex: 1, backgroundColor: "#f7f6fa" }}>
+      <OrbitBackdrop />
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", padding: 24, paddingTop: Math.min(280, height * 0.2) }}>
-          <View style={{ maxWidth: 640, width: "100%", alignSelf: "center", gap: 20, padding: 20, borderRadius: 24, backgroundColor: "#241b42" }}>
-            <View className="gap-3"><Typography accessibilityRole="header" className="type-display font-semibold text-white">深空省省</Typography><Typography className="type-title  text-muted">把喜歡留在計畫裡，{"\n"}也替生活留點餘裕。</Typography></View>
-            <View className="gap-3 rounded-2xl border border-white/20 bg-[#241b42]/80 p-4">
-              <Typography className="type-body text-white">01　看排期，提早準備資源</Typography>
-              <Typography className="type-body text-white">02　訂預算，記下每一筆花費</Typography>
-              <Typography className="type-body text-white">03　算禮包，追蹤自己的目標</Typography>
+          <View style={{ maxWidth: 640, width: "100%", alignSelf: "center", gap: 20, padding: 20, borderRadius: 24, backgroundColor: "#fbf9fe" }}>
+            <View className="gap-3"><Typography accessibilityRole="header" className="type-display font-semibold text-ink">深空省省</Typography><Typography className="type-title  text-muted">把喜歡留在計畫裡，{"\n"}也替生活留點餘裕。</Typography></View>
+            <View className="gap-3 rounded-2xl border border-line bg-[#fbf9fe]/80 p-4">
+              <Typography className="type-body text-ink">01　看排期，提早準備資源</Typography>
+              <Typography className="type-body text-ink">02　訂預算，記下每一筆花費</Typography>
+              <Typography className="type-body text-ink">03　算禮包，追蹤自己的目標</Typography>
             </View>
             <Typography className="type-body text-muted">主要功能免登入。紀錄先保存在這台裝置，雲端備份由你主動選擇。這是玩家自製的非官方規劃工具。</Typography>
-            {error ? <Typography accessibilityRole="alert" className="type-body text-[#ffd8df]">{error}</Typography> : null}
+            {error ? <Typography accessibilityRole="alert" className="type-body text-danger">{error}</Typography> : null}
             <Button isDisabled={busy} onPress={() => void start()}>開始規劃</Button>
             {error ? <Button variant="ghost" onPress={finishWelcome}>暫不儲存，直接使用</Button> : null}
           </View>
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   </Modal>;
 }

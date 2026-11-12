@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 function NativeEventIcon({ type }: { type: ScheduleEventType }) {
   if (type === "pass") {
     return (
-      <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+      <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="#80639f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
         <Rect x={3} y={4} width={18} height={16} rx={3} />
         <Path d="M8 2v4M16 2v4M3 9h18" />
       </Svg>
@@ -47,13 +47,13 @@ function NativeEventIcon({ type }: { type: ScheduleEventType }) {
   }
   if (type === "merch") {
     return (
-      <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+      <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="#80639f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
         <Path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
       </Svg>
     );
   }
   return (
-    <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
+    <Svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="#80639f" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round">
       <Path d="M3 6a3 3 0 0 0 3 3 3 3 0 0 0 0 6 3 3 0 0 0-3 3h18a3 3 0 0 0-3-3 3 3 0 0 0 0-6 3 3 0 0 0 3-3Z" />
       <Path d="M13 6v12" />
     </Svg>
@@ -62,8 +62,8 @@ function NativeEventIcon({ type }: { type: ScheduleEventType }) {
 
 function nativeLeadLabel(event: ScheduleEvent): { label: string; color: string } | null {
   if (!event.leads?.length) return null;
-  if (event.leads.length === LEADS.length) return { label: "全員", color: "rgba(255,255,255,.5)" };
-  if (event.leads.length > 1) return { label: "多人", color: "rgba(255,255,255,.5)" };
+  if (event.leads.length === LEADS.length) return { label: "全員", color: "#ddd5e9" };
+  if (event.leads.length > 1) return { label: "多人", color: "#ddd5e9" };
   return { label: event.leads[0], color: LEAD_COLORS[event.leads[0]] };
 }
 
@@ -119,19 +119,19 @@ export function ScheduleScreenNative() {
 
   return (
     <NativePage workspace eyebrow={`${SCHEDULE_META.label} · 更新 ${SCHEDULE_META.updated}`} title="排期" description="官方公告與預測排期集中查看；虛線色條為排期預測。">
-      {model.preferenceError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.preferenceError}</Typography></View> : null}
-      {model.plannerError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.plannerError}</Typography></View> : null}
-      {linkError ? <Typography accessibilityRole="alert" className="type-body text-[#ffc2cb]">{linkError}</Typography> : null}
+      {model.preferenceError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-ink">{model.preferenceError}</Typography></View> : null}
+      {model.plannerError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-ink">{model.plannerError}</Typography></View> : null}
+      {linkError ? <Typography accessibilityRole="alert" className="type-body text-danger">{linkError}</Typography> : null}
       <Typography className="type-label text-muted">{SCHEDULE_META.label} · 更新 {SCHEDULE_META.updated}。虛線為預測，時間以遊戲內公告為準。</Typography>
-      <Card className="gap-4 border border-white/50 bg-glass p-3">
+      <Card className="gap-4 border border-line bg-glass p-3">
         <View className="flex-row items-center justify-between gap-2">
-          <Button accessibilityLabel="上個月" size="sm" variant="ghost" className="border border-white/45" onPress={model.previousMonth}>←</Button>
-          <Typography.Heading type="h4" className="flex-1 text-center type-title text-white">{model.year}年 {pad(model.monthIndex + 1)}月</Typography.Heading>
-          <Button accessibilityLabel="下個月" size="sm" variant="ghost" className="border border-white/45" onPress={model.nextMonth}>→</Button>
+          <Button accessibilityLabel="上個月" size="sm" variant="ghost" className="border border-line" onPress={model.previousMonth}>←</Button>
+          <Typography.Heading type="h4" className="flex-1 text-center type-title text-ink">{model.year}年 {pad(model.monthIndex + 1)}月</Typography.Heading>
+          <Button accessibilityLabel="下個月" size="sm" variant="ghost" className="border border-line" onPress={model.nextMonth}>→</Button>
         </View>
-        {!model.isCurrentMonth ? <Button size="sm" variant="ghost" className="self-center border border-white/35" onPress={model.goToCurrentMonth}>回到本月</Button> : null}
+        {!model.isCurrentMonth ? <Button size="sm" variant="ghost" className="self-center border border-line" onPress={model.goToCurrentMonth}>回到本月</Button> : null}
 
-        <View className="gap-2 rounded-2xl border border-white/35 bg-white/10 p-3">
+        <View className="gap-2 rounded-2xl border border-line bg-white/70 p-3">
           <Pressable accessibilityRole="button" accessibilityState={{ expanded: filtersOpen }} className="min-h-12 flex-row flex-wrap items-center justify-between gap-2" onPress={() => setFiltersOpen(!filtersOpen)}>
             <Typography className="font-semibold text-muted">男主篩選 {filtersOpen ? "⌃" : "⌄"}</Typography>
             <Typography className="type-label text-muted">{allLeadsSelected ? "已顯示全部" : `已選 ${model.selectedLeads.length} 位`}</Typography>
@@ -143,9 +143,9 @@ export function ScheduleScreenNative() {
               accessibilityState={{ selected: allLeadsSelected }}
               hitSlop={6}
               onPress={model.showAllLeads}
-              className={`min-h-12 items-center justify-center rounded-full border px-3 py-2 ${allLeadsSelected ? "border-white bg-white/20" : "border-white/35 bg-transparent"}`}
+              className={`min-h-12 items-center justify-center rounded-full border px-3 py-2 ${allLeadsSelected ? "border-line bg-orbit/10" : "border-line bg-transparent"}`}
             >
-              <Typography className="type-label font-semibold text-white">全部</Typography>
+              <Typography className="type-label font-semibold text-ink">全部</Typography>
             </Pressable>
             {LEADS.map((lead) => {
               const active = model.selectedLeads.includes(lead);
@@ -157,9 +157,9 @@ export function ScheduleScreenNative() {
                   hitSlop={6}
                   onPress={() => model.toggleLead(lead)}
                   className="flex-row gap-1 min-h-12 items-center justify-center rounded-full border px-3 py-2"
-                  style={{ borderColor: active ? "#fff" : "rgba(255,255,255,.35)", backgroundColor: active ? "rgba(255,255,255,.2)" : "transparent" }}
+                  style={{ borderColor: active ? "#b29bc9" : "#ddd5e9", backgroundColor: active ? "#e5d9f0" : "transparent" }}
                 >
-                  <Typography className="type-label font-semibold text-white">{lead}</Typography>
+                  <Typography className="type-label font-semibold text-ink">{lead}</Typography>
                 </Pressable>
               );
             })}
@@ -196,10 +196,10 @@ export function ScheduleScreenNative() {
                   accessibilityLabel={`${cell.key}，${cell.eventCount} 個排期`}
                   accessibilityState={{ selected }}
                   onPress={() => { model.selectDate(cell.key); setViewMode("list"); }}
-                  className={`h-full items-center rounded-xl border pt-2 ${selected ? "border-white bg-white/20" : "border-white/5 bg-white/10"}`}
+                  className={`h-full items-center rounded-xl border pt-2 ${selected ? "border-line bg-orbit/10" : "border-line bg-white/70"}`}
                 >
-                  <Typography className={`type-body font-semibold ${isToday ? "text-white" : "text-muted"}`}>{cell.day}</Typography>
-                  {isToday ? <View className="mt-1 h-0.5 w-4 rounded-full bg-white" /> : null}
+                  <Typography className={`type-body font-semibold ${isToday ? "text-ink" : "text-muted"}`}>{cell.day}</Typography>
+                  {isToday ? <View className="mt-1 h-0.5 w-4 rounded-full bg-orbit" /> : null}
                 </Pressable>
               </View>
             );
@@ -220,13 +220,13 @@ export function ScheduleScreenNative() {
                       left,
                       width,
                       backgroundColor: color,
-                      borderColor: "rgba(255,255,255,0.72)",
+                      borderColor: "#80639f",
                       borderWidth: isScheduleForecast(segment.event, todayKey()) ? 1 : 0,
                       borderStyle: isScheduleForecast(segment.event, todayKey()) ? "dashed" : "solid",
                     },
                   ]}
                 >
-                  <Typography numberOfLines={1} className="type-label font-semibold text-[#34294e]">{segment.event.name}</Typography>
+                  <Typography numberOfLines={1} className="type-label font-semibold text-ink">{segment.event.name}</Typography>
                 </View>
               );
             })}
@@ -236,7 +236,7 @@ export function ScheduleScreenNative() {
         </View></ScrollView></View>
         </> : null}
 
-        <View className="flex-row flex-wrap gap-x-3 gap-y-2 border-t border-white/25 pt-3">
+        <View className="flex-row flex-wrap gap-x-3 gap-y-2 border-t border-line pt-3">
           {(Object.keys(EVENT_LABELS) as ScheduleEventType[]).map((type) => (
             <View key={type} className="flex-row items-center gap-1.5">
               <View className="h-2 w-2 rounded-full" style={{ backgroundColor: EVENT_COLORS[type] }} />
@@ -246,9 +246,9 @@ export function ScheduleScreenNative() {
         </View>
       </Card>
 
-      <Card className="gap-3 border border-white/50 bg-glass p-4">
+      <Card className="gap-3 border border-line bg-glass p-4">
         <View className="gap-2">
-          <Typography.Heading type="h4" className="type-title text-white">
+          <Typography.Heading type="h4" className="type-title text-ink">
             {model.selectedDate ? `${Number(model.selectedDate.slice(5, 7))}月${Number(model.selectedDate.slice(8, 10))}日` : `${pad(model.monthIndex + 1)}月`} 排期
           </Typography.Heading>
           <View className="flex-row flex-wrap gap-2">
@@ -261,23 +261,23 @@ export function ScheduleScreenNative() {
         <NativeColumns minimum={360}>{model.selectedEvents.map((event, index) => {
           const status = eventStatus(event, today);
           const lead = nativeLeadLabel(event);
-          const statusColor = status.tone === "live" ? "#65d6c4" : status.tone === "soon" ? "#ffd166" : "rgba(255,255,255,.45)";
+          const statusColor = status.tone === "live" ? "#2a7564" : status.tone === "soon" ? "#8b632e" : "#ddd5e9";
           return (
-            <View key={`${event.name}-${event.start}-${index}`} className="gap-2 border-b border-white/20 py-3">
+            <View key={`${event.name}-${event.start}-${index}`} className="gap-2 border-b border-line py-3">
               <View className="flex-row items-center justify-between gap-3">
-                <View className="h-10 w-10 items-center justify-center rounded-xl border border-white/50 bg-white/10">
+                <View className="h-10 w-10 items-center justify-center rounded-xl border border-line bg-white/70">
                   <NativeEventIcon type={event.type} />
                 </View>
                 <View className="flex-1 gap-1">
                   <View className="flex-row flex-wrap items-center gap-1.5">
-                    <Typography.Paragraph className="font-semibold text-white">{event.name}{isScheduleForecast(event, today) ? " · 預測" : ""}</Typography.Paragraph>
+                    <Typography.Paragraph className="font-semibold text-ink">{event.name}{isScheduleForecast(event, today) ? " · 預測" : ""}</Typography.Paragraph>
                     {lead ? (
                       <View className="rounded-full border px-2 py-0.5" style={{ borderColor: lead.color }}>
                         <Typography className="type-label text-muted">{lead.label}</Typography>
                       </View>
                     ) : null}
                   </View>
-                  <View className="self-start rounded-full border px-2 py-1" style={{ borderColor: statusColor }}><Typography className="type-label text-white">{status.label}</Typography></View>
+                  <View className="self-start rounded-full border px-2 py-1" style={{ borderColor: statusColor }}><Typography className="type-label text-ink">{status.label}</Typography></View>
                   <Typography className="type-label text-muted">{EVENT_LABELS[event.type]} · {event.start}{!event.end ? " · 結束日待確認" : event.end !== event.start ? ` ~ ${event.end}` : ""}</Typography>
                 </View>
 

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { storage } from "@/data/repositories/storage";
 import { STORAGE_KEYS } from "@/data/repositories/storage.types";
 import { todayKey } from "@/domain/format";
+import { normalizeCalculatorPool } from "@/domain/calculator";
 import {
   DEFAULT_PLANNER_STATE,
   assessPullPlanPace,
@@ -16,7 +17,7 @@ import {
   pullGoalForSourceEvent,
   summarizeResourceCheckIns,
 } from "@/domain/planner";
-import type { PlannerState, PullGoal, PullGoalDraft, ResourceCheckIn, ResourceCheckInDraft } from "@/domain/types";
+import { type PlannerState, type PullGoal, type PullGoalDraft, type ResourceCheckIn, type ResourceCheckInDraft } from "@/domain/types";
 
 function emptyGoalDraft(): PullGoalDraft {
   return {
@@ -66,12 +67,12 @@ export function usePlannerModel(resources: { currentDia: number; currentTickets:
           if (existing) {
             const { id, ...draft } = existing;
             setEditingId(id);
-            setGoalDraft(draft);
+            setGoalDraft({ ...draft, pool: normalizeCalculatorPool(draft.pool) });
             setHandoffNotice("這項排期已在規劃中，已開啟原目標供你確認或修改。");
           } else {
             setEditingId(null);
             setHandoffNotice(null);
-            setGoalDraft(pending);
+            setGoalDraft({ ...pending, pool: normalizeCalculatorPool(pending.pool) });
           }
         }
         setWriteProtected(false);
@@ -159,7 +160,7 @@ export function usePlannerModel(resources: { currentDia: number; currentTickets:
     if (existingSourceGoal) {
       const { id, ...draft } = existingSourceGoal;
       setEditingId(id);
-      setGoalDraft(draft);
+      setGoalDraft({ ...draft, pool: normalizeCalculatorPool(draft.pool) });
       setHandoffNotice("這項排期已在規劃中，已開啟原目標供你確認或修改。");
       setFormError(null);
       return false;
@@ -189,7 +190,7 @@ export function usePlannerModel(resources: { currentDia: number; currentTickets:
   const startEditing = useCallback((goal: PullGoal) => {
     const { id, ...draft } = goal;
     setEditingId(id);
-    setGoalDraft(draft);
+    setGoalDraft({ ...draft, pool: normalizeCalculatorPool(draft.pool) });
     setFormError(null);
     setHandoffNotice(null);
   }, []);

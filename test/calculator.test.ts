@@ -52,6 +52,12 @@ describe("normalizeCalculatorDraft", () => {
 });
 
 describe("normalizePendingCalculatorTarget", () => {
+  it("migrates retired pool handoffs while retaining the requested target", () => {
+    for (const pool of ["協會補給", "其他"]) {
+      expect(normalizePendingCalculatorTarget({ pulls: 70, pool, source: "舊版目標" }))
+        .toEqual({ pulls: 70, pool: "日卡池", source: "舊版目標" });
+    }
+  });
   it("accepts a tracker handoff and rejects ambiguous targets", () => {
     expect(normalizePendingCalculatorTarget({ pulls: 129, pool: "生日復刻池", source: " 復刻池保底 " }))
       .toEqual({ pulls: 129, pool: "生日復刻池", source: "復刻池保底" });

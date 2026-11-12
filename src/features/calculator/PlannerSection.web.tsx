@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { recommendPacksForGap, type GapPackRecommendation } from "@/domain/calculator";
 import { formatCurrency, formatNumber, todayKey } from "@/domain/format";
 import { pullPlanToText } from "@/domain/planner";
-import { POOLS, type Pool, type PullGoal, type ResourceCheckIn } from "@/domain/types";
+import { CALCULATOR_POOLS, type Pool, type PullGoal, type ResourceCheckIn } from "@/domain/types";
 import { DeviceDataLoading } from "@/ui/DeviceDataLoading.web";
 import { RetryableError } from "@/ui/RetryableError.web";
 import { usePlannerModel } from "./usePlannerModel";
@@ -212,7 +212,7 @@ export function PlannerSectionWeb({
                 value={model.goalDraft.pool}
                 onChange={(event) => model.updateGoalDraft("pool", event.target.value as Pool)}
               >
-                {POOLS.map((pool) => <option key={pool}>{pool}</option>)}
+                {CALCULATOR_POOLS.map((pool) => <option key={pool}>{pool}</option>)}
               </select>
             </label>
             <label className="field-wrap">

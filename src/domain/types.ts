@@ -28,6 +28,8 @@ export const CURRENCIES = ["TWD", "HKD", "MYR"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 export const POOLS = ["日卡池", "混池", "月卡池", "生日池", "月卡復刻池", "生日復刻池", "混池復刻池", "協會補給", "其他"] as const;
 export type Pool = (typeof POOLS)[number];
+// Keep legacy pool names readable in backups; new plans use event pools only.
+export const CALCULATOR_POOLS = POOLS.filter(pool => pool !== "協會補給" && pool !== "其他");
 
 export type ReserveUnit = "pulls" | "dia";
 export type PackQuantities = Partial<Record<Pool, number[]>>;

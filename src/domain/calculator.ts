@@ -1,5 +1,5 @@
 import { DIA_PER_PULL, MONTHLY_DIA, OFFICIAL_TICKET_RULES, PACK_DATA, getPackTiers, migratePoolRecords, normalizePool } from "../data/packs";
-import { POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type Currency, type PendingCalculatorTarget, type Pool, type TicketRule } from "./types";
+import { CALCULATOR_POOLS, POOLS, type CalculatorDraft, type PackQuantities, type PackTier, type Currency, type PendingCalculatorTarget, type Pool, type TicketRule } from "./types";
 
 import { normalizeCurrency } from "./format";
 
@@ -27,11 +27,16 @@ function cappedSafeNumber(value: number): number {
   return Math.min(Number.MAX_SAFE_INTEGER, Math.max(0, value));
 }
 
+export function normalizeCalculatorPool(value: unknown): Pool {
+  const pool = normalizePool(value);
+  return CALCULATOR_POOLS.some(active => active === pool) ? pool : DEFAULT_CALCULATOR_DRAFT.pool;
+}
+
 export function normalizeCalculatorDraft(value: unknown): CalculatorDraft {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return { ...DEFAULT_CALCULATOR_DRAFT };
   const stored = value as Partial<Record<keyof CalculatorDraft, unknown>>;
   return {
-    pool: normalizePool(stored.pool),
+    pool: normalizeCalculatorPool(stored.pool),
     cur: nonNegativeInteger(stored.cur),
     tickets: nonNegativeInteger(stored.tickets),
     pulls: nonNegativeInteger(stored.pulls),
@@ -49,7 +54,7 @@ export function normalizePendingCalculatorTarget(value: unknown): PendingCalcula
   if (!Number.isSafeInteger(stored.pulls) || (stored.pulls as number) <= 0 || (stored.pulls as number) > 999) return null;
   if (stored.pool !== null && (typeof stored.pool !== "string" || (!POOLS.includes(stored.pool as Pool) && !["復刻池", "月卡／生日復刻池"].includes(stored.pool)))) return null;
   if (typeof stored.source !== "string" || !stored.source.trim() || stored.source.trim().length > 120) return null;
-  return { pulls: stored.pulls as number, pool: stored.pool === null ? null : normalizePool(stored.pool), source: stored.source.trim() };
+  return { pulls: stored.pulls as number, pool: stored.pool === null ? null : normalizeCalculatorPool(stored.pool), source: stored.source.trim() };
 }
 
 export type ResourcePlan = {

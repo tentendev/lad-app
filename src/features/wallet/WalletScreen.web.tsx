@@ -1,3 +1,4 @@
+import { BudgetSummary } from "@/ui/BudgetSummary.web";
 import { Button } from "@heroui/react/button";
 import { Card } from "@heroui/react/card";
 import { Input } from "@heroui/react/input";
@@ -169,7 +170,6 @@ export function WalletScreenWeb() {
     URL.revokeObjectURL(url);
   }
 
-  const progress = Math.min(100, model.summary.percentage);
   const visibleExpenses = model.expenses.filter((expense) => expenseFilter === "全部" || expense.cat === expenseFilter);
   const comparisonCopy = model.insights.previousSpent === 0
     ? model.summary.spent > 0 ? "上月沒有支出可比較" : "尚無支出變化"
@@ -227,25 +227,7 @@ export function WalletScreenWeb() {
               <label className="currency-choice"><span>幣別</span><select className="native-select" aria-label="記帳幣別" value={model.currency} onChange={event => { setForm({ ...EMPTY_FORM, date: form.date }); void model.setCurrency(event.target.value as Currency); }}>{CURRENCIES.map(currency => <option key={currency} value={currency}>{CURRENCY_LABELS[currency]} · {CURRENCY_SYMBOLS[currency]}</option>)}</select></label>
             </div>
             <p className="currency-note">預算與花費依幣別分開記錄，不合併換算。</p>
-            <div className="hero-value">{formatCurrency(model.summary.remaining)}</div>
-            <div className="hero-caption">
-              剩餘可花 · 預算 {formatCurrency(model.summary.budget)}
-            </div>
-            <div
-              className="progress-track"
-              role="progressbar"
-              aria-label="當月預算使用率"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={progress}
-              aria-valuetext={`已使用 ${model.summary.percentage}%`}
-            >
-              <div
-                className={`progress-value ${model.summary.state === "warning" ? "warning" : model.summary.state === "over" ? "over" : ""}`}
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <div className="hero-caption">已花 {formatCurrency(model.summary.spent)} · 使用 {model.summary.percentage}%</div>
+            <BudgetSummary {...model.summary} currency={model.currency} />
             <div className={`status-note ${model.summary.state}`} role="status">
               {statusCopy(model.summary.state, model.summary.remaining, model.summary.percentage, model.currency)}
             </div>

@@ -15,8 +15,8 @@ export function requiredServerEnvironment(name: "CLERK_SECRET_KEY" | "DATABASE_U
 
 function authorizedParties(): string[] {
   const values = new Set([
-    "https://lad-pocket.vercel.app",
-    "https://lad-pocket-auth-preview.vercel.app",
+    "https://deep-space-ledger-app.vercel.app",
+    "https://lad-app.tenten.co",
     "http://localhost:8081",
     "http://localhost:19006",
   ]);

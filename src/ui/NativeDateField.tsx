@@ -21,15 +21,15 @@ export function NativeDateField({ label, value, onChange, disabled = false }: {
   }
   return <View className="gap-2">
     <Typography className="type-label text-muted">{label}</Typography>
-    <Pressable accessibilityRole="button" accessibilityLabel={`${label}，${value || "選擇日期"}`} accessibilityState={{ disabled, expanded: open }} disabled={disabled} onPress={show} className="min-h-12 flex-row flex-wrap items-center justify-between gap-2 rounded-[13px] border border-white/55 bg-white/[0.14] px-3 py-3">
-      <Typography className="type-body text-white">{value || "選擇日期"}</Typography><Typography className="text-muted">⌄</Typography>
+    <Pressable accessibilityRole="button" accessibilityLabel={`${label}，${value || "選擇日期"}`} accessibilityState={{ disabled, expanded: open }} disabled={disabled} onPress={show} className="min-h-12 flex-row flex-wrap items-center justify-between gap-2 rounded-[13px] border border-line bg-white/80 px-3 py-3">
+      <Typography className="type-body text-ink">{value || "選擇日期"}</Typography><Typography className="text-muted">⌄</Typography>
     </Pressable>
     {open && Platform.OS === "android" ? <DateTimePicker value={pending} mode="date" onChange={(event, next) => { setOpen(false); if (event.type === "set" && next) onChange(toDateKey(next)); }} /> : null}
     {Platform.OS !== "android" ? <Modal visible={open} transparent animationType="slide" supportedOrientations={["portrait", "portrait-upside-down", "landscape-left", "landscape-right"]} onRequestClose={() => setOpen(false)}>
       <View className="flex-1 bg-black/50" style={{ justifyContent: tablet ? "center" : "flex-end", paddingTop: insets.top, paddingHorizontal: tablet ? 24 : 0 }}>
-        <ScrollView accessibilityViewIsModal style={{ width: "100%", maxWidth: 520, maxHeight: height - insets.top - insets.bottom, flexGrow: 0, alignSelf: "center", borderRadius: 24, backgroundColor: "#34294e" }} contentContainerStyle={{ gap: 12, padding: 20, paddingBottom: Math.max(20, insets.bottom) }}>
-          <Typography accessibilityRole="header" className="type-title font-semibold text-white">{label}</Typography><View className="flex-row flex-wrap items-center justify-between gap-2"><Button variant="ghost" onPress={() => setOpen(false)}>取消</Button><Button variant="secondary" onPress={() => { onChange(toDateKey(pending)); setOpen(false); }}>完成</Button></View>
-          <DateTimePicker style={{ width: Math.min(320, width - 40), alignSelf: "center" }} value={pending} mode="date" display="spinner" locale="zh-TW" themeVariant="dark" onChange={(_, next) => { if (next) setPending(next); }} />
+        <ScrollView accessibilityViewIsModal style={{ width: "100%", maxWidth: 520, maxHeight: height - insets.top - insets.bottom, flexGrow: 0, alignSelf: "center", borderRadius: 24, backgroundColor: "#fbf9fe" }} contentContainerStyle={{ gap: 12, padding: 20, paddingBottom: Math.max(20, insets.bottom) }}>
+          <Typography accessibilityRole="header" className="type-title font-semibold text-ink">{label}</Typography><View className="flex-row flex-wrap items-center justify-between gap-2"><Button variant="ghost" onPress={() => setOpen(false)}>取消</Button><Button variant="secondary" onPress={() => { onChange(toDateKey(pending)); setOpen(false); }}>完成</Button></View>
+          <DateTimePicker style={{ width: Math.min(320, width - 40), alignSelf: "center" }} value={pending} mode="date" display="spinner" locale="zh-TW" themeVariant="light" onChange={(_, next) => { if (next) setPending(next); }} />
         </ScrollView>
       </View>
     </Modal> : null}

@@ -8,7 +8,7 @@ import { Button, Card, Typography } from "@/ui/NativeComponents";
 import { recommendPacksForGap, type GapPackRecommendation } from "@/domain/calculator";
 import { formatCurrency, formatNumber, todayKey } from "@/domain/format";
 import { pullPlanToText } from "@/domain/planner";
-import { POOLS, type Pool, type PullGoal, type ResourceCheckIn } from "@/domain/types";
+import { CALCULATOR_POOLS, type Pool, type PullGoal, type ResourceCheckIn } from "@/domain/types";
 import { usePlannerModel } from "./usePlannerModel";
 
 function PlannerField({
@@ -32,11 +32,11 @@ function PlannerField({
       <Typography className="type-label text-muted">{label}</Typography>
       <TextInput
         accessibilityLabel={label}
-        className="min-h-12 rounded-xl border border-white/35 bg-white/10 px-4 py-3 text-white"
+        className="min-h-12 rounded-xl border border-line bg-white/70 px-4 py-3 text-ink"
         editable={!disabled}
         keyboardType={keyboardType}
         placeholder={placeholder}
-        placeholderTextColor="#ded7ed"
+        placeholderTextColor="#887d94"
         value={value}
         onChangeText={onChange}
       />
@@ -111,35 +111,35 @@ export function PlannerSectionNative({
 
   if (!model.ready) {
     return (
-      <Card className="gap-4 border border-white/40 bg-glass p-4" accessibilityRole="progressbar">
+      <Card className="gap-4 border border-line bg-glass p-4" accessibilityRole="progressbar">
         <Typography className="type-body text-muted">正在讀取活動規劃…</Typography>
-        <View className="h-12 rounded-xl bg-white/10" />
-        <View className="h-32 rounded-2xl bg-white/10" />
+        <View className="h-12 rounded-xl bg-white/70" />
+        <View className="h-32 rounded-2xl bg-white/70" />
       </Card>
     );
   }
 
   return (
     <View className="gap-4">
-      <Card className="gap-4 border border-white/50 bg-glass p-4">
+      <Card className="gap-4 border border-line bg-glass p-4">
         <View className="gap-1">
 
-          <Typography.Heading type="h4" className="type-title text-white">活動抽卡規劃</Typography.Heading>
+          <Typography.Heading type="h4" className="type-title text-ink">活動抽卡規劃</Typography.Heading>
           <Typography.Paragraph className="type-body text-muted">
             以目前 {formatNumber(currentDia)} 鑽、{formatNumber(currentTickets)} 張金券為起點；金券只計入一次，再依活動截止日分配存鑽。
           </Typography.Paragraph>
         </View>
 
-        {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-white">{model.storageError}</Typography></View> : null}
-        {model.handoffNotice ? <View accessibilityRole="alert" className="rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3"><Typography className="type-body text-white">{model.handoffNotice}</Typography></View> : null}
+        {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-ink">{model.storageError}</Typography></View> : null}
+        {model.handoffNotice ? <View accessibilityRole="alert" className="rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3"><Typography className="type-body text-ink">{model.handoffNotice}</Typography></View> : null}
         {deletedGoal ? (
-          <View accessibilityRole="alert" className="flex-row items-center justify-between gap-3 rounded-xl border border-white/35 bg-white/10 p-3">
-            <Typography className="flex-1 type-body text-white">已移除「{deletedGoal.title}」。</Typography>
+          <View accessibilityRole="alert" className="flex-row items-center justify-between gap-3 rounded-xl border border-line bg-white/70 p-3">
+            <Typography className="flex-1 type-body text-ink">已移除「{deletedGoal.title}」。</Typography>
             <Button size="sm" variant="ghost" isDisabled={model.writeProtected || model.busy} onPress={() => void undoDelete()}>復原</Button>
           </View>
         ) : null}
 
-        <View className="gap-2 rounded-2xl border border-white/25 bg-white/10 p-3">
+        <View className="gap-2 rounded-2xl border border-line bg-white/70 p-3">
           <PlannerField
             label="每月可存鑽石"
             keyboardType="numeric"
@@ -150,7 +150,7 @@ export function PlannerSectionNative({
           <Button isDisabled={model.writeProtected || model.busy} variant="secondary" onPress={() => void model.saveMonthlyIncome()}>{model.busy ? "儲存中…" : "更新預測"}</Button>
         </View>
 
-        <View className="gap-3 border-t border-white/20 pt-4">
+        <View className="gap-3 border-t border-line pt-4">
           <PlannerField
             label="規劃名稱"
             placeholder="例如：黎深生日池"
@@ -161,7 +161,7 @@ export function PlannerSectionNative({
           <View className="gap-1.5">
             <Typography className="type-label text-muted">卡池類型</Typography>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
-              {POOLS.map((pool) => (
+              {CALCULATOR_POOLS.map((pool) => (
                 <Button
                   key={pool}
                   size="sm"
@@ -189,7 +189,7 @@ export function PlannerSectionNative({
             value={model.goalDraft.deadline}
             onChange={(value) => model.updateGoalDraft("deadline", value)}
           />
-          <View className="min-h-12 flex-row items-center justify-between rounded-xl border border-white/30 bg-white/10 px-3">
+          <View className="min-h-12 flex-row items-center justify-between rounded-xl border border-line bg-white/70 px-3">
             <Typography className="type-body text-muted">這是預測日期</Typography>
             <Switch
               accessibilityLabel="這是預測日期"
@@ -199,7 +199,7 @@ export function PlannerSectionNative({
             />
           </View>
           {model.goalDraft.sourceEvent ? <Typography className="type-label text-muted">已從排期帶入名稱、卡池與截止日；請填目標抽數後儲存。</Typography> : null}
-          {model.formError ? <Typography accessibilityRole="alert" className="type-body text-[#fff0c4]">{model.formError}</Typography> : null}
+          {model.formError ? <Typography accessibilityRole="alert" className="type-body text-warning">{model.formError}</Typography> : null}
           <View className="flex-row flex-wrap gap-2">
             <Button className="flex-1" isDisabled={model.writeProtected || model.busy} onPress={() => void model.saveGoal()}>
               {model.busy ? "儲存中…" : model.editingId === null ? "加入規劃" : "儲存修改"}
@@ -221,28 +221,28 @@ export function PlannerSectionNative({
         </View>
       </Card>
 
-      <Card className="gap-4 border border-white/50 bg-glass p-4">
-        <View className="gap-1"><Typography.Heading type="h4" className="type-title text-white">資源進度</Typography.Heading></View>
+      <Card className="gap-4 border border-line bg-glass p-4">
+        <View className="gap-1"><Typography.Heading type="h4" className="type-title text-ink">資源進度</Typography.Heading></View>
         <Typography.Paragraph className="type-body text-muted">定期記下實際鑽石與金券，回頭查看進度變化；套用最新紀錄後，活動預測會立即重算。</Typography.Paragraph>
-        {deletedCheckIn ? <View accessibilityRole="alert" className="flex-row items-center justify-between gap-3 rounded-xl border border-white/35 bg-white/10 p-3"><Typography className="flex-1 type-body text-white">已移除 {deletedCheckIn.date} 的進度。</Typography><Button size="sm" variant="ghost" isDisabled={model.writeProtected || model.busy} onPress={() => void undoCheckInDelete()}>復原</Button></View> : null}
+        {deletedCheckIn ? <View accessibilityRole="alert" className="flex-row items-center justify-between gap-3 rounded-xl border border-line bg-white/70 p-3"><Typography className="flex-1 type-body text-ink">已移除 {deletedCheckIn.date} 的進度。</Typography><Button size="sm" variant="ghost" isDisabled={model.writeProtected || model.busy} onPress={() => void undoCheckInDelete()}>復原</Button></View> : null}
         <PlannerField label="資源進度日期（YYYY-MM-DD）" value={checkInDate} onChange={(value) => { model.clearCheckInError(); setCheckInDate(value); }} disabled={model.writeProtected || model.busy} />
         <PlannerField label="資源進度鑽石" value={checkInDiamonds} onChange={(value) => { model.clearCheckInError(); setCheckInDiamonds(value); }} keyboardType="numeric" disabled={model.writeProtected || model.busy} />
         <PlannerField label="資源進度金券" value={checkInTickets} onChange={(value) => { model.clearCheckInError(); setCheckInTickets(value); }} keyboardType="numeric" disabled={model.writeProtected || model.busy} />
         <PlannerField label="資源進度備註（選填）" value={checkInNote} onChange={(value) => { model.clearCheckInError(); setCheckInNote(value); }} placeholder="例如：活動獎勵已領" disabled={model.writeProtected || model.busy} />
-        {model.checkInError ? <Typography accessibilityRole="alert" className="type-body text-[#fff0c4]">{model.checkInError}</Typography> : null}
+        {model.checkInError ? <Typography accessibilityRole="alert" className="type-body text-warning">{model.checkInError}</Typography> : null}
         <Button isDisabled={model.writeProtected || model.busy} onPress={() => void saveCheckIn()}>{model.busy ? "儲存中…" : "儲存這天進度"}</Button>
         {model.checkInSummary.latest ? (
-          <View className="gap-3 rounded-2xl border border-white/25 bg-white/10 p-3">
+          <View className="gap-3 rounded-2xl border border-line bg-white/70 p-3">
             <View className="flex-row flex-wrap gap-2">
-              <View className="flex-1"><Typography className="type-label text-muted">最新 · {model.checkInSummary.latest.date}</Typography><Typography className="type-body font-semibold text-white">{formatNumber(model.checkInSummary.latest.diamonds)} 鑽＋{formatNumber(model.checkInSummary.latest.tickets)} 券</Typography></View>
-              <View className="flex-1"><Typography className="type-label text-muted">比上次</Typography><Typography className="type-body font-semibold text-white">{model.checkInSummary.changeEquivalentDia === null ? "尚無比較" : `${model.checkInSummary.changeEquivalentDia >= 0 ? "+" : ""}${formatNumber(model.checkInSummary.changeEquivalentDia)} 鑽`}</Typography></View>
+              <View className="flex-1"><Typography className="type-label text-muted">最新 · {model.checkInSummary.latest.date}</Typography><Typography className="type-body font-semibold text-ink">{formatNumber(model.checkInSummary.latest.diamonds)} 鑽＋{formatNumber(model.checkInSummary.latest.tickets)} 券</Typography></View>
+              <View className="flex-1"><Typography className="type-label text-muted">比上次</Typography><Typography className="type-body font-semibold text-ink">{model.checkInSummary.changeEquivalentDia === null ? "尚無比較" : `${model.checkInSummary.changeEquivalentDia >= 0 ? "+" : ""}${formatNumber(model.checkInSummary.changeEquivalentDia)} 鑽`}</Typography></View>
             </View>
             <Button size="sm" variant="secondary" onPress={() => onApplyResources(model.checkInSummary.latest!.diamonds, model.checkInSummary.latest!.tickets)}>套用到換算</Button>
           </View>
         ) : <Typography.Paragraph className="py-4 text-center text-muted">尚無資源進度</Typography.Paragraph>}
-        <View className={`gap-1 rounded-xl border p-3 ${model.pace.status === "behind" ? "border-[#ffe08a]/60 bg-[#ffe08a]/10" : "border-white/25 bg-white/10"}`} accessibilityRole="summary">
+        <View className={`gap-1 rounded-xl border p-3 ${model.pace.status === "behind" ? "border-[#ffe08a]/60 bg-[#ffe08a]/10" : "border-line bg-white/70"}`} accessibilityRole="summary">
           <Typography className="type-label text-muted">{model.pace.status === "safe" ? "目前節奏" : model.pace.target?.goal.title ?? "下一項目標"}</Typography>
-          <Typography className="type-label font-semibold  text-white">
+          <Typography className="type-label font-semibold  text-ink">
             {model.pace.status === "safe"
               ? "目前目標不需額外追趕，維持現有規劃即可。"
               : model.pace.status === "unknown"
@@ -253,21 +253,21 @@ export function PlannerSectionNative({
           </Typography>
         </View>
         {recentCheckIns.map((checkIn) => (
-          <View key={checkIn.id} className="flex-row items-center gap-3 border-t border-white/15 pt-3">
-            <View className="flex-1"><Typography className="type-body text-white">{checkIn.date}</Typography><Typography className="type-label text-muted">{formatNumber(checkIn.diamonds)} 鑽 · {formatNumber(checkIn.tickets)} 券{checkIn.note ? ` · ${checkIn.note}` : ""}</Typography></View>
+          <View key={checkIn.id} className="flex-row items-center gap-3 border-t border-line pt-3">
+            <View className="flex-1"><Typography className="type-body text-ink">{checkIn.date}</Typography><Typography className="type-label text-muted">{formatNumber(checkIn.diamonds)} 鑽 · {formatNumber(checkIn.tickets)} 券{checkIn.note ? ` · ${checkIn.note}` : ""}</Typography></View>
             <Button size="sm" variant="ghost" isDisabled={model.writeProtected || model.busy} onPress={() => void removeCheckIn(checkIn)}>移除</Button>
           </View>
         ))}
       </Card>
 
-      <Card className="gap-4 border border-white/50 bg-glass p-4">
+      <Card className="gap-4 border border-line bg-glass p-4">
         <View className="flex-row items-start justify-between gap-3">
           <View>
 
-            <Typography.Heading type="h4" className="type-title text-white">資源時間線</Typography.Heading>
+            <Typography.Heading type="h4" className="type-title text-ink">資源時間線</Typography.Heading>
           </View>
           <View className={`rounded-full border px-2 py-1 ${model.forecast.peakShortfallDia > 0 ? "border-[#ffe08a]" : "border-[#7af0c8]"}`}>
-            <Typography className="type-label text-white">
+            <Typography className="type-label text-ink">
               {model.forecast.goals.length === 0 ? "尚無目標" : model.forecast.peakShortfallDia > 0 ? `全程差 ${formatNumber(model.forecast.peakShortfallDia)} 鑽` : `最後剩 ${formatNumber(model.forecast.endingDia)} 鑽`}
             </Typography>
           </View>
@@ -281,28 +281,28 @@ export function PlannerSectionNative({
         {model.forecast.goals.map((item) => {
           const gapPlan = recommendPacksForGap(item.goal.pool, item.shortfallDia);
           return (
-          <View key={item.goal.id} className="gap-3 rounded-2xl border border-white/25 bg-white/10 p-3">
+          <View key={item.goal.id} className="gap-3 rounded-2xl border border-line bg-white/70 p-3">
             <View className="flex-row items-start justify-between gap-3">
               <View className="flex-1 gap-1">
-                <Typography.Paragraph className="font-semibold text-white">{item.goal.title}</Typography.Paragraph>
+                <Typography.Paragraph className="font-semibold text-ink">{item.goal.title}</Typography.Paragraph>
                 <Typography className="type-label text-muted">{item.goal.deadline}{item.goal.tentative ? " · 預測" : ""} · {item.goal.pool}</Typography>
               </View>
-              <View className={`rounded-full border px-2 py-1 ${item.status === "short" ? "border-[#ffe08a]" : item.status === "safe" ? "border-[#7af0c8]" : "border-white/25"}`}>
-                <Typography className="type-label text-white">{item.status === "past" ? "已結束" : item.status === "skipped" ? "情境暫停" : item.status === "short" ? "需要調整" : "可達成"}</Typography>
+              <View className={`rounded-full border px-2 py-1 ${item.status === "short" ? "border-[#ffe08a]" : item.status === "safe" ? "border-[#7af0c8]" : "border-line"}`}>
+                <Typography className="type-label text-ink">{item.status === "past" ? "已結束" : item.status === "skipped" ? "情境暫停" : item.status === "short" ? "需要調整" : "可達成"}</Typography>
               </View>
             </View>
             <NativeMetricGrid>
-              <View className="flex-1 rounded-xl bg-white/10 p-2"><Typography.Heading type="h4" className="type-title-sm text-white">{formatNumber(item.goal.targetPulls)}</Typography.Heading><Typography className="type-label text-muted">目標抽數</Typography></View>
-              <View className="flex-1 rounded-xl bg-white/10 p-2"><Typography.Heading type="h4" className="type-title-sm text-white">{formatNumber(item.officialTickets)}</Typography.Heading><Typography className="type-label text-muted">官方金券</Typography></View>
-              <View className="flex-1 rounded-xl bg-white/10 p-2"><Typography.Heading type="h4" className="type-title-sm text-white">{formatNumber(item.incomeBeforeGoal)}</Typography.Heading><Typography className="type-label text-muted">期間存鑽</Typography></View>
+              <View className="flex-1 rounded-xl bg-white/70 p-2"><Typography.Heading type="h4" className="type-title-sm text-ink">{formatNumber(item.goal.targetPulls)}</Typography.Heading><Typography className="type-label text-muted">目標抽數</Typography></View>
+              <View className="flex-1 rounded-xl bg-white/70 p-2"><Typography.Heading type="h4" className="type-title-sm text-ink">{formatNumber(item.officialTickets)}</Typography.Heading><Typography className="type-label text-muted">官方金券</Typography></View>
+              <View className="flex-1 rounded-xl bg-white/70 p-2"><Typography.Heading type="h4" className="type-title-sm text-ink">{formatNumber(item.incomeBeforeGoal)}</Typography.Heading><Typography className="type-label text-muted">期間存鑽</Typography></View>
             </NativeMetricGrid>
-            <Typography className={`type-label ${item.status === "short" ? "text-[#fff0c4]" : "text-muted"}`}>
+            <Typography className={`type-label ${item.status === "short" ? "text-warning" : "text-muted"}`}>
               {item.status === "past" ? "活動已結束，不再影響後續預測。" : item.status === "skipped" ? "這項目標暫不扣除資源；期間存鑽仍會留給後續活動。" : item.status === "short" ? `到期後仍差 ${formatNumber(item.shortfallDia)} 鑽；若不調整目標，平均每天需再多存 ${formatNumber(item.additionalDailyDia)} 鑽。` : `完成後預計剩 ${formatNumber(item.balanceAfterGoal)} 鑽。`}
             </Typography>
             {item.status === "short" ? (
               <View className="gap-1 rounded-xl border border-[#ffe08a]/50 bg-[#ffe08a]/10 p-3">
-                <Typography className="type-label uppercase tracking-[1.5px] text-[#fff0c4]">截至這項活動的補足估算</Typography>
-                <Typography className="type-label font-semibold  text-white">
+                <Typography className="type-label uppercase tracking-[1.5px] text-warning">截至這項活動的補足估算</Typography>
+                <Typography className="type-label font-semibold  text-ink">
                   {gapPlan.status === "recommended"
                     ? `約 NT$${formatNumber(gapPlan.planCost ?? 0)} · ${formatNumber(gapPlan.planPulls ?? 0)} 抽 · 買到第 ${gapPlan.tier?.tier} 階`
                     : `一輪限購最多補 ${formatNumber(gapPlan.planPulls ?? 0)} 抽（${formatCurrency(gapPlan.planCost ?? 0)}）；其餘 ${formatNumber(Math.max(0, gapPlan.gapPulls - (gapPlan.planPulls ?? 0)))} 抽需搭配存鑽、其他有效資源或調整目標。`}

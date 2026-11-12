@@ -6,13 +6,17 @@
 @source "../node_modules/heroui-native/lib";
 
 @theme {
-  --color-cosmic: #7765a7;
-  --color-orbit: #a78bfa;
+  --color-cosmic: #f7f6fa;
+  --color-orbit: #80639f;
   --color-starlight: #fbf9ff;
-  --color-glass: rgba(56,42,96,0.4);
-  --color-glass-soft: #766ba5;
-  --color-line: rgba(255,255,255,0.55);
-  --color-muted: rgba(255,255,255,0.82);
+  --color-glass: rgba(255,255,255,0.88);
+  --color-glass-soft: #eee8f6;
+  --color-line: #ddd5e9;
+  --color-muted: #71667e;
+  --color-ink: #383144;
+  --color-danger: #a94161;
+  --color-success: #2a7564;
+  --color-warning: #8b632e;
   /* Material 3 roles, with a 14pt floor for Chinese supporting text. */
   --text-label: 14px;
   --text-label--line-height: 20px;
@@ -41,7 +45,7 @@
     min-width: 48px;
     min-height: 48px;
     max-width: 100%;
-    border-radius: 13px;
+    border-radius: 16px;
     padding-block: 11px;
     padding-inline: 12px;
   }
@@ -49,21 +53,21 @@
   .button__root--size-lg { min-height: 48px; }
   .button__root--variant-primary {
     border-width: 1px;
-    border-color: rgba(255,255,255,0.85);
-    background-color: rgba(255,255,255,0.23);
+    border-color: #9276af;
+    background-color: #80639f;
   }
   .button__root--variant-secondary,
   .button__root--variant-tertiary {
     border-width: 1px;
-    border-color: rgba(255,255,255,0.55);
-    background-color: rgba(255,255,255,0.12);
+    border-color: #ddd5e9;
+    background-color: #eee8f6;
   }
-  .button__root--variant-outline { border-color: rgba(255,255,255,0.55); }
-  .button__label--variant-primary,
-  .button__label--variant-secondary { color: #ffffff; }
+  .button__root--variant-outline { border-color: #ddd5e9; }
+  .button__label--variant-primary { color: #ffffff; }
+  .button__label--variant-secondary { color: #514062; }
   .button__background--size-sm,
   .button__background--size-md,
-  .button__background--size-lg { border-radius: 13px; }
+  .button__background--size-lg { border-radius: 16px; }
   .button__label--size-sm,
   .button__label--size-md,
   .button__label--size-lg {
@@ -78,24 +82,24 @@
 @layer theme {
   :root {
     @variant light {
-      --accent: #cdbdff;
-      --accent-foreground: #2b1d4b;
-      --default: #645484;
-      --default-foreground: #ffffff;
-      --foreground: #ffffff;
-      --muted: #e5dff0;
-      --focus: #cdbdff;
-      --link: #e3d7ff;
+      --accent: #80639f;
+      --accent-foreground: #ffffff;
+      --default: #eee8f6;
+      --default-foreground: #383144;
+      --foreground: #383144;
+      --muted: #71667e;
+      --focus: #80639f;
+      --link: #6e518e;
     }
     @variant dark {
-      --accent: #cdbdff;
-      --accent-foreground: #2b1d4b;
-      --default: #645484;
-      --default-foreground: #ffffff;
-      --foreground: #ffffff;
-      --muted: #e5dff0;
-      --focus: #cdbdff;
-      --link: #e3d7ff;
+      --accent: #80639f;
+      --accent-foreground: #ffffff;
+      --default: #eee8f6;
+      --default-foreground: #383144;
+      --foreground: #383144;
+      --muted: #71667e;
+      --focus: #80639f;
+      --link: #6e518e;
     }
   }
 }
