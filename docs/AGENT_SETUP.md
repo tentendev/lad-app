@@ -32,11 +32,12 @@
 | UI_READY | READY：隔離於 `127.0.0.1:8081` 的 Web 主流程可載入，測試花費重新開啟仍存在，並已刪除；本次結果見 `.agent-local/setup-status.json` 與 `evidence/` |
 | PREVIEW_AUTH_READY | BLOCKED（登入驗收待測）：Clerk 測試公開金鑰、登入表單與 `Clerk.loaded` 正常，尚未登入專用測試會員，不代表登入流程已驗收 |
 | Expo MCP | NEEDS_RESTART：已新增官方遠端連線並儲存 OAuth，帳號為本人，範圍只選 `tentenco: Runner`、Free；目前對話未載入新工具，重啟後仍須只讀查詢成功才能標成 READY |
-| Apple／Core QA | BLOCKED：個人 Gmail 尚需本人登入，以新邀請完成 Apple 驗證，之後才能確認 App Manager、App 範圍及加入 Core QA |
+| Apple／Core QA | READY：本人新邀請已接受，角色確認為「App 管理」；已加入既有 Core QA，群組 1 人、6 個 build，1.0.0（8）為「準備測試」。既有外部資格及 Build 6 安裝紀錄仍保留；手機更新至 Build 8 尚待本人操作 |
+| Apple 範圍核對 | 待 Erik 核對：本人設定頁標籤為「所有 App」，檢視清單目前只有深空省省；這與交接信指定的單一 App 範圍標示不同。未變更本人或他人的角色／App 範圍 |
 | BACKEND_READY | BLOCKED（完整流程待驗收）：正式排期 HTTP 200、`GET /api/sync` 無登入 401、`GET /api/account` 405；這些只證明公開及方法／驗證邊界 |
 | PRODUCTION_QA | BLOCKED：登入、雲端備份、衝突、刪帳號及 Apple 撤銷尚無本次本人實機證據 |
 | 原生／Android | 本機 Simulator 工具不可用；未配置 Android SDK／Play 簽署，未要求安裝；不得將 Web 或 Hermes 匯出稱為實機驗收 |
-| Vercel／正式發布 | 本次 NOT_REQUESTED；PATH 沒有 Vercel CLI。簽署保護、遠端憑證權限及最新 Apple 協議需在後續有發布授權時，由有權限者查核 |
+| Vercel／正式發布 | 本次 NOT_REQUESTED；PATH 沒有 Vercel CLI。平台已確認提示新版 Apple Developer Program 許可協議需由 Account Holder 檢視接受；簽署保護與遠端憑證權限仍待後續有發布授權時查核 |
 
 昨日 `npm run release:ios:validate` 的對應來源驗證包含 ESLint、TypeScript、15 項 Node + 184 項 Vitest 測試、Doctor 21/21、既有政策下的 production 依賴稽核、8.6 MiB iOS Hermes 匯出與 build preflight。完整狀態分開記錄，不以一個「全部完成」取代缺項。
 
@@ -72,7 +73,13 @@ codex mcp login expo --no-browser
 
 依據：[Expo MCP 官方文件](https://docs.expo.dev/mcp/)、[OpenAI Docs：MCP 設定與 OAuth](https://learn.chatgpt.com/docs/extend/mcp?surface=cli)。
 
-## Apple 本人操作後從這裡接續
+## Apple 接手紀錄與後續操作
+
+2026-11-12 已完成本人個人開發者帳號及 App Store Connect 的首次啟用，確認目前登入的是本人的 Apple Account，App ID 為 `6812909987`，角色為「App 管理」。Core QA 原為 0 人，查重後只加入本人，平台顯示 1 位測試人員；既有 1.0.0（8）已在群組且可供測試，沒有建立新 build。外部 Maggie & Erik UI Testing 仍有本人的已安裝 1.0.0（6）紀錄。
+
+本人使用者設定頁目前顯示「所有 App」，檢視 App 清單為 1 個深空省省。本人頁面只有檢視清單功能，未修改範圍；需由 Erik 核對是否已依原交接限制為單一 App。另有 Account Holder 的新版 Program 許可協議待處理，與此次本人的首次使用條款是不同事項。
+
+下列流程供未來接手或資格異動時使用；重跑前先查實際狀態，不重複加入：
 
 1. 在 ego lite 登入個人 Gmail，開啟 2026-11-12 最新 App Store Connect 邀請；舊公司信箱邀請已撤回。
 2. 使用相同的本人 Apple Account 接受邀請並完成 2FA，確認 Apps 能看到「深空省省」。只讀取需要的狀態，避免擷取商店審核密碼表單。

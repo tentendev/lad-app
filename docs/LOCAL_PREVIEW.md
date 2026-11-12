@@ -83,6 +83,12 @@ App Store Connect 最新邀請已開啟至 Apple 帳號登入頁，需要 Maggie
 
 Erik 信中另提醒新版 Apple 開發者協議需由 Account Holder 審閱接受；這一步不屬於 Maggie 的 App Manager 權限，目前尚未查驗其最新完成狀態。
 
+### Apple 與內部測試資格接手（2026-11-12）
+
+本人已從個人 Gmail 的最新邀請完成 Apple 帳號及 App Store Connect 啟用，角色為 App 管理。已查重並把本人加入既有 Core QA；群組有 1 位測試人員、6 個 build，1.0.0（8）為準備測試。原有 Maggie & Erik UI Testing 的資格與 Build 6 安裝紀錄保留，尚無本人手機安裝 Build 8 的證據。
+
+這次只完成環境及測試資格，未建立／上傳新 build。平台仍提示 Account Holder 需檢視接受新版 Program 許可協議；本人設定頁的「所有 App」標籤與交接指定的單一 App 範圍，已列為 Erik 待核對。後續以 [AGENT_SETUP.md](AGENT_SETUP.md)、[RELEASE_RUNBOOK.md](RELEASE_RUNBOOK.md) 及受忽略的 `.agent-local/setup-status.json` 為準，不沿用舊登入頁或其他電腦的 session。
+
 ### 11/4 本機同步驗證
 
 - App `npm run check`：ESLint、TypeScript、15 項 Node 測試與 129 項 Vitest 測試通過；Vitest 的 alias 使用 `fileURLToPath`，支援目前含中文的資料夾名稱。

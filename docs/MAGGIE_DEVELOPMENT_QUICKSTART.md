@@ -104,6 +104,8 @@ Apple 處理完後，在 App Store Connect → 深空省省 → TestFlight：
 
 ## 5. 目前需要本人完成
 
-2026-11-11 已送出 Expo 與 GitHub 邀請；2026-11-12 Apple App Manager 邀請改寄至 Maggie 的實際 Apple Account `你的 Apple Account Email`，舊公司信箱的 Apple 權限邀請已撤回。帳號啟用仍需 Maggie 接受與完成自己的驗證，之後才能加入內部 `Core QA` 清單。Apple 先前另提示開發者協議已更新，後續更新 App 前，需由 Account Holder 在 [Apple Developer 帳號頁](https://developer.apple.com/account) 確認協議狀態。Maggie 的 App Manager 權限無法代替 Account Holder 完成這一步。
+2026-11-12 本機已完成本人 Apple 邀請及首次啟用，確認「App 管理」角色並加入既有 Core QA，1.0.0（8）在群組中為「準備測試」。個人帳號的既有外部資格及 1.0.0（6）安裝紀錄仍保留；手機更新及實機驗收尚待本人操作。此次未建立或上傳新 build，既有 Build 8 不含之後本機工作分支的視覺修改。
+
+App Store Connect 目前仍提示新版開發者協議需由 Account Holder 在 [Apple Developer 帳號頁](https://developer.apple.com/account) 檢視接受。本人設定頁的 App 範圍標示為「所有 App」，目前檢視清單只有深空省省，需 Erik 核對單一 App 範圍；此次未變更該設定。詳見 [環境接手紀錄](AGENT_SETUP.md)。
 
 已用 GitHub 的全新 clone 驗證 `npm ci`、lint、TypeScript、192 項測試、iOS build preflight、preview 環境下載與 Web export。這些是開發環境檢查；Maggie 自己電腦的登入、建置及 iPhone 安裝，需要在接受邀請後完成。
