@@ -2,13 +2,13 @@ import { Link, Slot, usePathname } from "expo-router";
 import type { JSX } from "react";
 
 import { DebugLauncher } from "@/ui/DebugLauncher.web";
-import { FeedbackEntry } from "@/ui/FeedbackEntry.web";
+
 
 const ITEMS = [
   { href: "/wallet", label: "錢包", icon: "wallet" },
   { href: "/schedule", label: "排期", icon: "calendar" },
-  { href: "/calculator", label: "換算", icon: "diamond" },
-  { href: "/tracker", label: "追蹤", icon: "star" },
+  { href: "/calculator", label: "換算", icon: "exchange" },
+  { href: "/tracker", label: "追蹤", icon: "chart" },
 ] as const;
 
 const SHOW_DEBUG_TOOLS = process.env.EXPO_PUBLIC_ENABLE_DEBUG_TOOLS === "true";
@@ -28,16 +28,16 @@ function NavIcon({ name }: { name: (typeof ITEMS)[number]["icon"] }) {
       </svg>
     );
   }
-  if (name === "star") {
+  if (name === "chart") {
     return (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z" />
+        <path d="M4 20V13h3v7M11 20V7h3v13M18 20V3h3v17" />
       </svg>
     );
   }
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="m12 3 8 7-8 11L4 10Z" /><path d="M4 10h16M8 4.8 12 10l4-5.2M8 10l4 11 4-11" />
+      <path d="M3 7h18m-5-5 5 5-5 5M21 17H3m5-5-5 5 5 5" />
     </svg>
   );
 }
@@ -66,7 +66,7 @@ export default function WebTabsLayout(): JSX.Element {
             </Link>
           );
         })}
-        <FeedbackEntry />
+
       </nav>
     </div>
   );

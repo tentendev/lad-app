@@ -1,3 +1,5 @@
+import { WalletResources } from "@/ui/WalletResources";
+import { NATIVE_FONTS } from "@/theme/native";
 import { BudgetSummary } from "@/ui/BudgetSummary";
 import { NativeInput as TextInput, type NativeInputRef } from "@/ui/NativeInput";
 import { SpendingDashboardNative } from "./SpendingDashboard.native";
@@ -46,6 +48,9 @@ export function WalletScreenNative() {
   const [editError, setEditError] = useState<string | null>(null);
   const [deletedExpense, setDeletedExpense] = useState<Expense | null>(null);
   const [expenseFilter, setExpenseFilter] = useState<ExpenseCategory | "全部">("全部");
+  const [expenseFormOpen, setExpenseFormOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [handoffNotice, setHandoffNotice] = useState(false);
   const amountInput = useRef<NativeInputRef>(null);
@@ -63,13 +68,14 @@ export function WalletScreenNative() {
   useEffect(() => {
     if (!pendingExpense) return;
     const frame = requestAnimationFrame(() => {
+      setExpenseFormOpen(true);
       setAmount(String(pendingExpense.amt));
       setCategory(pendingExpense.cat);
       setDate(pendingExpense.date);
       setNote(pendingExpense.note);
       setFormError(null);
       setHandoffNotice(true);
-      amountInput.current?.focus();
+      requestAnimationFrame(() => amountInput.current?.focus());
       void consumePendingExpense();
     });
     return () => cancelAnimationFrame(frame);
@@ -91,6 +97,7 @@ export function WalletScreenNative() {
     setSubmitting(false);
     if (saved) {
       setAmount("");
+      setExpenseFormOpen(false);
       setNote("");
       setHandoffNotice(false);
     }
@@ -170,14 +177,14 @@ export function WalletScreenNative() {
   }
 
   return (
-    <NativePage workspace eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。">
-      <View className="flex-row flex-wrap items-center justify-between gap-2">
+    <NativePage workspace eyebrow="Deep Space Ledger" title="錢包" description="記下每次支出，讓預算提醒在真正需要時出現。資料只留在你的裝置。" action={<View><Pressable accessibilityRole="button" accessibilityLabel="選擇記帳月份" accessibilityState={{ expanded: monthPickerOpen }} onPress={() => setMonthPickerOpen(!monthPickerOpen)} style={{ minHeight: 36, justifyContent: "center" }}><Typography style={{ fontFamily: NATIVE_FONTS.number, fontSize: 22 }}>{model.month.replace("-", " / ")} ▾</Typography></Pressable>{monthPickerOpen ? <View>      <View className="flex-row flex-wrap items-center justify-between gap-2">
         <Button accessibilityLabel="上一個月" size="sm" variant="ghost" className="border border-line" onPress={model.previousMonth}>←</Button>
         <Typography.Heading type="h4" className="type-title text-ink">{monthLabel(model.month)}</Typography.Heading>
         <Button accessibilityLabel="下一個月" size="sm" variant="ghost" className="border border-line" onPress={model.nextMonth}>→</Button>
       </View>
       {!model.isCurrentMonth ? <Button size="sm" variant="ghost" className="self-center border border-line" onPress={model.goToCurrentMonth}>回到當月</Button> : null}
 
+</View> : null}</View>}>
       {model.storageError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-ink">{model.storageError}</Typography></View> : null}
       {deletedExpense ? (
         <View accessibilityRole="alert" className="flex-row items-center justify-between rounded-xl border border-[#9cf0dc] bg-[#65d6c4]/20 p-3">
@@ -187,24 +194,10 @@ export function WalletScreenNative() {
       ) : null}
 
       <NativeColumns>
-      <Card className="gap-4 border border-line bg-glass p-5">
-        <View className="flex-row flex-wrap items-center justify-between gap-2">
-          <View className="flex-row items-center gap-2"><WalletGlyph type="wallet" /><Typography.Heading type="h4" className="type-title text-ink">本月預算</Typography.Heading></View>
-          <View style={{ width: 190, maxWidth: "100%" }}><NativeSelect compact label="幣別" value={model.currency} options={CURRENCIES} formatOption={currency => `${CURRENCY_LABELS[currency]} · ${CURRENCY_SYMBOLS[currency]}`} disabled={submitting || model.writeProtected} onChange={currency => { setAmount(""); setNote(""); setFormError(null); void model.setCurrency(currency); }} /></View>
-        </View>
-        <Typography className="type-label text-muted">預算與花費依幣別分開記錄，不合併換算。</Typography>
-        <BudgetSummary {...model.summary} currency={model.currency} />
-        <NativeDisclosure title="設定預算與提醒門檻">
-          <Typography className="type-body text-muted">每月預算（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
-          <TextInput accessibilityLabel="每月預算" className="rounded-xl border border-line bg-white/70 px-4 py-3 text-ink" keyboardType="numeric" placeholder="每月預算" placeholderTextColor="#887d94" value={budget} onChangeText={(value) => { setBudgetError(null); setBudget(value); }} />
-          <Typography className="type-body text-muted">提醒門檻（%）</Typography>
-          <TextInput accessibilityLabel="提醒門檻" className="rounded-xl border border-line bg-white/70 px-4 py-3 text-ink" keyboardType="numeric" placeholder="提醒門檻（%）" placeholderTextColor="#887d94" value={threshold} onChangeText={(value) => { setBudgetError(null); setThreshold(value); }} />
-          {budgetError ? <Typography accessibilityRole="alert" className="type-body text-danger">{budgetError}</Typography> : null}
-          <Button isDisabled={submitting || model.writeProtected} onPress={() => void saveBudget()}>儲存當月設定</Button>
-          {model.previousConfig ? <Button variant="ghost" isDisabled={submitting || model.writeProtected} onPress={() => void model.copyPreviousBudget()}>沿用上月 {formatCurrency(model.previousConfig.amount)}／{model.previousConfig.threshold}% 提醒</Button> : null}
-        </NativeDisclosure>
-      </Card>
-
+      <View className="gap-3"><Card style={{ padding: 16 }}><BudgetSummary {...model.summary} currency={model.currency}/></Card>
+        <WalletResources {...model.resources}/>
+        <Button accessibilityState={{ expanded: expenseFormOpen }} onPress={() => { setExpenseFormOpen(!expenseFormOpen); if (!expenseFormOpen) requestAnimationFrame(() => amountInput.current?.focus()); }}>＋ 新增花費</Button>
+      {expenseFormOpen ? (
       <Card className="gap-4 border border-line bg-glass p-4">
         <View className="flex-row items-center gap-2"><WalletGlyph type="plus" /><Typography.Heading type="h4" className="type-title text-ink">記一筆花費</Typography.Heading></View>
         {handoffNotice ? <Typography accessibilityRole="alert" className="type-body text-success">已帶入換算選擇，請確認金額與日期後再加入花費。</Typography> : null}
@@ -217,10 +210,17 @@ export function WalletScreenNative() {
         {formError ? <Typography accessibilityRole="alert" className="type-body text-danger">{formError}</Typography> : null}
         <Button isDisabled={submitting || model.writeProtected} onPress={() => void submitExpense()}>加入花費</Button>
       </Card>
+      ) : null}
+        <View style={{ gap: 0, marginTop: 8 }}><View className="flex-row items-center justify-between"><Typography.Heading className="type-title text-ink">最近花費</Typography.Heading><Button variant="ghost" accessibilityState={{ expanded: historyOpen }} onPress={() => setHistoryOpen(!historyOpen)}>查看全部 ›</Button></View>{model.expenses.length ? model.expenses.slice(0, 3).map(expense => <View key={expense.id} style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 11, borderTopWidth: 1, borderTopColor: "#e5dcec" }}><Typography style={{ fontFamily: NATIVE_FONTS.number, fontSize: 16 }}>{expense.date.slice(5).replace("-", " / ")}</Typography><WalletGlyph type="wallet"/><Typography numberOfLines={1} style={{ flex: 1, fontSize: 15 }}>{expense.note || expense.cat}</Typography><Typography style={{ fontFamily: NATIVE_FONTS.number, fontSize: 17 }}>− {formatCurrency(expense.amt)}</Typography></View>) : <Typography className="type-body text-muted">這個月還沒有花費紀錄</Typography>}</View>
+      </View>
+
+
+
 
       </NativeColumns>
 
       <NativeColumns>
+      {historyOpen ? (
       <Card className="gap-3 border border-line bg-glass p-4">
         <View className="flex-row flex-wrap items-center justify-between gap-2">
           <View className="flex-row items-center gap-2"><WalletGlyph type="list" /><Typography.Heading type="h4" className="type-title text-ink">花費紀錄</Typography.Heading></View>
@@ -261,6 +261,24 @@ export function WalletScreenNative() {
           </View>
         ))}
       </Card>
+      ) : null}
+      <Card className="gap-3 p-4"><NativeDisclosure title="預算與幣別設定">
+        <View className="flex-row flex-wrap items-center justify-between gap-2">
+          <View className="flex-row items-center gap-2"><WalletGlyph type="wallet" /><Typography.Heading type="h4" className="type-title text-ink">本月預算</Typography.Heading></View>
+          <View style={{ width: 190, maxWidth: "100%" }}><NativeSelect compact label="幣別" value={model.currency} options={CURRENCIES} formatOption={currency => `${CURRENCY_LABELS[currency]} · ${CURRENCY_SYMBOLS[currency]}`} disabled={submitting || model.writeProtected} onChange={currency => { setAmount(""); setNote(""); setFormError(null); void model.setCurrency(currency); }} /></View>
+        </View>
+        <Typography className="type-label text-muted">預算與花費依幣別分開記錄，不合併換算。</Typography>
+
+        <NativeDisclosure title="設定預算與提醒門檻">
+          <Typography className="type-body text-muted">每月預算（{CURRENCY_SYMBOLS[model.currency]}）</Typography>
+          <TextInput accessibilityLabel="每月預算" className="rounded-xl border border-line bg-white/70 px-4 py-3 text-ink" keyboardType="numeric" placeholder="每月預算" placeholderTextColor="#887d94" value={budget} onChangeText={(value) => { setBudgetError(null); setBudget(value); }} />
+          <Typography className="type-body text-muted">提醒門檻（%）</Typography>
+          <TextInput accessibilityLabel="提醒門檻" className="rounded-xl border border-line bg-white/70 px-4 py-3 text-ink" keyboardType="numeric" placeholder="提醒門檻（%）" placeholderTextColor="#887d94" value={threshold} onChangeText={(value) => { setBudgetError(null); setThreshold(value); }} />
+          {budgetError ? <Typography accessibilityRole="alert" className="type-body text-danger">{budgetError}</Typography> : null}
+          <Button isDisabled={submitting || model.writeProtected} onPress={() => void saveBudget()}>儲存當月設定</Button>
+          {model.previousConfig ? <Button variant="ghost" isDisabled={submitting || model.writeProtected} onPress={() => void model.copyPreviousBudget()}>沿用上月 {formatCurrency(model.previousConfig.amount)}／{model.previousConfig.threshold}% 提醒</Button> : null}
+        </NativeDisclosure>
+</NativeDisclosure></Card>
 
       <View style={{ gap: 16 }}>
       <Card className="gap-4 border border-line bg-glass p-4">
@@ -305,6 +323,7 @@ export function WalletScreenNative() {
             <Button size="sm" variant="ghost" onPress={() => setEditing(null)}>取消</Button>
           </View>
           <TextInput
+            autoFocus
             accessibilityLabel="編輯花費金額"
             className="rounded-xl border border-line bg-white/70 px-4 py-3 text-ink"
             keyboardType="numeric"

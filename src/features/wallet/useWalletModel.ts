@@ -2,6 +2,7 @@ import { useScreenLoadEffect } from "@/data/useScreenLoadEffect";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { budgetKey, expensesForMonth, nextExpenseId, normalizeBudgetConfig, normalizeBudgetMap, normalizeExpenseDraft, normalizePendingExpense, normalizeStoredExpenses, summarizeBudget, summarizeBudgetPace, summarizeSpendingInsights } from "@/domain/budget";
+import { normalizeCalculatorDraft } from "@/domain/calculator";
 import { currentMonthKey, moveMonth, normalizeCurrency } from "@/domain/format";
 import type { BudgetConfig, BudgetMap, Currency, Expense, PendingExpense } from "@/domain/types";
 import { storage } from "@/data/repositories/storage";
@@ -16,6 +17,7 @@ export function useWalletModel() {
   const [budgets, setBudgets] = useState<BudgetMap>({});
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [pendingExpense, setPendingExpense] = useState<PendingExpense | null>(null);
+  const [resources, setResources] = useState<{ cur: number | null; tickets: number | null }>({ cur: null, tickets: null });
   const [ready, setReady] = useState(false);
   const [storageError, setStorageError] = useState<string | null>(null);
   const [writeProtected, setWriteProtected] = useState(false);
@@ -25,12 +27,13 @@ export function useWalletModel() {
     let active = true;
     void (async () => {
       try {
-        const [storedBudgets, legacyBudget, storedExpenses, pending, savedCurrency] = await Promise.all([
+        const [storedBudgets, legacyBudget, storedExpenses, pending, savedCurrency, savedCalculator] = await Promise.all([
           storage.get<unknown>(STORAGE_KEYS.budgets, {}),
           storage.get<unknown>(STORAGE_KEYS.legacyBudget, DEFAULT_BUDGET),
           storage.get<unknown>(STORAGE_KEYS.expenses, []),
           storage.get<unknown>(STORAGE_KEYS.pendingExpense, null),
           storage.get<unknown>("walletCurrency", "TWD"),
+          storage.get<unknown>(STORAGE_KEYS.calculator, {}).then(normalizeCalculatorDraft).catch(() => null),
         ]);
         if (!active) return;
         const migratedBudgets = normalizeBudgetMap(storedBudgets);
@@ -42,6 +45,7 @@ export function useWalletModel() {
         lastExpenseId.current = migratedExpenses.reduce((largest, expense) => Math.max(largest, expense.id), 0);
         if (!active) return;
         setBudgets(migratedBudgets);
+        setResources(savedCalculator ? { cur: savedCalculator.cur, tickets: savedCalculator.tickets } : { cur: null, tickets: null });
         setCurrencyState(normalizeCurrency(migratedPendingExpense?.currency ?? savedCurrency));
         setExpenses(migratedExpenses);
         setPendingExpense(migratedPendingExpense);
@@ -218,6 +222,7 @@ export function useWalletModel() {
     pace,
     expenses: monthExpenses,
     allExpenses: expenses,
+    resources,
     selectMonth: setMonth,
     pendingExpense,
     storageError,

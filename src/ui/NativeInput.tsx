@@ -16,7 +16,8 @@ export const NativeInput = forwardRef<TextInput, TextInputProps & { className?: 
       {...props}
       style={[{
         fontSize: 16, lineHeight: 24, minHeight: 48, paddingVertical: 11, paddingHorizontal: 13,
-        color: APP_COLORS.text, borderRadius: 14, borderWidth: 1, borderColor: APP_COLORS.line, backgroundColor: APP_COLORS.input,
+        color: APP_COLORS.text, borderRadius: 12, borderWidth: 1, borderColor: "#e4daed", backgroundColor: APP_COLORS.input,
+        boxShadow: "0px 3px 5px -3px rgba(79,57,108,0.14), inset 0px 2px 4px rgba(122,91,151,0.06), inset 0px 1px 0px #ffffff",
       }, style]}
     />;
   },

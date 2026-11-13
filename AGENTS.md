@@ -15,7 +15,7 @@
 
 ## 共用資料與本機預覽
 
-- 2026-11-12 起以 App 為開發主線，UI、功能、會員與研究文件只改本 Repo；同層 HTML 網頁版維持現況。只有排期更新時同步兩版排期及該次獲准的排期公告。整體視覺採「02A 霧光星軌・原版」，不要套用 02B 修訂版。
+- 2026-11-12 起以 App 為開發主線，UI、功能、會員與研究文件只改本 Repo；同層 HTML 網頁版維持現況。只有排期更新時同步兩版排期及該次獲准的排期公告。整體視覺採「02A 霧光星軌・原版」，不要套用 02B 修訂版。依 `docs/02A_REFERENCE_FIDELITY.md` 保留漸層、內外陰影、白色邊緣高光與首頁資訊順序，不以純色簡化參考圖材質。
 - 本機網頁來源位於同層 `../深空省省/`。更新排期／公告／禮包時依需要同步 `schedule.js`、`updates.js`、`packs.js`、`regional-prices.js`，再執行 `npm run sync:expo-data`。
 - `src/data/schedule.ts`、`src/data/siteUpdates.ts`、`src/data/packData.ts` 是產生的資料，不直接手動修改。
 - `npm run preview` 會先產生資料並以 development-only 本機模式啟動 localhost:8081，不連線會員／雲端。正式 build 不可略過 Clerk 必要設定。

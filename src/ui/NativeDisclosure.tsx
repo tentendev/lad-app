@@ -2,8 +2,10 @@ import { useState, type PropsWithChildren } from "react";
 import { Pressable, View } from "react-native";
 import { Typography } from "@/ui/NativeComponents";
 
-export function NativeDisclosure({ title, children }: PropsWithChildren<{ title: string }>) {
-  const [open, setOpen] = useState(false);
+export function NativeDisclosure({ title, children, open: controlledOpen, onOpenChange }: PropsWithChildren<{ title: string; open?: boolean; onOpenChange?: (open: boolean) => void }>) {
+  const [localOpen, setLocalOpen] = useState(false);
+  const open = controlledOpen ?? localOpen;
+  const setOpen = onOpenChange ?? setLocalOpen;
   return <View className="gap-3">
     <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setOpen(!open)} className="min-h-12 flex-row items-center justify-between gap-3">
       <Typography.Heading type="h4" className="flex-1 type-title-sm text-ink">{title}</Typography.Heading>

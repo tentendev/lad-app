@@ -1,4 +1,6 @@
+import { NativeDisclosure } from "@/ui/NativeDisclosure";
 import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
+import { CalculatorOverview } from "./CalculatorOverview";
 import { NativeInput as TextInput } from "@/ui/NativeInput";
 import { useState } from "react";
 import { View } from "react-native";
@@ -51,6 +53,7 @@ export function CalculatorScreenNative() {
   const { draft, resource, recommendation, selectedPacks } = model;
   const formatCurrency = (value: number | null) => formatMoney(value, draft.currency);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   async function recordRecommendation() {
@@ -88,14 +91,13 @@ export function CalculatorScreenNative() {
       ) : null}
 
       <NativeColumns>
+      <View className="gap-3"><CalculatorOverview draft={draft} resource={resource} onChange={model.updateNumber} onPlan={() => setSettingsOpen(!settingsOpen)}/><NativeDisclosure title="卡池與換算設定" open={settingsOpen} onOpenChange={setSettingsOpen}>
       <Card className="gap-4 border border-line bg-glass p-4">
         <View className="flex-row flex-wrap items-center justify-between gap-2"><View className="flex-row items-center gap-2"><CalculatorGlyph type="diamond" /><Typography.Heading type="h4" className="type-title text-ink">抽卡目標換算</Typography.Heading></View><Button size="sm" variant="ghost" onPress={() => void model.reset()}>重設換算</Button></View>
         <NativeSelect label="卡池類型" value={draft.pool} options={CALCULATOR_POOLS} onChange={model.setPool} />
-        <NumberField placeholder="目前持有（鑽）" value={draft.cur} onChange={(value) => model.updateNumber("cur", value)} />
         <NumberField placeholder="目標抽數" value={draft.pulls} onChange={(value) => model.updateNumber("pulls", value)} />
         <Button variant="ghost" accessibilityState={{ expanded: rulesOpen }} onPress={() => setRulesOpen(!rulesOpen)}>保底與繼承規則 {rulesOpen ? "⌃" : "⌄"}</Button>
         {rulesOpen ? <View className="gap-2 rounded-xl bg-white/70 p-3"><Typography className="type-body text-muted">日卡池以外的活動池：140 抽內必得當期活動五星卡。日卡池：140 抽可得活動五星卡；累計 150 抽會送自選盒。一般活動池之間會繼承抽數；復刻池只繼承同一復刻池的抽數。</Typography><Typography className="type-label text-muted">沿用原始版整理，實際規則以當期遊戲內公告為準。</Typography></View> : null}
-        <NumberField placeholder="原本剩餘金券（張）" value={draft.tickets} onChange={(value) => model.updateNumber("tickets", value)} />
         <View className="rounded-xl border border-line bg-white/70 p-3">
           <NumberField showZero placeholder="官方金券（張）" value={resource.officialTickets} onChange={model.setOfficialTickets} />
           <Button size="sm" variant="ghost" onPress={model.restoreOfficialTickets}>恢復自動</Button>
@@ -114,6 +116,7 @@ export function CalculatorScreenNative() {
           <View className="flex-1 items-center gap-1 rounded-[15px] border border-line bg-white/70 p-3"><Typography.Heading type="h4" className="type-headline text-ink">{draft.pulls ? formatNumber(resource.remainingDiaAfterTarget) : "—"}</Typography.Heading><Typography className="type-label text-muted">剩餘鑽</Typography></View>
         </NativeMetricGrid>
       </Card>
+      </NativeDisclosure></View>
 
       <Card className="gap-3 border border-line bg-glass p-5">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="gift" /><Typography className="text-muted">禮包建議 · {draft.pool}</Typography></View>

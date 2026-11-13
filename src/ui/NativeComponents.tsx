@@ -3,15 +3,17 @@ import { useWindowDimensions } from "react-native";
 import { Button as HeroButton, Card as HeroCard, Typography as HeroTypography } from "heroui-native";
 import { APP_COLORS } from "@/theme/tokens";
 import { NATIVE_FONTS } from "@/theme/native";
+import { PearlSurface } from "./PearlSurface";
 
-function CardRoot({ style, variant = "transparent", ...props }: ComponentProps<typeof HeroCard>) {
+function CardRoot({ style, children, variant = "transparent", ...props }: ComponentProps<typeof HeroCard>) {
   return <HeroCard {...props} variant={variant} style={[{
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: APP_COLORS.line,
+    borderColor: "#e7dfef",
     backgroundColor: APP_COLORS.glass,
-    boxShadow: "0px 5px 18px rgba(79,57,108,0.08)",
-  }, style]} />;
+    overflow: "visible",
+    boxShadow: "0px 7px 16px -7px rgba(76,49,104,0.22), 0px 2px 4px rgba(76,49,104,0.05), inset 0px 2px 1px rgba(255,255,255,0.95), inset 0px -1px 1px rgba(194,174,214,0.15)",
+  }, style]}><PearlSurface />{children}</HeroCard>;
 }
 
 export const Card = Object.assign(CardRoot, {
@@ -25,9 +27,9 @@ export const Card = Object.assign(CardRoot, {
 // RN 0.86 Fabric can retain stale measurements after a runtime Dynamic Type
 // change (react-native#57512). Remount only text/control leaves, preserving
 // screen state, navigation, form values and open dialogs.
-function Text(props: ComponentProps<typeof HeroTypography>) {
+function Text({ style, ...props }: ComponentProps<typeof HeroTypography>) {
   const { fontScale } = useWindowDimensions();
-  return <HeroTypography key={fontScale} {...props} />;
+  return <HeroTypography key={fontScale} {...props} style={[{ fontFamily: NATIVE_FONTS.heading }, style]} />;
 }
 function Heading({ style, ...props }: ComponentProps<typeof HeroTypography.Heading>) {
   const { fontScale } = useWindowDimensions();
@@ -41,9 +43,10 @@ function Code(props: ComponentProps<typeof HeroTypography.Code>) {
   const { fontScale } = useWindowDimensions();
   return <HeroTypography.Code key={fontScale} {...props} />;
 }
-function ButtonRoot(props: ComponentProps<typeof HeroButton>) {
+function ButtonRoot({ style, background, children, variant = "primary", ...props }: ComponentProps<typeof HeroButton>) {
   const { fontScale } = useWindowDimensions();
-  return <HeroButton key={fontScale} {...props} />;
+  const filled = variant === "primary" || variant === "secondary" || variant === "tertiary";
+  return <HeroButton key={fontScale} {...props} variant={variant} background={background ?? (filled ? <HeroButton.Background><PearlSurface tone={variant === "primary" ? "primary" : "glass"}/></HeroButton.Background> : undefined)} style={[filled ? { borderWidth: 1, borderColor: variant === "primary" ? "#b7a0cc" : "#e2d8ec", boxShadow: "0px 5px 10px -4px rgba(106,74,138,0.27), inset 0px 1px 1px rgba(255,255,255,0.7)", borderRadius: 22 } : undefined, style]}>{typeof children === "string" ? <HeroButton.Label style={{ fontFamily: NATIVE_FONTS.heading, fontSize: 20, fontWeight: "700" }}>{children}</HeroButton.Label> : children}</HeroButton>;
 }
 
 export const Typography = Object.assign(Text, { Heading, Paragraph, Code });

@@ -3,6 +3,7 @@ import { useEffect, useRef, type PropsWithChildren, type ReactNode } from "react
 
 import { AccountEntry } from "@/ui/AccountEntry.web";
 import { SiteUpdatesEntry } from "@/ui/SiteUpdates.web";
+import { FeedbackEntry } from "@/ui/FeedbackEntry.web";
 
 type Props = PropsWithChildren<{
   eyebrow: string;
@@ -22,7 +23,7 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
   }, [title]);
 
   return (
-    <div className="page-shell" onWheelCapture={() => {
+    <div className={`page-shell page-${({ 錢包: "wallet", 排期: "schedule", 換算: "calculator", 追蹤: "tracker" } as Record<string, string>)[title] ?? "other"}`} onWheelCapture={() => {
       // Scrolling a long form must not silently change a focused numeric value.
       const active = document.activeElement;
       if (active instanceof HTMLInputElement && active.type === "number") active.blur();
@@ -39,7 +40,6 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
       <header className="brand-header">
         <SiteUpdatesEntry />
         <a href="/schedule" className="brand-home" aria-label="深空省省首頁">
-          <svg aria-hidden="true" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="24" cy="24" rx="21" ry="8" transform="rotate(-35 24 24)"/><path d="M32 4v8M28 8h8"/></svg>
           <span>深空省省</span>
         </a>
         {showAccountEntry ? <div className="brand-account"><AccountEntry /></div> : null}
@@ -60,6 +60,7 @@ export function WebPage({ eyebrow, title, description, action, showAccountEntry 
           <a href="/privacy">隱私政策</a>
           <span aria-hidden="true">·</span>
           <a href="/support">支援</a>
+          <FeedbackEntry />
           <span aria-hidden="true">·</span>
           <a href="https://www.threads.com/@chumei_0218" target="_blank" rel="noreferrer">製作：@chumei_0218</a>
         </footer>

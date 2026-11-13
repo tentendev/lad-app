@@ -6,9 +6,9 @@ import { useSiteUpdates } from "./SiteUpdatesProvider";
 export function SiteUpdatesEntry() {
   const { latest, ready, unread, open } = useSiteUpdates();
   if (!latest) return null;
-  return <Pressable accessibilityRole="button" accessibilityLabel={unread ? "查看最近更新，有新更新" : "查看最近更新"} accessibilityState={{ disabled: !ready }} disabled={!ready} onPress={open} className="size-12 items-center justify-center rounded-full border border-line bg-[#fbf9fe]/70">
-    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#80639f" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><Path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></Svg>
-    {unread ? <View className="absolute right-1 top-1 size-2 rounded-full bg-[#ffb3df]" /> : null}
+  return <Pressable accessibilityRole="button" accessibilityLabel={unread ? "查看最近更新，有新更新" : "查看最近更新"} accessibilityState={{ disabled: !ready }} disabled={!ready} onPress={open} className="size-12 items-center justify-center rounded-full">
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#332344" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round"><Path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></Svg>
+    {unread ? <View className="absolute right-1 top-1 size-2 rounded-full bg-[#dc7b82]" /> : null}
   </Pressable>;
 }
 

@@ -12,6 +12,10 @@ import { EVENT_LABELS, isScheduleForecast, eventStatus, scheduleEventCalendarFil
 import { canPlanScheduleEvent } from "@/domain/planner";
 import { LEADS, type ScheduleEvent, type ScheduleEventType } from "@/domain/types";
 import { EVENT_COLORS, LEAD_COLORS } from "@/theme/tokens";
+import { PearlCalendar } from "@/ui/PearlCalendar";
+import { PearlSurface } from "@/ui/PearlSurface";
+import { NativeDisclosure } from "@/ui/NativeDisclosure";
+import { NATIVE_FONTS } from "@/theme/native";
 import { NativePage } from "@/ui/NativePage";
 import { nativeCalendarWidth } from "@/ui/nativeLayout";
 import { NativeColumns } from "@/ui/NativeColumns";
@@ -69,7 +73,8 @@ function nativeLeadLabel(event: ScheduleEvent): { label: string; color: string }
 
 export function ScheduleScreenNative() {
   const model = useScheduleModel();
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [showBars, setShowBars] = useState(false);
+  const [expandedEvent, setExpandedEvent] = useState<string | null>(null);
   const { width, fontScale } = useWindowDimensions();
   const [viewMode, setViewMode] = useState<"calendar" | "list" | null>(null);
   const showCalendar = (viewMode ?? (fontScale > 1.3 || width < 360 ? "list" : "calendar")) === "calendar";
@@ -122,55 +127,21 @@ export function ScheduleScreenNative() {
       {model.preferenceError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-ink">{model.preferenceError}</Typography></View> : null}
       {model.plannerError ? <View accessibilityRole="alert" className="rounded-xl border border-[#ffafbd] bg-[#ff6675]/20 p-3"><Typography className="type-body text-ink">{model.plannerError}</Typography></View> : null}
       {linkError ? <Typography accessibilityRole="alert" className="type-body text-danger">{linkError}</Typography> : null}
-      <Typography className="type-label text-muted">{SCHEDULE_META.label} · 更新 {SCHEDULE_META.updated}。虛線為預測，時間以遊戲內公告為準。</Typography>
-      <Card className="gap-4 border border-line bg-glass p-3">
+
+      <View className="gap-3" style={{ paddingHorizontal: 4 }}>
         <View className="flex-row items-center justify-between gap-2">
-          <Button accessibilityLabel="上個月" size="sm" variant="ghost" className="border border-line" onPress={model.previousMonth}>←</Button>
-          <Typography.Heading type="h4" className="flex-1 text-center type-title text-ink">{model.year}年 {pad(model.monthIndex + 1)}月</Typography.Heading>
-          <Button accessibilityLabel="下個月" size="sm" variant="ghost" className="border border-line" onPress={model.nextMonth}>→</Button>
+          <Button accessibilityLabel="上個月" size="sm" variant="secondary" className="border border-line" onPress={model.previousMonth}>‹</Button>
+          <Typography.Heading type="h4" className="flex-1 text-center text-ink" style={{ fontSize: 26 }}>{model.year}年 {pad(model.monthIndex + 1)}月</Typography.Heading>
+          <Button accessibilityLabel="下個月" size="sm" variant="secondary" className="border border-line" onPress={model.nextMonth}>›</Button>
         </View>
         {!model.isCurrentMonth ? <Button size="sm" variant="ghost" className="self-center border border-line" onPress={model.goToCurrentMonth}>回到本月</Button> : null}
 
-        <View className="gap-2 rounded-2xl border border-line bg-white/70 p-3">
-          <Pressable accessibilityRole="button" accessibilityState={{ expanded: filtersOpen }} className="min-h-12 flex-row flex-wrap items-center justify-between gap-2" onPress={() => setFiltersOpen(!filtersOpen)}>
-            <Typography className="font-semibold text-muted">男主篩選 {filtersOpen ? "⌃" : "⌄"}</Typography>
-            <Typography className="type-label text-muted">{allLeadsSelected ? "已顯示全部" : `已選 ${model.selectedLeads.length} 位`}</Typography>
-          </Pressable>
-          {filtersOpen ? <View className="flex-row flex-wrap gap-2">
-            <Button size="sm" variant="ghost" onPress={model.clearLeads}>清除全部</Button>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ selected: allLeadsSelected }}
-              hitSlop={6}
-              onPress={model.showAllLeads}
-              className={`min-h-12 items-center justify-center rounded-full border px-3 py-2 ${allLeadsSelected ? "border-line bg-orbit/10" : "border-line bg-transparent"}`}
-            >
-              <Typography className="type-label font-semibold text-ink">全部</Typography>
-            </Pressable>
-            {LEADS.map((lead) => {
-              const active = model.selectedLeads.includes(lead);
-              return (
-                <Pressable
-                  key={lead}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
-                  hitSlop={6}
-                  onPress={() => model.toggleLead(lead)}
-                  className="flex-row gap-1 min-h-12 items-center justify-center rounded-full border px-3 py-2"
-                  style={{ borderColor: active ? "#b29bc9" : "#ddd5e9", backgroundColor: active ? "#e5d9f0" : "transparent" }}
-                >
-                  <Typography className="type-label font-semibold text-ink">{lead}</Typography>
-                </Pressable>
-              );
-            })}
-          </View> : null}
-        </View>
-
-        <View className="flex-row flex-wrap gap-2">
-          <Button className="flex-1" variant={showCalendar ? "primary" : "secondary"} accessibilityState={{ selected: showCalendar }} onPress={() => setViewMode("calendar")}>月曆</Button>
-          <Button className="flex-1" variant={!showCalendar ? "primary" : "secondary"} accessibilityState={{ selected: !showCalendar }} onPress={() => setViewMode("list")}>列表</Button>
-        </View>
-        {showCalendar ? <>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: "center", gap: 4 }}>
+          <Pressable accessibilityRole="button" accessibilityState={{ selected: allLeadsSelected }} onPress={model.showAllLeads} style={{ minHeight: 44, justifyContent: "center" }}><View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 18, overflow: "hidden", borderWidth: 1, borderColor: "#e1d7ec" }}>{allLeadsSelected ? <PearlSurface tone="primary"/> : <PearlSurface/>}<Typography style={{ fontSize: 14, color: allLeadsSelected ? "#fff" : "#30213f" }}>全部</Typography></View></Pressable>
+          {LEADS.map(lead => { const active = model.selectedLeads.includes(lead) && !allLeadsSelected; return <Pressable key={lead} accessibilityRole="button" accessibilityState={{ selected: model.selectedLeads.includes(lead) }} onPress={() => model.toggleLead(lead)} style={{ minHeight: 44, justifyContent: "center" }}><View style={{ paddingHorizontal: 9, paddingVertical: 6, borderRadius: 18, overflow: "hidden", borderWidth: 1, borderColor: "#e1d7ec" }}><PearlSurface tone={active ? "lavender" : "glass"}/><Typography style={{ fontSize: 14 }}>{lead}</Typography></View></Pressable>; })}
+        </ScrollView>
+        {showCalendar && !showBars ? <PearlCalendar calendar={model.calendar} events={model.monthEvents} selected={model.selectedDate} today={today} onSelect={model.selectDate}/> : null}
+        {showCalendar && showBars ? <>
         <Typography className="type-label text-muted">點日期查看完整活動；色條虛線代表預測。{calendarContainerWidth > 0 && calendarWidth > calendarContainerWidth ? "月曆可左右滑動。" : ""}</Typography>
         <View onLayout={event => setCalendarContainerWidth(event.nativeEvent.layout.width)}>
         <ScrollView horizontal showsHorizontalScrollIndicator><View style={{ width: calendarWidth }}>
@@ -236,7 +207,20 @@ export function ScheduleScreenNative() {
         </View></ScrollView></View>
         </> : null}
 
-        <View className="flex-row flex-wrap gap-x-3 gap-y-2 border-t border-line pt-3">
+      </View>
+
+      <View className="gap-3">{model.selectedDate ? <Button variant="ghost" onPress={model.clearSelection}>查看整月</Button> : null}
+        {model.selectedEvents.length === 0 ? <Typography className="type-body text-muted">目前篩選沒有排期</Typography> : null}
+        <NativeColumns minimum={360}>{model.selectedEvents.map((event, index) => {
+          const key = `${event.name}-${event.start}-${index}`;
+          const open = expandedEvent === key;
+          const status = eventStatus(event, today);
+          const lead = nativeLeadLabel(event);
+          const forecast = isScheduleForecast(event, today);
+          return <Card key={key} style={{ padding: 0 }}><Pressable accessibilityRole="button" accessibilityState={{ expanded: open }} onPress={() => setExpandedEvent(open ? null : key)} style={{ flexDirection: "row", alignItems: "center", padding: 14, gap: 12 }}><View style={{ width: 7, alignSelf: "stretch", minHeight: 50, borderRadius: 6, opacity: .65, backgroundColor: EVENT_COLORS[event.type] }}/><View style={{ flex: 1, gap: 6 }}><Typography.Heading style={{ fontSize: 18, lineHeight: 26 }}>{event.name}</Typography.Heading><View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}><NativeEventIcon type="pass"/><Typography style={{ fontFamily: NATIVE_FONTS.number, fontSize: 16 }}>{event.start.slice(5).replace("-", " / ")}{event.end ? event.end !== event.start ? ` – ${event.end.slice(5).replace("-", " / ")}` : "" : " · 結束日待確認"}</Typography></View></View><View style={{ borderRadius: 12, paddingHorizontal: 9, paddingVertical: 4, backgroundColor: forecast ? "#e5edf8" : status.tone === "live" ? "#e8f2ec" : "#f2eaf7" }}><Typography style={{ fontSize: 13, color: forecast ? "#45678e" : "#665175" }}>{forecast ? "預測" : status.label}</Typography></View><Typography style={{ fontSize: 24, color: "#79628d" }}>›</Typography></Pressable>{open ? <View className="gap-2 border-t border-line p-4"><Typography className="type-label text-muted">{EVENT_LABELS[event.type]}{lead ? ` · ${lead.label}` : ""} · {event.start}{event.end ? ` ～ ${event.end}` : ""}</Typography><View className="flex-row flex-wrap gap-2">{event.source ? <Button size="sm" variant="ghost" onPress={() => { setLinkError(null); void Linking.openURL(event.source!).catch(() => setLinkError("無法開啟公告，請確認網路連線。")); }}>官方公告 ↗</Button> : null}<Button size="sm" variant="ghost" onPress={() => void shareCalendarEvent(event)}>分享行事曆</Button>{canPlanScheduleEvent(event, today) ? <Button size="sm" variant="ghost" onPress={() => void planEvent(event)}>加入規劃</Button> : null}</View></View> : null}</Card>;
+        })}</NativeColumns>
+      </View>
+      <NativeDisclosure title="月曆顯示與排期來源"><Typography className="type-label text-muted">{SCHEDULE_META.label} · 更新 {SCHEDULE_META.updated}。預測為非官方資訊，請以遊戲內公告為準。</Typography><View className="flex-row flex-wrap gap-2"><Button variant="secondary" onPress={() => setViewMode(showCalendar ? "list" : "calendar")}>{showCalendar ? "只看列表" : "顯示月曆"}</Button><Button variant="secondary" onPress={() => { setShowBars(!showBars); setViewMode("calendar"); }}>{showBars ? "圓點月曆" : "色條月曆"}</Button><Button variant="ghost" onPress={model.clearLeads}>清除全部男主</Button><Button variant="ghost" isDisabled={!model.selectedEvents.length} onPress={() => void shareVisibleCalendar()}>分享顯示排期</Button></View>        <View className="flex-row flex-wrap gap-x-3 gap-y-2 border-t border-line pt-3">
           {(Object.keys(EVENT_LABELS) as ScheduleEventType[]).map((type) => (
             <View key={type} className="flex-row items-center gap-1.5">
               <View className="h-2 w-2 rounded-full" style={{ backgroundColor: EVENT_COLORS[type] }} />
@@ -244,53 +228,7 @@ export function ScheduleScreenNative() {
             </View>
           ))}
         </View>
-      </Card>
-
-      <Card className="gap-3 border border-line bg-glass p-4">
-        <View className="gap-2">
-          <Typography.Heading type="h4" className="type-title text-ink">
-            {model.selectedDate ? `${Number(model.selectedDate.slice(5, 7))}月${Number(model.selectedDate.slice(8, 10))}日` : `${pad(model.monthIndex + 1)}月`} 排期
-          </Typography.Heading>
-          <View className="flex-row flex-wrap gap-2">
-            <Button size="sm" variant="ghost" isDisabled={!model.selectedEvents.length} onPress={() => void shareVisibleCalendar()}>分享顯示排期</Button>
-            {model.selectedDate ? <Button size="sm" variant="ghost" onPress={model.clearSelection}>查看整月</Button> : null}
-          </View>
-        </View>
-        {model.selectedEvents.length === 0 ? <Typography.Paragraph className="py-8 text-center text-muted">{model.selectedDate ? "這天沒有排期" : "目前篩選沒有排期"}</Typography.Paragraph> : null}
-        {model.selectedEvents.length === 0 && !allLeadsSelected ? <Button variant="secondary" onPress={model.showAllLeads}>顯示全部男主</Button> : null}
-        <NativeColumns minimum={360}>{model.selectedEvents.map((event, index) => {
-          const status = eventStatus(event, today);
-          const lead = nativeLeadLabel(event);
-          const statusColor = status.tone === "live" ? "#2a7564" : status.tone === "soon" ? "#8b632e" : "#ddd5e9";
-          return (
-            <View key={`${event.name}-${event.start}-${index}`} className="gap-2 border-b border-line py-3">
-              <View className="flex-row items-center justify-between gap-3">
-                <View className="h-10 w-10 items-center justify-center rounded-xl border border-line bg-white/70">
-                  <NativeEventIcon type={event.type} />
-                </View>
-                <View className="flex-1 gap-1">
-                  <View className="flex-row flex-wrap items-center gap-1.5">
-                    <Typography.Paragraph className="font-semibold text-ink">{event.name}{isScheduleForecast(event, today) ? " · 預測" : ""}</Typography.Paragraph>
-                    {lead ? (
-                      <View className="rounded-full border px-2 py-0.5" style={{ borderColor: lead.color }}>
-                        <Typography className="type-label text-muted">{lead.label}</Typography>
-                      </View>
-                    ) : null}
-                  </View>
-                  <View className="self-start rounded-full border px-2 py-1" style={{ borderColor: statusColor }}><Typography className="type-label text-ink">{status.label}</Typography></View>
-                  <Typography className="type-label text-muted">{EVENT_LABELS[event.type]} · {event.start}{!event.end ? " · 結束日待確認" : event.end !== event.start ? ` ~ ${event.end}` : ""}</Typography>
-                </View>
-
-              </View>
-              <View className="flex-row flex-wrap justify-end gap-2">
-                {event.source ? <Button size="sm" variant="ghost" onPress={() => { setLinkError(null); void Linking.openURL(event.source!).catch(() => setLinkError("無法開啟公告，請確認網路連線。")); }}>官方公告 ↗</Button> : null}
-                <Button size="sm" variant="ghost" onPress={() => void shareCalendarEvent(event)}>分享行事曆</Button>
-                {canPlanScheduleEvent(event, today) ? <Button size="sm" variant="ghost" onPress={() => void planEvent(event)}>加入規劃</Button> : null}
-              </View>
-            </View>
-          );
-        })}</NativeColumns>
-      </Card>
+</NativeDisclosure>
     </NativePage>
   );
 }

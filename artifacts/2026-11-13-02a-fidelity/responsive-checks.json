@@ -1,0 +1,146 @@
+[
+  {
+    "width": 320,
+    "route": "wallet",
+    "documentWidth": 320,
+    "appWidth": 320,
+    "mainWidth": 320,
+    "navItems": 4
+  },
+  {
+    "width": 320,
+    "route": "schedule",
+    "documentWidth": 320,
+    "appWidth": 320,
+    "mainWidth": 320,
+    "navItems": 4
+  },
+  {
+    "width": 320,
+    "route": "calculator",
+    "documentWidth": 320,
+    "appWidth": 320,
+    "mainWidth": 320,
+    "navItems": 4
+  },
+  {
+    "width": 320,
+    "route": "tracker",
+    "documentWidth": 320,
+    "appWidth": 320,
+    "mainWidth": 320,
+    "navItems": 4
+  },
+  {
+    "width": 320,
+    "route": "account",
+    "documentWidth": 320,
+    "appWidth": 320,
+    "mainWidth": 320,
+    "navItems": 0
+  },
+  {
+    "width": 320,
+    "route": "admin",
+    "documentWidth": 320,
+    "appWidth": 320,
+    "mainWidth": 320,
+    "navItems": 0
+  },
+  {
+    "width": 390,
+    "route": "wallet",
+    "documentWidth": 390,
+    "appWidth": 390,
+    "mainWidth": 390,
+    "navItems": 4
+  },
+  {
+    "width": 390,
+    "route": "schedule",
+    "documentWidth": 390,
+    "appWidth": 390,
+    "mainWidth": 390,
+    "navItems": 4
+  },
+  {
+    "width": 390,
+    "route": "calculator",
+    "documentWidth": 390,
+    "appWidth": 390,
+    "mainWidth": 390,
+    "navItems": 4
+  },
+  {
+    "width": 390,
+    "route": "tracker",
+    "documentWidth": 390,
+    "appWidth": 390,
+    "mainWidth": 390,
+    "navItems": 4
+  },
+  {
+    "width": 390,
+    "route": "account",
+    "documentWidth": 390,
+    "appWidth": 390,
+    "mainWidth": 390,
+    "navItems": 0
+  },
+  {
+    "width": 390,
+    "route": "admin",
+    "documentWidth": 390,
+    "appWidth": 390,
+    "mainWidth": 390,
+    "navItems": 0
+  },
+  {
+    "width": 1024,
+    "route": "wallet",
+    "documentWidth": 1024,
+    "appWidth": 1024,
+    "mainWidth": 520,
+    "navItems": 4
+  },
+  {
+    "width": 1024,
+    "route": "schedule",
+    "documentWidth": 1024,
+    "appWidth": 1024,
+    "mainWidth": 520,
+    "navItems": 4
+  },
+  {
+    "width": 1024,
+    "route": "calculator",
+    "documentWidth": 1024,
+    "appWidth": 1024,
+    "mainWidth": 520,
+    "navItems": 4
+  },
+  {
+    "width": 1024,
+    "route": "tracker",
+    "documentWidth": 1024,
+    "appWidth": 1024,
+    "mainWidth": 520,
+    "navItems": 4
+  },
+  {
+    "width": 1024,
+    "route": "account",
+    "documentWidth": 1024,
+    "appWidth": 1024,
+    "mainWidth": 520,
+    "navItems": 0
+  },
+  {
+    "width": 1024,
+    "route": "admin",
+    "documentWidth": 1024,
+    "appWidth": 1024,
+    "mainWidth": 1024,
+    "navItems": 0
+  }
+]

@@ -4,6 +4,7 @@ import { Input } from "@heroui/react/input";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
+import { CalculatorOverview } from "./CalculatorOverview.web";
 import { PACK_OTHER } from "@/data/packs";
 import { bestTierPrice, type GapPackRecommendation } from "@/domain/calculator";
 import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency as formatMoney, formatNumber } from "@/domain/format";
@@ -36,6 +37,7 @@ export function CalculatorScreenWeb() {
   const bestPer = bestTierPrice(draft.pool, draft.currency);
   const formatCurrency = (value: number | null) => formatMoney(value, draft.currency);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   async function recordRecommendation() {
     const saved = await model.saveSelectedPacksAsExpense();
@@ -84,6 +86,8 @@ export function CalculatorScreenWeb() {
           </div>
         ) : null}
         <div className="stack">
+          <CalculatorOverview draft={draft} resource={resource} onChange={model.updateNumber} onPlan={() => setSettingsOpen(!settingsOpen)}/>
+          <details className="calculator-settings pearl-details" open={settingsOpen} onToggle={event => setSettingsOpen(event.currentTarget.open)}><summary>卡池與換算設定</summary>
           <Card className="product-card">
             <div className="section-heading">
               <h2 className="section-title heading-with-icon"><CalculatorGlyph type="diamond" />抽卡目標換算</h2>
@@ -95,10 +99,6 @@ export function CalculatorScreenWeb() {
                 <select aria-label="卡池類型" className="native-select" value={draft.pool} onChange={(event) => model.setPool(event.target.value as Pool)}>
                   {CALCULATOR_POOLS.map((pool) => <option key={pool}>{pool}</option>)}
                 </select>
-              </label>
-              <label className="field-wrap">
-                <span className="field-label aligned-target-label">目前持有（鑽）</span>
-                <Input aria-label="目前持有鑽石" type="number" min="0" placeholder="0" value={draft.cur ? String(draft.cur) : ""} onChange={(event) => model.updateNumber("cur", Number(event.target.value))} />
               </label>
               <div className="field-wrap">
                 <div className="field-label field-help"><label htmlFor="calculator-target">目標抽數</label><button type="button" className="goal-rules-toggle" aria-label="查看保底與繼承規則" aria-expanded={rulesOpen} aria-controls="calculator-goal-rules" onClick={() => setRulesOpen(!rulesOpen)}>?</button></div>
@@ -113,10 +113,6 @@ export function CalculatorScreenWeb() {
                 </ul>
                 <p className="section-meta">以上沿用原始版整理，實際規則請以當期遊戲內公告為準。</p>
               </div>
-              <label className="field-wrap">
-                <span className="field-label">原本剩餘金券（張）</span>
-                <Input aria-label="原有金券" type="number" min="0" placeholder="0" value={draft.tickets ? String(draft.tickets) : ""} onChange={(event) => model.updateNumber("tickets", Number(event.target.value))} />
-              </label>
               <div className="field-wrap">
                 <label className="field-label" htmlFor="official-tickets">官方金券（張）</label>
                 <div className="official-ticket-control">
@@ -157,6 +153,7 @@ export function CalculatorScreenWeb() {
               {resource.savingMonths > 0 ? <span>純存約需 {resource.savingMonths} 個月</span> : null}
             </div>
           </Card>
+          </details>
         </div>
 
         <div className="stack">

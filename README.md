@@ -1,10 +1,10 @@
 # 深空省省
 
-## 02A 與會員管理（2026-11-12）
+## 02A 與會員管理（2026-11-13）
 
 目前以 App 為開發主線，視覺採「02A 霧光星軌・原版」，網頁版維持現況；只有排期更新時同步兩版排期。已加入會員管理介面、API、權限與操作紀錄，以及七種活動池選單。原介面有 Git 備份分支與本機 ZIP。
 
-變更、備份與真實服務連線待辦見 [實作紀錄](docs/02A_MEMBERSHIP_IMPLEMENTATION.md)，[畫面與選定參考](artifacts/2026-11-12-02a-implementation/README.md)。`npm run preview` 仍是本機工具預覽；`npm run web` 可檢查會員表單。完整備份與會員管理需要對應測試 API、Clerk、資料庫與管理者設定，目前尚未完成真實環境或手機驗收。
+變更、備份與真實服務連線待辦見 [實作紀錄](docs/02A_MEMBERSHIP_IMPLEMENTATION.md)，[最新畫面與選定參考](artifacts/2026-11-13-02a-fidelity/README.md)。11 月 13 日已依參考圖補齊漸層、內外陰影與主要畫面資訊順序，見 [視覺修正紀錄](docs/02A_REFERENCE_FIDELITY.md)。`npm run preview` 仍是本機工具預覽；`npm run web` 可檢查會員表單。完整備份與會員管理需要對應測試 API、Clerk、資料庫與管理者設定，目前尚未完成真實環境或手機驗收。
 
 ## Maggie 本機預覽與最新同步（2026-11-04）
 

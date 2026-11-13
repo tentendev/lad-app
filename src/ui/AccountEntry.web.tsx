@@ -6,8 +6,8 @@ import type { JSX } from "react";
 function MemberIcon(): JSX.Element {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="m9 3 1-2h4l1 2 2 1 2 0 2 4-1 2v3l1 2-2 4h-2l-2 1-1 2h-4l-1-2-2-1H5l-2-4 1-2v-3L3 8l2-4h2Z" />
     </svg>
   );
 }

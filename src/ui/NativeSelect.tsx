@@ -3,6 +3,7 @@ import { Modal, Pressable, ScrollView, useWindowDimensions, View } from "react-n
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
+import { PearlSurface } from "./PearlSurface";
 import { Typography } from "@/ui/NativeComponents";
 
 type Props<T extends string> = {
@@ -25,6 +26,7 @@ export function NativeSelect<T extends string>({ label, value, options, onChange
   return <View className={compact ? "flex-row flex-wrap items-center gap-2" : "gap-2"}>
     <Typography className="type-label text-muted">{label}</Typography>
     <Pressable accessibilityRole="button" accessibilityLabel={`${label}，${display(value)}`} accessibilityState={{ disabled, expanded: open }} disabled={disabled} onPress={() => setOpen(true)} className={`${compact ? "flex-1" : ""} min-h-12 flex-row items-center justify-between gap-3 rounded-[13px] border border-line bg-white/80 px-3 py-3 ${disabled ? "opacity-45" : ""}`}>
+      <PearlSurface/>
       <Typography className="flex-1 type-body text-ink">{display(value)}</Typography>
       <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#80639f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round"><Path d="m6 9 6 6 6-6" /></Svg>
     </Pressable>

@@ -10,8 +10,8 @@ export function BudgetSummary({ budget, spent, remaining, percentage, currency }
       <div><span>已花</span><strong>{formatCurrency(spent, currency)}</strong></div>
     </div>
     <div className="budget-orbit" role="progressbar" aria-label="當月預算使用率" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.min(100, percentage)} aria-valuetext={budget > 0 ? `已使用 ${percentage}%，${remaining < 0 ? "超支" : "剩餘"} ${formatCurrency(Math.abs(remaining), currency)}` : "尚未設定預算"}>
-      <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#e8e1f0" strokeWidth="11"/><circle cx="100" cy="100" r="86" fill="none" stroke={remaining < 0 ? "var(--bad)" : "#a68ac2"} strokeWidth="11" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={circumference * (1 - ratio)}/></svg>
-      <div className="budget-orbit-copy"><small>{remaining < 0 ? "已超支" : "剩餘可花"}</small><strong>{formatCurrency(Math.abs(remaining), currency)}</strong><span>{budget > 0 ? `已使用 ${percentage}%` : "尚未設定預算"}</span></div>
+      <svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="budget-arc" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#baa5d0"/><stop offset="1" stopColor="#a58ac2"/></linearGradient></defs><circle cx="100" cy="100" r="86" fill="none" stroke="#e5dfec" strokeWidth="11"/><circle cx="100" cy="100" r="86" fill="none" stroke={remaining < 0 ? "var(--bad)" : "url(#budget-arc)"} strokeWidth="11" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={circumference * (1 - ratio)}/></svg>
+      <div className={`budget-orbit-copy ${formatCurrency(Math.abs(remaining), currency).length > 11 ? "long" : ""}`}><small>{remaining < 0 ? "已超支" : "剩餘"}</small><strong>{formatCurrency(Math.abs(remaining), currency)}</strong><span>{budget > 0 ? `(${Math.round(ratio * 1000) / 10}%)` : "尚未設定預算"}</span></div>
     </div>
   </div>;
 }

@@ -6,7 +6,7 @@ export const APP_COLORS = {
   navigation: "rgba(250,248,254,0.96)",
   line: "#ddd5e9",
   input: "#fbf9fe",
-  text: "#383144",
+  text: "#30213f",
   muted: "#71667e",
   accent: "#80639f",
   lavender: "#bbb0dc",
