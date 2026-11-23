@@ -2,7 +2,7 @@
 import type { ScheduleEvent } from "@/domain/types";
 
 export const SCHEDULE_META = {
-  "updated": "2026-11-20",
+  "updated": "2026-11-23",
   "label": "排期整理",
   "forecastSource": "排期預測1007.jpg、2026-10-24 排期推算（至 2027-07）"
 };
@@ -205,13 +205,16 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
-    "name": "黎深脈脈傾音復刻",
+    "name": "遵命飼養官復刻",
     "type": "rerun",
-    "start": "2026-11-24",
-    "end": "2026-12-01",
-    "tentative": true,
+    "start": "2026-11-25",
+    "end": "2026-12-03",
+    "tentative": false,
     "leads": [
-      "黎深"
+      "沈星回",
+      "黎深",
+      "祁煜",
+      "秦徹"
     ]
   },
   {
@@ -235,16 +238,13 @@ export const SCHEDULE: ScheduleEvent[] = [
     ]
   },
   {
-    "name": "遵命飼養官復刻",
+    "name": "黎深脈脈傾音復刻",
     "type": "rerun",
     "start": "2026-12-14",
     "end": "2026-12-22",
     "tentative": true,
     "leads": [
-      "沈星回",
-      "黎深",
-      "祁煜",
-      "秦徹"
+      "黎深"
     ]
   },
   {
