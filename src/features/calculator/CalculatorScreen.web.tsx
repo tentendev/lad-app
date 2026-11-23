@@ -14,6 +14,7 @@ import { RetryableError } from "@/ui/RetryableError.web";
 import { WebPage } from "@/ui/WebPage.web";
 import { useCalculatorModel } from "./useCalculatorModel";
 import { PlannerSectionWeb } from "./PlannerSection.web";
+import { SubscriptionCostReference } from "./SubscriptionCostReference.web";
 
 function CalculatorGlyph({ type }: { type: "diamond" | "gift" | "steps" }) {
   if (type === "gift") {
@@ -180,6 +181,8 @@ export function CalculatorScreenWeb() {
               </p>
             )}
           </Card>
+
+          <SubscriptionCostReference />
 
           <Card className="product-card">
             <div className="section-heading">

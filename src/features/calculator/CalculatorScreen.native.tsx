@@ -17,6 +17,7 @@ import { NativeSelect } from "@/ui/NativeSelect";
 import { NativeColumns } from "@/ui/NativeColumns";
 import { useCalculatorModel } from "./useCalculatorModel";
 import { PlannerSectionNative } from "./PlannerSection.native";
+import { SubscriptionCostReference } from "./SubscriptionCostReference";
 
 function CalculatorGlyph({ type }: { type: "diamond" | "gift" | "steps" }) {
   if (type === "gift") {
@@ -139,6 +140,8 @@ export function CalculatorScreenNative() {
       </NativeColumns>
 
       <NativeColumns>
+      <View className="gap-3">
+      <SubscriptionCostReference />
       <Card className="gap-3 border border-line bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="steps" /><Typography.Heading type="h4" className="type-title text-ink">階梯明細</Typography.Heading></View>
         <NativeSelect label="禮包幣別" value={draft.currency ?? "TWD"} options={CURRENCIES} formatOption={currency => `${currency} · ${CURRENCY_SYMBOLS[currency]}`} onChange={model.setCurrency} />
@@ -163,6 +166,7 @@ export function CalculatorScreenNative() {
           </View>
         ))}
       </Card>
+      </View>
 
       <Card className="gap-3 border border-line bg-glass p-4">
         <Typography className="text-muted">實際選擇 · {selectedPacks.count} 包{selectedPacks.estimatedPrices ? " · 地區售價推估" : ""}</Typography>
