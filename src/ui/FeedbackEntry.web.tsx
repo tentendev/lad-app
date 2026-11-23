@@ -1,5 +1,5 @@
 import { useId, useRef } from "react";
-import { FEEDBACK_DESCRIPTION, FEEDBACK_URL } from "@/config/feedback";
+import { FEEDBACK_CONTACT_NOTE, FEEDBACK_DESCRIPTION, FEEDBACK_THREADS_URL, FEEDBACK_URL } from "@/config/feedback";
 
 export function FeedbackEntry() {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -20,6 +20,7 @@ export function FeedbackEntry() {
     }}>
       <div className="feedback-dialog-heading"><h2 id={`${id}-title`}>前往使用回饋問卷？</h2><button type="button" aria-label="關閉問卷確認視窗" onClick={() => dialog.current?.close()}>×</button></div>
       <p id={`${id}-description`}>{FEEDBACK_DESCRIPTION}</p>
+      <p>{FEEDBACK_CONTACT_NOTE} <a href={FEEDBACK_THREADS_URL} target="_blank" rel="noopener noreferrer">前往 Threads ↗</a></p>
       <div className="feedback-dialog-actions"><button type="button" onClick={() => dialog.current?.close()}>先不要</button><a href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer" onClick={() => dialog.current?.close()}>前往問卷 ↗</a></div>
     </dialog>
   </>;
