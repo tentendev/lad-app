@@ -1,29 +1,28 @@
 import { View } from "react-native";
 
-import { SUBSCRIPTION_COST_NOTE, SUBSCRIPTION_COSTS } from "@/data/subscriptionCosts";
-import { formatCurrency } from "@/domain/format";
-import { Card, Typography } from "@/ui/NativeComponents";
+import { getSubscriptionCosts, SUBSCRIPTION_COST_NOTE } from "@/data/subscriptionCosts";
+import { CURRENCY_LABELS, CURRENCY_SYMBOLS, formatCurrency } from "@/domain/format";
+import type { Currency } from "@/domain/types";
+import { Typography } from "@/ui/NativeComponents";
+import { NativeDisclosure } from "@/ui/NativeDisclosure";
 import { NativeMetricGrid } from "@/ui/NativeMetricGrid";
 
-export function SubscriptionCostReference() {
+export function SubscriptionCostReference({ currency = "TWD" }: { currency?: Currency }) {
   return (
-    <Card className="gap-3 border border-line bg-glass p-4">
-      <View className="flex-row flex-wrap items-center justify-between gap-2">
-        <Typography.Heading type="h4" className="type-title text-ink">月卡／週卡每抽成本</Typography.Heading>
-        <Typography className="type-label text-muted">台幣 NT$</Typography>
-      </View>
+    <NativeDisclosure title="月卡／週卡每抽成本">
+      <Typography className="type-label text-muted">{CURRENCY_LABELS[currency]} {CURRENCY_SYMBOLS[currency]}</Typography>
       <NativeMetricGrid>
-        {SUBSCRIPTION_COSTS.map(pass => (
+        {getSubscriptionCosts(currency).map(pass => (
           <View className="gap-2 rounded-xl border border-line bg-white/70 p-3" key={pass.name}>
             <Typography className="type-title-sm text-ink">{pass.name}</Typography>
             <Typography className="type-title text-orbit">
-              {formatCurrency(pass.perPull)}／抽
+              {formatCurrency(pass.perPull, currency)}{pass.perPull != null ? "／抽" : ""}
             </Typography>
-            <Typography className="type-label text-muted">售價 {formatCurrency(pass.price)} · {pass.detail}</Typography>
+            <Typography className="type-label text-muted">售價 {formatCurrency(pass.price, currency)} · {pass.detail}</Typography>
           </View>
         ))}
       </NativeMetricGrid>
       <Typography className="type-label text-muted">{SUBSCRIPTION_COST_NOTE}</Typography>
-    </Card>
+    </NativeDisclosure>
   );
 }

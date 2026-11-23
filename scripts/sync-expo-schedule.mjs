@@ -30,6 +30,9 @@ const generated = [
   `export const OFFICIAL_TICKET_RULES: Record<Pool, TicketRule> = ${JSON.stringify(context.window.OFFICIAL_TICKET_RULES, null, 2)};`,
   `export const PACK_DATA: Record<Pool, PackTier[]> = ${JSON.stringify(packData, null, 2)};`,
   `export const PACK_OTHER = ${JSON.stringify(context.window.PACK_OTHER, null, 2)};`,
+  `export const SUBSCRIPTION_PACKS = ${JSON.stringify(context.window.SUBSCRIPTION_PACKS, null, 2)};`,
+  `export const SUBSCRIPTION_COST_NOTE = ${JSON.stringify(context.window.SUBSCRIPTION_COST_NOTE)};`,
+  `export const REGIONAL_SUBSCRIPTION_PRICES = ${JSON.stringify(context.window.REGIONAL_SUBSCRIPTION_PRICES, null, 2)};`,
   `export const REGIONAL_PACK_PRICES = ${JSON.stringify(context.window.REGIONAL_PACK_PRICES, null, 2)};`,
   `export const REGIONAL_PACK_PRICE_REFERENCES = ${JSON.stringify(context.window.REGIONAL_PACK_PRICE_REFERENCES, null, 2)};`,
 ].join('\n\n') + '\n';

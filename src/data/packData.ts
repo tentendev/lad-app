@@ -658,6 +658,64 @@ export const PACK_OTHER = [
   }
 ];
 
+export const SUBSCRIPTION_PACKS = [
+  {
+    "name": "月卡",
+    "price": 150,
+    "diamonds": 3000,
+    "detail": "30 天領滿 3,000 鑽＝20 抽；未計贈送晶鑽",
+    "source": "台灣月卡售價與使用者確認獎勵"
+  },
+  {
+    "name": "週卡",
+    "price": 220,
+    "diamonds": 1050,
+    "detail": "1,050 鑽＝7 抽",
+    "source": "戀與深空_禮包總表"
+  }
+];
+
+export const SUBSCRIPTION_COST_NOTE = "外幣售價依玩家提供的商店截圖整理。僅供比較，不計入已選禮包合計。";
+
+export const REGIONAL_SUBSCRIPTION_PRICES = [
+  {
+    "pool": "定期禮包",
+    "tier": "月卡",
+    "currency": "HKD",
+    "price": 38,
+    "source": "references/prices/月卡&週卡-港幣.JPG",
+    "platform": "未提供",
+    "received": "2026-11-23"
+  },
+  {
+    "pool": "定期禮包",
+    "tier": "週卡",
+    "currency": "HKD",
+    "price": 58,
+    "source": "references/prices/月卡&週卡-港幣.JPG",
+    "platform": "未提供",
+    "received": "2026-11-23"
+  },
+  {
+    "pool": "定期禮包",
+    "tier": "月卡",
+    "currency": "MYR",
+    "price": 22.9,
+    "source": "references/prices/月卡&週卡-馬幣.JPG",
+    "platform": "未提供",
+    "received": "2026-11-23"
+  },
+  {
+    "pool": "定期禮包",
+    "tier": "週卡",
+    "currency": "MYR",
+    "price": 34.9,
+    "source": "references/prices/月卡&週卡-馬幣.JPG",
+    "platform": "未提供",
+    "received": "2026-11-23"
+  }
+];
+
 export const REGIONAL_PACK_PRICES = [
   {
     "pool": "月卡復刻池",

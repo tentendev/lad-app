@@ -135,13 +135,12 @@ export function CalculatorScreenNative() {
             {recommendation.status === "enough" ? "現有資源已達成目標。" : recommendation.status === "overflow" ? `還需 ${recommendation.gapPulls} 抽；一輪限購最多補 ${formatNumber(recommendation.planPulls ?? 0)} 抽（${formatCurrency(recommendation.planCost ?? 0)}），其餘 ${formatNumber(Math.max(0, recommendation.gapPulls - (recommendation.planPulls ?? 0)))} 抽需搭配存鑽、其他有效資源或下輪禮包。` : recommendation.status === "missing-price" ? "缺少地區售價，請先確認價格後再記帳。" : "填入目標後顯示建議。"}
           </Typography.Paragraph>
         )}
+        <SubscriptionCostReference currency={draft.currency} />
       </Card>
 
       </NativeColumns>
 
       <NativeColumns>
-      <View className="gap-3">
-      <SubscriptionCostReference />
       <Card className="gap-3 border border-line bg-glass p-4">
         <View className="flex-row items-center gap-2"><CalculatorGlyph type="steps" /><Typography.Heading type="h4" className="type-title text-ink">階梯明細</Typography.Heading></View>
         <NativeSelect label="禮包幣別" value={draft.currency ?? "TWD"} options={CURRENCIES} formatOption={currency => `${currency} · ${CURRENCY_SYMBOLS[currency]}`} onChange={model.setCurrency} />
@@ -166,7 +165,6 @@ export function CalculatorScreenNative() {
           </View>
         ))}
       </Card>
-      </View>
 
       <Card className="gap-3 border border-line bg-glass p-4">
         <Typography className="text-muted">實際選擇 · {selectedPacks.count} 包{selectedPacks.estimatedPrices ? " · 地區售價推估" : ""}</Typography>

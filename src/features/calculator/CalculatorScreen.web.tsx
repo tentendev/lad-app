@@ -180,9 +180,8 @@ export function CalculatorScreenWeb() {
                 {recommendation.status === "enough" ? `現有資源可抽 ${formatNumber(recommendation.ownedPulls)} 抽。` : recommendation.status === "overflow" ? `還需 ${recommendation.gapPulls} 抽；一輪限購最多補 ${formatNumber(recommendation.planPulls ?? 0)} 抽（${formatCurrency(recommendation.planCost ?? 0)}），其餘 ${formatNumber(Math.max(0, recommendation.gapPulls - (recommendation.planPulls ?? 0)))} 抽需搭配存鑽、其他有效資源或下輪禮包。` : recommendation.status === "missing-price" ? "缺少地區售價，請先確認價格後再記帳。" : "填入目標後會顯示建議購買階級。"}
               </p>
             )}
+            <SubscriptionCostReference currency={draft.currency} />
           </Card>
-
-          <SubscriptionCostReference />
 
           <Card className="product-card">
             <div className="section-heading">
