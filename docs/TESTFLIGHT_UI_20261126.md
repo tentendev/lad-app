@@ -43,10 +43,16 @@
 
 需要由 `dev@tenten.co` 的帳號持有人，於 [Apple Developer 帳號頁](https://developer.apple.com/account/) 審閱並接受待處理協議；若 [App Store Connect 商務／協議](https://appstoreconnect.apple.com/business) 也有必要待辦，需一併確認。上傳服務只回報必要協議未生效，尚未取得持有人視角的確切協議名稱。App 管理不能代替持有人接受更新協議，見 [Apple 角色規則](https://developer.apple.com/help/account/access/roles/)。
 
-使用者確認協議已接受後，沿用已完成的同一份安裝包重試，不建立新 build：
+### 後續角色篩選修改
+
+使用者隨後要求網頁與 App 一起調整角色篩選：從「全部」點男主只選該人，其後可加選／取消，取消最後一位回到全部；全部模式只標示「全部」，並提供「可複選」提示及重設篩選。App 原生與 Web 共用更新後的篩選邏輯，既有空選取設定改以全部呈現。
+
+**已完成的 1.0.1（9）不包含這項後續修改，不能當成目前最新 UI 的測試包。** 協議解除後，若要驗收目前最新介面，需以更新後的來源提交重新檢查、建置，並記錄遠端自動產生的 build number 與 UUID。本次篩選修改沒有另啟雲端建置或再次上傳。
+
+使用者確認協議已接受、最新來源的安裝包完成並核對後，以實際 UUID 取代 `THIS_BUILD_UUID` 上傳：
 
 ```sh
-EXPO_APPLE_TEAM_ID=RTK85AV2H2 npx eas-cli@27.7.2 submit --platform ios --profile production --id 7f899133-1a88-47d9-82ae-8ff072ffdc06 --groups 'Core QA' --no-auto-testflight-setup --non-interactive --wait
+EXPO_APPLE_TEAM_ID=RTK85AV2H2 npx eas-cli@27.7.2 submit --platform ios --profile production --id THIS_BUILD_UUID --groups 'Core QA' --no-auto-testflight-setup --non-interactive --wait
 ```
 
 完成後另查 Apple 處理狀態、Core QA 可用版本，以及本人手機實際安裝結果；不因 EAS 建置成功就宣稱已更新手機。

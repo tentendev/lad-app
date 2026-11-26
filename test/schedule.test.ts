@@ -9,6 +9,7 @@ import {
   eventStatus,
   isScheduleForecast,
   normalizeSchedulePreferences,
+  toggleScheduleLead,
   scheduleEventCalendarFilename,
   scheduleEventToIcs,
   scheduleEventsToIcs,
@@ -76,8 +77,21 @@ describe("schedule visibility", () => {
   it("repairs and deduplicates persisted lead filters in canonical order", () => {
     expect(normalizeSchedulePreferences({ selectedLeads: ["秦徹", "秦徹", "黎深", "不存在"] }))
       .toEqual({ selectedLeads: ["黎深", "秦徹"] });
-    expect(normalizeSchedulePreferences({ selectedLeads: [] })).toEqual({ selectedLeads: [] });
+    expect(normalizeSchedulePreferences({ selectedLeads: [] })).toEqual({ selectedLeads: [...LEADS] });
     expect(normalizeSchedulePreferences(null)).toEqual({ selectedLeads: [...LEADS] });
+  });
+
+  it("focuses a lead from all, supports adding and removing leads, and resets the last selection to all", () => {
+    const xavier = toggleScheduleLead(LEADS, "沈星回");
+    expect(xavier).toEqual(["沈星回"]);
+    const both = toggleScheduleLead(xavier, "黎深");
+    expect(both).toEqual(["沈星回", "黎深"]);
+    const zayne = toggleScheduleLead(both, "沈星回");
+    expect(zayne).toEqual(["黎深"]);
+    const all = toggleScheduleLead(zayne, "黎深");
+    expect(all).toEqual([...LEADS]);
+    expect(toggleScheduleLead(all, "秦徹")).toEqual(["秦徹"]);
+    expect(xavier).toEqual(["沈星回"]);
   });
 
   it("exports a portable all-day calendar event with an exclusive end date", () => {

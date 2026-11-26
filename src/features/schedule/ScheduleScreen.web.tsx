@@ -225,12 +225,12 @@ export function ScheduleScreenWeb() {
                 全部
               </button>
               {LEADS.map((lead) => {
-                const active = model.selectedLeads.includes(lead);
+                const active = model.selectedLeads.includes(lead) && !allLeadsSelected;
                 return (
                   <button
                     type="button"
                     key={lead}
-                    className={`lead-filter-button ${active && !allLeadsSelected ? "active" : ""}`}
+                    className={`lead-filter-button ${active ? "active" : ""}`}
                     aria-pressed={active}
                     onClick={() => model.toggleLead(lead)}
                   >
@@ -239,6 +239,7 @@ export function ScheduleScreenWeb() {
                 );
               })}
             </div>
+            <small className="text-muted">可複選</small>
           </div>
 
           <div className="calendar-weekdays motion-detail" aria-hidden="true">
@@ -302,7 +303,7 @@ export function ScheduleScreenWeb() {
             ))}
           </div>
         </section>
-        <details className="schedule-notes pearl-details"><summary>月曆顯示與排期來源</summary><div className="schedule-note-actions"><button className="text-button" type="button" disabled={!model.selectedEvents.length} onClick={downloadVisibleCalendar}>匯出顯示排期</button><button type="button" className="text-button" aria-pressed={showBars} onClick={() => setShowBars(!showBars)}>{showBars ? "切換圓點月曆" : "切換色條月曆"}</button><button type="button" className="text-button" onClick={model.clearLeads}>清除全部男主</button></div>          <div className="calendar-meta motion-detail">
+        <details className="schedule-notes pearl-details"><summary>月曆顯示與排期來源</summary><div className="schedule-note-actions"><button className="text-button" type="button" disabled={!model.selectedEvents.length} onClick={downloadVisibleCalendar}>匯出顯示排期</button><button type="button" className="text-button" aria-pressed={showBars} onClick={() => setShowBars(!showBars)}>{showBars ? "切換圓點月曆" : "切換色條月曆"}</button><button type="button" className="text-button" onClick={model.showAllLeads}>重設男主篩選</button></div>          <div className="calendar-meta motion-detail">
             <span className="data-lock">
               <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="11" width="18" height="10" rx="2" />

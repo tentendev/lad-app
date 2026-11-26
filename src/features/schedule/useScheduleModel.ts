@@ -12,6 +12,7 @@ import {
   eventsForDate,
   eventsForMonth,
   normalizeSchedulePreferences,
+  toggleScheduleLead,
 } from "@/domain/schedule";
 import { scheduleEventToPullGoalDraft } from "@/domain/planner";
 
@@ -107,9 +108,7 @@ export function useScheduleModel(now = new Date()) {
   }
 
   function toggleLead(lead: Lead) {
-    setSelectedLeads((current) =>
-      current.includes(lead) ? current.filter((item) => item !== lead) : [...current, lead],
-    );
+    setSelectedLeads((current) => toggleScheduleLead(current, lead));
     setSelectedDate(null);
   }
 
@@ -147,7 +146,6 @@ export function useScheduleModel(now = new Date()) {
       setSelectedLeads([...LEADS]);
       setSelectedDate(null);
     },
-    clearLeads: () => { setSelectedLeads([]); setSelectedDate(null); },
     clearSelection: () => setSelectedDate(null),
     preparePullGoal,
   };

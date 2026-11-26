@@ -11,9 +11,14 @@ export function normalizeSchedulePreferences(value: unknown): SchedulePreference
   if (typeof value !== "object" || value === null || Array.isArray(value)) return { selectedLeads: [...LEADS] };
   const selectedLeads = (value as { selectedLeads?: unknown }).selectedLeads;
   if (!Array.isArray(selectedLeads)) return { selectedLeads: [...LEADS] };
-  return {
-    selectedLeads: LEADS.filter((lead) => selectedLeads.includes(lead)),
-  };
+  const validLeads = LEADS.filter((lead) => selectedLeads.includes(lead));
+  return { selectedLeads: validLeads.length ? validLeads : [...LEADS] };
+}
+
+export function toggleScheduleLead(current: readonly Lead[], lead: Lead): Lead[] {
+  if (current.length === LEADS.length) return [lead];
+  const next = current.includes(lead) ? current.filter((item) => item !== lead) : [...current, lead];
+  return next.length ? next : [...LEADS];
 }
 
 export const EVENT_LABELS: Record<ScheduleEventType, string> = {
