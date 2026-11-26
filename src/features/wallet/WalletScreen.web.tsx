@@ -1,3 +1,4 @@
+import { WebDialog } from "@/ui/WebDialog.web";
 import { WalletResources } from "@/ui/WalletResources.web";
 import { BudgetSummary } from "@/ui/BudgetSummary.web";
 import { Button } from "@heroui/react/button";
@@ -62,8 +63,6 @@ export function WalletScreenWeb() {
   const [editError, setEditError] = useState<string | null>(null);
   const [deletedExpense, setDeletedExpense] = useState<Expense | null>(null);
   const [expenseFilter, setExpenseFilter] = useState<ExpenseCategory | "全部">("全部");
-  const [expenseFormOpen, setExpenseFormOpen] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const pendingExpense = model.pendingExpense;
   const consumePendingExpense = model.consumePendingExpense;
@@ -79,7 +78,6 @@ export function WalletScreenWeb() {
   useEffect(() => {
     if (!pendingExpense) return;
     const frame = requestAnimationFrame(() => {
-      setExpenseFormOpen(true);
       focusControl("wallet-expense-amount");
       setForm({
         amt: String(pendingExpense.amt),
@@ -108,7 +106,7 @@ export function WalletScreenWeb() {
     setSubmitting(true);
     const saved = await model.addExpense({ amt: amount, cat: form.cat, date: form.date, note: form.note.trim() });
     setSubmitting(false);
-    if (saved) { setForm({ ...EMPTY_FORM, date: form.date }); setExpenseFormOpen(false); }
+    if (saved) { setForm({ ...EMPTY_FORM, date: form.date }); }
   }
 
   async function saveEdit() {
@@ -150,10 +148,11 @@ export function WalletScreenWeb() {
   }
 
   async function removeExpense(expense: Expense) {
+    if (!window.confirm("確定要刪除這筆花費嗎？")) return;
     setSubmitting(true);
     const deleted = await model.deleteExpense(expense.id);
     setSubmitting(false);
-    if (deleted) setDeletedExpense(expense);
+    if (deleted) { setDeletedExpense(expense); setEditing(current => current?.id === expense.id ? null : current); }
   }
 
   async function undoDelete() {
@@ -187,14 +186,14 @@ export function WalletScreenWeb() {
         ? `接下來 ${model.pace.daysRemaining} 天每日可彈性支出 ${formatCurrency(model.pace.dailyFlexibleSpend ?? 0)}；照目前速度月底仍可能超出 ${formatCurrency(Math.abs(model.pace.projectedVariance ?? 0))}。`
         : `接下來 ${model.pace.daysRemaining} 天每日可彈性支出 ${formatCurrency(model.pace.dailyFlexibleSpend ?? 0)}；照目前速度月底預計保留 ${formatCurrency(model.pace.projectedVariance ?? 0)}。`;
   const pageAction = (
-    <details className="wallet-month-picker"><summary>{model.month.replace("-", " / ")} <span aria-hidden="true">▾</span></summary><div className="month-action-stack">
+    <div className="month-action-stack">
       <div className="month-switcher">
         <Button isIconOnly variant="ghost" aria-label="上一個月" onPress={model.previousMonth}>←</Button>
         <strong>{monthLabel(model.month)}</strong>
         <Button isIconOnly variant="ghost" aria-label="下一個月" onPress={model.nextMonth}>→</Button>
       </div>
       {!model.isCurrentMonth ? <button className="text-button" type="button" onClick={model.goToCurrentMonth}>回到當月</button> : null}
-    </div></details>
+    </div>
   );
 
   if (!model.ready) {
@@ -226,99 +225,14 @@ export function WalletScreenWeb() {
           </div>
         ) : null}
         <div className="stack">
-          <Card className="hero-card wallet-balance-card"><BudgetSummary {...model.summary} currency={model.currency} /></Card>
-          <WalletResources {...model.resources}/>
-          <Button fullWidth className="wallet-add-button" aria-expanded={expenseFormOpen} onPress={() => { setExpenseFormOpen(!expenseFormOpen); if (!expenseFormOpen) focusControl("wallet-expense-amount"); }}>＋ 新增花費</Button>
-          {expenseFormOpen ? (
-          <Card className="product-card">
-            <div className="section-heading">
-              <h2 className="section-title heading-with-icon"><WalletGlyph type="plus" />記一筆花費</h2>
-            </div>
-            <div className="form-grid" style={{ marginTop: 3 }}>
-              <label className="field-wrap">
-                <span className="field-label">金額（{CURRENCY_SYMBOLS[model.currency]}）</span>
-                <Input id="wallet-expense-amount" aria-label="花費金額" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="number" min="0" placeholder="170" value={form.amt} onChange={(event) => { setFormError(null); setForm({ ...form, amt: event.target.value }); }} />
-              </label>
-              <label className="field-wrap">
-                <span className="field-label">類別</span>
-                <select className="native-select" value={form.cat} onChange={(event) => { setFormError(null); setForm({ ...form, cat: event.target.value as ExpenseCategory }); }}>
-                  {EXPENSE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
-                </select>
-              </label>
-              <label className="field-wrap full">
-                <span className="field-label">消費日期</span>
-                <span className="date-control"><Input id="wallet-expense-date" aria-label="消費日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} /></span>
-              </label>
-              <label className="field-wrap full">
-                <span className="field-label">備註（選填）</span>
-                <Input aria-label="花費備註" placeholder="例如：沈星回生日卡池" value={form.note} onChange={(event) => { setFormError(null); setForm({ ...form, note: event.target.value }); }} />
-              </label>
-            </div>
-            {formError ? <p className="field-error" id="wallet-expense-error" role="alert">{formError}</p> : null}
-            <div className="form-actions">
-              <Button fullWidth isDisabled={submitting || model.writeProtected} onPress={() => void submitExpense()}>{submitting ? "儲存中…" : "加入花費"}</Button>
-            </div>
-          </Card>
-          ) : null}
-          <section className="wallet-recent" aria-label="最近花費"><div className="section-heading"><h2>最近花費</h2><button type="button" aria-expanded={historyOpen} onClick={() => { setHistoryOpen(!historyOpen); if (!historyOpen) focusControl("wallet-history"); }}>查看全部 ›</button></div>{model.expenses.length ? model.expenses.slice(0, 3).map(expense => <div className="wallet-recent-row" key={expense.id}><time dateTime={expense.date}>{expense.date.slice(5).replace("-", " / ")}</time><WalletGlyph type="wallet"/><span>{expense.note || expense.cat}</span><strong>− {formatCurrency(expense.amt)}</strong></div>) : <p className="empty-state">這個月還沒有花費紀錄</p>}</section>
-
-
-        </div>
-
-        <div className="stack">
-
-
-          {historyOpen ? (
-          <Card id="wallet-history" tabIndex={-1} className="product-card">
-            <div className="section-heading">
-              <h2 className="section-title heading-with-icon"><WalletGlyph type="list" />花費紀錄</h2>
-              <div className="section-inline-actions">
-                <span className="section-meta">{visibleExpenses.length} 筆</span>
-                <Button size="sm" variant="ghost" isDisabled={!visibleExpenses.length} onPress={downloadExpensesCsv}>匯出 CSV</Button>
-              </div>
-            </div>
-            <label className="field-wrap">
-              <span className="field-label">紀錄與匯出範圍</span>
-              <select className="native-select" value={expenseFilter} onChange={(event) => setExpenseFilter(event.target.value as ExpenseCategory | "全部")}>
-                <option>全部</option>
-                {EXPENSE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
-              </select>
-            </label>
-            <div className="expense-list" role={visibleExpenses.length ? "list" : undefined}>
-              {visibleExpenses.length === 0 ? (
-                <div className="empty-state">{model.expenses.length === 0 ? "這個月還沒有花費紀錄" : "這個類別目前沒有花費紀錄"}</div>
-              ) : (
-                visibleExpenses.map((expense) => (
-                  <div className="expense-row" role="listitem" key={expense.id}>
-                    <div className="row-main">
-                      <div className="row-title">{expense.note || expense.cat}</div>
-                      <div className="row-subtitle">{expense.cat} · {expense.date}</div>
-                    </div>
-                    <div className="row-amount">{formatCurrency(expense.amt)}</div>
-                    <div className="row-actions">
-                      <Button size="sm" variant="ghost" onPress={() => { setEditing({ ...expense }); focusControl("wallet-edit-amount"); }}>編輯</Button>
-                      <Button
-                        size="sm"
-                        variant="danger-soft"
-                        isDisabled={submitting || model.writeProtected}
-                        onPress={() => void removeExpense(expense)}
-                      >
-                        刪除
-                      </Button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </Card>
-          ) : null}
-          <details className="wallet-settings pearl-details"><summary>預算與幣別設定</summary><div className="wallet-settings-body">
+<Card className="product-card wallet-budget-card">
             <div className="card-title-row">
               <h2 className="section-title heading-with-icon"><WalletGlyph type="wallet" />本月預算</h2>
               <label className="currency-choice"><span>幣別</span><select className="native-select" aria-label="記帳幣別" value={model.currency} onChange={event => { setForm({ ...EMPTY_FORM, date: form.date }); void model.setCurrency(event.target.value as Currency); }}>{CURRENCIES.map(currency => <option key={currency} value={currency}>{CURRENCY_LABELS[currency]} · {CURRENCY_SYMBOLS[currency]}</option>)}</select></label>
             </div>
             <p className="currency-note">預算與花費依幣別分開記錄，不合併換算。</p>
 
+            <BudgetSummary {...model.summary} currency={model.currency} />
             <div className={`status-note ${model.summary.state}`} role="status">
               {statusCopy(model.summary.state, model.summary.remaining, model.summary.percentage, model.currency)}
             </div>
@@ -357,7 +271,7 @@ export function WalletScreenWeb() {
               {budgetError ? <p className="field-error" id="wallet-budget-error" role="alert">{budgetError}</p> : null}
               <div className="form-actions">
                 <Button fullWidth isDisabled={submitting || model.writeProtected} onPress={() => void saveBudget()}>
-                  {submitting ? "儲存中…" : "儲存當月設定"}
+                  {submitting ? "儲存中…" : "儲存設定"}
                 </Button>
                 {model.previousConfig ? (
                   <Button
@@ -371,7 +285,88 @@ export function WalletScreenWeb() {
                 ) : null}
               </div>
             </details>
-</div></details>
+</Card>
+          <WalletResources {...model.resources}/>
+          <Card className="product-card">
+            <div className="section-heading">
+              <h2 className="section-title heading-with-icon"><WalletGlyph type="plus" />記一筆花費</h2>
+            </div>
+            <div className="form-grid" style={{ marginTop: 3 }}>
+              <label className="field-wrap">
+                <span className="field-label">金額（{CURRENCY_SYMBOLS[model.currency]}）</span>
+                <Input id="wallet-expense-amount" aria-label="花費金額" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="number" min="0" placeholder="170" value={form.amt} onChange={(event) => { setFormError(null); setForm({ ...form, amt: event.target.value }); }} />
+              </label>
+              <label className="field-wrap">
+                <span className="field-label">類別</span>
+                <select aria-label="花費類別" className="native-select" value={form.cat} onChange={(event) => { setFormError(null); setForm({ ...form, cat: event.target.value as ExpenseCategory }); }}>
+                  {EXPENSE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
+                </select>
+              </label>
+              <label className="field-wrap full">
+                <span className="field-label">消費日期</span>
+                <span className="date-control"><Input id="wallet-expense-date" aria-label="消費日期" aria-invalid={Boolean(formError)} aria-describedby={formError ? "wallet-expense-error" : undefined} type="date" value={form.date} onChange={(event) => { setFormError(null); setForm({ ...form, date: event.target.value }); }} /></span>
+              </label>
+              <label className="field-wrap full">
+                <span className="field-label">備註（選填）</span>
+                <Input aria-label="花費備註" placeholder="例如：沈星回生日卡池" value={form.note} onChange={(event) => { setFormError(null); setForm({ ...form, note: event.target.value }); }} />
+              </label>
+            </div>
+            {formError ? <p className="field-error" id="wallet-expense-error" role="alert">{formError}</p> : null}
+            <div className="form-actions">
+              <Button fullWidth isDisabled={submitting || model.writeProtected} onPress={() => void submitExpense()}>{submitting ? "儲存中…" : "新增花費"}</Button>
+            </div>
+          </Card>
+
+
+        </div>
+
+        <div className="stack">
+
+
+          <Card id="wallet-history" tabIndex={-1} className="product-card">
+            <div className="section-heading">
+              <h2 className="section-title heading-with-icon"><WalletGlyph type="list" />月份明細</h2>
+              <div className="section-inline-actions">
+                <span className="section-meta">{visibleExpenses.length} 筆</span>
+                <Button size="sm" variant="ghost" isDisabled={!visibleExpenses.length} onPress={downloadExpensesCsv}>匯出 CSV</Button>
+              </div>
+            </div>
+            <label className="field-wrap">
+              <span className="field-label">紀錄與匯出範圍</span>
+              <select aria-label="月份明細類別範圍" className="native-select" value={expenseFilter} onChange={(event) => setExpenseFilter(event.target.value as ExpenseCategory | "全部")}>
+                <option>全部</option>
+                {EXPENSE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
+              </select>
+            </label>
+            <div className="expense-list" role={visibleExpenses.length ? "list" : undefined}>
+              {visibleExpenses.length === 0 ? (
+                <div className="empty-state">{model.expenses.length === 0 ? "這個月還沒有花費紀錄" : "這個類別目前沒有花費紀錄"}</div>
+              ) : (
+                visibleExpenses.map((expense) => (
+                  <div className="expense-row" role="listitem" key={expense.id}>
+                    <div className="row-main">
+                      <div className="row-title">{expense.note || expense.cat}</div>
+                      <div className="row-subtitle">{expense.cat} · {expense.date}</div>
+                    </div>
+                    <div className="row-amount">{formatCurrency(expense.amt)}</div>
+                    <div className="row-actions">
+                      <Button size="sm" variant="ghost" onPress={() => { setEditing({ ...expense }); focusControl("wallet-edit-amount"); }}>編輯</Button>
+                      <Button
+                        size="sm"
+                        variant="danger-soft"
+                        isDisabled={submitting || model.writeProtected}
+                        onPress={() => void removeExpense(expense)}
+                      >
+                        刪除
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
+
+
 
           <details className="product-card card spending-insights-card">
             <summary>當月支出洞察與預估</summary>
@@ -397,9 +392,10 @@ export function WalletScreenWeb() {
           <SpendingDashboard expenses={model.allExpenses} month={model.month} currency={model.currency} onSelectMonth={model.selectMonth} />
 
           {editing ? (
+            <WebDialog labelId="wallet-editor-title" onClose={() => { setEditError(null); setEditing(null); }}>
             <Card className="product-card">
               <div className="section-heading">
-                <h2 className="section-title">編輯花費</h2>
+                <h2 id="wallet-editor-title" className="section-title">編輯花費</h2>
                 <Button size="sm" variant="ghost" onPress={() => { setEditError(null); setEditing(null); }}>取消</Button>
               </div>
               <div className="form-grid" style={{ marginTop: 3 }}>
@@ -409,7 +405,7 @@ export function WalletScreenWeb() {
                 </label>
                 <label className="field-wrap">
                   <span className="field-label">類別</span>
-                  <select className="native-select" value={editing.cat} onChange={(event) => { setEditError(null); setEditing({ ...editing, cat: event.target.value as ExpenseCategory }); }}>
+                  <select aria-label="編輯花費類別" className="native-select" value={editing.cat} onChange={(event) => { setEditError(null); setEditing({ ...editing, cat: event.target.value as ExpenseCategory }); }}>
                     {EXPENSE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
                   </select>
                 </label>
@@ -424,7 +420,9 @@ export function WalletScreenWeb() {
               </div>
               {editError ? <p className="field-error" id="wallet-edit-error" role="alert">{editError}</p> : null}
               <div className="form-actions"><Button fullWidth isDisabled={submitting || model.writeProtected} onPress={() => void saveEdit()}>{submitting ? "儲存中…" : "儲存修改"}</Button></div>
+              <div className="form-actions"><Button fullWidth variant="danger-soft" isDisabled={submitting || model.writeProtected} onPress={() => void removeExpense(editing)}>刪除這筆</Button></div>
             </Card>
+            </WebDialog>
           ) : null}
         </div>
       </div>

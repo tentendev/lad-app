@@ -9,11 +9,13 @@ const ITEMS = [
   { href: "/schedule", label: "排期", icon: "calendar" },
   { href: "/calculator", label: "換算", icon: "exchange" },
   { href: "/tracker", label: "追蹤", icon: "chart" },
+  { href: "/feedback", label: "回饋", icon: "feedback" },
 ] as const;
 
 const SHOW_DEBUG_TOOLS = process.env.EXPO_PUBLIC_ENABLE_DEBUG_TOOLS === "true";
 
 function NavIcon({ name }: { name: (typeof ITEMS)[number]["icon"] }) {
+  if (name === "feedback") return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M21 11a8 8 0 0 1-8 8H9l-6 3 2-6a8 8 0 1 1 16-5Z"/><path d="M8 9h8M8 13h5"/></svg>;
   if (name === "wallet") {
     return (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

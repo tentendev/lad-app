@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 
 import { EVENT_COLORS } from "@/theme/tokens";
 import { SCHEDULE_META } from "@/data/schedule";
-import { pad, todayKey } from "@/domain/format";
+import { formatCurrency, pad, todayKey } from "@/domain/format";
 import { EVENT_LABELS, eventsForDate, isScheduleForecast, eventStatus, scheduleEventCalendarFilename, scheduleEventToIcs, scheduleEventsToIcs } from "@/domain/schedule";
 import { canPlanScheduleEvent } from "@/domain/planner";
 import { LEADS, type Lead, type ScheduleEvent, type ScheduleEventType } from "@/domain/types";
@@ -43,7 +43,7 @@ function leadLabel(event: ScheduleEvent): { label: string; className: string } |
 function EventRow({ event, onPlan, onCalendar }: { event: ScheduleEvent; onPlan: (event: ScheduleEvent) => void; onCalendar: (event: ScheduleEvent) => void }) {
   const status = eventStatus(event, todayKey());
   const lead = leadLabel(event);
-  return <details className="pearl-event motion-row motion-data" role="listitem"><summary><i className="event-color-rail" style={{ backgroundColor: EVENT_COLORS[event.type] }}/><div className="row-main"><strong>{event.name}</strong><span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 2v6M16 2v6M3 11h18"/></svg>{event.start.slice(5).replace("-", " / ")}{event.end ? event.end !== event.start ? ` – ${event.end.slice(0,4) !== event.start.slice(0,4) ? event.end.slice(0,4) + " / " : ""}${event.end.slice(5).replace("-", " / ")}` : "" : " · 結束日待確認"}</span></div><span className={`event-badge ${isScheduleForecast(event, todayKey()) ? "forecast" : status.tone}`}>{isScheduleForecast(event, todayKey()) ? "預測" : status.label}</span><span aria-hidden="true" className="pearl-event-chevron">›</span></summary><div className="pearl-event-actions"><span>{EVENT_LABELS[event.type]}{lead ? ` · ${lead.label}` : ""} · {event.start}{event.end ? ` ～ ${event.end}` : ""}</span>{event.source ? <a className="text-button" href={event.source} target="_blank" rel="noopener noreferrer">官方公告 ↗</a> : null}<button className="text-button" type="button" onClick={() => onCalendar(event)}>加入行事曆</button>{canPlanScheduleEvent(event, todayKey()) ? <button className="text-button" type="button" onClick={() => onPlan(event)}>加入規劃</button> : null}</div></details>;
+  return <details open className={`pearl-event motion-row motion-data ${isScheduleForecast(event, todayKey()) ? "tentative" : ""}`} role="listitem"><summary><i className="event-color-rail" style={{ backgroundColor: EVENT_COLORS[event.type] }}/><div className="row-main"><strong>{event.name}</strong><span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 2v6M16 2v6M3 11h18"/></svg>{event.start.slice(5).replace("-", " / ")}{event.end ? event.end !== event.start ? ` – ${event.end.slice(0,4) !== event.start.slice(0,4) ? event.end.slice(0,4) + " / " : ""}${event.end.slice(5).replace("-", " / ")}` : "" : " · 結束日待確認"}</span></div><span className={`event-badge ${isScheduleForecast(event, todayKey()) ? "forecast" : status.tone}`}>{isScheduleForecast(event, todayKey()) ? "預測" : status.label}</span><span aria-hidden="true" className="pearl-event-chevron">›</span></summary><div className="pearl-event-actions"><span>{EVENT_LABELS[event.type]}{lead ? ` · ${lead.label}` : ""} · {event.start}{event.end ? ` ～ ${event.end}` : ""}{event.cost ? ` · 預估 ${formatCurrency(event.cost)}` : ""}</span>{event.source ? <a className="text-button" href={event.source} target="_blank" rel="noopener noreferrer">官方公告 ↗</a> : null}<button className="text-button" type="button" onClick={() => onCalendar(event)}>加入行事曆</button>{canPlanScheduleEvent(event, todayKey()) ? <button className="text-button" type="button" onClick={() => onPlan(event)}>加入規劃</button> : null}</div></details>;
 }
 
 export function ScheduleScreenWeb() {
@@ -51,7 +51,7 @@ export function ScheduleScreenWeb() {
   const initialDataMotion = useRef(true);
   const model = useScheduleModel();
   const router = useRouter();
-  const [showBars, setShowBars] = useState(false);
+  const [showBars, setShowBars] = useState(true);
   const today = todayKey();
   const laneCount = Math.max(1, ...model.calendarBars.map(segment => segment.lane + 1));
   const rowsPerWeek = laneCount + 1;
@@ -201,6 +201,16 @@ export function ScheduleScreenWeb() {
         {model.preferenceError ? <div className="status-note over" role="alert">{model.preferenceError}</div> : null}
         {model.plannerError ? <div className="status-note over" role="alert">{model.plannerError}</div> : null}
         <Card className="product-card calendar-card">
+          <div className="calendar-meta motion-detail">
+            <span className="data-lock">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              {SCHEDULE_META.label}
+            </span>
+            <span>排期更新 {SCHEDULE_META.updated}</span>
+          </div>
 
 
           <div className="month-switcher calendar-heading">
@@ -263,7 +273,7 @@ export function ScheduleScreenWeb() {
                   style={{ gridColumn: column, gridRow: showBars ? `${week * rowsPerWeek + 1} / span ${rowsPerWeek}` : week + 1 }}
                   aria-label={`${cell.key}，${cell.eventCount} 個排期`}
                   aria-pressed={cell.key === model.selectedDate}
-                  onClick={() => model.selectDate(cell.key)}
+                  onClick={() => { model.selectDate(cell.key); window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }}
                 >
                   <span>{cell.day}</span>{!showBars ? <i className="calendar-dots" aria-hidden="true">{[...new Set(eventsForDate(model.monthEvents, cell.key).map(event => event.type))].slice(0, 3).map(type => <b key={type} style={{ backgroundColor: EVENT_COLORS[type] }}/>)}</i> : null}
                 </button>
@@ -284,7 +294,16 @@ export function ScheduleScreenWeb() {
               </span>
             )) : null}
           </div>
+          <div className="calendar-legend motion-detail" role="group" aria-label="排期類型圖例">
+            {LEGEND.map((type) => (
+              <span key={type}><i className={`legend-dot t-${type}`} />{EVENT_LABELS[type]}</span>
+            ))}
+          </div>
+          <p className="schedule-disclaimer motion-detail">
+            ※預測排期為非官方資訊，實際卡池與日期請以《戀與深空》官方公告為準。
+          </p>
 
+          <div className="schedule-note-actions"><button className="text-button" type="button" disabled={!model.selectedEvents.length} onClick={downloadVisibleCalendar}>匯出顯示排期</button><button type="button" className="text-button" aria-pressed={showBars} onClick={() => setShowBars(!showBars)}>{showBars ? "切換圓點月曆" : "切換色條月曆"}</button><button type="button" className="text-button" onClick={model.showAllLeads}>重設男主篩選</button></div>
         </Card>
 
         <section className="schedule-list-card motion-surface">
@@ -303,24 +322,7 @@ export function ScheduleScreenWeb() {
             ))}
           </div>
         </section>
-        <details className="schedule-notes pearl-details"><summary>月曆顯示與排期來源</summary><div className="schedule-note-actions"><button className="text-button" type="button" disabled={!model.selectedEvents.length} onClick={downloadVisibleCalendar}>匯出顯示排期</button><button type="button" className="text-button" aria-pressed={showBars} onClick={() => setShowBars(!showBars)}>{showBars ? "切換圓點月曆" : "切換色條月曆"}</button><button type="button" className="text-button" onClick={model.showAllLeads}>重設男主篩選</button></div>          <div className="calendar-meta motion-detail">
-            <span className="data-lock">
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="10" rx="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              {SCHEDULE_META.label}
-            </span>
-            <span>排期更新 {SCHEDULE_META.updated}</span>
-          </div>          <div className="calendar-legend motion-detail" role="group" aria-label="排期類型圖例">
-            {LEGEND.map((type) => (
-              <span key={type}><i className={`legend-dot t-${type}`} />{EVENT_LABELS[type]}</span>
-            ))}
-          </div>
-          <p className="schedule-disclaimer motion-detail">
-            ※預測排期為非官方資訊，實際卡池與日期請以《戀與深空》官方公告為準。
-          </p>
-</details>
+
       </div>
     </WebPage>
   );

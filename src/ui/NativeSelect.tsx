@@ -1,3 +1,4 @@
+import { useReducedMotion } from "react-native-reanimated";
 import { useState } from "react";
 import { Modal, Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,6 +20,7 @@ type Props<T extends string> = {
 /** Website-style select field with a scrollable, touch-friendly native sheet. */
 export function NativeSelect<T extends string>({ label, value, options, onChange, formatOption, disabled = false, compact = false }: Props<T>) {
   const [open, setOpen] = useState(false);
+  const reducedMotion = useReducedMotion();
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const display = (option: T) => formatOption?.(option) ?? option;
@@ -30,7 +32,7 @@ export function NativeSelect<T extends string>({ label, value, options, onChange
       <Typography className="flex-1 type-body text-ink">{display(value)}</Typography>
       <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#80639f" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round"><Path d="m6 9 6 6 6-6" /></Svg>
     </Pressable>
-    {open ? <Modal transparent animationType="slide" onRequestClose={() => setOpen(false)}>
+    {open ? <Modal transparent animationType={reducedMotion ? "none" : "slide"} onRequestClose={() => setOpen(false)}>
       <View className="flex-1 justify-end bg-black/50">
         <Pressable accessible={false} onPress={() => setOpen(false)} className="absolute inset-0" />
         <View accessibilityViewIsModal className="w-full self-center rounded-t-[20px] border border-line bg-[#fbf9fe]" style={{ maxWidth: 520, maxHeight: height * 0.8, paddingBottom: Math.max(16, insets.bottom) }}>

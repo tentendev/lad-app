@@ -3533,3 +3533,22 @@ body { font-family: var(--serif); }
 .wallet-resources strong { overflow-wrap: anywhere; }
 .budget-orbit-copy { width: 90%; padding: 4px; }
 .budget-orbit-copy:not(.long) strong { white-space: nowrap; overflow-wrap: normal; }
+
+/* Keep the HTML app's page fade and live budget feedback with the pearl theme. */
+@keyframes app-page-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.page-shell { animation: app-page-enter 350ms ease-out; }
+.budget-usage { display: grid; gap: 8px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+.budget-usage-track { height: 9px; overflow: hidden; border-radius: 99px; background: #e8e1f0; }
+.budget-usage-track i { display: block; height: 100%; border-radius: inherit; background: var(--pearl-primary); transition: width 500ms ease-out, background-color 300ms; }
+.budget-orbit circle { transition: stroke-dashoffset 500ms ease-out; }
+.wallet-budget-card { display: grid; gap: 14px; }
+.app-dialog-backdrop { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px 14px; background: rgb(28 18 40 / 45%); }
+.app-dialog-panel { width: min(440px, 100%); max-height: 88dvh; overflow-y: auto; border-radius: 20px; background: #fbf9fe; box-shadow: var(--shadow); animation: app-page-enter 180ms ease-out; }
+.app-dialog-panel > .product-card { margin: 0; }
+.calculation-details > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); }
+.calculation-details[open] > .calculation-detail, .budget-details[open] > .form-grid { animation: app-page-enter 180ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .page-shell, .app-dialog-panel, .calculation-details[open] > .calculation-detail, .budget-details[open] > .form-grid { animation: none; } .budget-usage-track i, .budget-orbit circle { transition: none; } }
+
+.pearl-event.tentative { border-style: dashed; }
+
+.web-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }

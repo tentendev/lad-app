@@ -57,7 +57,7 @@ export default function NativeTabsLayout(): JSX.Element {
         tabBarBackground: () => <View style={{ flex: 1, borderTopLeftRadius: 24, borderTopRightRadius: 24, overflow: "hidden" }}><PearlSurface/></View>,
         tabBarLabel: ({ children, color, focused }) => <Text key={fontScale} allowFontScaling maxFontSizeMultiplier={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: focused ? "600" : "400", color, textAlign: "center" }}>{children}</Text>,
         tabBarLabelPosition: "below-icon",
-        tabBarItemStyle: { paddingTop: 5, marginHorizontal: 10, marginTop: 7, marginBottom: 5, borderRadius: 15 },
+        tabBarItemStyle: { paddingTop: 5, marginHorizontal: 4, marginTop: 7, marginBottom: 5, borderRadius: 15 },
         tabBarStyle: {
           width: "100%",
           backgroundColor: APP_COLORS.navigation,
@@ -72,21 +72,21 @@ export default function NativeTabsLayout(): JSX.Element {
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
         name="wallet"
-        options={{ title: "錢包", tabBarAccessibilityLabel: "錢包，第 1 個分頁，共 4 個", tabBarIcon: ({ color }) => <TabIcon name="wallet" color={color} /> }}
+        options={{ title: "錢包", tabBarAccessibilityLabel: "錢包，第 1 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="wallet" color={color} /> }}
       />
       <Tabs.Screen
         name="schedule"
-        options={{ title: "排期", tabBarAccessibilityLabel: "排期，第 2 個分頁，共 4 個", tabBarIcon: ({ color }) => <TabIcon name="calendar" color={color} /> }}
+        options={{ title: "排期", tabBarAccessibilityLabel: "排期，第 2 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="calendar" color={color} /> }}
       />
       <Tabs.Screen
         name="calculator"
-        options={{ title: "換算", tabBarAccessibilityLabel: "換算，第 3 個分頁，共 4 個", tabBarIcon: ({ color }) => <TabIcon name="calculator" color={color} /> }}
+        options={{ title: "換算", tabBarAccessibilityLabel: "換算，第 3 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="calculator" color={color} /> }}
       />
       <Tabs.Screen
         name="tracker"
-        options={{ title: "追蹤", tabBarAccessibilityLabel: "追蹤，第 4 個分頁，共 4 個", tabBarIcon: ({ color }) => <TabIcon name="star" color={color} /> }}
+        options={{ title: "追蹤", tabBarAccessibilityLabel: "追蹤，第 4 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="star" color={color} /> }}
       />
-      <Tabs.Screen name="feedback" options={{ href: null }} />
+      <Tabs.Screen name="feedback" options={{ title: "回饋", tabBarAccessibilityLabel: "回饋，第 5 個分頁，共 5 個", tabBarIcon: ({ color }) => <TabIcon name="feedback" color={color} /> }} />
     </Tabs>
   );
 }

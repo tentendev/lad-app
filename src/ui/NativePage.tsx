@@ -1,10 +1,12 @@
 import { Typography } from "@/ui/NativeComponents";
-import type { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode, Ref } from "react";
 import { Link } from "expo-router";
 import { Linking, KeyboardAvoidingView, Platform, ScrollView, Pressable, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NATIVE_FONTS } from "@/theme/native";
 import { APP_COLORS } from "@/theme/tokens";
+import Animated from "react-native-reanimated";
+import { useNativePageTransition } from "./useNativePageTransition";
 import { OrbitBackdrop } from "./OrbitBackdrop";
 
 import { AccountEntry } from "@/ui/AccountEntry";
@@ -19,10 +21,12 @@ type Props = PropsWithChildren<{
   showAboutLink?: boolean;
   workspace?: boolean;
   action?: ReactNode;
+  scrollRef?: Ref<ScrollView>;
 }>;
 
-export function NativePage({ title, action, showAccountEntry = true, showAboutLink = true, workspace = false, children }: Props) {
+export function NativePage({ title, action, showAccountEntry = true, showAboutLink = true, workspace = false, scrollRef, children }: Props) {
   const { width } = useWindowDimensions();
+  const transition = useNativePageTransition();
   const layout = nativePageLayout(width, workspace);
   const motto = ({ 錢包: "把喜歡，留在計畫裡。", 換算: "離心願，再近一點。", 追蹤: "記下每次心動的軌跡。", 會員中心: "把計畫，好好保存。" } as Record<string, string>)[title];
   return (
@@ -30,11 +34,12 @@ export function NativePage({ title, action, showAccountEntry = true, showAboutLi
       <OrbitBackdrop />
       <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}><ScrollView
+          ref={scrollRef}
           contentContainerStyle={{ paddingHorizontal: layout.horizontalPadding, paddingTop: 8, paddingBottom: 48 }}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
-          <View className="w-full self-center" style={{ maxWidth: layout.maxWidth, gap: 12 }}>
+          <Animated.View className="w-full self-center" style={[{ maxWidth: layout.maxWidth, gap: 12 }, transition]}>
             <View className="relative flex-row items-center pb-3" style={{ minHeight: 54, paddingRight: 100 }}>
               <View className="absolute right-14 top-0"><SiteUpdatesEntry /></View>
               {showAccountEntry ? <View className="absolute right-0 top-0"><AccountEntry /></View> : null}
@@ -51,7 +56,7 @@ export function NativePage({ title, action, showAccountEntry = true, showAboutLi
                 <Pressable accessibilityRole="link" accessibilityLabel="製作：@chumei_0218" onPress={() => void Linking.openURL("https://www.threads.com/@chumei_0218")} className="min-h-12 items-center justify-center px-2"><Typography className="type-label text-muted underline">製作：@chumei_0218</Typography></Pressable>
               </View>
             ) : null}
-          </View>
+          </Animated.View>
         </ScrollView></KeyboardAvoidingView>
       </SafeAreaView>
     </View>
