@@ -37,7 +37,7 @@ npx eas-cli@27.7.2 build:list --platform ios --limit 5 --non-interactive
 
 需要新 TestFlight build 時，選取未被使用的 marketing version，同步 `app.json` 的 `expo.version` 與 `store.config.json` 的 `apple.version`。EAS 使用 remote version、production `autoIncrement`，不手動重設 build number。
 
-目前未發布的視覺分支 `expo.version` 已是 1.0.1，商店設定仍是 1.0.0。此次 SETUP 保留這個狀態；下一次有建置授權時必須先處理版本一致性。既有 1.0.0（8）已發布的狀態來自交接，仍以平台即時查詢為準。
+2026-11-26 為內部 UI 測試準備時，已將 `expo.version` 與 `store.config.json` 的 `apple.version` 對齊為 1.0.1。當日只讀 EAS 查詢確認最新可安裝的實機建置為 1.0.0（8）；新建置、上傳及群組狀態另見 [本次測試紀錄](TESTFLIGHT_UI_20261126.md)，仍以平台即時查詢為準。
 
 檢查本次檔案及 staged diff，提交後推送工作分支；不要把整個工作樹的其他修改一起加入，也不要直接改 main。Git commit 作者及 HTTPS credential helper 必須對應本人帳號。
 
